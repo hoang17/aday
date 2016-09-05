@@ -17,7 +17,7 @@ class RoomController: UITableViewController, MGSwipeTableCellDelegate, UIActionS
     
     var room: Room?
     
-    var actionCallback: MailActionCallback?
+    var actionCallback: PostActionCallback?
     
     override func viewDidLoad() {
         super.viewDidLoad()

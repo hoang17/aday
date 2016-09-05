@@ -74,62 +74,6 @@ class HomeController: UIViewController {
             make.right.equalTo(self.view).offset(-50)
         }
         
-        // Setup my friends button
-        let button3 = UIButton(type: .System)
-        button3.setTitle("My Pages", forState: .Normal)
-        button3.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-        button3.backgroundColor = view.tintColor
-        button3.layer.cornerRadius = 3
-        button3.addTarget(self, action: #selector(openMyPages), forControlEvents: .TouchUpInside)
-        self.view.addSubview(button3)
-        button3.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(220)
-            make.left.equalTo(self.view).offset(50)
-            make.right.equalTo(self.view).offset(-50)
-        }
-
-        
-        // Setup Spotify button
-//        let button4 = UIButton(type: .System)
-//        button4.setTitle("Spotify", forState: .Normal)
-//        button4.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-//        button4.backgroundColor = view.tintColor
-//        button4.layer.cornerRadius = 3
-//        button4.addTarget(self, action: #selector(openSpotifyDemo), forControlEvents: .TouchUpInside)
-//        self.view.addSubview(button4)
-//        button4.snp_makeConstraints { (make) -> Void in
-//            make.top.equalTo(self.view).offset(270)
-//            make.left.equalTo(self.view).offset(50)
-//            make.right.equalTo(self.view).offset(-50)
-//        }
-
-        // Setup MailApp button
-//        let button5 = UIButton(type: .System)
-//        button5.setTitle("Mail", forState: .Normal)
-//        button5.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-//        button5.backgroundColor = view.tintColor
-//        button5.layer.cornerRadius = 3
-//        button5.addTarget(self, action: #selector(openMailAppDemo), forControlEvents: .TouchUpInside)
-//        self.view.addSubview(button5)
-//        button5.snp_makeConstraints { (make) -> Void in
-//            make.top.equalTo(self.view).offset(320)
-//            make.left.equalTo(self.view).offset(50)
-//            make.right.equalTo(self.view).offset(-50)
-//        }
-
-//        let button3 = UIButton(type: .System)
-//        button3.setTitle("Load Friends", forState: .Normal)
-//        button3.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-//        button3.backgroundColor = view.tintColor
-//        button3.layer.cornerRadius = 3
-//        button3.addTarget(self, action: #selector(loadFriends), forControlEvents: .TouchUpInside)
-//        self.view.addSubview(button3)
-//        button3.snp_makeConstraints { (make) -> Void in
-//            make.top.equalTo(self.view).offset(220)
-//            make.left.equalTo(self.view).offset(50)
-//            make.right.equalTo(self.view).offset(-50)
-//        }
-
         
     }
     
@@ -138,21 +82,6 @@ class HomeController: UIViewController {
         self.navigationController!.setNavigationBarHidden(true, animated: false)
     }
     
-//    func loadFriends(){
-//        let l = LoadFriends()
-//        l.loadFriends()
-//    }
-
-    func openMailAppDemo() {
-        let navViewController = self.parentViewController as! UINavigationController;
-        navViewController.pushViewController(MailViewController(), animated: true)
-    }
-
-    func openSpotifyDemo() {
-        let navViewController = self.parentViewController as! UINavigationController;
-        navViewController.pushViewController(SpotifyViewController(), animated: true)
-    }
-
     func openMyPages() {
         let navViewController = self.parentViewController as! UINavigationController;
         navViewController.pushViewController(PagesController(), animated: true)

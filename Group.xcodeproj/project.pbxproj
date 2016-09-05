@@ -29,9 +29,6 @@
 		37E00FC71D15D8EF00B19492 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FC61D15D8EF00B19492 /* Page.swift */; };
 		37E00FC91D15EAA300B19492 /* FeedsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FC81D15EAA300B19492 /* FeedsController.swift */; };
 		37E00FCB1D15ED7D00B19492 /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FCA1D15ED7D00B19492 /* Feed.swift */; };
-		37E00FCF1D164E9800B19492 /* SpotifyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FCE1D164E9800B19492 /* SpotifyViewController.swift */; };
-		37E00FD71D16755700B19492 /* MailTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FD51D16755700B19492 /* MailTableCell.swift */; };
-		37E00FD81D16755700B19492 /* MailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FD61D16755700B19492 /* MailViewController.swift */; };
 		37E00FDA1D168F5D00B19492 /* more@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E00FD91D168F5D00B19492 /* more@2x.png */; };
 		37E00FE01D17805700B19492 /* PostTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FDF1D17805700B19492 /* PostTableCell.swift */; };
 		37FEFEBA1D11D33600C078AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEFEB91D11D33600C078AC /* AppDelegate.swift */; };
@@ -65,9 +62,6 @@
 		37E00FC61D15D8EF00B19492 /* Page.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		37E00FC81D15EAA300B19492 /* FeedsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedsController.swift; sourceTree = "<group>"; };
 		37E00FCA1D15ED7D00B19492 /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
-		37E00FCE1D164E9800B19492 /* SpotifyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifyViewController.swift; sourceTree = "<group>"; };
-		37E00FD51D16755700B19492 /* MailTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailTableCell.swift; sourceTree = "<group>"; };
-		37E00FD61D16755700B19492 /* MailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailViewController.swift; sourceTree = "<group>"; };
 		37E00FD91D168F5D00B19492 /* more@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "more@2x.png"; sourceTree = "<group>"; };
 		37E00FDF1D17805700B19492 /* PostTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTableCell.swift; sourceTree = "<group>"; };
 		37FEFEB61D11D33600C078AC /* Group.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Group.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,34 +119,15 @@
 		37E00FC31D15C40600B19492 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				37FEFEB91D11D33600C078AC /* AppDelegate.swift */,
+				37FEFEBB1D11D33600C078AC /* LoginController.swift */,
+				372D8DB01D125EAE008DBADA /* HomeController.swift */,
 				371416CF1D25603600080596 /* Video */,
-				37E00FD41D165B1600B19492 /* Demo */,
-				37E00FDB1D16EB7000B19492 /* Basic */,
 				37E00FDE1D16EC7500B19492 /* Contacts */,
 				37E00FDD1D16EC5F00B19492 /* Pages */,
 				37E00FDC1D16EC4A00B19492 /* Posts */,
 			);
 			name = Controllers;
-			sourceTree = "<group>";
-		};
-		37E00FD41D165B1600B19492 /* Demo */ = {
-			isa = PBXGroup;
-			children = (
-				37E00FD51D16755700B19492 /* MailTableCell.swift */,
-				37E00FD61D16755700B19492 /* MailViewController.swift */,
-				37E00FCE1D164E9800B19492 /* SpotifyViewController.swift */,
-			);
-			name = Demo;
-			sourceTree = "<group>";
-		};
-		37E00FDB1D16EB7000B19492 /* Basic */ = {
-			isa = PBXGroup;
-			children = (
-				37FEFEB91D11D33600C078AC /* AppDelegate.swift */,
-				37FEFEBB1D11D33600C078AC /* LoginController.swift */,
-				372D8DB01D125EAE008DBADA /* HomeController.swift */,
-			);
-			name = Basic;
 			sourceTree = "<group>";
 		};
 		37E00FDC1D16EC4A00B19492 /* Posts */ = {
@@ -404,12 +379,10 @@
 				372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */,
 				37E00FE01D17805700B19492 /* PostTableCell.swift in Sources */,
 				371416C11D1823F600080596 /* Room.swift in Sources */,
-				37E00FD81D16755700B19492 /* MailViewController.swift in Sources */,
 				37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */,
 				372D8DC81D13A329008DBADA /* String+FormerDemo.swift in Sources */,
 				37FEFEBC1D11D33600C078AC /* LoginController.swift in Sources */,
 				37E00FC91D15EAA300B19492 /* FeedsController.swift in Sources */,
-				37E00FCF1D164E9800B19492 /* SpotifyViewController.swift in Sources */,
 				371416C31D18561B00080596 /* FeedTableCell.swift in Sources */,
 				37E00FC51D15D79F00B19492 /* PagesController.swift in Sources */,
 				37E00FCB1D15ED7D00B19492 /* Feed.swift in Sources */,
@@ -423,7 +396,6 @@
 				372D8DC11D138C18008DBADA /* AddPostController.swift in Sources */,
 				372D8DB11D125EAE008DBADA /* HomeController.swift in Sources */,
 				372D8DBD1D1310D3008DBADA /* Post.swift in Sources */,
-				37E00FD71D16755700B19492 /* MailTableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
