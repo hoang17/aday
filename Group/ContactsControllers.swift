@@ -6,6 +6,7 @@ import UIKit
 import SnapKit
 import Contacts
 
+@available(iOS 9.0, *)
 class ContactsController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     var tableView: UITableView  =   UITableView()

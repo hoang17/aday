@@ -74,9 +74,63 @@ class HomeController: UIViewController {
             make.right.equalTo(self.view).offset(-50)
         }
         
+        let button3 = UIButton(type: .System)
+        button3.setTitle("Load Friends", forState: .Normal)
+        button3.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
+        button3.backgroundColor = view.tintColor
+        button3.layer.cornerRadius = 3
+        button3.addTarget(self, action: #selector(loadFriends), forControlEvents: .TouchUpInside)
+        self.view.addSubview(button3)
+        button3.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(self.view).offset(220)
+            make.left.equalTo(self.view).offset(50)
+            make.right.equalTo(self.view).offset(-50)
+        }
         
+        let button4 = UIButton(type: .System)
+        button4.setTitle("Add Video", forState: .Normal)
+        button4.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
+        button4.backgroundColor = view.tintColor
+        button4.layer.cornerRadius = 3
+        button4.addTarget(self, action: #selector(addVideo), forControlEvents: .TouchUpInside)
+        self.view.addSubview(button4)
+        button4.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(self.view).offset(270)
+            make.left.equalTo(self.view).offset(50)
+            make.right.equalTo(self.view).offset(-50)
+        }
+        
+        let button5 = UIButton(type: .System)
+        button5.setTitle("Play Video", forState: .Normal)
+        button5.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
+        button5.backgroundColor = view.tintColor
+        button5.layer.cornerRadius = 3
+        button5.addTarget(self, action: #selector(playVideo), forControlEvents: .TouchUpInside)
+        self.view.addSubview(button5)
+        button5.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(self.view).offset(320)
+            make.left.equalTo(self.view).offset(50)
+            make.right.equalTo(self.view).offset(-50)
+        }
+    }
+
+    func addVideo() {
+        let cameraView = CameraViewController()
+        self.presentViewController(cameraView, animated: true, completion: nil)
+    }
+
+    func playVideo() {
+        let cameraPreview = CameraPreviewController()
+        self.presentViewController(cameraPreview, animated: true, completion: nil)
     }
     
+    func loadFriends(){
+        let friendloader = LoadFriends()
+        friendloader.loadFacebookFriends { (friends) in
+            // todo
+        }
+    }
+
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         self.navigationController!.setNavigationBarHidden(true, animated: false)
@@ -94,7 +148,11 @@ class HomeController: UIViewController {
     
     func openMyContacts() {
         let navViewController = self.parentViewController as! UINavigationController;
-        navViewController.pushViewController(ContactsController(), animated: true)
+        if #available(iOS 9.0, *) {
+            navViewController.pushViewController(ContactsController(), animated: true)
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
     func openMyProfile() {

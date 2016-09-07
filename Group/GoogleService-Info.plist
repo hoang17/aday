@@ -7,21 +7,21 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>520817833954-4hj3vtsral5bq88k0g3ukvgfeno1sa22.apps.googleusercontent.com</string>
+	<string>1057942681284-krncfbvtlktit3grmprdgj752sfb62ep.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.520817833954-4hj3vtsral5bq88k0g3ukvgfeno1sa22</string>
+	<string>com.googleusercontent.apps.1057942681284-krncfbvtlktit3grmprdgj752sfb62ep</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAGx-zyr967ILOcpVPTLym69WXBK_Rbr60</string>
+	<string>AIzaSyBkZfld62NjGoRc4fpYWm9P2i0g2cKTLSQ</string>
 	<key>GCM_SENDER_ID</key>
-	<string>520817833954</string>
+	<string>1057942681284</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.ping.Group</string>
+	<string>com.ping.aday</string>
 	<key>PROJECT_ID</key>
-	<string>ping-115d2</string>
+	<string>aday-b6ecc</string>
 	<key>STORAGE_BUCKET</key>
-	<string>ping-115d2.appspot.com</string>
+	<string>aday-b6ecc.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<true/>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -33,8 +33,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:520817833954:ios:72c924f973a7e7e7</string>
+	<string>1:1057942681284:ios:2513c26aa9d71161</string>
 	<key>DATABASE_URL</key>
-	<string>https://ping-115d2.firebaseio.com</string>
+	<string>https://aday-b6ecc.firebaseio.com</string>
 </dict>
 </plist>

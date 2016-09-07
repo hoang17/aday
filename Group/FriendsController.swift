@@ -94,30 +94,31 @@ class FriendsController: UITableViewController {
         // Query room id
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         let friend = friends[indexPath.row]
-        let ref = FIRDatabase.database().reference()
-        ref.child("user-friends/\(userID)/\(friend.uid)").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            var key : String
-            if ((snapshot.value?["rid"] as? String) == nil){
-                key = ref.child("rooms").childByAutoId().key
-                let room = ["id":key, "name": friend.name]
-                
-                let update = ["/rooms/\(key)": room,
-                    "/user-rooms/\(userID)/\(key)": room,
-                    "/user-friends/\(userID)/\(friend.uid)/rid": key,
-                    "/user-friends/\(friend.uid)/\(userID)/rid": key]
-                ref.updateChildValues(update as [NSObject : AnyObject])
-            }
-            else{
-                key = snapshot.value!["rid"] as! String
-            }
-            
-            // Open room
-            let navViewController = self.parentViewController as! UINavigationController;
-            let room = Room(id:key, name:friend.name)
-            let r = RoomController()
-            r.room = room
-            navViewController.pushViewController(r, animated: true)
-        })
+
+//        let ref = FIRDatabase.database().reference()
+//        ref.child("user-friends/\(userID)/\(friend.uid)").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+//            var key : String
+//            if ((snapshot.value?["rid"] as? String) == nil){
+//                key = ref.child("rooms").childByAutoId().key
+//                let room = ["id":key, "name": friend.name]
+//                
+//                let update = ["/rooms/\(key)": room,
+//                    "/user-rooms/\(userID)/\(key)": room,
+//                    "/user-friends/\(userID)/\(friend.uid)/rid": key,
+//                    "/user-friends/\(friend.uid)/\(userID)/rid": key]
+//                ref.updateChildValues(update as [NSObject : AnyObject])
+//            }
+//            else{
+//                key = snapshot.value!["rid"] as! String
+//            }
+        
+//            // Open Video
+//            let navViewController = self.parentViewController as! UINavigationController;
+//            let room = Room(id:key, name:friend.name)
+//            let r = RoomController()
+//            r.room = room
+//            navViewController.pushViewController(r, animated: true)
+//        })
     }
     
     override func prefersStatusBarHidden() -> Bool {
