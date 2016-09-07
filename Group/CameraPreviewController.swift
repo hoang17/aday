@@ -16,10 +16,10 @@ class CameraPreviewController: AVPlayerViewController {
         let outputPath = NSTemporaryDirectory() + "output.mov"
         let outputFileURL = NSURL(fileURLWithPath: outputPath)
         let asset = AVAsset(URL: outputFileURL)
+//        try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, withOptions: [])
         self.showsPlaybackControls = false
         self.player = AVPlayer(playerItem: AVPlayerItem(asset:asset))
         self.player?.play()
-        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CameraPreviewController.playerDidFinishPlaying(_:)),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player!.currentItem)

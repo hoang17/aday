@@ -15,7 +15,8 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var cameraButton:UIButton!
     
     let captureSession = AVCaptureSession()
-    var currentDevice:AVCaptureDevice?
+    var videoDevice:AVCaptureDevice?
+    var audioDevice:AVCaptureDevice?
     var videoFileOutput:AVCaptureMovieFileOutput?
     var cameraPreviewLayer:AVCaptureVideoPreviewLayer?
     
@@ -24,33 +25,46 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Preset the session for taking photo in full resolution
-        captureSession.sessionPreset = AVCaptureSessionPresetHigh
-        
-        // Get the available devices that is capable of taking video
-        let devices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) as! [AVCaptureDevice]
-        
-        // Get the back-facing camera for taking videos
-        for device in devices {
-            if device.position == AVCaptureDevicePosition.Front {
-                currentDevice = device
-            }
-        }
-        
-        let captureDeviceInput:AVCaptureDeviceInput
+        let audioSession = AVAudioSession.sharedInstance()
         do {
-            captureDeviceInput = try AVCaptureDeviceInput(device: currentDevice)
-        } catch {
-            print(error)
-            return
+            try audioSession.setCategory(AVAudioSessionCategoryRecord)
+        }
+        catch {
         }
         
-        // Configure the session with the output for capturing video
-        videoFileOutput = AVCaptureMovieFileOutput()
+        do{
+            captureSession.beginConfiguration()
+            
+            // Preset the session for taking photo in full resolution
+            captureSession.sessionPreset = AVCaptureSessionPresetHigh
+            
+            audioDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
+            let audioInput: AVCaptureDeviceInput = try AVCaptureDeviceInput(device: audioDevice)
+            captureSession.addInput(audioInput)
+            
+            // Get the available devices that is capable of taking video
+            let devices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) as! [AVCaptureDevice]
+            for device in devices {
+                if device.position == AVCaptureDevicePosition.Front {
+                    videoDevice = device
+                }
+            }
+            
+            let videoInput:AVCaptureDeviceInput
+            videoInput = try AVCaptureDeviceInput(device: videoDevice)
+            captureSession.addInput(videoInput)
+            
+            // Configure the session with the output for capturing video
+            videoFileOutput = AVCaptureMovieFileOutput()
+            captureSession.addOutput(videoFileOutput)
+            
+            captureSession.commitConfiguration()
+        }
+        catch {
+            print(error)
+        }
         
-        // Configure the session with the input and the output devices
-        captureSession.addInput(captureDeviceInput)
-        captureSession.addOutput(videoFileOutput)
+        
         
         // Provide a camera preview
         cameraPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
@@ -91,7 +105,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             return
         }
         
-        print("video captured")
+        print("Video Captured")
         
         let cameraPreview = CameraPreviewController()
         self.presentViewController(cameraPreview, animated: true, completion: nil)
