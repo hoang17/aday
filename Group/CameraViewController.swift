@@ -104,9 +104,9 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         self.view.addSubview(flipButton)
         flipButton.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(self.view).offset(15)
-            make.right.equalTo(self.view).offset(-20)
-            make.width.equalTo(40)
-            make.height.equalTo(40)
+            make.right.equalTo(self.view).offset(-18)
+            make.width.equalTo(26)
+            make.height.equalTo(26)
         }
         
         let backIcon = UIImage(named: "ic_close") as UIImage?
@@ -118,9 +118,9 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         self.view.addSubview(backButton)
         backButton.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(self.view).offset(15)
-            make.left.equalTo(self.view).offset(20)
-            make.width.equalTo(40)
-            make.height.equalTo(40)
+            make.left.equalTo(self.view).offset(18)
+            make.width.equalTo(26)
+            make.height.equalTo(26)
         }
         
         // Bring the record button to front
