@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     self.logUser()
                     navigationController.pushViewController(LoginController(), animated: false)
                     navigationController.pushViewController(HomeController(), animated: false)
-                    navigationController.pushViewController(FriendsController(), animated: false)
+//                    navigationController.pushViewController(FriendsController(), animated: false)
                 }
                 else{
                     navigationController.pushViewController(LoginController(), animated: false)

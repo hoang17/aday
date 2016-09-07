@@ -10,6 +10,7 @@
 		26259060293337CDF69D9ECD /* Pods_Group.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 910E826AC7A98A9CD441C878 /* Pods_Group.framework */; };
 		371068DA1D7DE0A000BDFC42 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068D91D7DE0A000BDFC42 /* CameraViewController.swift */; };
 		371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */; };
+		371068E01D80453200BDFC42 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DF1D80453200BDFC42 /* RecordButton.swift */; };
 		371416C11D1823F600080596 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371416C01D1823F600080596 /* Room.swift */; };
 		371416C31D18561B00080596 /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371416C21D18561B00080596 /* FeedTableCell.swift */; };
 		372D8DB11D125EAE008DBADA /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB01D125EAE008DBADA /* HomeController.swift */; };
@@ -41,6 +42,7 @@
 		3708CE3C9772F2D6563EAD6D /* Pods-Group.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Group.release.xcconfig"; path = "Pods/Target Support Files/Pods-Group/Pods-Group.release.xcconfig"; sourceTree = "<group>"; };
 		371068D91D7DE0A000BDFC42 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPreviewController.swift; sourceTree = "<group>"; };
+		371068DF1D80453200BDFC42 /* RecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
 		371416C01D1823F600080596 /* Room.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
 		371416C21D18561B00080596 /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		372D8DB01D125EAE008DBADA /* HomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
@@ -121,19 +123,20 @@
 				371416CF1D25603600080596 /* Video */,
 				37E00FDE1D16EC7500B19492 /* Contacts */,
 				37E00FDD1D16EC5F00B19492 /* Pages */,
-				37E00FDC1D16EC4A00B19492 /* Friends */,
+				37E00FDC1D16EC4A00B19492 /* Camera */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
 		};
-		37E00FDC1D16EC4A00B19492 /* Friends */ = {
+		37E00FDC1D16EC4A00B19492 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
 				372D8DB41D12BF2B008DBADA /* FriendsController.swift */,
 				371068D91D7DE0A000BDFC42 /* CameraViewController.swift */,
 				371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */,
+				371068DF1D80453200BDFC42 /* RecordButton.swift */,
 			);
-			name = Friends;
+			name = Camera;
 			sourceTree = "<group>";
 		};
 		37E00FDD1D16EC5F00B19492 /* Pages */ = {
@@ -387,6 +390,7 @@
 				372D8DB31D12B884008DBADA /* ContactsControllers.swift in Sources */,
 				372D8DC91D13A329008DBADA /* UIColor+FormerDemo.swift in Sources */,
 				372D8DB11D125EAE008DBADA /* HomeController.swift in Sources */,
+				371068E01D80453200BDFC42 /* RecordButton.swift in Sources */,
 				372D8DBD1D1310D3008DBADA /* Post.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

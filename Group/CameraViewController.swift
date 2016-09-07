@@ -12,11 +12,17 @@ import AVKit
 
 class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
     
-    var cameraButton:UIButton!
+    var recordButton:RecordButton!
+    var progressTimer : NSTimer!
+    var progress : CGFloat! = 0
+    
+    // Max duration of the recordButton
+    let maxDuration: CGFloat! = 10
     
     let captureSession = AVCaptureSession()
     var videoDevice:AVCaptureDevice?
     var audioDevice:AVCaptureDevice?
+    var videoInput: AVCaptureDeviceInput?
     var videoFileOutput:AVCaptureMovieFileOutput?
     var cameraPreviewLayer:AVCaptureVideoPreviewLayer?
     
@@ -50,7 +56,6 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 }
             }
             
-            let videoInput:AVCaptureDeviceInput
             videoInput = try AVCaptureDeviceInput(device: videoDevice)
             captureSession.addInput(videoInput)
             
@@ -65,31 +70,136 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         }
         
         
-        
         // Provide a camera preview
         cameraPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         view.layer.addSublayer(cameraPreviewLayer!)
         cameraPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
         cameraPreviewLayer?.frame = view.layer.frame
         
-        cameraButton = UIButton(type: .System)
-        cameraButton.backgroundColor = UIColor.redColor()
-        cameraButton.layer.cornerRadius = 40
-        cameraButton.addTarget(self, action: #selector(capture), forControlEvents: .TouchUpInside)
-        self.view.addSubview(cameraButton)
-        cameraButton.snp_makeConstraints { (make) -> Void in
-            make.bottom.equalTo(self.view).offset(-50)
+        
+        // set up recorder button
+        recordButton = RecordButton(frame: CGRectMake(0,0,80,80))
+        recordButton.center = self.view.center
+        recordButton.progressColor = .redColor()
+        recordButton.buttonColor = UIColor(white: 1, alpha: 0.5)
+        recordButton.closeWhenFinished = false
+        recordButton.addTarget(self, action: #selector(record), forControlEvents: .TouchDown)
+        recordButton.addTarget(self, action: #selector(stop), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(recordButton)
+        self.view.addSubview(recordButton)
+        recordButton.snp_makeConstraints { (make) -> Void in
+            make.bottom.equalTo(self.view).offset(-30)
             make.centerX.equalTo(self.view)
             make.width.equalTo(80)
             make.height.equalTo(80)
         }
         
-        // Bring the camera button to front
-        view.bringSubviewToFront(cameraButton)
+        
+        let loopIcon = UIImage(named: "ic_loop") as UIImage?
+        let flipButton = UIButton(type: .System)
+        flipButton.tintColor = UIColor(white: 1, alpha: 0.5)
+        flipButton.backgroundColor = UIColor.clearColor()
+        flipButton.setImage(loopIcon, forState: .Normal)
+        flipButton.addTarget(self, action: #selector(flipCamera), forControlEvents: .TouchUpInside)
+        self.view.addSubview(flipButton)
+        flipButton.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(self.view).offset(15)
+            make.right.equalTo(self.view).offset(-20)
+            make.width.equalTo(40)
+            make.height.equalTo(40)
+        }
+        
+        let backIcon = UIImage(named: "ic_close") as UIImage?
+        let backButton = UIButton(type: .System)
+        backButton.tintColor = UIColor(white: 1, alpha: 0.5)
+        backButton.backgroundColor = UIColor.clearColor()
+        backButton.setImage(backIcon, forState: .Normal)
+        backButton.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
+        self.view.addSubview(backButton)
+        backButton.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(self.view).offset(15)
+            make.left.equalTo(self.view).offset(20)
+            make.width.equalTo(40)
+            make.height.equalTo(40)
+        }
+        
+        // Bring the record button to front
+        view.bringSubviewToFront(recordButton)
+        view.bringSubviewToFront(flipButton)
+        view.bringSubviewToFront(backButton)
+        
         captureSession.startRunning()
         
     }
     
+    func back(){
+        self.dismissViewControllerAnimated(true) {
+            //
+        }        
+    }
+    
+    func flipCamera(){
+        
+        captureSession.stopRunning()
+        
+        do {
+            
+            captureSession.beginConfiguration()
+            
+            for input in captureSession.inputs {
+                captureSession.removeInput(input as! AVCaptureInput)
+            }
+            
+            let position = (videoInput?.device.position == AVCaptureDevicePosition.Front) ? AVCaptureDevicePosition.Back : AVCaptureDevicePosition.Front
+            
+            for device in AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) {
+                
+                if let device = device as? AVCaptureDevice where device.position == position {
+                    
+                    videoInput = try AVCaptureDeviceInput(device: device)
+                    captureSession.addInput(videoInput)
+                    
+                }
+            }
+            
+            captureSession.commitConfiguration()
+            
+            
+        } catch {
+            
+        }
+        
+        captureSession.startRunning()
+        
+    }
+    
+    func record() {
+        if !isRecording {
+            isRecording = true
+            let outputPath = NSTemporaryDirectory() + "output.mov"
+            let outputFileURL = NSURL(fileURLWithPath: outputPath)
+            videoFileOutput?.startRecordingToOutputFileURL(outputFileURL, recordingDelegate: self)
+        }
+        self.progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
+    }
+    
+    func updateProgress() {
+        progress = progress + (CGFloat(0.05) / maxDuration)
+        recordButton.setProgress(progress)
+        if progress >= 1 {
+            stop()
+            recordButton.buttonState = .Idle
+        }
+    }
+    
+    func stop() {
+        if (isRecording){
+            isRecording = false
+            videoFileOutput?.stopRecording()
+            self.progressTimer.invalidate()
+            self.progress = 0
+        }
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -109,49 +219,6 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         
         let cameraPreview = CameraPreviewController()
         self.presentViewController(cameraPreview, animated: true, completion: nil)
-    }
-    
-    // MARK: - Segue methods
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "playVideo" {
-            let videoPlayerViewController = segue.destinationViewController as! AVPlayerViewController
-            let videoFileURL = sender as! NSURL
-            videoPlayerViewController.player = AVPlayer(URL: videoFileURL)
-        }
-    }
-    
-    
-    // MARK: - Action methods
-    
-//    @IBAction func unwindToCamera(segue:UIStoryboardSegue) {
-//        
-//    }
-    
-    func capture() {
-        if !isRecording {
-            isRecording = true
-            
-            UIView.animateWithDuration(0.5, delay: 0.0, options: [.AllowUserInteraction], animations: { () -> Void in
-                self.cameraButton.transform = CGAffineTransformMakeScale(0.8, 0.8)
-                }, completion: nil)
-            
-            let outputPath = NSTemporaryDirectory() + "output.mov"
-            let outputFileURL = NSURL(fileURLWithPath: outputPath)
-            videoFileOutput?.startRecordingToOutputFileURL(outputFileURL, recordingDelegate: self)
-            
-        } else {
-            
-            isRecording = false
-            
-            UIView.animateWithDuration(0.2, delay: 0.0, options: [], animations: { () -> Void in
-                self.cameraButton.transform = CGAffineTransformMakeScale(1.0, 1.0)
-                }, completion: nil)
-            //            cameraButton.layer.removeAllAnimations()
-            videoFileOutput?.stopRecording()
-            
-            
-        }
     }
     
     override func prefersStatusBarHidden() -> Bool {
