@@ -91,7 +91,10 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             return
         }
         
-//        performSegueWithIdentifier("playVideo", sender: outputFileURL)
+        print("video captured")
+        
+        let cameraPreview = CameraPreviewController()
+        self.presentViewController(cameraPreview, animated: true, completion: nil)
     }
     
     // MARK: - Segue methods
@@ -122,7 +125,9 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             let outputPath = NSTemporaryDirectory() + "output.mov"
             let outputFileURL = NSURL(fileURLWithPath: outputPath)
             videoFileOutput?.startRecordingToOutputFileURL(outputFileURL, recordingDelegate: self)
+            
         } else {
+            
             isRecording = false
             
             UIView.animateWithDuration(0.2, delay: 0.0, options: [], animations: { () -> Void in
@@ -131,8 +136,6 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             //            cameraButton.layer.removeAllAnimations()
             videoFileOutput?.stopRecording()
             
-            let cameraPreview = CameraPreviewController()
-            self.presentViewController(cameraPreview, animated: true, completion: nil)
             
         }
     }
