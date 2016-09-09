@@ -14,6 +14,7 @@ class CameraPreviewController: AVPlayerViewController {
 
     let textField = UITextField()
     var tap: UITapGestureRecognizer?
+    var textLocation: CGPoint = CGPoint(x: 0, y: 0)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,22 +82,26 @@ class CameraPreviewController: AVPlayerViewController {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
 
         if textField.hidden {
-            textField.hidden = false
-            self.textField.becomeFirstResponder()
+            if let touch = touches.first {
+                textLocation = touch.locationInView(self.view)
+                textField.center.y = textLocation.y
+                textField.hidden = false
+                textField.becomeFirstResponder()
+            }
             
         } else {
             textField.resignFirstResponder()
+            
+            if (textField.text == ""){
+                textField.hidden = true
+            } else {
+                UIView.animateWithDuration(0.2, animations: {
+                    self.textField.center.y = self.textLocation.y
+                    }, completion: { (Bool) -> Void in
+                        self.textField.userInteractionEnabled = true
+                })
+            }
         }
-        
-        if let touch = touches.first {
-            let location = touch.locationInView(self.view)
-            UIView.animateWithDuration(0.2, animations: {
-                self.textField.center.y = location.y
-                }, completion: { (Bool) -> Void in
-                    self.textField.userInteractionEnabled = true
-            })
-        }
-        
     }
     
     
