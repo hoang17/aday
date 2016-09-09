@@ -13,13 +13,15 @@ import FirebaseStorage
 import FirebaseAuth
 import DigitsKit
 
-class CameraPlaybackController: AVPlayerViewController, UITextFieldDelegate {
+class CameraPlaybackController: UIViewController, UITextFieldDelegate {
 
     let textField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
-    var outputFileURL: NSURL?
     var clips = [Clip]()
     var playerIndex = 0
+    var backButton: UIButton?
+    var player: AVPlayer?
+    var playerLayer: AVPlayerLayer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,29 +55,42 @@ class CameraPlaybackController: AVPlayerViewController, UITextFieldDelegate {
         
         /**** Done download clips ****/
         
-        let outputPath = NSTemporaryDirectory() + clips.first!.fname
-        outputFileURL = NSURL(fileURLWithPath: outputPath)
+        // Play current clip
+        let outputPath = NSTemporaryDirectory() + clips[playerIndex].fname
+        let fileUrl = NSURL(fileURLWithPath: outputPath)
         
-        let asset = AVAsset(URL: outputFileURL!)
-        self.showsPlaybackControls = false
-        self.player = AVPlayer(playerItem: AVPlayerItem(asset:asset))
-        self.player!.actionAtItemEnd = .None
+        player = AVPlayer(URL: fileUrl)
+        playerLayer = AVPlayerLayer(player: player)
+        playerLayer!.frame = self.view!.bounds
+        view.layer.addSublayer(playerLayer!)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player!.currentItem)
-        self.player?.play()
+        player!.play()
         
+        // Cache next clip
+        if (clips.count > playerIndex + 1) {
+            let outputPath = NSTemporaryDirectory() + clips[playerIndex+1].fname
+            let fileUrl = NSURL(fileURLWithPath: outputPath)
+            player = AVPlayer(URL: fileUrl)
+            playerLayer = AVPlayerLayer(player: player)
+            playerLayer!.frame = self.view!.bounds
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                             object: player!.currentItem)
+        }
+
         
         let backIcon = UIImage(named: "ic_close") as UIImage?
-        let backButton = UIButton(type: .System)
-        backButton.tintColor = UIColor(white: 1, alpha: 0.5)
-        backButton.backgroundColor = UIColor.clearColor()
-        backButton.setImage(backIcon, forState: .Normal)
-        backButton.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
-        self.view.addSubview(backButton)
-        self.view.bringSubviewToFront(backButton)
-        backButton.snp_makeConstraints { (make) -> Void in
+        backButton = UIButton(type: .System)
+        backButton!.tintColor = UIColor(white: 1, alpha: 0.5)
+        backButton!.backgroundColor = UIColor.clearColor()
+        backButton!.setImage(backIcon, forState: .Normal)
+        backButton!.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
+        self.view.addSubview(backButton!)
+        self.view.bringSubviewToFront(backButton!)
+        backButton!.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(self.view).offset(15)
             make.left.equalTo(self.view).offset(18)
             make.width.equalTo(26)
@@ -103,18 +118,22 @@ class CameraPlaybackController: AVPlayerViewController, UITextFieldDelegate {
 
         if (clips.count > playerIndex + 1) {
             playerIndex += 1
-            let outputPath = NSTemporaryDirectory() + clips[playerIndex].fname
-            let fileUrl = NSURL(fileURLWithPath: outputPath)
-
-            let player2 = AVPlayer(URL: fileUrl)
-            let playerLayer = AVPlayerLayer(player: player2)
-            playerLayer.frame = self.view!.bounds
-            view.layer.addSublayer(playerLayer)
+            view.layer.addSublayer(playerLayer!)
+            view.bringSubviewToFront(backButton!)
+            player!.play()
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                             object: player2.currentItem)
-            player2.play()
+            // Cache next clip
+            if (clips.count > playerIndex + 1) {
+                let outputPath = NSTemporaryDirectory() + clips[playerIndex+1].fname
+                let fileUrl = NSURL(fileURLWithPath: outputPath)
+                player = AVPlayer(URL: fileUrl)
+                playerLayer = AVPlayerLayer(player: player)
+                playerLayer!.frame = self.view!.bounds
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+                                                                 name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                                 object: player!.currentItem)
+            }
+            
             
         } else {
             self.dismissViewControllerAnimated(true, completion: nil)
