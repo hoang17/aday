@@ -15,4 +15,5 @@ target 'Group' do
     pod 'Former'
     pod 'YYText'
     pod 'MGSwipeTableCell'
+    pod 'jot'
 end
