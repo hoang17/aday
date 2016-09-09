@@ -25,6 +25,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var videoInput: AVCaptureDeviceInput?
     var videoFileOutput:AVCaptureMovieFileOutput?
     var cameraPreviewLayer:AVCaptureVideoPreviewLayer?
+    let outputPath = NSTemporaryDirectory() + "output.mov"
     
     var isRecording = false
     
@@ -132,6 +133,56 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         
     }
     
+    func convertVideoWithMediumQuality(inputURL : NSURL){
+        
+//        let outPath = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("mergeVideo\(arc4random()%1000)d").URLByAppendingPathExtension("mp4").absoluteString
+        
+//        let outPath = NSTemporaryDirectory() + "output.mp4"
+        
+        let outPath = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("output").URLByAppendingPathExtension("mp4").absoluteString
+        
+        let filePath = NSTemporaryDirectory() + "output.mp4";
+        
+        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+            do {
+                try NSFileManager.defaultManager().removeItemAtPath(filePath)
+            } catch {
+                print(error)
+            }
+        }
+        
+        let savePathUrl =  NSURL(string: outPath)!
+        let asset = AVURLAsset(URL: inputURL, options: nil)
+        
+        let exportSession: AVAssetExportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetMediumQuality)!
+        exportSession.outputFileType = AVFileTypeQuickTimeMovie
+        exportSession.outputURL = savePathUrl
+        exportSession.exportAsynchronouslyWithCompletionHandler {            
+            switch exportSession.status {
+            case AVAssetExportSessionStatus.Completed:
+                dispatch_async(dispatch_get_main_queue(), {
+                    do {
+                        let videoData = try NSData(contentsOfURL: savePathUrl, options: NSDataReadingOptions())
+                        print("video length - \(videoData.length / (1024 * 1024)) MB")
+                    } catch {
+                        print(error)
+                    }
+                    
+                })
+            case  AVAssetExportSessionStatus.Failed:
+                //                self.hideActivityIndicator(self.view)
+                print("failed \(exportSession.error)")
+            case AVAssetExportSessionStatus.Cancelled:
+                //                self.hideActivityIndicator(self.view)
+                print("cancelled \(exportSession.error)")
+            default:
+                //                self.hideActivityIndicator(self.view)
+                print("complete")
+            }
+        }
+    }
+    
+    
     func back(){
         self.dismissViewControllerAnimated(true) {
             //
@@ -176,8 +227,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     func record() {
         if !isRecording {
             isRecording = true
-            let outputPath = NSTemporaryDirectory() + "output.mov"
-            let outputFileURL = NSURL(fileURLWithPath: outputPath)
+            let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
             videoFileOutput?.startRecordingToOutputFileURL(outputFileURL, recordingDelegate: self)
         }
         self.progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
@@ -219,6 +269,9 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         
         let cameraPreview = CameraPreviewController()
         self.presentViewController(cameraPreview, animated: true, completion: nil)
+        
+        let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
+        self.convertVideoWithMediumQuality(outputFileURL)
     }
     
     override func prefersStatusBarHidden() -> Bool {

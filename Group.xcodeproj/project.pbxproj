@@ -96,13 +96,6 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		371416CF1D25603600080596 /* Video */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Video;
-			sourceTree = "<group>";
-		};
 		372D8DC51D13A305008DBADA /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -117,10 +110,8 @@
 		37E00FC31D15C40600B19492 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				37FEFEB91D11D33600C078AC /* AppDelegate.swift */,
 				37FEFEBB1D11D33600C078AC /* LoginController.swift */,
 				372D8DB01D125EAE008DBADA /* HomeController.swift */,
-				371416CF1D25603600080596 /* Video */,
 				37E00FDE1D16EC7500B19492 /* Contacts */,
 				37E00FDD1D16EC5F00B19492 /* Pages */,
 				37E00FDC1D16EC4A00B19492 /* Camera */,
@@ -180,6 +171,7 @@
 		37FEFEB81D11D33600C078AC /* Group */ = {
 			isa = PBXGroup;
 			children = (
+				37FEFEB91D11D33600C078AC /* AppDelegate.swift */,
 				372D8DC51D13A305008DBADA /* Helpers */,
 				37FEFED51D12397000C078AC /* Layouts */,
 				37FEFED31D1238DF00C078AC /* Supporting Files */,

@@ -8,18 +8,22 @@
 
 import AVKit
 import AVFoundation
-//import SnapKit
+import SnapKit
+import FirebaseStorage
 
 class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
 
     let textField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
+    let outputPath = NSTemporaryDirectory() + "output.mp4"
+    var outputFileURL:NSURL?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let outputPath = NSTemporaryDirectory() + "output.mov"
-        let outputFileURL = NSURL(fileURLWithPath: outputPath)
-        let asset = AVAsset(URL: outputFileURL)
+
+        outputFileURL = NSURL(fileURLWithPath: outputPath)
+        
+        let asset = AVAsset(URL: outputFileURL!)
         self.showsPlaybackControls = false
         self.player = AVPlayer(playerItem: AVPlayerItem(asset:asset))
         self.player!.actionAtItemEnd = .None
@@ -44,6 +48,22 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
             make.height.equalTo(26)
         }
         
+        let nextIcon = UIImage(named: "ic_blue_arrow") as UIImage?
+        let doneButton = UIButton(type: .System)
+        doneButton.tintColor = UIColor(white: 1, alpha: 1)
+        doneButton.backgroundColor = UIColor.clearColor()
+        doneButton.setImage(nextIcon, forState: .Normal)
+        doneButton.addTarget(self, action: #selector(upload), forControlEvents: .TouchUpInside)
+        self.view.addSubview(doneButton)
+        self.view.bringSubviewToFront(doneButton)
+        doneButton.snp_makeConstraints { (make) -> Void in
+            make.bottom.equalTo(self.view).offset(-20)
+            make.right.equalTo(self.view).offset(-20)
+            make.width.equalTo(36)
+            make.height.equalTo(36)
+        }
+        
+        
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         textField.textColor = UIColor.whiteColor()
         textField.font = UIFont.systemFontOfSize(17.0)
@@ -54,6 +74,8 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         textField.width = UIScreen.mainScreen().bounds.width
         textField.delegate = self
         textField.returnKeyType = UIReturnKeyType.Done
+        textField.userInteractionEnabled = true
+        
         view.addSubview(textField);
         view.bringSubviewToFront(textField)
         
@@ -62,7 +84,68 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         let pan = UIPanGestureRecognizer(target:self, action:#selector(panGesture))
         textField.addGestureRecognizer(pan)
         
-        textField.userInteractionEnabled = true
+    }
+        
+    /*** UPLOAD FILE ***/
+    func upload(){
+        
+        let storage = FIRStorage.storage()
+        let storageRef = storage.referenceForURL("gs://aday-b6ecc.appspot.com")
+        
+        
+        let riversRef = storageRef.child("clips/output.mp4")
+        
+        let metadata = FIRStorageMetadata()
+        metadata.contentType = "video/mp4"
+        
+        let uploadTask = riversRef.putFile(outputFileURL!, metadata: metadata) { metadata, error in
+            if (error != nil) {
+                // Uh-oh, an error occurred!
+            } else {
+                // Metadata contains file metadata such as size, content-type, and download URL.
+                print(metadata!.downloadURL())
+                self.back()
+            }
+        }
+        
+        uploadTask.observeStatus(.Resume) { snapshot in
+            // Upload resumed, also fires when the upload starts
+        }
+        
+        uploadTask.observeStatus(.Progress) { snapshot in
+            // Upload reported progress
+            if let progress = snapshot.progress {
+                let percentComplete = 100.0 * Double(progress.completedUnitCount) / Double(progress.totalUnitCount)
+            }
+        }
+        
+        uploadTask.observeStatus(.Success) { snapshot in
+            // Upload completed successfully
+        }
+        
+        // Errors only occur in the "Failure" case
+        uploadTask.observeStatus(.Failure) { snapshot in
+            guard let storageError = snapshot.error else { return }
+            guard let errorCode = FIRStorageErrorCode(rawValue: storageError.code) else { return }
+            switch errorCode {
+            case .ObjectNotFound:
+                // File doesn't exist
+                break
+            case .Unauthorized:
+                // User doesn't have permission to access file
+                break
+            case .Cancelled:
+                // User canceled the upload
+                break
+            case .Unknown:
+                // Unknown error occurred, inspect the server response
+                break
+            default:
+                break
+            }
+        }
+        
+        /*** DONE UPLOAD ***/
     }
     
     // Limit text length to textfield width
