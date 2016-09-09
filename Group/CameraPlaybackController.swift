@@ -164,6 +164,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     }
     
     func playNextClip(){
+        
+        playerIndex += 1
+        
         textField.text = clips[playerIndex].txt
         textField.center.y = clips[playerIndex].y
         textField.hidden = textField.text == ""
@@ -174,7 +177,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         view.layer.addSublayer(playerLayer!)
         view.bringSubviewToFront(textField)
         player!.play()
-        playerIndex += 1
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player!.currentItem)
