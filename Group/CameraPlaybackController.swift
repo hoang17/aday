@@ -22,6 +22,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var backButton: UIButton?
     var player: AVPlayer?
     var playerLayer: AVPlayerLayer?
+    var nextPlayer: AVPlayer?
+    var nextPlayerLayer: AVPlayerLayer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,12 +75,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         if (clips.count > playerIndex + 1) {
             let outputPath = NSTemporaryDirectory() + clips[playerIndex+1].fname
             let fileUrl = NSURL(fileURLWithPath: outputPath)
-            player = AVPlayer(URL: fileUrl)
-            playerLayer = AVPlayerLayer(player: player)
-            playerLayer!.frame = self.view!.bounds
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                             object: player!.currentItem)
+            nextPlayer = AVPlayer(URL: fileUrl)
+            nextPlayerLayer = AVPlayerLayer(player: nextPlayer)
+            nextPlayerLayer!.frame = self.view!.bounds
         }
 
         
@@ -110,35 +109,52 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
 //        view.addSubview(textField);
 //        view.bringSubviewToFront(textField)
         
+        let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
+        view.addGestureRecognizer(tap)
+
         
     }
-
-    // Auto rewind player
-    func playerDidFinishPlaying(notification: NSNotification) {
-
+    
+    func tapGesture(){
+        player?.pause()
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                            object:player!.currentItem)
         if (clips.count > playerIndex + 1) {
-            playerIndex += 1
-            view.layer.addSublayer(playerLayer!)
-            view.bringSubviewToFront(backButton!)
-            player!.play()
-            
-            // Cache next clip
-            if (clips.count > playerIndex + 1) {
-                let outputPath = NSTemporaryDirectory() + clips[playerIndex+1].fname
-                let fileUrl = NSURL(fileURLWithPath: outputPath)
-                player = AVPlayer(URL: fileUrl)
-                playerLayer = AVPlayerLayer(player: player)
-                playerLayer!.frame = self.view!.bounds
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-                                                                 name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                                 object: player!.currentItem)
-            }
-            
-            
+            playNextClip()
         } else {
             self.dismissViewControllerAnimated(true, completion: nil)
         }
+    }
+    
+    func playNextClip(){
+        player = nextPlayer
+        playerLayer = nextPlayerLayer
         
+        view.layer.addSublayer(playerLayer!)
+        player!.play()
+        view.bringSubviewToFront(backButton!)
+        playerIndex += 1
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                         object: player!.currentItem)
+        
+        // Cache next clip
+        if (clips.count > playerIndex + 1) {
+            let outputPath = NSTemporaryDirectory() + clips[playerIndex+1].fname
+            let fileUrl = NSURL(fileURLWithPath: outputPath)
+            nextPlayer = AVPlayer(URL: fileUrl)
+            nextPlayerLayer = AVPlayerLayer(player: nextPlayer)
+            nextPlayerLayer!.frame = self.view!.bounds
+        }
+    }
+
+    func playerDidFinishPlaying(notification: NSNotification) {
+        if (clips.count > playerIndex + 1) {
+            playNextClip()
+        } else {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
     }
     
     func back(){
