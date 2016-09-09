@@ -9,6 +9,7 @@
 import AVKit
 import AVFoundation
 import SnapKit
+import FirebaseDatabase
 import FirebaseStorage
 import FirebaseAuth
 import DigitsKit
@@ -110,6 +111,17 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
                 print(error)
             } else {
                 print("File uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
+                
+                // Save clip to db
+                let ref = FIRDatabase.database().reference().child("clips")
+                let id = ref.childByAutoId().key
+                let uid = FIRAuth.auth()?.currentUser?.uid
+                let fname = uploadFile
+                let clip = Clip(id: id, uid: uid!, fname: fname)
+                ref.child(id).setValue(clip.toAnyObject())
+                
+                print("Save clip to db \(id)")
+                
                 self.back()
             }
         }
