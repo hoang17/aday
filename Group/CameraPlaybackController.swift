@@ -98,31 +98,40 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(swipeDownGesture))
         swipeDown.direction = UISwipeGestureRecognizerDirection.Down
         view.addGestureRecognizer(swipeDown)
-        
-//        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(swipeRightGesture))
-//        swipeRight.direction = UISwipeGestureRecognizerDirection.Right
-//        view.addGestureRecognizer(swipeRight)
-        
     }
 
+    func tapGesture(sender:UITapGestureRecognizer){
+        
+        player?.pause()
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                            object:player!.currentItem)
+        
+        let location = sender.locationInView(self.view)
+        
+        if (location.x > 0.3*UIScreen.mainScreen().bounds.width){
+            if (clips.count > playerIndex + 1) {
+                playNextClip()
+            } else {
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
+        } else {
+            if (playerIndex > 0) {
+                playPrevClip()
+            } else {
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
+        }
+        
+        
+    }
+    
     func swipeDownGesture(){
         player?.pause()
         NSNotificationCenter.defaultCenter().removeObserver(self,
                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
                                                             object:player!.currentItem)
         self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func tapGesture(){
-        player?.pause()
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                            object:player!.currentItem)
-        if (clips.count > playerIndex + 1) {
-            playNextClip()
-        } else {
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
     }
     
     func playPrevClip(){
