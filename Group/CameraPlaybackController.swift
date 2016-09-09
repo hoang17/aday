@@ -85,7 +85,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         textField.textAlignment = NSTextAlignment.Center
         textField.height = 36
         textField.width = UIScreen.mainScreen().bounds.width
-        textField.userInteractionEnabled = true
+        textField.userInteractionEnabled = false
         textField.text = clips[playerIndex].txt
         textField.center.y = clips[playerIndex].y
         

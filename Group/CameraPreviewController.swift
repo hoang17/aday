@@ -93,6 +93,8 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
     // Upload file
     func upload(){
         
+        self.back()
+        
         var number = Digits.sharedInstance().session()!.phoneNumber
         number.removeAtIndex(number.startIndex)
         let uploadFile = "\(number)_\(arc4random()%1000000).mp4"
@@ -124,7 +126,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
                 
                 print("Save clip to db \(id)")
                 
-                self.back()
+//                self.back()
             }
         }
     }
