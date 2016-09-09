@@ -17,13 +17,43 @@ class CameraPlaybackController: AVPlayerViewController, UITextFieldDelegate {
 
     let textField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
-    var outputFileURL:NSURL?
-    var fileName = "output.mp4"
+    var outputFileURL: NSURL?
+    var clips = [Clip]()
+    var playerIndex = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let outputPath = NSTemporaryDirectory() + fileName
+        
+        /**** Download clips ****/
+        
+        let storage = FIRStorage.storage()
+        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
+        
+        for clip in clips {
+            
+            let fileName = clip.fname
+            
+            // Check if file not existed then download
+            let filePath = NSTemporaryDirectory() + fileName;
+            if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+                print("File existed " + fileName)
+                
+            } else{
+                // File not existed then download
+                let localURL = NSURL(fileURLWithPath: filePath)
+                gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
+                    if (error != nil) {
+                        print(error)
+                    } else {
+                        print("File downloaded " + fileName)
+                    }
+                }
+            }
+        }
+        
+        /**** Done download clips ****/
+        
+        let outputPath = NSTemporaryDirectory() + clips.first!.fname
         outputFileURL = NSURL(fileURLWithPath: outputPath)
         
         let asset = AVAsset(URL: outputFileURL!)
@@ -35,7 +65,8 @@ class CameraPlaybackController: AVPlayerViewController, UITextFieldDelegate {
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player!.currentItem)
         self.player?.play()
-
+        
+        
         let backIcon = UIImage(named: "ic_close") as UIImage?
         let backButton = UIButton(type: .System)
         backButton.tintColor = UIColor(white: 1, alpha: 0.5)
@@ -69,15 +100,30 @@ class CameraPlaybackController: AVPlayerViewController, UITextFieldDelegate {
 
     // Auto rewind player
     func playerDidFinishPlaying(notification: NSNotification) {
-        if let playerItem: AVPlayerItem = notification.object as? AVPlayerItem {
-            playerItem.seekToTime(kCMTimeZero)
+
+        if (clips.count > playerIndex + 1) {
+            playerIndex += 1
+            let outputPath = NSTemporaryDirectory() + clips[playerIndex].fname
+            let fileUrl = NSURL(fileURLWithPath: outputPath)
+
+            let player2 = AVPlayer(URL: fileUrl)
+            let playerLayer = AVPlayerLayer(player: player2)
+            playerLayer.frame = self.view!.bounds
+            view.layer.addSublayer(playerLayer)
+            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                             object: player2.currentItem)
+            player2.play()
+            
+        } else {
+            self.dismissViewControllerAnimated(true, completion: nil)
         }
+        
     }
     
     func back(){
-        self.dismissViewControllerAnimated(true) {
-            //
-        }
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     override func prefersStatusBarHidden() -> Bool {

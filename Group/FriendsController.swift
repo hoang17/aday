@@ -93,32 +93,56 @@ class FriendsController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
 //        let userID : String! = FIRAuth.auth()?.currentUser?.uid
-//        let friend = friends[indexPath.row]
+        let friend = friends[indexPath.row]
+        var clips = [Clip]()
         
-        let storage = FIRStorage.storage()
-        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
-        let fileName = "84936115369_4591314.mp4"
+        let ref = FIRDatabase.database().reference()
         
-        let cameraPlayback = CameraPlaybackController()
-        cameraPlayback.fileName = fileName
+        print("...loading clips for friend \(friend.uid)...")
         
-        // Check if file not existed then download
-        let filePath = NSTemporaryDirectory() + fileName;
-        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-            // File existed then show it
-            self.presentViewController(cameraPlayback, animated: true, completion: nil)
-        } else{
-            // File not existed then download
-            let localURL = NSURL(fileURLWithPath: filePath)
-            gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
-                if (error != nil) {
-                    print(error)
-                } else {
-                    // Show it
-                    self.presentViewController(cameraPlayback, animated: true, completion: nil)
-                }
+        ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).observeEventType(.Value, withBlock: { snapshot in
+            
+            print("...returning clips...")
+            
+            for item in snapshot.children {
+                let clip = Clip(snapshot: item as! FIRDataSnapshot)
+                clips.append(clip)
             }
-        }
+            
+            print("...loaded \(clips.count) clip")
+            
+            let cameraPlayback = CameraPlaybackController()
+            cameraPlayback.clips = clips
+            self.presentViewController(cameraPlayback, animated: true, completion: nil)
+            
+        })
+        
+        
+        
+//        let storage = FIRStorage.storage()
+//        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
+//        let fileName = "84936115369_4591314.mp4"
+//        
+//        let cameraPlayback = CameraPlaybackController()
+//        cameraPlayback.fileName = fileName
+//        
+//        // Check if file not existed then download
+//        let filePath = NSTemporaryDirectory() + fileName;
+//        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+//            // File existed then show it
+//            self.presentViewController(cameraPlayback, animated: true, completion: nil)
+//        } else{
+//            // File not existed then download
+//            let localURL = NSURL(fileURLWithPath: filePath)
+//            gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
+//                if (error != nil) {
+//                    print(error)
+//                } else {
+//                    // Show it
+//                    self.presentViewController(cameraPlayback, animated: true, completion: nil)
+//                }
+//            }
+//        }
         
     }
     

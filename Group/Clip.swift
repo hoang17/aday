@@ -19,6 +19,15 @@ class Clip: NSObject {
         self.fname =  fname
     }
     
+    init(snapshot: FIRDataSnapshot) {
+        id = snapshot.key
+        uid = snapshot.value!["uid"] as! String
+        fname = snapshot.value!["fname"] as! String
+        if (snapshot.value!["flag"] as? Bool != nil){
+            flag = snapshot.value!["flag"] as! Bool
+        }
+    }
+    
     func toAnyObject() -> AnyObject {
         return [
             "id": id,
