@@ -13,9 +13,7 @@ import AVFoundation
 class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
 
     let textField = UITextField()
-    var tap: UITapGestureRecognizer?
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
-//    let limitLength = 30
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,14 +54,10 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         textField.width = UIScreen.mainScreen().bounds.width
         textField.delegate = self
         textField.returnKeyType = UIReturnKeyType.Done
-//        textField.textAlignment = .Left
         view.addSubview(textField);
         view.bringSubviewToFront(textField)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
-
-        tap = UITapGestureRecognizer(target: self, action: #selector(tapGesture))
-        self.view.addGestureRecognizer(tap!)
 
         let pan = UIPanGestureRecognizer(target:self, action:#selector(panGesture))
         textField.addGestureRecognizer(pan)
@@ -73,9 +67,6 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
     
     // Limit text length to textfield width
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-//        guard let text = textField.text else { return true }
-//        let newLength = text.characters.count + string.characters.count - range.length
-//        return newLength <= limitLength
         
         let combinedString = textField.attributedText!.mutableCopy() as! NSMutableAttributedString
         combinedString.replaceCharactersInRange(range, withString: string)
@@ -83,6 +74,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         
     }
     
+    // On return done editing
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         
@@ -94,6 +86,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         return true
     }
     
+    // Allow dragging textfield
     func panGesture(sender:UIPanGestureRecognizer) {
         let translation  = sender.translationInView(self.view)
         textLocation = CGPointMake(sender.view!.center.x, sender.view!.center.y + translation.y)
@@ -101,15 +94,12 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         sender.setTranslation(CGPointZero, inView: self.view)
     }
     
+    // Move textfield ontop of keyboard
     func keyboardNotification(notification: NSNotification) {
         
         if let userInfo = notification.userInfo {
             let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
             let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
-//            let animationCurve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
-//            let animationCurveRaw = animationCurve?.unsignedLongValue ?? UIViewAnimationOptions.CurveEaseInOut.rawValue
-//            let options:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
-            
             UIView.animateWithDuration(duration, animations: {
                 self.textField.origin.y = self.view.height - keyboardSize.height - self.textField.height
             })
@@ -117,6 +107,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         }
     }
 
+    // Show textfield
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
 
         if textField.hidden {
@@ -138,28 +129,11 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         }
     }
     
-    
-    func tapGesture(sender:UITapGestureRecognizer){
-        
-        let location = sender.locationInView(self.view)
-        
-        print("tap \(location)")
-        
-        UIView.animateWithDuration(0.2, animations: {
-            self.textField.center.y = location.y
-            }, completion: { (Bool) -> Void in
-                self.textField.userInteractionEnabled = true
-                self.textField.becomeFirstResponder()
-        })
-
-    }
-    
+    // Auto rewind player
     func playerDidFinishPlaying(notification: NSNotification) {
-        
         if let playerItem: AVPlayerItem = notification.object as? AVPlayerItem {
             playerItem.seekToTime(kCMTimeZero)
         }
-
     }
     
     func back(){
