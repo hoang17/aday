@@ -14,6 +14,7 @@ class Clip: NSObject {
     var txt: String
     var y: CGFloat // text position
     var flag = false
+    var date: Double
     
     init(id: String, uid: String, fname: String, txt: String, y: CGFloat) {
         self.id = id
@@ -21,6 +22,7 @@ class Clip: NSObject {
         self.fname =  fname
         self.txt = txt
         self.y = y
+        self.date = CACurrentMediaTime()
     }
     
     init(snapshot: FIRDataSnapshot) {
@@ -32,6 +34,7 @@ class Clip: NSObject {
         if (snapshot.value!["flag"] as? Bool != nil){
             flag = snapshot.value!["flag"] as! Bool
         }
+        date = snapshot.value!["date"] as! Double
     }
     
     func toAnyObject() -> AnyObject {
@@ -41,7 +44,8 @@ class Clip: NSObject {
             "fname": fname,
             "txt": txt,
             "y": y,
-            "flag": flag
+            "flag": flag,
+            "date": date
         ]
     }
 

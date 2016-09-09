@@ -203,6 +203,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
     }
     
     func back(){
+        player?.pause()
         self.dismissViewControllerAnimated(true) {
             //
         }

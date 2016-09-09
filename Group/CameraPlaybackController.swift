@@ -145,37 +145,40 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         nextPlayerLayer = playerLayer
         
         playerIndex -= 1
+        
+        textField.text = clips[playerIndex].txt
+        textField.center.y = clips[playerIndex].y
+        textField.hidden = textField.text == ""
+        
         let outputPath = NSTemporaryDirectory() + clips[playerIndex].fname
         let fileUrl = NSURL(fileURLWithPath: outputPath)
         player = AVPlayer(URL: fileUrl)
         playerLayer = AVPlayerLayer(player: player)
         playerLayer!.frame = self.view!.bounds
         view.layer.addSublayer(playerLayer!)
+        view.bringSubviewToFront(textField)
         player!.play()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player!.currentItem)
-        textField.text = clips[playerIndex].txt
-        textField.center.y = clips[playerIndex].y
-        textField.hidden = textField.text == ""
-        view.bringSubviewToFront(textField)
     }
     
     func playNextClip(){
+        textField.text = clips[playerIndex].txt
+        textField.center.y = clips[playerIndex].y
+        textField.hidden = textField.text == ""
+        
         playerLayer?.removeFromSuperlayer()
         player = nextPlayer
         playerLayer = nextPlayerLayer
         view.layer.addSublayer(playerLayer!)
+        view.bringSubviewToFront(textField)
         player!.play()
         playerIndex += 1
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player!.currentItem)
         
-        textField.text = clips[playerIndex].txt
-        textField.center.y = clips[playerIndex].y
-        textField.hidden = textField.text == ""
-        view.bringSubviewToFront(textField)
         
         // Cache next clip
         if (clips.count > playerIndex + 1) {
