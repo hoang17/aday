@@ -15,6 +15,8 @@ class FriendsController: UITableViewController {
     var friends = [User]()
     
     var reuseIdentifier = "cell"
+
+    let interactor = Interactor()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,37 +115,12 @@ class FriendsController: UITableViewController {
             
             let cameraPlayback = CameraPlaybackController()
             cameraPlayback.clips = clips
+            cameraPlayback.transitioningDelegate = self
+            cameraPlayback.interactor = self.interactor
             self.presentViewController(cameraPlayback, animated: true, completion: nil)
             
         })
-        
-        
-        
-//        let storage = FIRStorage.storage()
-//        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
-//        let fileName = "84936115369_4591314.mp4"
-//        
-//        let cameraPlayback = CameraPlaybackController()
-//        cameraPlayback.fileName = fileName
-//        
-//        // Check if file not existed then download
-//        let filePath = NSTemporaryDirectory() + fileName;
-//        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-//            // File existed then show it
-//            self.presentViewController(cameraPlayback, animated: true, completion: nil)
-//        } else{
-//            // File not existed then download
-//            let localURL = NSURL(fileURLWithPath: filePath)
-//            gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
-//                if (error != nil) {
-//                    print(error)
-//                } else {
-//                    // Show it
-//                    self.presentViewController(cameraPlayback, animated: true, completion: nil)
-//                }
-//            }
-//        }
-        
+            
     }
     
     override func prefersStatusBarHidden() -> Bool {
@@ -153,5 +130,15 @@ class FriendsController: UITableViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+}
+
+extension FriendsController: UIViewControllerTransitioningDelegate {
+    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return DismissAnimator()
+    }
+    
+    func interactionControllerForDismissal(animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactor.hasStarted ? interactor : nil
     }
 }

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		26259060293337CDF69D9ECD /* Pods_Group.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 910E826AC7A98A9CD441C878 /* Pods_Group.framework */; };
+		370464181D83422C001D049A /* DismissAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370464161D83422C001D049A /* DismissAnimator.swift */; };
+		370464191D83422C001D049A /* Interactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370464171D83422C001D049A /* Interactor.swift */; };
 		371068DA1D7DE0A000BDFC42 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068D91D7DE0A000BDFC42 /* CameraViewController.swift */; };
 		371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */; };
 		371068E01D80453200BDFC42 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DF1D80453200BDFC42 /* RecordButton.swift */; };
@@ -39,6 +41,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		370464161D83422C001D049A /* DismissAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissAnimator.swift; sourceTree = "<group>"; };
+		370464171D83422C001D049A /* Interactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interactor.swift; sourceTree = "<group>"; };
 		3708CE3C9772F2D6563EAD6D /* Pods-Group.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Group.release.xcconfig"; path = "Pods/Target Support Files/Pods-Group/Pods-Group.release.xcconfig"; sourceTree = "<group>"; };
 		371068D91D7DE0A000BDFC42 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPreviewController.swift; sourceTree = "<group>"; };
@@ -96,6 +100,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		3704641A1D834266001D049A /* Animators */ = {
+			isa = PBXGroup;
+			children = (
+				370464161D83422C001D049A /* DismissAnimator.swift */,
+				370464171D83422C001D049A /* Interactor.swift */,
+			);
+			name = Animators;
+			sourceTree = "<group>";
+		};
 		372D8DC51D13A305008DBADA /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -112,6 +125,7 @@
 			children = (
 				37FEFEBB1D11D33600C078AC /* LoginController.swift */,
 				372D8DB01D125EAE008DBADA /* HomeController.swift */,
+				3704641A1D834266001D049A /* Animators */,
 				37E00FDE1D16EC7500B19492 /* Contacts */,
 				37E00FDD1D16EC5F00B19492 /* Pages */,
 				37E00FDC1D16EC4A00B19492 /* Camera */,
@@ -363,11 +377,13 @@
 			files = (
 				371068DA1D7DE0A000BDFC42 /* CameraViewController.swift in Sources */,
 				37C2C5621D13ED41007B06BF /* DynamicHeightCell.swift in Sources */,
+				370464191D83422C001D049A /* Interactor.swift in Sources */,
 				372D8DCC1D13A80F008DBADA /* FormerInputAccessoryView.swift in Sources */,
 				37FEFED71D123A3700C078AC /* User.swift in Sources */,
 				372D8DB71D12C0F8008DBADA /* Friend.swift in Sources */,
 				371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */,
 				372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */,
+				370464181D83422C001D049A /* DismissAnimator.swift in Sources */,
 				37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */,
 				372D8DC81D13A329008DBADA /* String+FormerDemo.swift in Sources */,
 				37FEFEBC1D11D33600C078AC /* LoginController.swift in Sources */,
