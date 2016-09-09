@@ -69,15 +69,9 @@ class CameraPreviewController: AVPlayerViewController {
     
     func panGesture(sender:UIPanGestureRecognizer) {
         let translation  = sender.translationInView(self.view)
-        let x = sender.view!.center.x
-        let y = sender.view!.center.y
-//        sender.view?.center = CGPointMake(x + translation.x, y + translation.y)
-        sender.view?.center = CGPointMake(x, y + translation.y)
+        textLocation = CGPointMake(sender.view!.center.x, sender.view!.center.y + translation.y)
+        sender.view!.center = textLocation
         sender.setTranslation(CGPointZero, inView: self.view)
-        
-        textLocation = sender.view!.center;
-        
-//        textField.center = sender.locationInView(self.view)
     }
     
     func keyboardNotification(notification: NSNotification) {
