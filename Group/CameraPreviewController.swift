@@ -1,5 +1,5 @@
 //
-//  PreviewController.swift
+//  CameraPreviewController.swift
 //  Group
 //
 //  Created by Hoang Le on 9/7/16.
@@ -10,6 +10,8 @@ import AVKit
 import AVFoundation
 import SnapKit
 import FirebaseStorage
+import FirebaseAuth
+import DigitsKit
 
 class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
 
@@ -85,15 +87,20 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         textField.addGestureRecognizer(pan)
         
     }
-        
+    
     /*** UPLOAD FILE ***/
     func upload(){
+        
+        var number = Digits.sharedInstance().session()!.phoneNumber
+        number.removeAtIndex(number.startIndex)
+        let fileName = "\(number)_\(arc4random()%1000000).mp4"
+        
+        print("Uploading \(fileName)...")
         
         let storage = FIRStorage.storage()
         let storageRef = storage.referenceForURL("gs://aday-b6ecc.appspot.com")
         
-        
-        let riversRef = storageRef.child("clips/output.mp4")
+        let riversRef = storageRef.child("clips/" + fileName)
         
         let metadata = FIRStorageMetadata()
         metadata.contentType = "video/mp4"

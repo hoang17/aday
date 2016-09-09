@@ -25,7 +25,8 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var videoInput: AVCaptureDeviceInput?
     var videoFileOutput:AVCaptureMovieFileOutput?
     var cameraPreviewLayer:AVCaptureVideoPreviewLayer?
-    let outputPath = NSTemporaryDirectory() + "output.mov"
+    let outputPath = NSTemporaryDirectory() + "output.mov"    
+    let fileName = "output.mp4"
     
     var isRecording = false
     
@@ -135,14 +136,12 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     
     func convertVideoWithMediumQuality(inputURL : NSURL){
         
-//        let outPath = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("mergeVideo\(arc4random()%1000)d").URLByAppendingPathExtension("mp4").absoluteString
+        print("Compressing...")
         
-//        let outPath = NSTemporaryDirectory() + "output.mp4"
+        let savePath = NSURL(fileURLWithPath: NSTemporaryDirectory() + fileName).absoluteString
         
-        let outPath = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("output").URLByAppendingPathExtension("mp4").absoluteString
-        
-        let filePath = NSTemporaryDirectory() + "output.mp4";
-        
+        // Delete file if existed
+        let filePath = NSTemporaryDirectory() + fileName;
         if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
             do {
                 try NSFileManager.defaultManager().removeItemAtPath(filePath)
@@ -151,7 +150,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             }
         }
         
-        let savePathUrl =  NSURL(string: outPath)!
+        let savePathUrl =  NSURL(string: savePath)!
         let asset = AVURLAsset(URL: inputURL, options: nil)
         
         let exportSession: AVAssetExportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetMediumQuality)!
@@ -162,8 +161,11 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             case AVAssetExportSessionStatus.Completed:
                 dispatch_async(dispatch_get_main_queue(), {
                     do {
-                        let videoData = try NSData(contentsOfURL: savePathUrl, options: NSDataReadingOptions())
-                        print("video length - \(videoData.length / (1024 * 1024)) MB")
+//                        let videoData = try NSData(contentsOfURL: savePathUrl, options: NSDataReadingOptions())
+//                        print("video length - \(videoData.length)")
+                        let cameraPreview = CameraPreviewController()
+                        self.presentViewController(cameraPreview, animated: true, completion: nil)
+
                     } catch {
                         print(error)
                     }
@@ -267,8 +269,8 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         
         print("Video Captured")
         
-        let cameraPreview = CameraPreviewController()
-        self.presentViewController(cameraPreview, animated: true, completion: nil)
+//        let cameraPreview = CameraPreviewController()
+//        self.presentViewController(cameraPreview, animated: true, completion: nil)
         
         let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
         self.convertVideoWithMediumQuality(outputFileURL)
