@@ -11,6 +11,7 @@
 		371068DA1D7DE0A000BDFC42 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068D91D7DE0A000BDFC42 /* CameraViewController.swift */; };
 		371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */; };
 		371068E01D80453200BDFC42 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DF1D80453200BDFC42 /* RecordButton.swift */; };
+		371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068E11D83003100BDFC42 /* CameraPlaybackController.swift */; };
 		371416C11D1823F600080596 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371416C01D1823F600080596 /* Room.swift */; };
 		371416C31D18561B00080596 /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371416C21D18561B00080596 /* FeedTableCell.swift */; };
 		372D8DB11D125EAE008DBADA /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB01D125EAE008DBADA /* HomeController.swift */; };
@@ -43,6 +44,7 @@
 		371068D91D7DE0A000BDFC42 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPreviewController.swift; sourceTree = "<group>"; };
 		371068DF1D80453200BDFC42 /* RecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
+		371068E11D83003100BDFC42 /* CameraPlaybackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPlaybackController.swift; sourceTree = "<group>"; };
 		371416C01D1823F600080596 /* Room.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
 		371416C21D18561B00080596 /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		372D8DB01D125EAE008DBADA /* HomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				372D8DB41D12BF2B008DBADA /* FriendsController.swift */,
 				371068D91D7DE0A000BDFC42 /* CameraViewController.swift */,
 				371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */,
+				371068E11D83003100BDFC42 /* CameraPlaybackController.swift */,
 				371068DF1D80453200BDFC42 /* RecordButton.swift */,
 			);
 			name = Camera;
@@ -366,6 +369,7 @@
 				372D8DCC1D13A80F008DBADA /* FormerInputAccessoryView.swift in Sources */,
 				37FEFED71D123A3700C078AC /* User.swift in Sources */,
 				372D8DB71D12C0F8008DBADA /* Friend.swift in Sources */,
+				371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */,
 				372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */,
 				371416C11D1823F600080596 /* Room.swift in Sources */,
 				37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */,

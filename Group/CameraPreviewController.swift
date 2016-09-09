@@ -17,12 +17,13 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
 
     let textField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
-    let outputPath = NSTemporaryDirectory() + "output.mp4"
     var outputFileURL:NSURL?
+    var fileName = "output.mp4"
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let outputPath = NSTemporaryDirectory() + fileName
         outputFileURL = NSURL(fileURLWithPath: outputPath)
         
         let asset = AVAsset(URL: outputFileURL!)
@@ -88,71 +89,30 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         
     }
     
-    /*** UPLOAD FILE ***/
+    // Upload file
     func upload(){
         
         var number = Digits.sharedInstance().session()!.phoneNumber
         number.removeAtIndex(number.startIndex)
-        let fileName = "\(number)_\(arc4random()%1000000).mp4"
+        let uploadFile = "\(number)_\(arc4random()%1000000).mp4"
         
-        print("Uploading \(fileName)...")
+        print("Uploading \(uploadFile)...")
         
         let storage = FIRStorage.storage()
-        let storageRef = storage.referenceForURL("gs://aday-b6ecc.appspot.com")
-        
-        let riversRef = storageRef.child("clips/" + fileName)
+        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
         
         let metadata = FIRStorageMetadata()
         metadata.contentType = "video/mp4"
         
-        let uploadTask = riversRef.putFile(outputFileURL!, metadata: metadata) { metadata, error in
+        gs.child(uploadFile).putFile(outputFileURL!, metadata: metadata) { metadata, error in
+            // upload done
             if (error != nil) {
-                // Uh-oh, an error occurred!
+                print(error)
             } else {
-                // Metadata contains file metadata such as size, content-type, and download URL.
-                print(metadata!.downloadURL())
+                print("File uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
                 self.back()
             }
         }
-        
-        uploadTask.observeStatus(.Resume) { snapshot in
-            // Upload resumed, also fires when the upload starts
-        }
-        
-        uploadTask.observeStatus(.Progress) { snapshot in
-            // Upload reported progress
-            if let progress = snapshot.progress {
-                let percentComplete = 100.0 * Double(progress.completedUnitCount) / Double(progress.totalUnitCount)
-            }
-        }
-        
-        uploadTask.observeStatus(.Success) { snapshot in
-            // Upload completed successfully
-        }
-        
-        // Errors only occur in the "Failure" case
-        uploadTask.observeStatus(.Failure) { snapshot in
-            guard let storageError = snapshot.error else { return }
-            guard let errorCode = FIRStorageErrorCode(rawValue: storageError.code) else { return }
-            switch errorCode {
-            case .ObjectNotFound:
-                // File doesn't exist
-                break
-            case .Unauthorized:
-                // User doesn't have permission to access file
-                break
-            case .Cancelled:
-                // User canceled the upload
-                break
-            case .Unknown:
-                // Unknown error occurred, inspect the server response
-                break
-            default:
-                break
-            }
-        }
-        
-        /*** DONE UPLOAD ***/
     }
     
     // Limit text length to textfield width

@@ -159,26 +159,17 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         exportSession.exportAsynchronouslyWithCompletionHandler {            
             switch exportSession.status {
             case AVAssetExportSessionStatus.Completed:
+                // Show preview
                 dispatch_async(dispatch_get_main_queue(), {
-                    do {
-//                        let videoData = try NSData(contentsOfURL: savePathUrl, options: NSDataReadingOptions())
-//                        print("video length - \(videoData.length)")
-                        let cameraPreview = CameraPreviewController()
-                        self.presentViewController(cameraPreview, animated: true, completion: nil)
-
-                    } catch {
-                        print(error)
-                    }
-                    
+                    let cameraPreview = CameraPreviewController()
+                    cameraPreview.fileName = self.fileName
+                    self.presentViewController(cameraPreview, animated: true, completion: nil)
                 })
             case  AVAssetExportSessionStatus.Failed:
-                //                self.hideActivityIndicator(self.view)
                 print("failed \(exportSession.error)")
             case AVAssetExportSessionStatus.Cancelled:
-                //                self.hideActivityIndicator(self.view)
                 print("cancelled \(exportSession.error)")
             default:
-                //                self.hideActivityIndicator(self.view)
                 print("complete")
             }
         }

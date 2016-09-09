@@ -8,6 +8,7 @@ import Contacts
 import FBSDKCoreKit
 import FirebaseAuth
 import FirebaseDatabase
+import FirebaseStorage
 
 class FriendsController: UITableViewController {
     
@@ -91,34 +92,34 @@ class FriendsController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        // Query room id
-        let userID : String! = FIRAuth.auth()?.currentUser?.uid
-        let friend = friends[indexPath.row]
-
-//        let ref = FIRDatabase.database().reference()
-//        ref.child("user-friends/\(userID)/\(friend.uid)").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-//            var key : String
-//            if ((snapshot.value?["rid"] as? String) == nil){
-//                key = ref.child("rooms").childByAutoId().key
-//                let room = ["id":key, "name": friend.name]
-//                
-//                let update = ["/rooms/\(key)": room,
-//                    "/user-rooms/\(userID)/\(key)": room,
-//                    "/user-friends/\(userID)/\(friend.uid)/rid": key,
-//                    "/user-friends/\(friend.uid)/\(userID)/rid": key]
-//                ref.updateChildValues(update as [NSObject : AnyObject])
-//            }
-//            else{
-//                key = snapshot.value!["rid"] as! String
-//            }
+//        let userID : String! = FIRAuth.auth()?.currentUser?.uid
+//        let friend = friends[indexPath.row]
         
-//            // Open Video
-//            let navViewController = self.parentViewController as! UINavigationController;
-//            let room = Room(id:key, name:friend.name)
-//            let r = RoomController()
-//            r.room = room
-//            navViewController.pushViewController(r, animated: true)
-//        })
+        let storage = FIRStorage.storage()
+        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
+        let fileName = "84936115369_4591314.mp4"
+        
+        let cameraPlayback = CameraPlaybackController()
+        cameraPlayback.fileName = fileName
+        
+        // Check if file not existed then download
+        let filePath = NSTemporaryDirectory() + fileName;
+        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+            // File existed then show it
+            self.presentViewController(cameraPlayback, animated: true, completion: nil)
+        } else{
+            // File not existed then download
+            let localURL = NSURL(fileURLWithPath: filePath)
+            gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
+                if (error != nil) {
+                    print(error)
+                } else {
+                    // Show it
+                    self.presentViewController(cameraPlayback, animated: true, completion: nil)
+                }
+            }
+        }
+        
     }
     
     override func prefersStatusBarHidden() -> Bool {
