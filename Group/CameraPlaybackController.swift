@@ -19,7 +19,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var clips = [Clip]()
     var playerIndex = 0
-    var backButton: UIButton?
     var player: AVPlayer?
     var playerLayer: AVPlayerLayer?
     var nextPlayer: AVPlayer?
@@ -79,23 +78,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
             nextPlayerLayer = AVPlayerLayer(player: nextPlayer)
             nextPlayerLayer!.frame = self.view!.bounds
         }
-
         
-        let backIcon = UIImage(named: "ic_close") as UIImage?
-        backButton = UIButton(type: .System)
-        backButton!.tintColor = UIColor(white: 1, alpha: 0.5)
-        backButton!.backgroundColor = UIColor.clearColor()
-        backButton!.setImage(backIcon, forState: .Normal)
-        backButton!.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
-        self.view.addSubview(backButton!)
-        self.view.bringSubviewToFront(backButton!)
-        backButton!.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(15)
-            make.left.equalTo(self.view).offset(18)
-            make.width.equalTo(26)
-            make.height.equalTo(26)
-        }
-
 //        textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
 //        textField.textColor = UIColor.whiteColor()
 //        textField.font = UIFont.systemFontOfSize(17.0)
@@ -128,12 +111,11 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     }
     
     func playNextClip(){
+        playerLayer?.removeFromSuperlayer()
         player = nextPlayer
         playerLayer = nextPlayerLayer
-        
         view.layer.addSublayer(playerLayer!)
         player!.play()
-        view.bringSubviewToFront(backButton!)
         playerIndex += 1
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
