@@ -103,9 +103,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
 //        swipeRight.direction = UISwipeGestureRecognizerDirection.Right
 //        view.addGestureRecognizer(swipeRight)
         
-//        let pan = UIPanGestureRecognizer(target: self, action: #selector(panGesture))
-//        view.addGestureRecognizer(pan)
-
     }
 
     func swipeDownGesture(){
@@ -116,53 +113,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-//    var interactor:Interactor? = nil
-//    
-//    func panGesture(sender: UIPanGestureRecognizer) {
-//        
-//        let percentThreshold:CGFloat = 0.3
-//        
-//        // convert y-position to downward pull progress (percentage)
-//        let translation = sender.translationInView(view)
-//        let verticalMovement = translation.y / view.bounds.height
-//        let downwardMovement = fmaxf(Float(verticalMovement), 0.0)
-//        let downwardMovementPercent = fminf(downwardMovement, 1.0)
-//        let progress = CGFloat(downwardMovementPercent)
-//        
-//        guard let interactor = interactor else { return }
-//        
-//        switch sender.state {
-//        case .Began:
-//            interactor.hasStarted = true
-//            dismissViewControllerAnimated(true, completion: nil)
-//        case .Changed:
-//            interactor.shouldFinish = progress > percentThreshold
-//            interactor.updateInteractiveTransition(progress)
-//        case .Cancelled:
-//            interactor.hasStarted = false
-//            interactor.cancelInteractiveTransition()
-//        case .Ended:
-//            interactor.hasStarted = false
-//            interactor.shouldFinish
-//                ? interactor.finishInteractiveTransition()
-//                : interactor.cancelInteractiveTransition()
-//        default:
-//            break
-//        }
-//    }
-    
-//    func swipeRightGesture(){
-//        player?.pause()
-//        NSNotificationCenter.defaultCenter().removeObserver(self,
-//                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                            object:player!.currentItem)
-//        if (playerIndex > 0) {
-//            playPrevClip()
-//        } else {
-//            self.dismissViewControllerAnimated(true, completion: nil)
-//        }
-//    }
-
     func tapGesture(){
         player?.pause()
         NSNotificationCenter.defaultCenter().removeObserver(self,

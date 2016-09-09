@@ -16,8 +16,6 @@ class FriendsController: UITableViewController {
     
     var reuseIdentifier = "cell"
 
-//    let interactor = Interactor()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -94,7 +92,6 @@ class FriendsController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-//        let userID : String! = FIRAuth.auth()?.currentUser?.uid
         let friend = friends[indexPath.row]
         var clips = [Clip]()
         
@@ -115,10 +112,6 @@ class FriendsController: UITableViewController {
             
             let cameraPlayback = CameraPlaybackController()
             cameraPlayback.clips = clips
-            
-//            cameraPlayback.transitioningDelegate = self
-//            cameraPlayback.interactor = self.interactor
-            
             self.presentViewController(cameraPlayback, animated: true, completion: nil)
             
         })
@@ -134,13 +127,3 @@ class FriendsController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 }
-
-//extension FriendsController: UIViewControllerTransitioningDelegate {
-//    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-//        return DismissAnimator()
-//    }
-//    
-//    func interactionControllerForDismissal(animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-//        return interactor.hasStarted ? interactor : nil
-//    }
-//}
