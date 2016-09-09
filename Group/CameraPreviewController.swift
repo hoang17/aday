@@ -10,11 +10,12 @@ import AVKit
 import AVFoundation
 //import SnapKit
 
-class CameraPreviewController: AVPlayerViewController {
+class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
 
     let textField = UITextField()
     var tap: UITapGestureRecognizer?
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
+//    let limitLength = 30
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +54,9 @@ class CameraPreviewController: AVPlayerViewController {
         textField.hidden = true
         textField.height = 36
         textField.width = UIScreen.mainScreen().bounds.width
+        textField.delegate = self
+        textField.returnKeyType = UIReturnKeyType.Done
+//        textField.textAlignment = .Left
         view.addSubview(textField);
         view.bringSubviewToFront(textField)
         
@@ -65,6 +69,29 @@ class CameraPreviewController: AVPlayerViewController {
         textField.addGestureRecognizer(pan)
         
         textField.userInteractionEnabled = true
+    }
+    
+    // Limit text length to textfield width
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+//        guard let text = textField.text else { return true }
+//        let newLength = text.characters.count + string.characters.count - range.length
+//        return newLength <= limitLength
+        
+        let combinedString = textField.attributedText!.mutableCopy() as! NSMutableAttributedString
+        combinedString.replaceCharactersInRange(range, withString: string)
+        return combinedString.size().width < textField.bounds.size.width-10
+        
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        
+        if (textField.text == ""){
+            textField.hidden = true
+        } else {
+            UIView.animateWithDuration(0.2, animations: { self.textField.center.y = self.textLocation.y }, completion: nil)
+        }
+        return true
     }
     
     func panGesture(sender:UIPanGestureRecognizer) {
@@ -106,11 +133,7 @@ class CameraPreviewController: AVPlayerViewController {
             if (textField.text == ""){
                 textField.hidden = true
             } else {
-                UIView.animateWithDuration(0.2, animations: {
-                    self.textField.center.y = self.textLocation.y
-                    }, completion: { (Bool) -> Void in
-                        self.textField.userInteractionEnabled = true
-                })
+                UIView.animateWithDuration(0.2, animations: { self.textField.center.y = self.textLocation.y }, completion: nil)
             }
         }
     }
