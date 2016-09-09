@@ -14,14 +14,12 @@ class CameraPreviewController: AVPlayerViewController {
 
     let textField = UITextField()
     var tap: UITapGestureRecognizer?
-    var bottomConstraint: NSLayoutConstraint?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         let outputPath = NSTemporaryDirectory() + "output.mov"
         let outputFileURL = NSURL(fileURLWithPath: outputPath)
         let asset = AVAsset(URL: outputFileURL)
-//        try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, withOptions: [])
         self.showsPlaybackControls = false
         self.player = AVPlayer(playerItem: AVPlayerItem(asset:asset))
         self.player!.actionAtItemEnd = .None
@@ -57,33 +55,8 @@ class CameraPreviewController: AVPlayerViewController {
         view.addSubview(textField);
         view.bringSubviewToFront(textField)
         
-//        textField.translatesAutoresizingMaskIntoConstraints = false
-        
-//        let horizontalConstraint = NSLayoutConstraint(item: textField, attribute: .CenterX, relatedBy: .Equal, toItem: view, attribute: .CenterX, multiplier: 1, constant: 0)        
-//        let verticalConstraint = NSLayoutConstraint(item: textField, attribute: .CenterY, relatedBy: .Equal, toItem: view, attribute: .CenterY, multiplier: 1, constant: 0)
-//        bottomConstraint = NSLayoutConstraint(item: textField, attribute: .Bottom, relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1, constant: -300)
-//        let widthConstraint = NSLayoutConstraint(item: textField, attribute: .Width, relatedBy: .Equal, toItem: view, attribute: .Width, multiplier: 1, constant: 0)
-//        let heightConstraint = NSLayoutConstraint(item: textField, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 36)
-
-//        view.addConstraint(horizontalConstraint)
-//        view.addConstraint(verticalConstraint)
-//        view.addConstraint(topConstraint)
-//        view.addConstraint(bottomConstraint!)
-//        view.addConstraint(widthConstraint)
-//        view.addConstraint(heightConstraint)
-        
-//        textField.snp_makeConstraints { (make) -> Void in
-//            //self.bottomConstraint = make.bottom.equalTo(self.view).constraint
-//            make.left.equalTo(self.view).offset(0)
-//            make.right.equalTo(self.view).offset(0)
-//            make.height.equalTo(36)
-//        }
-        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
 
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillShowNotification, object: nil)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillHideNotification, object: nil)
-    
         tap = UITapGestureRecognizer(target: self, action: #selector(tapGesture))
         self.view.addGestureRecognizer(tap!)
 
@@ -94,32 +67,14 @@ class CameraPreviewController: AVPlayerViewController {
         if let userInfo = notification.userInfo {
             let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
             let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
+//            let animationCurve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
+//            let animationCurveRaw = animationCurve?.unsignedLongValue ?? UIViewAnimationOptions.CurveEaseInOut.rawValue
+//            let options:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
             
-            let animationCurve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
-            let animationCurveRaw = animationCurve?.unsignedLongValue ?? UIViewAnimationOptions.CurveEaseInOut.rawValue
-            let options:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
-
-            print(keyboardSize.height)
-            
-            self.bottomConstraint?.constant = -keyboardSize.height
-            
-            UIView.animateWithDuration(0.2, animations: {
+            UIView.animateWithDuration(duration, animations: {
                 self.textField.origin.y = self.view.height - keyboardSize.height - self.textField.height
-//                self.view.layoutIfNeeded()
             })
-
-//            self.bottomConstraint!.updateOffset(-keyboardFrame.height)
-
-//            textField.snp_updateConstraints { (make) -> Void in
-//                make.bottom.equalTo(self.view).offset(-keyboardFrame.height)
-//            }
-
             
-//            UIView.animateWithDuration(duration,
-//                                       delay: NSTimeInterval(0),
-//                                       options: options,
-//                                       animations: { self.view.layoutIfNeeded() },
-//                                       completion: nil)
         }
     }
 
@@ -144,10 +99,6 @@ class CameraPreviewController: AVPlayerViewController {
         
     }
     
-    
-//    func textFieldDidEndEditing(textField: UITextField) {
-//        textField.layoutIfNeeded()
-//    }
     
     func tapGesture(sender:UITapGestureRecognizer){
         
