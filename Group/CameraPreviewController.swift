@@ -117,7 +117,9 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
                 let id = ref.childByAutoId().key
                 let uid = FIRAuth.auth()?.currentUser?.uid
                 let fname = uploadFile
-                let clip = Clip(id: id, uid: uid!, fname: fname)
+                let txt = self.textField.text
+                let y = self.textLocation.y
+                let clip = Clip(id: id, uid: uid!, fname: fname, txt: txt!, y: y)
                 ref.child(id).setValue(clip.toAnyObject())
                 
                 print("Save clip to db \(id)")

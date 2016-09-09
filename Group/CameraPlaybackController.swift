@@ -79,18 +79,23 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
             nextPlayerLayer!.frame = self.view!.bounds
         }
         
-//        textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-//        textField.textColor = UIColor.whiteColor()
-//        textField.font = UIFont.systemFontOfSize(17.0)
-//        textField.textAlignment = NSTextAlignment.Center
-//        textField.text = ""
-//        textField.hidden = true
-//        textField.height = 36
-//        textField.width = UIScreen.mainScreen().bounds.width
-//        textField.userInteractionEnabled = true
-//        
-//        view.addSubview(textField);
-//        view.bringSubviewToFront(textField)
+        textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+        textField.textColor = UIColor.whiteColor()
+        textField.font = UIFont.systemFontOfSize(17.0)
+        textField.textAlignment = NSTextAlignment.Center
+        textField.height = 36
+        textField.width = UIScreen.mainScreen().bounds.width
+        textField.userInteractionEnabled = true
+        textField.text = clips[playerIndex].txt
+        textField.center.y = clips[playerIndex].y
+        
+        if (textField.text == "") {
+            textField.hidden = true
+        }
+
+        
+        view.addSubview(textField);
+        view.bringSubviewToFront(textField)
         
         let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
         view.addGestureRecognizer(tap)
@@ -150,6 +155,10 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player!.currentItem)
+        textField.text = clips[playerIndex].txt
+        textField.center.y = clips[playerIndex].y
+        textField.hidden = textField.text == ""
+        view.bringSubviewToFront(textField)
     }
     
     func playNextClip(){
@@ -162,6 +171,11 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player!.currentItem)
+        
+        textField.text = clips[playerIndex].txt
+        textField.center.y = clips[playerIndex].y
+        textField.hidden = textField.text == ""
+        view.bringSubviewToFront(textField)
         
         // Cache next clip
         if (clips.count > playerIndex + 1) {
