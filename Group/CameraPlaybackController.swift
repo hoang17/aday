@@ -85,7 +85,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         let location = sender.locationInView(self.view)
         
-        if (location.x > 0.3*UIScreen.mainScreen().bounds.width){
+        if (location.x > 0.25*UIScreen.mainScreen().bounds.width){
             if (clips.count > playerIndex + 1) {
                 playNextClip()
             } else {
