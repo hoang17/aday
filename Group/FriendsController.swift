@@ -118,7 +118,7 @@ class FriendsController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier)
         cell?.textLabel?.text = friends[indexPath.row].name
-        cell?.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
+//        cell?.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
         cell?.layoutMargins = UIEdgeInsetsZero
         return cell!
     }

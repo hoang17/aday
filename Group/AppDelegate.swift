@@ -32,9 +32,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 
         // Setup font
-        UITextField.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
-        UITextView.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
-        UILabel.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
+//        UITextField.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
+//        UITextView.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
+//        UILabel.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
         
         // Setup nav controller        
         //let loginController: LoginController = LoginController()

@@ -74,9 +74,9 @@ class HomeController: UIViewController {
             make.right.equalTo(self.view).offset(-50)
         }
         
-        // Clips
+        // My Friends
         let button2 = UIButton(type: .System)
-        button2.setTitle("Clips", forState: .Normal)
+        button2.setTitle("My Friends", forState: .Normal)
         button2.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
         button2.backgroundColor = view.tintColor
         button2.layer.cornerRadius = 3
