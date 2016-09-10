@@ -102,19 +102,6 @@ class HomeController: UIViewController {
             make.right.equalTo(self.view).offset(-50)
         }
         
-//        // Play clip
-//        let button5 = UIButton(type: .System)
-//        button5.setTitle("Play Video", forState: .Normal)
-//        button5.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-//        button5.backgroundColor = view.tintColor
-//        button5.layer.cornerRadius = 3
-//        button5.addTarget(self, action: #selector(playVideo), forControlEvents: .TouchUpInside)
-//        self.view.addSubview(button5)
-//        button5.snp_makeConstraints { (make) -> Void in
-//            make.top.equalTo(self.view).offset(320)
-//            make.left.equalTo(self.view).offset(50)
-//            make.right.equalTo(self.view).offset(-50)
-//        }
     }
 
     func addVideo() {
@@ -122,11 +109,6 @@ class HomeController: UIViewController {
         self.presentViewController(cameraView, animated: true, completion: nil)
     }
 
-//    func playVideo() {
-//        let cameraPreview = CameraPreviewController()
-//        self.presentViewController(cameraPreview, animated: true, completion: nil)
-//    }
-    
     func syncFacebookFriends(){
         let friendloader = LoadFriends()
         friendloader.loadFacebookFriends { (friends) in
