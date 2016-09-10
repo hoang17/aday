@@ -27,35 +27,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        /**** Download clips ****/
-        
-        let storage = FIRStorage.storage()
-        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
-        
-        for clip in clips {
-            
-            let fileName = clip.fname
-            
-            // Check if file not existed then download
-            let filePath = NSTemporaryDirectory() + fileName;
-            if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-                print("File existed " + fileName)
-                
-            } else{
-                // File not existed then download
-                let localURL = NSURL(fileURLWithPath: filePath)
-                gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
-                    if (error != nil) {
-                        print(error)
-                    } else {
-                        print("File downloaded " + fileName)
-                    }
-                }
-            }
-        }
-        
-        /**** Done download clips ****/
-        
         // Play current clip
         let outputPath = NSTemporaryDirectory() + clips[playerIndex].fname
         let fileUrl = NSURL(fileURLWithPath: outputPath)
@@ -104,7 +75,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         swipeDown.direction = UISwipeGestureRecognizerDirection.Down
         view.addGestureRecognizer(swipeDown)
     }
-
+    
     func tapGesture(sender:UITapGestureRecognizer){
         
         player?.pause()

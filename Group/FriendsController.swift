@@ -23,20 +23,6 @@ class FriendsController: UITableViewController {
         
         self.navigationController!.setNavigationBarHidden(false, animated: true)
         
-        // Setup add friend button
-        
-//        let button = UIButton(type: .System)
-//        button.setTitle("Add Friend", forState: .Normal)
-//        button.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-//        button.backgroundColor = view.tintColor
-//        button.addTarget(self, action: #selector(addFriend), forControlEvents: .TouchUpInside)
-//        self.view.addSubview(button)
-//        button.snp_makeConstraints { (make) -> Void in
-//            make.bottom.equalTo(self.view).offset(0)
-//            make.left.equalTo(self.view).offset(0)
-//            make.right.equalTo(self.view).offset(0)
-//        }
-        
         // Setup friends table
         
         tableView.rowHeight = 30
@@ -63,6 +49,26 @@ class FriendsController: UITableViewController {
                 let fb = item.value["fb"] as! String
                 let friend = User(uid: uid, name:name, email:email, fabric:fabric, phone:phone, fb:fb)
                 self.friends.append(friend)
+                
+                print("...loading clips for friend \(friend.uid)...")
+                ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).observeEventType(.Value, withBlock: { snapshot in
+                    
+                    var clips = [Clip]()
+                    
+                    print("...returning clips...")
+                    
+                    for item in snapshot.children {
+                        let clip = Clip(snapshot: item as! FIRDataSnapshot)
+                        clips.append(clip)
+                    }
+                    
+                    print("...loaded \(clips.count) clip")
+                    
+                    friend.clips = clips
+                    
+                    self.downloadClips(clips)
+                })
+                
             }
             self.tableView.reloadData()
             print("...loaded \(self.friends.count) friends")
@@ -70,12 +76,39 @@ class FriendsController: UITableViewController {
         
     }
     
+    func downloadClips(clips: [Clip]){
+        
+        let storage = FIRStorage.storage()
+        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
+        
+        for clip in clips {
+            
+            let fileName = clip.fname
+            
+            // Check if file not existed then download
+            let filePath = NSTemporaryDirectory() + fileName;
+            if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+                
+                print("File existed " + fileName)
+                
+            } else{
+                print("Downloading file \(fileName)...")
+                // File not existed then download
+                let localURL = NSURL(fileURLWithPath: filePath)
+                gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
+                    if (error != nil) {
+                        print(error)
+                    } else {
+                        print("File downloaded " + fileName)
+                    }
+                }
+            }
+        }
+    }    
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         self.navigationController!.setNavigationBarHidden(false, animated: true)
-    }
-    
-    func addFriend(){
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -93,29 +126,10 @@ class FriendsController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         let friend = friends[indexPath.row]
-        var clips = [Clip]()
+        let cameraPlayback = CameraPlaybackController()
+        cameraPlayback.clips = friend.clips!
+        self.presentViewController(cameraPlayback, animated: true, completion: nil)
         
-        let ref = FIRDatabase.database().reference()
-        
-        print("...loading clips for friend \(friend.uid)...")
-        
-        ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).observeEventType(.Value, withBlock: { snapshot in
-            
-            print("...returning clips...")
-            
-            for item in snapshot.children {
-                let clip = Clip(snapshot: item as! FIRDataSnapshot)
-                clips.append(clip)
-            }
-            
-            print("...loaded \(clips.count) clip")
-            
-            let cameraPlayback = CameraPlaybackController()
-            cameraPlayback.clips = clips
-            self.presentViewController(cameraPlayback, animated: true, completion: nil)
-            
-        })
-            
     }
     
     override func prefersStatusBarHidden() -> Bool {

@@ -169,12 +169,11 @@ class HomeController: UIViewController {
             Digits.sharedInstance().logOut()
             try FIRAuth.auth()?.signOut()
             print("User Logged Out")
-            
             // navigate to login
             self.navigationController!.popViewControllerAnimated(true)
             
         } catch {
-            print("Logout error")
+            print(error)
         }
     }
     

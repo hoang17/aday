@@ -12,6 +12,7 @@ class User: NSObject {
     var fabric: String
     var phone: String
     var fb: String
+    var clips: [Clip]?
     
     init(uid: String, name:String, email: String, fabric: String, phone: String, fb:String) {
         self.uid = uid

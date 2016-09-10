@@ -107,7 +107,7 @@ class FeedsController: UITableViewController, MGSwipeTableCellDelegate, UIAction
         
         let color: UIColor = UIColor(red: 47 / 255.0, green: 47 / 255.0, blue: 49 / 255.0, alpha: 1.0)
         let redcolor = UIColor(red: 1.0, green: 59 / 255.0, blue: 50 / 255.0, alpha: 1.0)
-        let greencolor = UIColor(red: 33 / 255.0, green: 175 / 255.0, blue: 67 / 255.0, alpha: 1.0)
+//        let greencolor = UIColor(red: 33 / 255.0, green: 175 / 255.0, blue: 67 / 255.0, alpha: 1.0)
         
         expansionSettings.buttonIndex = 0
         expansionSettings.threshold = 1.0
