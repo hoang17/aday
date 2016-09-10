@@ -48,7 +48,7 @@ class HomeController: UIViewController {
         
         // Sync contacts button
         let button1 = UIButton(type: .System)
-        button1.setTitle("My Contacts", forState: .Normal)
+        button1.setTitle("Sync Contacts", forState: .Normal)
         button1.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
         button1.backgroundColor = view.tintColor
         button1.layer.cornerRadius = 3
@@ -62,7 +62,7 @@ class HomeController: UIViewController {
 
         // Sync facebook friends
         let button3 = UIButton(type: .System)
-        button3.setTitle("Load Friends", forState: .Normal)
+        button3.setTitle("Sync Friends", forState: .Normal)
         button3.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
         button3.backgroundColor = view.tintColor
         button3.layer.cornerRadius = 3
@@ -88,9 +88,9 @@ class HomeController: UIViewController {
             make.right.equalTo(self.view).offset(-50)
         }
         
-        // Make clip
+        // New clip
         let button4 = UIButton(type: .System)
-        button4.setTitle("Add clip", forState: .Normal)
+        button4.setTitle("New Clip", forState: .Normal)
         button4.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
         button4.backgroundColor = view.tintColor
         button4.layer.cornerRadius = 3
