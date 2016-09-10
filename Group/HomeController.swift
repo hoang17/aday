@@ -69,7 +69,7 @@ class HomeController: UIViewController {
         button3.addTarget(self, action: #selector(syncFacebookFriends), forControlEvents: .TouchUpInside)
         self.view.addSubview(button3)
         button3.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(220)
+            make.top.equalTo(self.view).offset(170)
             make.left.equalTo(self.view).offset(50)
             make.right.equalTo(self.view).offset(-50)
         }
@@ -83,7 +83,7 @@ class HomeController: UIViewController {
         button2.addTarget(self, action: #selector(openMyFriends), forControlEvents: .TouchUpInside)
         self.view.addSubview(button2)
         button2.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(170)
+            make.top.equalTo(self.view).offset(220)
             make.left.equalTo(self.view).offset(50)
             make.right.equalTo(self.view).offset(-50)
         }
