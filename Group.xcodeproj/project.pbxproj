@@ -100,6 +100,7 @@
 			children = (
 				37FEFEBB1D11D33600C078AC /* LoginController.swift */,
 				372D8DB01D125EAE008DBADA /* HomeController.swift */,
+				372D8DB41D12BF2B008DBADA /* FriendsController.swift */,
 				37E00FDC1D16EC4A00B19492 /* Camera */,
 			);
 			name = Controllers;
@@ -108,7 +109,6 @@
 		37E00FDC1D16EC4A00B19492 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
-				372D8DB41D12BF2B008DBADA /* FriendsController.swift */,
 				371068D91D7DE0A000BDFC42 /* CameraViewController.swift */,
 				371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */,
 				371068E11D83003100BDFC42 /* CameraPlaybackController.swift */,
