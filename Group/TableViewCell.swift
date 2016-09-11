@@ -25,6 +25,9 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         
         profileImg.origin = CGPoint(x: 10, y: 15)
         profileImg.size = CGSize(width: 40, height: 40)
+        profileImg.layer.cornerRadius = profileImg.frame.height/2
+        profileImg.layer.masksToBounds = false
+        profileImg.clipsToBounds = true
     
         label.origin = CGPoint(x: 60, y: 15)
         label.size = CGSize(width: self.width, height: 40)
@@ -32,8 +35,11 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         label.textColor = UIColor.blackColor()
         label.font = UIFont.systemFontOfSize(14)
 //        label.backgroundColor = UIColor.lightGrayColor()
+        
+        
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
+        layout.minimumInteritemSpacing = 3
         
         collectionView = UICollectionView(frame: self.bounds, collectionViewLayout: layout)
         collectionView.origin.y = 55
@@ -42,6 +48,8 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         collectionView.dataSource = self
         collectionView.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "CollectionViewCell")
         collectionView.backgroundColor = UIColor.clearColor()
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
+
         
         self.addSubview(profileImg)
         self.addSubview(label)
@@ -79,6 +87,9 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cell.layer.addSublayer(mp.playerLayer)
         cell.addSubview(mp.textField);
         cell.bringSubviewToFront(mp.textField)
+        cell.layer.cornerRadius = 5
+        cell.layer.masksToBounds = false
+        cell.clipsToBounds = true
         
         return cell
     }
