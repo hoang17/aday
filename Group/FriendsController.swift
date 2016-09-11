@@ -15,6 +15,9 @@ class FriendsController: UITableViewController {
     var friends = [User]()
     
     var reuseIdentifier = "cell"
+    
+    var myGroup = dispatch_group_create()
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,10 +43,11 @@ class FriendsController: UITableViewController {
         
         print("...loading friends for user \(userID)...")
         
-        ref.child("user-friends/\(userID)").observeEventType(.Value, withBlock: { snapshot in
+//        ref.child("user-friends/\(userID)").observeEventType(.Value, withBlock: { snapshot in
+        ref.child("users").observeEventType(.Value, withBlock: { snapshot in
             print("...returning friends...")
             for item in snapshot.children {
-                let uid = item.value["uid"] as! String
+                let uid = item.key!
                 let name = item.value["name"] as! String
                 let email = item.value["email"] as! String
                 let phone = item.value["phone"] as! String
@@ -51,6 +55,13 @@ class FriendsController: UITableViewController {
                 let fb = item.value["fb"] as! String
                 let friend = User(uid: uid, name:name, email:email, fabric:fabric, phone:phone, fb:fb)
                 self.friends.append(friend)
+            }
+            print("...loaded \(self.friends.count) friends")
+            
+            // Load clips
+            for friend in self.friends{
+                
+                dispatch_group_enter(self.myGroup)
                 
                 print("...loading clips for friend \(friend.uid)...")
                 ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).observeEventType(.Value, withBlock: { snapshot in
@@ -64,18 +75,21 @@ class FriendsController: UITableViewController {
                         clips.append(clip)
                     }
                     
-                    print("...loaded \(clips.count) clip")
+                    print("...loaded \(clips.count) clips")
                     
                     friend.clips = clips
                     
                     self.downloadClips(clips)
                     
-                    self.tableView.reloadData()
+                    dispatch_group_leave(self.myGroup)
                     
                 })
                 
-            }
-            print("...loaded \(self.friends.count) friends")
+                dispatch_group_notify(self.myGroup, dispatch_get_main_queue(), {
+                    self.tableView.reloadData()
+                })
+            }            
+
         })
         
     }
