@@ -120,7 +120,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
                 let uid = FIRAuth.auth()?.currentUser?.uid
                 let fname = uploadFile
                 let txt = self.textField.text
-                let y = self.textLocation.y
+                let y = self.textLocation.y/self.view.frame.height
                 let clip = Clip(id: id, uid: uid!, fname: fname, txt: txt!, y: y)
                 ref.child(id).setValue(clip.toAnyObject())
                 

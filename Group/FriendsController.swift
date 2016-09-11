@@ -118,6 +118,7 @@ class FriendsController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! TableViewCell
+        cell.controller = self
         cell.clips = friends[indexPath.row].clips
         cell.backgroundColor = UIColor.groupTableViewBackgroundColor()
         return cell

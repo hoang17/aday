@@ -85,6 +85,17 @@ class HomeController: UIViewController {
 
     func syncContacts() {
         // TODO
+        
+        let ref = FIRDatabase.database().reference().child("clips")
+        
+        ref.queryOrderedByChild("uid").observeSingleEventOfType(.Value, withBlock: { snapshot in
+            for item in snapshot.children {
+                let clip = Clip(snapshot: item as! FIRDataSnapshot)
+                clip.y = clip.y/568
+                ref.child(clip.id).setValue(clip.toAnyObject())
+            }
+        })
+        
     }
     
     func openMyProfile() {

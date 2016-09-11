@@ -16,6 +16,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     var clips: [Clip]?
     let cellWidth = 150
     let cellHeight = 266
+    weak var controller: UIViewController?
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -67,6 +68,16 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         
         return cell
     }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        
+//        let friend = friends[indexPath.row]
+        let cameraPlayback = CameraPlaybackController()
+        cameraPlayback.clips = self.clips!
+        cameraPlayback.playerIndex = indexPath.row
+        self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
+    }
+    
 }
 
 class MiniPlayer: NSObject {
@@ -84,23 +95,25 @@ class MiniPlayer: NSObject {
         player = AVPlayer(URL: fileUrl)
         playerLayer = AVPlayerLayer(player: player)
         playerLayer.frame = frame
+        
         //        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
         //                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
         //                                                         object: player!.currentItem)
         //        player!.play()
         
-        textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-        textField.textColor = UIColor.whiteColor()
-        textField.font = UIFont.systemFontOfSize(11.0)
-        textField.textAlignment = NSTextAlignment.Center
-        textField.height = 20
-        textField.width = frame.width
-        textField.userInteractionEnabled = false
-        textField.text = clip.txt
-        //        textField.center.y = clips![indexPath.row].y
-        
-        if (textField.text == "") {
+        if (clip.txt == ""){
             textField.hidden = true
+        }
+        else {
+            textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+            textField.textColor = UIColor.whiteColor()
+            textField.font = UIFont.systemFontOfSize(10)
+            textField.textAlignment = NSTextAlignment.Center
+            textField.height = 20
+            textField.width = frame.width
+            textField.userInteractionEnabled = false
+            textField.text = clip.txt
+            textField.center.y =  frame.height * clip.y
         }
     }
 }

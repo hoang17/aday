@@ -58,7 +58,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         textField.width = UIScreen.mainScreen().bounds.width
         textField.userInteractionEnabled = false
         textField.text = clips[playerIndex].txt
-        textField.center.y = clips[playerIndex].y
+        textField.center.y = playerLayer!.frame.height * clips[playerIndex].y
         
         if (textField.text == "") {
             textField.hidden = true
@@ -118,7 +118,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         playerIndex -= 1
         
         textField.text = clips[playerIndex].txt
-        textField.center.y = clips[playerIndex].y
+        textField.center.y = playerLayer!.frame.height * clips[playerIndex].y
         textField.hidden = textField.text == ""
         
         let outputPath = NSTemporaryDirectory() + clips[playerIndex].fname
@@ -139,7 +139,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         playerIndex += 1
         
         textField.text = clips[playerIndex].txt
-        textField.center.y = clips[playerIndex].y
+        textField.center.y = playerLayer!.frame.height * clips[playerIndex].y
         textField.hidden = textField.text == ""
         
         playerLayer?.removeFromSuperlayer()
