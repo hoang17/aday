@@ -11,9 +11,9 @@ target 'Group' do
     pod 'FBSDKCoreKit'
     pod 'FBSDKLoginKit'
     pod 'FBSDKShareKit'
-    pod 'SnapKit'
     pod 'ESTabBarController'
     pod 'UIColor-HexString'
     pod 'DateTools'
+    pod 'SnapKit'
     pod 'jot'
 end

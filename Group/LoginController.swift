@@ -9,7 +9,6 @@ import Crashlytics
 import DigitsKit
 import FBSDKCoreKit
 import FBSDKLoginKit
-import SnapKit
 
 class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 

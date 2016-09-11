@@ -8,11 +8,11 @@
 
 import AVKit
 import AVFoundation
-import SnapKit
 import FirebaseDatabase
 import FirebaseStorage
 import FirebaseAuth
 import DigitsKit
+import SnapKit
 
 class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
 
@@ -70,11 +70,11 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         textField.textColor = UIColor.whiteColor()
-        textField.font = UIFont.systemFontOfSize(17.0)
+        textField.font = UIFont.systemFontOfSize(16.0)
         textField.textAlignment = NSTextAlignment.Center
         textField.text = ""
         textField.hidden = true
-        textField.height = 36
+        textField.height = 34
         textField.width = UIScreen.mainScreen().bounds.width
         textField.delegate = self
         textField.returnKeyType = UIReturnKeyType.Done

@@ -31,6 +31,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Facebook setup
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 
+//        for name in UIFont.familyNames() {
+//            print(name)
+//            print(UIFont.fontNamesForFamilyName(name))
+//        }
+        
         // Setup font
 //        UITextField.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
 //        UITextView.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)

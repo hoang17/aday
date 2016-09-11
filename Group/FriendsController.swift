@@ -3,7 +3,6 @@
 //
 
 import UIKit
-import SnapKit
 import Contacts
 import FBSDKCoreKit
 import FirebaseAuth

@@ -8,10 +8,10 @@
 
 import AVKit
 import AVFoundation
-import SnapKit
 import FirebaseStorage
 import FirebaseAuth
 import DigitsKit
+import DateTools
 
 class CameraPlaybackController: UIViewController, UITextFieldDelegate {
 
@@ -55,9 +55,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         textField.textColor = UIColor.whiteColor()
-        textField.font = UIFont.systemFontOfSize(17.0)
+        textField.font = UIFont.systemFontOfSize(16.0)
         textField.textAlignment = NSTextAlignment.Center
-        textField.height = 36
+        textField.height = 34
         textField.width = UIScreen.mainScreen().bounds.width
         textField.userInteractionEnabled = false
         textField.text = clips[playerIndex].txt
@@ -84,14 +84,18 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         profileImg.clipsToBounds = true
         
         nameLabel.origin = CGPoint(x: 60, y: 20)
-        nameLabel.height = 25
+        nameLabel.height = 28
         nameLabel.textColor = UIColor.whiteColor()
-        nameLabel.font = UIFont.boldSystemFontOfSize(12)
+//        nameLabel.font = UIFont(name: "SourceSansPro-Bold", size: 12.0)
+        nameLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
+//        nameLabel.font = UIFont.boldSystemFontOfSize(12)
         
         dateLabel.origin.y = 20
+        dateLabel.text = NSDate(timeIntervalSince1970: clips[playerIndex].date).shortTimeAgoSinceNow()
         dateLabel.size = CGSize(width: 50, height: nameLabel.height)
-        dateLabel.textColor = UIColor(white: 1, alpha: 0.5)
-        dateLabel.font = UIFont.systemFontOfSize(12)
+        dateLabel.textColor = UIColor(white: 1, alpha: 0.6)
+        dateLabel.font = UIFont(name: "OpenSans", size: 12.0)
+//        dateLabel.font = UIFont.systemFontOfSize(12)
         
         view.addSubview(profileImg)
         view.addSubview(nameLabel)

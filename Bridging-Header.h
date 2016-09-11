@@ -9,7 +9,6 @@
 #ifndef Connect_Bridging_Header_h
 #define Connect_Bridging_Header_h
 
-#import <ESTabBarController/ESTabBarController.h>
-//#import <UIColor-HexString/UIColor+HexString.h>
+//#import <ESTabBarController/ESTabBarController.h>
 
 #endif /* Connect_Bridging_Header_h */

@@ -8,7 +8,7 @@ import FirebaseDatabase
 import Crashlytics
 import DigitsKit
 import FBSDKLoginKit
-import SnapKit
+//import SnapKit
 
 class HomeController: UIViewController {
     
