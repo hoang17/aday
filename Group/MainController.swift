@@ -33,9 +33,8 @@ class MainController: UIViewController {
         
         // View controllers.
         tabBarController.setViewController(FriendsController(), atIndex: 0)
-        tabBarController.setViewController(HomeController(), atIndex: 1)
-//        tabBarController.setViewController(MapViewController(), atIndex: 3)
-//        tabBarController.setViewController(GlobeViewController(), atIndex: 4)
+        tabBarController.setViewController(LoginController(), atIndex: 1)
+        tabBarController.setViewController(HomeController(), atIndex: 4)
         
         tabBarController.setAction({
             self.presentViewController(CameraViewController(), animated: true, completion: nil)

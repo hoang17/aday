@@ -108,10 +108,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         }
     }
     
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

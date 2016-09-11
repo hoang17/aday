@@ -74,39 +74,6 @@ class HomeController: UIViewController {
             make.right.equalTo(self.view).offset(-50)
         }
         
-//        // My Friends
-//        let button2 = UIButton(type: .System)
-//        button2.setTitle("My Friends", forState: .Normal)
-//        button2.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-//        button2.backgroundColor = view.tintColor
-//        button2.layer.cornerRadius = 3
-//        button2.addTarget(self, action: #selector(openMyFriends), forControlEvents: .TouchUpInside)
-//        self.view.addSubview(button2)
-//        button2.snp_makeConstraints { (make) -> Void in
-//            make.top.equalTo(self.view).offset(220)
-//            make.left.equalTo(self.view).offset(50)
-//            make.right.equalTo(self.view).offset(-50)
-//        }
-        
-        // New clip
-        let button4 = UIButton(type: .System)
-        button4.setTitle("New Clip", forState: .Normal)
-        button4.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-        button4.backgroundColor = view.tintColor
-        button4.layer.cornerRadius = 3
-        button4.addTarget(self, action: #selector(addVideo), forControlEvents: .TouchUpInside)
-        self.view.addSubview(button4)
-        button4.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(270)
-            make.left.equalTo(self.view).offset(50)
-            make.right.equalTo(self.view).offset(-50)
-        }
-        
-    }
-
-    func addVideo() {
-        let cameraView = CameraViewController()
-        self.presentViewController(cameraView, animated: true, completion: nil)
     }
 
     func syncFacebookFriends(){
@@ -116,11 +83,6 @@ class HomeController: UIViewController {
         }
     }
 
-//    func openMyFriends() {
-//        let navViewController = self.parentViewController as! UINavigationController;
-//        navViewController.pushViewController(FriendsController(), animated: true)
-//    }
-    
     func syncContacts() {
         // TODO
     }
@@ -139,22 +101,12 @@ class HomeController: UIViewController {
             Digits.sharedInstance().logOut()
             try FIRAuth.auth()?.signOut()
             print("User Logged Out")
-            // navigate to login
-//            self.navigationController!.popViewControllerAnimated(true)
+            self.presentViewController(LoginController(), animated: true, completion: nil)
             
         } catch {
             print(error)
         }
     }
-    
-    override func prefersStatusBarHidden() -> Bool {
-        return true
-    }
-    
-//    override func viewDidAppear(animated: Bool) {
-//        super.viewDidAppear(animated)
-//        self.navigationController!.setNavigationBarHidden(true, animated: false)
-//    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
