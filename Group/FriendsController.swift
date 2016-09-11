@@ -25,12 +25,14 @@ class FriendsController: UITableViewController {
         
         // Setup friends table
         
-        tableView.rowHeight = 30
+        tableView.rowHeight = 280
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         tableView.layoutMargins = UIEdgeInsetsZero
         tableView.separatorInset = UIEdgeInsetsZero
+        tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
+
+        tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
 
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
@@ -67,10 +69,12 @@ class FriendsController: UITableViewController {
                     friend.clips = clips
                     
                     self.downloadClips(clips)
+                    
+                    self.tableView.reloadData()
+                    
                 })
                 
             }
-            self.tableView.reloadData()
             print("...loaded \(self.friends.count) friends")
         })
         
@@ -107,15 +111,22 @@ class FriendsController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return 20
         return friends.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier)
-        cell?.textLabel?.text = friends[indexPath.row].name
-//        cell?.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
-        cell?.layoutMargins = UIEdgeInsetsZero
-        return cell!
+        
+        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! TableViewCell
+        cell.clips = friends[indexPath.row].clips
+        cell.backgroundColor = UIColor.groupTableViewBackgroundColor()
+        return cell
+        
+//        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier)
+//        cell?.textLabel?.text = friends[indexPath.row].name
+////        cell?.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
+//        cell?.layoutMargins = UIEdgeInsetsZero
+//        return cell!
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
