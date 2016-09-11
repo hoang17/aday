@@ -14,6 +14,8 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     
     var collectionView: UICollectionView!
     var clips: [Clip]?
+    let cellWidth = 150
+    let cellHeight = 266
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -27,7 +29,6 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         collectionView.dataSource = self
         collectionView.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "CollectionViewCell")
         collectionView.backgroundColor = UIColor.clearColor()
-//        collectionView.contentInset = UIEdgeInsetsMake(10, 0, 10, 0);
         
         self.addSubview(collectionView)
     }
@@ -48,7 +49,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     func collectionView(collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                                sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: 150, height: 260)
+        return CGSize(width: cellWidth, height: cellHeight)
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -59,7 +60,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         if (clip.player == nil){
             clip.player = MiniPlayer(clip: clips![indexPath.row], frame: cell.bounds)
         }
-        let mp = clip.player!        
+        let mp = clip.player!
         cell.layer.addSublayer(mp.playerLayer)
         cell.addSubview(mp.textField);
         cell.bringSubviewToFront(mp.textField)
@@ -93,7 +94,7 @@ class MiniPlayer: NSObject {
         textField.font = UIFont.systemFontOfSize(11.0)
         textField.textAlignment = NSTextAlignment.Center
         textField.height = 20
-        textField.width = 150
+        textField.width = frame.width
         textField.userInteractionEnabled = false
         textField.text = clip.txt
         //        textField.center.y = clips![indexPath.row].y
