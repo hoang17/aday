@@ -146,6 +146,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         textField.text = clips[playerIndex].txt
         textField.center.y = playerLayer.frame.height * clips[playerIndex].y
         textField.hidden = textField.text == ""
+        dateLabel.text = NSDate(timeIntervalSince1970: clips[playerIndex].date).shortTimeAgoSinceNow()
         
         let outputPath = NSTemporaryDirectory() + clips[playerIndex].fname
         let fileUrl = NSURL(fileURLWithPath: outputPath)
@@ -171,6 +172,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         textField.text = clips[playerIndex].txt
         textField.center.y = playerLayer.frame.height * clips[playerIndex].y
         textField.hidden = textField.text == ""
+        dateLabel.text = NSDate(timeIntervalSince1970: clips[playerIndex].date).shortTimeAgoSinceNow()
         
         playerLayer?.removeFromSuperlayer()
         player = nextPlayer

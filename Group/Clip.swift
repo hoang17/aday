@@ -23,7 +23,7 @@ class Clip: NSObject {
         self.fname =  fname
         self.txt = txt
         self.y = y
-        self.date = CACurrentMediaTime()
+        self.date = NSDate().timeIntervalSince1970
     }
     
     init(snapshot: FIRDataSnapshot) {
