@@ -77,20 +77,20 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         swipeDown.direction = UISwipeGestureRecognizerDirection.Down
         view.addGestureRecognizer(swipeDown)
         
-        profileImg.origin = CGPoint(x: 20, y: 20)
+        profileImg.origin = CGPoint(x: 20, y: 17)
         profileImg.size = CGSize(width: 30, height: 30)
         profileImg.layer.cornerRadius = profileImg.frame.height/2
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
         
-        nameLabel.origin = CGPoint(x: 60, y: 20)
+        nameLabel.origin = CGPoint(x: 60, y: profileImg.y)
         nameLabel.height = 28
         nameLabel.textColor = UIColor.whiteColor()
 //        nameLabel.font = UIFont(name: "SourceSansPro-Bold", size: 12.0)
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
 //        nameLabel.font = UIFont.boldSystemFontOfSize(12)
         
-        dateLabel.origin.y = 20
+        dateLabel.origin.y = profileImg.y
         dateLabel.text = NSDate(timeIntervalSince1970: clips[playerIndex].date).shortTimeAgoSinceNow()
         dateLabel.size = CGSize(width: 50, height: nameLabel.height)
         dateLabel.textColor = UIColor(white: 1, alpha: 0.6)
