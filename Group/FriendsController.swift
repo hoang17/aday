@@ -132,21 +132,12 @@ class FriendsController: UITableViewController {
         
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! TableViewCell
         cell.controller = self
-        cell.label.text = friends[indexPath.row].name
+        cell.nameLabel.text = friends[indexPath.row].name
         let url = NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1")
         cell.profileImg.image = UIImage(data: NSData(contentsOfURL: url!)!)
         cell.clips = friends[indexPath.row].clips
 //        cell.backgroundColor = UIColor.groupTableViewBackgroundColor()
         return cell
-    }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        let friend = friends[indexPath.row]
-        let cameraPlayback = CameraPlaybackController()
-        cameraPlayback.clips = friend.clips!
-        self.presentViewController(cameraPlayback, animated: true, completion: nil)
-        
     }
     
     override func didReceiveMemoryWarning() {

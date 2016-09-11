@@ -23,6 +23,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var playerLayer: AVPlayerLayer!
     var nextPlayer: AVPlayer!
     var nextPlayerLayer: AVPlayerLayer!
+    var nameLabel = UILabel()
+    var profileImg = UIImageView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +68,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
 
         
         view.addSubview(textField);
-        view.bringSubviewToFront(textField)
         
         let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
         view.addGestureRecognizer(tap)
@@ -74,6 +75,20 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(swipeDownGesture))
         swipeDown.direction = UISwipeGestureRecognizerDirection.Down
         view.addGestureRecognizer(swipeDown)
+        
+        profileImg.origin = CGPoint(x: 20, y: 20)
+        profileImg.size = CGSize(width: 30, height: 30)
+        profileImg.layer.cornerRadius = profileImg.frame.height/2
+        profileImg.layer.masksToBounds = false
+        profileImg.clipsToBounds = true
+        
+        nameLabel.origin = CGPoint(x: 60, y: 20)
+        nameLabel.size = CGSize(width: self.view.width, height: 30)
+        nameLabel.textColor = UIColor.whiteColor()
+        nameLabel.font = UIFont.systemFontOfSize(13)
+        
+        view.addSubview(profileImg)
+        view.addSubview(nameLabel)
     }
     
     func tapGesture(sender:UITapGestureRecognizer){
@@ -128,6 +143,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         playerLayer.frame = self.view!.bounds
         view.layer.addSublayer(playerLayer)
         view.bringSubviewToFront(textField)
+        view.bringSubviewToFront(profileImg)
+        view.bringSubviewToFront(nameLabel)
+        
         player.play()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
@@ -147,6 +165,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         playerLayer = nextPlayerLayer
         view.layer.addSublayer(playerLayer)
         view.bringSubviewToFront(textField)
+        view.bringSubviewToFront(profileImg)
+        view.bringSubviewToFront(nameLabel)
         player.play()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,

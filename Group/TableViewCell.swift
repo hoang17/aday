@@ -13,7 +13,7 @@ import AVFoundation
 class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
     
     var collectionView: UICollectionView!
-    var label = UILabel()
+    var nameLabel = UILabel()
     var profileImg = UIImageView()
     var clips: [Clip]!
     let cellWidth = 150
@@ -29,13 +29,10 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
     
-        label.origin = CGPoint(x: 60, y: 15)
-        label.size = CGSize(width: self.width, height: 40)
-        label.numberOfLines = 1
-        label.textColor = UIColor.blackColor()
-        label.font = UIFont.systemFontOfSize(14)
-//        label.backgroundColor = UIColor.lightGrayColor()
-        
+        nameLabel.origin = CGPoint(x: 60, y: 15)
+        nameLabel.size = CGSize(width: self.width, height: 40)
+        nameLabel.textColor = UIColor.blackColor()
+        nameLabel.font = UIFont.systemFontOfSize(14)
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
@@ -52,7 +49,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
 
         
         self.addSubview(profileImg)
-        self.addSubview(label)
+        self.addSubview(nameLabel)
         self.addSubview(collectionView)
     }
     
@@ -99,6 +96,10 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         let cameraPlayback = CameraPlaybackController()
         cameraPlayback.clips = self.clips
         cameraPlayback.playerIndex = indexPath.row
+        
+        cameraPlayback.nameLabel.text = nameLabel.text
+        cameraPlayback.profileImg.image = profileImg.image
+        
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
     }
     
