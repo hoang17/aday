@@ -48,13 +48,12 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         collectionView.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "CollectionViewCell")
         collectionView.backgroundColor = UIColor.clearColor()
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
-
         
         self.addSubview(profileImg)
         self.addSubview(nameLabel)
         self.addSubview(collectionView)
     }
-    
+        
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
     }
