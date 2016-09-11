@@ -30,9 +30,9 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         profileImg.clipsToBounds = true
     
         nameLabel.origin = CGPoint(x: 60, y: 15)
-        nameLabel.size = CGSize(width: self.width, height: 40)
+        nameLabel.size = CGSize(width: self.width, height: 35)
         nameLabel.textColor = UIColor.blackColor()
-        nameLabel.font = UIFont.systemFontOfSize(14)
+        nameLabel.font = UIFont.boldSystemFontOfSize(13)
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal

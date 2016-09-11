@@ -83,9 +83,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         profileImg.clipsToBounds = true
         
         nameLabel.origin = CGPoint(x: 60, y: 20)
-        nameLabel.size = CGSize(width: self.view.width, height: 30)
+        nameLabel.size = CGSize(width: self.view.width, height: 28)
         nameLabel.textColor = UIColor.whiteColor()
-        nameLabel.font = UIFont.systemFontOfSize(13)
+        nameLabel.font = UIFont.boldSystemFontOfSize(12)
         
         view.addSubview(profileImg)
         view.addSubview(nameLabel)
