@@ -32,6 +32,7 @@ class FriendsController: UITableViewController {
         tableView.layoutMargins = UIEdgeInsetsZero
         tableView.separatorInset = UIEdgeInsetsZero
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
+        tableView.separatorStyle = .None
 
         tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
 
