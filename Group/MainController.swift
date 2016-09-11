@@ -16,29 +16,28 @@ class MainController: UIViewController {
         
         super.viewDidLoad()
         
-        // The output below is limited by 1 KB.
-        // Please Sign Up (Free!) to remove this limitation.
+        let tabBarController = ESTabBarController(tabIconNames: ["clock", "target", "map"])
         
-        // Instance creation.
-        let tabBarController = ESTabBarController(tabIconNames: ["archive", "clock", "target", "map", "globe"])
+//        let tabBarController = ESTabBarController(tabIconNames: ["archive", "clock", "target", "map", "globe"])
+        
         self.addChildViewController(tabBarController)
         self.view.addSubview(tabBarController.view)
         tabBarController.view.frame = self.view.bounds
         tabBarController.didMoveToParentViewController(self)
-        tabBarController.selectionIndicatorHeight = 2;
+        tabBarController.selectionIndicatorHeight = 3;
         tabBarController.selectedColor = UIColor(hexString: "#CD5B45")
-        tabBarController.buttonsBackgroundColor = UIColor(hexString: "#FFF")
-//        tabBarController.selectedColor = [UIColor blackColor];
-//        tabBarController.buttonsBackgroundColor = [UIColor colorWithHexString:@"#F6EBE0"];
+        tabBarController.buttonsBackgroundColor = UIColor(hexString: "#F6EBE0")
+//        tabBarController.buttonsBackgroundColor = UIColor(hexString: "#FFF")
         
         // View controllers.
         tabBarController.setViewController(FriendsController(), atIndex: 0)
-        tabBarController.setViewController(LoginController(), atIndex: 1)
-        tabBarController.setViewController(HomeController(), atIndex: 4)
+        tabBarController.setViewController(HomeController(), atIndex: 2)
         
         tabBarController.setAction({
             self.presentViewController(CameraViewController(), animated: true, completion: nil)
-        }, atIndex: 2)
+        }, atIndex: 1)
+
+//        tabBarController.highlightButtonAtIndex(1)
         
     }
     
