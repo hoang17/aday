@@ -17,13 +17,8 @@
 		372D8DB71D12C0F8008DBADA /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB61D12C0F8008DBADA /* Friend.swift */; };
 		372D8DB91D1304E7008DBADA /* FacebookLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB81D1304E7008DBADA /* FacebookLoader.swift */; };
 		372D8DBD1D1310D3008DBADA /* Clip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DBC1D1310D3008DBADA /* Clip.swift */; };
-		372D8DC81D13A329008DBADA /* String+FormerDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DC61D13A329008DBADA /* String+FormerDemo.swift */; };
-		372D8DC91D13A329008DBADA /* UIColor+FormerDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DC71D13A329008DBADA /* UIColor+FormerDemo.swift */; };
-		372D8DCC1D13A80F008DBADA /* FormerInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DCB1D13A80F008DBADA /* FormerInputAccessoryView.swift */; };
 		3785F6711D85636B00F32915 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F6701D85636B00F32915 /* MainController.swift */; };
-		37C2C5621D13ED41007B06BF /* DynamicHeightCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C2C5611D13ED41007B06BF /* DynamicHeightCell.swift */; };
 		37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FBE1D14F33700B19492 /* UIView+Frame.swift */; };
-		37E00FC21D154E5B00B19492 /* DynamicHeightCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37E00FC11D154E5B00B19492 /* DynamicHeightCell.xib */; };
 		37E00FDA1D168F5D00B19492 /* more@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E00FD91D168F5D00B19492 /* more@2x.png */; };
 		37FEFEBA1D11D33600C078AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEFEB91D11D33600C078AC /* AppDelegate.swift */; };
 		37FEFEBC1D11D33600C078AC /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEFEBB1D11D33600C078AC /* LoginController.swift */; };
@@ -44,14 +39,9 @@
 		372D8DB61D12C0F8008DBADA /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		372D8DB81D1304E7008DBADA /* FacebookLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacebookLoader.swift; sourceTree = "<group>"; };
 		372D8DBC1D1310D3008DBADA /* Clip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Clip.swift; sourceTree = "<group>"; };
-		372D8DC61D13A329008DBADA /* String+FormerDemo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+FormerDemo.swift"; sourceTree = "<group>"; };
-		372D8DC71D13A329008DBADA /* UIColor+FormerDemo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+FormerDemo.swift"; sourceTree = "<group>"; };
-		372D8DCB1D13A80F008DBADA /* FormerInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormerInputAccessoryView.swift; sourceTree = "<group>"; };
 		3785F6701D85636B00F32915 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		3785F6831D8568B500F32915 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
-		37C2C5611D13ED41007B06BF /* DynamicHeightCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicHeightCell.swift; sourceTree = "<group>"; };
 		37E00FBE1D14F33700B19492 /* UIView+Frame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Frame.swift"; sourceTree = "<group>"; };
-		37E00FC11D154E5B00B19492 /* DynamicHeightCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DynamicHeightCell.xib; sourceTree = "<group>"; };
 		37E00FD91D168F5D00B19492 /* more@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "more@2x.png"; sourceTree = "<group>"; };
 		37FEFEB61D11D33600C078AC /* Group.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Group.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEFEB91D11D33600C078AC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -91,8 +81,6 @@
 			children = (
 				372D8DB81D1304E7008DBADA /* FacebookLoader.swift */,
 				37E00FBE1D14F33700B19492 /* UIView+Frame.swift */,
-				372D8DC61D13A329008DBADA /* String+FormerDemo.swift */,
-				372D8DC71D13A329008DBADA /* UIColor+FormerDemo.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -177,9 +165,6 @@
 			isa = PBXGroup;
 			children = (
 				37FEFEC21D11D33600C078AC /* LaunchScreen.storyboard */,
-				37C2C5611D13ED41007B06BF /* DynamicHeightCell.swift */,
-				37E00FC11D154E5B00B19492 /* DynamicHeightCell.xib */,
-				372D8DCB1D13A80F008DBADA /* FormerInputAccessoryView.swift */,
 			);
 			name = Layouts;
 			sourceTree = "<group>";
@@ -254,7 +239,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37E00FC21D154E5B00B19492 /* DynamicHeightCell.xib in Resources */,
 				37FEFEC41D11D33600C078AC /* LaunchScreen.storyboard in Resources */,
 				37FEFECC1D11D38E00C078AC /* GoogleService-Info.plist in Resources */,
 				37E00FDA1D168F5D00B19492 /* more@2x.png in Resources */,
@@ -331,20 +315,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				371068DA1D7DE0A000BDFC42 /* CameraViewController.swift in Sources */,
-				37C2C5621D13ED41007B06BF /* DynamicHeightCell.swift in Sources */,
-				372D8DCC1D13A80F008DBADA /* FormerInputAccessoryView.swift in Sources */,
 				37FEFED71D123A3700C078AC /* User.swift in Sources */,
 				3785F6711D85636B00F32915 /* MainController.swift in Sources */,
 				372D8DB71D12C0F8008DBADA /* Friend.swift in Sources */,
 				371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */,
 				372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */,
 				37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */,
-				372D8DC81D13A329008DBADA /* String+FormerDemo.swift in Sources */,
 				37FEFEBC1D11D33600C078AC /* LoginController.swift in Sources */,
 				371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */,
 				372D8DB91D1304E7008DBADA /* FacebookLoader.swift in Sources */,
 				37FEFEBA1D11D33600C078AC /* AppDelegate.swift in Sources */,
-				372D8DC91D13A329008DBADA /* UIColor+FormerDemo.swift in Sources */,
 				372D8DB11D125EAE008DBADA /* ProfileController.swift in Sources */,
 				371068E01D80453200BDFC42 /* RecordButton.swift in Sources */,
 				372D8DBD1D1310D3008DBADA /* Clip.swift in Sources */,

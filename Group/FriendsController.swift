@@ -106,11 +106,6 @@ class FriendsController: UITableViewController {
         }
     }
     
-//    override func viewDidAppear(animated: Bool) {
-//        super.viewDidAppear(animated)
-//        self.navigationController!.setNavigationBarHidden(false, animated: true)
-//    }
-    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friends.count
     }
