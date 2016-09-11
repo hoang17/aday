@@ -23,8 +23,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var playerLayer: AVPlayerLayer!
     var nextPlayer: AVPlayer!
     var nextPlayerLayer: AVPlayerLayer!
-    var nameLabel = UILabel()
     var profileImg = UIImageView()
+    var nameLabel = UILabel()
+    var dateLabel = UILabel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,12 +84,18 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         profileImg.clipsToBounds = true
         
         nameLabel.origin = CGPoint(x: 60, y: 20)
-        nameLabel.size = CGSize(width: self.view.width, height: 28)
+        nameLabel.height = 28
         nameLabel.textColor = UIColor.whiteColor()
         nameLabel.font = UIFont.boldSystemFontOfSize(12)
         
+        dateLabel.origin.y = 20
+        dateLabel.size = CGSize(width: 50, height: 25)
+        dateLabel.textColor = UIColor(white: 1, alpha: 0.5)
+        dateLabel.font = UIFont.systemFontOfSize(12)
+        
         view.addSubview(profileImg)
         view.addSubview(nameLabel)
+        view.addSubview(dateLabel)
     }
     
     func tapGesture(sender:UITapGestureRecognizer){
@@ -145,6 +152,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         view.bringSubviewToFront(textField)
         view.bringSubviewToFront(profileImg)
         view.bringSubviewToFront(nameLabel)
+        view.bringSubviewToFront(dateLabel)
         
         player.play()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
@@ -167,6 +175,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         view.bringSubviewToFront(textField)
         view.bringSubviewToFront(profileImg)
         view.bringSubviewToFront(nameLabel)
+        view.bringSubviewToFront(dateLabel)
+        
         player.play()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,

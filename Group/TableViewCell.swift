@@ -98,6 +98,10 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cameraPlayback.playerIndex = indexPath.row
         
         cameraPlayback.nameLabel.text = nameLabel.text
+        let atxt = cameraPlayback.nameLabel.attributedText!.mutableCopy() as! NSMutableAttributedString
+        cameraPlayback.nameLabel.width = atxt.size().width
+        cameraPlayback.dateLabel.x = 55 + cameraPlayback.nameLabel.width
+        cameraPlayback.dateLabel.text = "38m"
         cameraPlayback.profileImg.image = profileImg.image
         
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)

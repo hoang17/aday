@@ -14,5 +14,6 @@ target 'Group' do
     pod 'SnapKit'
     pod 'ESTabBarController'
     pod 'UIColor-HexString'
+    pod 'DateTools'
     pod 'jot'
 end
