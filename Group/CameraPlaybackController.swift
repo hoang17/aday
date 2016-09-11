@@ -84,12 +84,12 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         profileImg.clipsToBounds = true
         
         nameLabel.origin = CGPoint(x: 60, y: 20)
-        nameLabel.height = 28
+        nameLabel.height = 25
         nameLabel.textColor = UIColor.whiteColor()
         nameLabel.font = UIFont.boldSystemFontOfSize(12)
         
         dateLabel.origin.y = 20
-        dateLabel.size = CGSize(width: 50, height: 25)
+        dateLabel.size = CGSize(width: 50, height: nameLabel.height)
         dateLabel.textColor = UIColor(white: 1, alpha: 0.5)
         dateLabel.font = UIFont.systemFontOfSize(12)
         
