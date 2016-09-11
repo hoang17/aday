@@ -16,7 +16,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController!.setNavigationBarHidden(true, animated: false)
+//        self.navigationController!.setNavigationBarHidden(true, animated: false)
         
         // Setup login button
         let loginButton = FBSDKLoginButton()
@@ -91,10 +91,10 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         "phone": (session?.phoneNumber)!]
             FIRDatabase.database().reference().child("users").child(currentUser.uid).setValue(user)
             
-            // navigate to home
-            
-            self.navigationController!.pushViewController(HomeController(), animated: false)
-            self.navigationController!.pushViewController(FriendsController(), animated: true)
+            // navigate to home            
+            self.dismissViewControllerAnimated(true, completion: nil)
+//            self.navigationController!.pushViewController(HomeController(), animated: false)
+//            self.navigationController!.pushViewController(FriendsController(), animated: true)
         }
     }
     

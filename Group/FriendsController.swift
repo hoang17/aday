@@ -21,7 +21,7 @@ class FriendsController: UITableViewController {
         
         view.backgroundColor = .whiteColor()
         
-        self.navigationController!.setNavigationBarHidden(false, animated: true)
+//        self.navigationController!.setNavigationBarHidden(false, animated: true)
         
         // Setup friends table
         
@@ -106,10 +106,10 @@ class FriendsController: UITableViewController {
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        self.navigationController!.setNavigationBarHidden(false, animated: true)
-    }
+//    override func viewDidAppear(animated: Bool) {
+//        super.viewDidAppear(animated)
+//        self.navigationController!.setNavigationBarHidden(false, animated: true)
+//    }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friends.count

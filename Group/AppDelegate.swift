@@ -38,32 +38,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Setup nav controller        
         //let loginController: LoginController = LoginController()
-        let navigationController = UINavigationController()
-        navigationController.navigationBarHidden = false
-        navigationController.hidesBarsOnSwipe = true
+//        let navigationController = UINavigationController()
+//        navigationController.navigationBarHidden = false
+//        navigationController.hidesBarsOnSwipe = true
         
-        if (FBSDKAccessToken.currentAccessToken() != nil && Digits.sharedInstance().session() != nil)
-        {
-            // Setup FirebaseAuth
-            let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
-            FIRAuth.auth()?.signInWithCredential(credential){(currentUser, error) in
-                if (error == nil){
-                    // User already logged in
-                    self.logUser()
-                    navigationController.pushViewController(LoginController(), animated: false)
-                    navigationController.pushViewController(HomeController(), animated: false)
-//                    navigationController.pushViewController(FriendsController(), animated: false)
-                }
-                else{
-                    navigationController.pushViewController(LoginController(), animated: false)
-                }
-            }
-        } else{
-            navigationController.pushViewController(LoginController(), animated: false)
-        }
+//        if (FBSDKAccessToken.currentAccessToken() != nil && Digits.sharedInstance().session() != nil)
+//        {
+//            // Setup FirebaseAuth
+//            let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
+//            FIRAuth.auth()?.signInWithCredential(credential){(currentUser, error) in
+//                if (error == nil){
+//                    // User already logged in
+//                    self.logUser()
+////                    navigationController.pushViewController(LoginController(), animated: false)
+////                    navigationController.pushViewController(HomeController(), animated: false)
+////                    navigationController.pushViewController(FriendsController(), animated: false)
+//                }
+//                else{
+////                    navigationController.pushViewController(LoginController(), animated: false)
+//                }
+//            }
+//        } else{
+////            navigationController.pushViewController(LoginController(), animated: false)
+//        }
         
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        window!.rootViewController = navigationController
+        window!.rootViewController = MainController()
         window!.backgroundColor = UIColor.whiteColor()
         window!.makeKeyAndVisible()
         

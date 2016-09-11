@@ -16,7 +16,7 @@ class HomeController: UIViewController {
         
         super.viewDidLoad()
         
-        self.navigationController!.setNavigationBarHidden(true, animated: true)
+//        self.navigationController!.setNavigationBarHidden(true, animated: true)
         
         // Logout button
         let logoutButton = UIButton(type: .System)
@@ -74,19 +74,19 @@ class HomeController: UIViewController {
             make.right.equalTo(self.view).offset(-50)
         }
         
-        // My Friends
-        let button2 = UIButton(type: .System)
-        button2.setTitle("My Friends", forState: .Normal)
-        button2.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-        button2.backgroundColor = view.tintColor
-        button2.layer.cornerRadius = 3
-        button2.addTarget(self, action: #selector(openMyFriends), forControlEvents: .TouchUpInside)
-        self.view.addSubview(button2)
-        button2.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(220)
-            make.left.equalTo(self.view).offset(50)
-            make.right.equalTo(self.view).offset(-50)
-        }
+//        // My Friends
+//        let button2 = UIButton(type: .System)
+//        button2.setTitle("My Friends", forState: .Normal)
+//        button2.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
+//        button2.backgroundColor = view.tintColor
+//        button2.layer.cornerRadius = 3
+//        button2.addTarget(self, action: #selector(openMyFriends), forControlEvents: .TouchUpInside)
+//        self.view.addSubview(button2)
+//        button2.snp_makeConstraints { (make) -> Void in
+//            make.top.equalTo(self.view).offset(220)
+//            make.left.equalTo(self.view).offset(50)
+//            make.right.equalTo(self.view).offset(-50)
+//        }
         
         // New clip
         let button4 = UIButton(type: .System)
@@ -116,10 +116,10 @@ class HomeController: UIViewController {
         }
     }
 
-    func openMyFriends() {
-        let navViewController = self.parentViewController as! UINavigationController;
-        navViewController.pushViewController(FriendsController(), animated: true)
-    }
+//    func openMyFriends() {
+//        let navViewController = self.parentViewController as! UINavigationController;
+//        navViewController.pushViewController(FriendsController(), animated: true)
+//    }
     
     func syncContacts() {
         // TODO
@@ -140,7 +140,7 @@ class HomeController: UIViewController {
             try FIRAuth.auth()?.signOut()
             print("User Logged Out")
             // navigate to login
-            self.navigationController!.popViewControllerAnimated(true)
+//            self.navigationController!.popViewControllerAnimated(true)
             
         } catch {
             print(error)
@@ -151,10 +151,10 @@ class HomeController: UIViewController {
         return true
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        self.navigationController!.setNavigationBarHidden(true, animated: false)
-    }
+//    override func viewDidAppear(animated: Bool) {
+//        super.viewDidAppear(animated)
+//        self.navigationController!.setNavigationBarHidden(true, animated: false)
+//    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

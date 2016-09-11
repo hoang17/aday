@@ -16,5 +16,7 @@ target 'Group' do
     pod 'Former'
     pod 'YYText'
     pod 'MGSwipeTableCell'
+    pod 'ESTabBarController'
+    pod 'UIColor-HexString'
     pod 'jot'
 end
