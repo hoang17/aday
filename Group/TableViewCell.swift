@@ -13,7 +13,9 @@ import AVFoundation
 class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
     
     var collectionView: UICollectionView!
-    var clips: [Clip]?
+    var label = UILabel()
+    var profileImg = UIImageView()
+    var clips: [Clip]!
     let cellWidth = 150
     let cellHeight = 266
     weak var controller: UIViewController?
@@ -21,16 +23,28 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        profileImg.origin = CGPoint(x: 10, y: 15)
+        profileImg.size = CGSize(width: 40, height: 40)
+    
+        label.origin = CGPoint(x: 60, y: 15)
+        label.size = CGSize(width: self.width, height: 40)
+        label.numberOfLines = 1
+        label.textColor = UIColor.blackColor()
+        label.font = UIFont.systemFontOfSize(14)
+//        label.backgroundColor = UIColor.lightGrayColor()
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
         
         collectionView = UICollectionView(frame: self.bounds, collectionViewLayout: layout)
-        collectionView.height = 280
+        collectionView.origin.y = 55
+        collectionView.height = 290
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "CollectionViewCell")
         collectionView.backgroundColor = UIColor.clearColor()
         
+        self.addSubview(profileImg)
+        self.addSubview(label)
         self.addSubview(collectionView)
     }
     
@@ -71,9 +85,8 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-//        let friend = friends[indexPath.row]
         let cameraPlayback = CameraPlaybackController()
-        cameraPlayback.clips = self.clips!
+        cameraPlayback.clips = self.clips
         cameraPlayback.playerIndex = indexPath.row
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
     }

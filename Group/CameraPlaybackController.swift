@@ -19,10 +19,10 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var clips = [Clip]()
     var playerIndex = 0
-    var player: AVPlayer?
-    var playerLayer: AVPlayerLayer?
-    var nextPlayer: AVPlayer?
-    var nextPlayerLayer: AVPlayerLayer?
+    var player: AVPlayer!
+    var playerLayer: AVPlayerLayer!
+    var nextPlayer: AVPlayer!
+    var nextPlayerLayer: AVPlayerLayer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,13 +33,13 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         player = AVPlayer(URL: fileUrl)
         playerLayer = AVPlayerLayer(player: player)
-        playerLayer!.frame = self.view!.bounds
-        view.layer.addSublayer(playerLayer!)
+        playerLayer.frame = self.view!.bounds
+        view.layer.addSublayer(playerLayer)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object: player!.currentItem)
-        player!.play()
+                                                         object: player.currentItem)
+        player.play()
         
         // Cache next clip
         if (clips.count > playerIndex + 1) {
@@ -47,7 +47,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
             let fileUrl = NSURL(fileURLWithPath: outputPath)
             nextPlayer = AVPlayer(URL: fileUrl)
             nextPlayerLayer = AVPlayerLayer(player: nextPlayer)
-            nextPlayerLayer!.frame = self.view!.bounds
+            nextPlayerLayer.frame = self.view!.bounds
         }
         
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
@@ -58,7 +58,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         textField.width = UIScreen.mainScreen().bounds.width
         textField.userInteractionEnabled = false
         textField.text = clips[playerIndex].txt
-        textField.center.y = playerLayer!.frame.height * clips[playerIndex].y
+        textField.center.y = playerLayer.frame.height * clips[playerIndex].y
         
         if (textField.text == "") {
             textField.hidden = true
@@ -81,7 +81,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         player?.pause()
         NSNotificationCenter.defaultCenter().removeObserver(self,
                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                            object:player!.currentItem)
+                                                            object:player.currentItem)
         
         let location = sender.locationInView(self.view)
         
@@ -106,7 +106,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         player?.pause()
         NSNotificationCenter.defaultCenter().removeObserver(self,
                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                            object:player!.currentItem)
+                                                            object:player.currentItem)
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -118,20 +118,20 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         playerIndex -= 1
         
         textField.text = clips[playerIndex].txt
-        textField.center.y = playerLayer!.frame.height * clips[playerIndex].y
+        textField.center.y = playerLayer.frame.height * clips[playerIndex].y
         textField.hidden = textField.text == ""
         
         let outputPath = NSTemporaryDirectory() + clips[playerIndex].fname
         let fileUrl = NSURL(fileURLWithPath: outputPath)
         player = AVPlayer(URL: fileUrl)
         playerLayer = AVPlayerLayer(player: player)
-        playerLayer!.frame = self.view!.bounds
-        view.layer.addSublayer(playerLayer!)
+        playerLayer.frame = self.view!.bounds
+        view.layer.addSublayer(playerLayer)
         view.bringSubviewToFront(textField)
-        player!.play()
+        player.play()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object: player!.currentItem)
+                                                         object: player.currentItem)
     }
     
     func playNextClip(){
@@ -139,18 +139,18 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         playerIndex += 1
         
         textField.text = clips[playerIndex].txt
-        textField.center.y = playerLayer!.frame.height * clips[playerIndex].y
+        textField.center.y = playerLayer.frame.height * clips[playerIndex].y
         textField.hidden = textField.text == ""
         
         playerLayer?.removeFromSuperlayer()
         player = nextPlayer
         playerLayer = nextPlayerLayer
-        view.layer.addSublayer(playerLayer!)
+        view.layer.addSublayer(playerLayer)
         view.bringSubviewToFront(textField)
-        player!.play()
+        player.play()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object: player!.currentItem)
+                                                         object: player.currentItem)
         
         
         // Cache next clip
@@ -159,7 +159,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
             let fileUrl = NSURL(fileURLWithPath: outputPath)
             nextPlayer = AVPlayer(URL: fileUrl)
             nextPlayerLayer = AVPlayerLayer(player: nextPlayer)
-            nextPlayerLayer!.frame = self.view!.bounds
+            nextPlayerLayer.frame = self.view!.bounds
         }
     }
 

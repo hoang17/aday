@@ -24,11 +24,9 @@ class FriendsController: UITableViewController {
         
         view.backgroundColor = .whiteColor()
         
-//        self.navigationController!.setNavigationBarHidden(false, animated: true)
-        
         // Setup friends table
         
-        tableView.rowHeight = 280
+        tableView.rowHeight = 345
         tableView.delegate = self
         tableView.dataSource = self
         tableView.layoutMargins = UIEdgeInsetsZero
@@ -133,15 +131,12 @@ class FriendsController: UITableViewController {
         
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! TableViewCell
         cell.controller = self
+        cell.label.text = friends[indexPath.row].name
+        let url = NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1")
+        cell.profileImg.image = UIImage(data: NSData(contentsOfURL: url!)!)
         cell.clips = friends[indexPath.row].clips
-        cell.backgroundColor = UIColor.groupTableViewBackgroundColor()
+//        cell.backgroundColor = UIColor.groupTableViewBackgroundColor()
         return cell
-        
-//        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier)
-//        cell?.textLabel?.text = friends[indexPath.row].name
-////        cell?.textLabel?.font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
-//        cell?.layoutMargins = UIEdgeInsetsZero
-//        return cell!
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
