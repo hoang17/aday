@@ -28,4 +28,9 @@ class UserModel: Object {
             clips.append(data)
         }
     }
+    
+    override static func primaryKey() -> String? {
+        return "uid"
+    }
+
 }

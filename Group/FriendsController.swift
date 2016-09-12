@@ -69,6 +69,7 @@ class FriendsController: UITableViewController {
             self.keys[friend.uid] = friend
         }
         
+        var change = false
         
 //        ref.child("user-friends/\(userID)").observeEventType(.Value, withBlock: { snapshot in
         ref.child("users").observeEventType(.Value, withBlock: { snapshot in
@@ -77,6 +78,8 @@ class FriendsController: UITableViewController {
             for item in snapshot.children {
                 
                 if (self.keys[item.key] == nil){
+                    
+                    change = true
                     
                     dispatch_group_enter(self.myGroup)
                 
@@ -110,7 +113,7 @@ class FriendsController: UITableViewController {
                         let data = UserModel()
                         data.load(friend)
                         try! realm.write {
-                            realm.add(data)
+                            realm.add(data, update: true)
                         }
                         
                         self.downloadClips(clips)
@@ -122,7 +125,9 @@ class FriendsController: UITableViewController {
             }
             
             dispatch_group_notify(self.myGroup, dispatch_get_main_queue(), {
-                self.tableView.reloadData()
+                if (change){
+                    self.tableView.reloadData()
+                }
             })
 
             print("...loaded \(self.friends.count) friends")
@@ -141,7 +146,7 @@ class FriendsController: UITableViewController {
         cell.friend = friends[indexPath.row]
 //        cell.backgroundColor = UIColor.groupTableViewBackgroundColor()
 
-        cell.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: 2, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)
+        cell.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: cell.friend.clipIndex, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)
         
         return cell
     }

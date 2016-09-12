@@ -106,14 +106,15 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
         cameraPlayback.profileImg.image = profileImg.image
         
-        if (self.friend.clipIndex > indexPath.row){
-            let data = UserModel()
-            data.load(self.friend)
-            let realm = try! Realm()
+        if (friend.clipIndex < indexPath.row){
+            friend.clipIndex = indexPath.row
+            let realm = try! Realm()            
             try! realm.write {
-                data.clipIndex = indexPath.row
+                realm.create(UserModel.self,
+                    value: ["uid": friend.uid,
+                            "clipIndex": friend.clipIndex],
+                    update: true)
             }
-            self.friend.clipIndex = indexPath.row
         }
         
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
