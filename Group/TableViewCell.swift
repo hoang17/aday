@@ -107,8 +107,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
             collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: index, inSection: 0), atScrollPosition: .CenteredHorizontally, animated: true)
             let clip = clips![index]
             player = clip.player!
-            player.player.seekToTime(kCMTimeZero)
-            player.player.play()
+            player.play()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                              name: AVPlayerItemDidPlayToEndTimeNotification,
                                                              object: clip.player!.player.currentItem)
@@ -117,30 +116,37 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        if player != nil {
-            player.player.pause()
-            player.player.seekToTime(kCMTimeZero)
-            NSNotificationCenter.defaultCenter().removeObserver(self,
-                                                                name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                                object:player.player.currentItem)
-        }
-        
-        index = indexPath.row
-        let clip = clips![indexPath.row]
-        player = clip.player!
-        if player.player.rate != 0 && player.player.error == nil {
-            player.player.pause()
-            player.player.seekToTime(kCMTimeZero)
-            NSNotificationCenter.defaultCenter().removeObserver(self,
-                                                                name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                                object:player.player.currentItem)
-        }
-        else{
-            player.player.seekToTime(kCMTimeZero)
-            player.player.play()
+        if index != indexPath.row || player == nil {
+            if player != nil {
+                player.pause()
+                NSNotificationCenter.defaultCenter().removeObserver(self,
+                                                                    name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                                    object:player.player.currentItem)
+            }
+            
+            index = indexPath.row
+            let clip = clips![indexPath.row]
+            player = clip.player!
+            player.play()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                              name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                             object: clip.player!.player.currentItem)
+                                                             object: player.player.currentItem)
+            
+        }
+        else {
+            if player.playing() {
+                player.pause()
+                NSNotificationCenter.defaultCenter().removeObserver(self,
+                                                                    name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                                    object:player.player.currentItem)
+            }
+            else{
+                player.play()
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+                                                                 name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                                 object: player.player.currentItem)
+                
+            }
             
         }
         
@@ -192,5 +198,19 @@ class MiniPlayer: NSObject {
             textField.text = clip.txt
             textField.center.y =  frame.height * clip.y
         }
+    }
+    
+    func playing() -> Bool {
+        return player.rate != 0 && player.error == nil
+    }
+    
+    func play(){
+        player.seekToTime(kCMTimeZero)
+        player.play()
+    }
+    
+    func pause(){
+        player.pause()
+        player.seekToTime(kCMTimeZero)
     }
 }
