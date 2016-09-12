@@ -10,6 +10,7 @@ import FirebaseDatabase
 import FirebaseStorage
 import RealmSwift
 import Kingfisher
+import AVFoundation
 
 class FriendsController: UITableViewController {
     
@@ -116,8 +117,29 @@ class FriendsController: UITableViewController {
                 ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).queryLimitedToLast(20).observeSingleEventOfType(.Value, withBlock: { snapshot in
                     
                     print("...returning clips...")
-                    
+
                     for item in snapshot.children {
+                        
+//                        // Generate thumb image
+//                        do {
+//                            let clip = Clip(snapshot: item as! FIRDataSnapshot)
+//                            let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
+//                            let imgGenerator = AVAssetImageGenerator(asset: asset)
+//                            imgGenerator.appliesPreferredTrackTransform = true
+//                            let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
+//                            let uiimg = UIImage(CGImage: cgimg)
+//                            let data = UIImageJPEGRepresentation(uiimg, 0.5)
+//                            let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
+//                            
+//                            let fileManager = NSFileManager.defaultManager()
+//                            if fileManager.fileExistsAtPath(filename) {
+//                                try fileManager.removeItemAtPath(filename)
+//                            }
+//                            data!.writeToFile(filename, atomically: true)
+//                            
+//                        } catch {
+//                            print(error)
+//                        }
                         
                         // check if clip has been saved to local
                         let cache = realm.objectForPrimaryKey(ClipModel.self, key: item.key)
@@ -189,18 +211,33 @@ class FriendsController: UITableViewController {
             // Check if file not existed then download
             let filePath = NSTemporaryDirectory() + fileName;
             if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-                
                 print("File existed " + fileName)
-                
-            } else{
+            } else {
                 print("Downloading file \(fileName)...")
                 // File not existed then download
                 let localURL = NSURL(fileURLWithPath: filePath)
                 gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
-                    if (error != nil) {
+                    if error != nil {
                         print(error)
                     } else {
                         print("File downloaded " + fileName)
+                        
+                        // Generate thumb image
+                        do {
+                            let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
+                            let imgGenerator = AVAssetImageGenerator(asset: asset)
+                            imgGenerator.appliesPreferredTrackTransform = true
+                            let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
+                            let uiimg = UIImage(CGImage: cgimg)
+                            let data = UIImageJPEGRepresentation(uiimg, 0.5)
+                            let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
+                            data!.writeToFile(filename, atomically: true)
+                            
+                        } catch {
+                            print(error)
+                        }
+                        
+                        
                     }
                 }
             }

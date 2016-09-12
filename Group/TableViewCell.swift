@@ -86,12 +86,22 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         if clip.player == nil {
             clip.player = MiniPlayer(clip: clips![indexPath.row], frame: cell.bounds)
         }
+//        clip.player!.playerLayer.frame = cell.bounds
         let mp = clip.player!
-        cell.layer.addSublayer(mp.playerLayer)
+//        cell.layer.addSublayer(mp.playerLayer)
+        
+        let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
+        let image = UIImage(contentsOfFile: filename)
+        let img = UIImageView(image: image)
+        img.frame = cell.bounds
+        
+        cell.addSubview(img)        
         cell.addSubview(mp.textField)
         cell.addSubview(mp.dateLabel)
         cell.index = indexPath.row
         cell.tableCell = self
+        
+        
         
         return cell
     }

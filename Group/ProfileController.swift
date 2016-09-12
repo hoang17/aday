@@ -10,7 +10,7 @@ import DigitsKit
 import FBSDKLoginKit
 import AVFoundation
 
-class HomeController: UIViewController {
+class ProfileController: UIViewController {
     
     override func viewDidLoad() {
         
@@ -101,8 +101,8 @@ class HomeController: UIViewController {
                     let uiImage = UIImage(CGImage: cgImage)
                     let imageView = UIImageView(image: uiImage)
                     // lay out this image view, or if it already exists, set its image property to uiImage
-                } catch let error as NSError {
-                    print("Error generating thumbnail: \(error)")
+                } catch {
+                    print(error)
                 }
                 
                 

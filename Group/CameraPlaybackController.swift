@@ -21,19 +21,21 @@ class ClipPlayer: NSObject {
     
     init(clip: Clip, frame: CGRect) {
         self.clip = clip
-        let outputPath = NSTemporaryDirectory() + clip.fname
-        let fileUrl = NSURL(fileURLWithPath: outputPath)
-        player = AVPlayer(URL: fileUrl)
-        playerLayer = AVPlayerLayer(player: player)
+//        let outputPath = NSTemporaryDirectory() + clip.fname
+//        let fileUrl = NSURL(fileURLWithPath: outputPath)
+        player = clip.player!.player
+        playerLayer = clip.player!.playerLayer
         playerLayer.frame = frame
+    }
+    
+    func play(){
+        player.seekToTime(kCMTimeZero)
+        player.play()
     }
     
     func pause(){
         player.pause()
-    }
-    
-    func play(){
-        player.play()
+        player.seekToTime(kCMTimeZero)
     }
 }
 
@@ -45,8 +47,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var playIndex = 0
     
     var player: ClipPlayer!
-    var nextPlayer: ClipPlayer!
-    var prevPlayer: ClipPlayer!
+//    var nextPlayer: ClipPlayer!
+//    var prevPlayer: ClipPlayer!
     
     var profileImg = UIImageView()
     var nameLabel = UILabel()
@@ -67,15 +69,15 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object:player.player.currentItem)
         
-        // Cache next clip
-        if clips.count > playIndex + 1 {
-            nextPlayer = ClipPlayer(clip: clips[playIndex+1], frame: self.view.bounds)
-        }
-
-        // Cache prev clip
-        if playIndex > 0 {
-            prevPlayer = ClipPlayer(clip: clips[playIndex-1], frame: self.view.bounds)
-        }
+//        // Cache next clip
+//        if clips.count > playIndex + 1 {
+//            nextPlayer = ClipPlayer(clip: clips[playIndex+1], frame: self.view.bounds)
+//        }
+//
+//        // Cache prev clip
+//        if playIndex > 0 {
+//            prevPlayer = ClipPlayer(clip: clips[playIndex-1], frame: self.view.bounds)
+//        }
         
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         textField.textColor = UIColor.whiteColor()
@@ -155,11 +157,12 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     
     func playPrevClip(){
         
-        nextPlayer = player
-        
-        player = prevPlayer
+//        nextPlayer = player        
+//        player = prevPlayer
         
         playIndex -= 1
+        
+        player = ClipPlayer(clip: clips[playIndex], frame: self.view.bounds)
         
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y
@@ -179,19 +182,20 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player.player.currentItem)
         
-        // Cache prev clip
-        if playIndex > 0 {
-            prevPlayer = ClipPlayer(clip: clips[playIndex-1], frame: self.view.bounds)
-        }
+//        // Cache prev clip
+//        if playIndex > 0 {
+//            prevPlayer = ClipPlayer(clip: clips[playIndex-1], frame: self.view.bounds)
+//        }
     }
     
     func playNextClip(){
         
-        prevPlayer = player
-        
-        player = nextPlayer
+//        prevPlayer = player        
+//        player = nextPlayer
         
         playIndex += 1
+        
+        player = ClipPlayer(clip: clips[playIndex], frame: self.view.bounds)
         
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y
@@ -212,10 +216,10 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
                                                          object: player.player.currentItem)
         
         
-        // Cache next clip
-        if clips.count > playIndex + 1 {
-            nextPlayer = ClipPlayer(clip: clips[playIndex+1], frame: self.view.bounds)
-        }
+//        // Cache next clip
+//        if clips.count > playIndex + 1 {
+//            nextPlayer = ClipPlayer(clip: clips[playIndex+1], frame: self.view.bounds)
+//        }
     }
 
     func playerDidFinishPlaying(notification: NSNotification) {
@@ -227,6 +231,14 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     }
     
     func close(){
+//        player.playerLayer.frame = CGRect(origin: CGPoint(x: 0,y: 0), size:CGSize(width: 150, height: 266))
+//        if nextPlayer != nil {
+//            nextPlayer.playerLayer.frame = player.playerLayer.frame
+//        }
+//        if prevPlayer != nil {
+//            prevPlayer.playerLayer.frame = player.playerLayer.frame
+//        }
+
         if (friend.clipIndex < playIndex){
             friend.clipIndex = playIndex
             let realm = try! Realm()
