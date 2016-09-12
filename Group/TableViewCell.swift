@@ -81,7 +81,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MiniViewCell", forIndexPath: indexPath) as! MiniViewCell
-        
+
         let clip = clips![indexPath.row]
         if clip.player == nil {
             clip.player = MiniPlayer(clip: clips![indexPath.row], frame: cell.bounds)

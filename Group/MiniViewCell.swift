@@ -26,8 +26,8 @@ class MiniViewCell: UICollectionViewCell {
         self.addGestureRecognizer(tap)
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)!
     }
     
     func tapGesture(sender:UITapGestureRecognizer){
