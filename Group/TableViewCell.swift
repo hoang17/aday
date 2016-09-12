@@ -52,7 +52,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         collectionView.height = 290
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "CollectionViewCell")
+        collectionView.registerClass(MiniViewCell.self, forCellWithReuseIdentifier: "MiniViewCell")
         collectionView.backgroundColor = UIColor.clearColor()
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
         
@@ -74,28 +74,24 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         return clips!.count
     }
     
-    func collectionView(collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                               sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         return CGSize(width: cellWidth, height: cellHeight)
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("CollectionViewCell", forIndexPath: indexPath)
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MiniViewCell", forIndexPath: indexPath) as! MiniViewCell
         
         let clip = clips![indexPath.row]
-        if (clip.player == nil){
+        if clip.player == nil {
             clip.player = MiniPlayer(clip: clips![indexPath.row], frame: cell.bounds)
         }
         let mp = clip.player!
         cell.layer.addSublayer(mp.playerLayer)
-        cell.addSubview(mp.textField);
+        cell.addSubview(mp.textField)
         cell.addSubview(mp.dateLabel)
-        cell.bringSubviewToFront(mp.textField)
-        cell.layer.cornerRadius = 5
-        cell.layer.masksToBounds = false
-        cell.clipsToBounds = true
+        cell.index = indexPath.row
+        cell.tableCell = self
         
         return cell
     }
@@ -118,8 +114,28 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        play(indexPath.row)
+    }
+    
+    func play(playIndex: Int) {
         
-        if index != indexPath.row || player == nil {
+        let cameraPlayback = CameraPlaybackController()
+        cameraPlayback.friend = friend
+        cameraPlayback.clips = self.clips
+        cameraPlayback.playIndex = playIndex
+        cameraPlayback.nameLabel.text = nameLabel.text
+        let atxt = cameraPlayback.nameLabel.attributedText!.mutableCopy() as! NSMutableAttributedString
+        cameraPlayback.nameLabel.width = atxt.size().width
+        cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
+        cameraPlayback.profileImg.image = profileImg.image
+        cameraPlayback.collectionView = self.collectionView
+        
+        self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
+    }
+    
+    func playMini(playIndex: Int){
+        
+        if index != playIndex || player == nil {
             if player != nil {
                 player.pause()
                 NSNotificationCenter.defaultCenter().removeObserver(self,
@@ -127,8 +143,8 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
                                                                     object:player.player.currentItem)
             }
             
-            index = indexPath.row
-            let clip = clips![indexPath.row]
+            index = playIndex
+            let clip = clips![index]
             player = clip.player!
             player.play()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
@@ -153,76 +169,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
             
         }
         
-        collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .CenteredHorizontally, animated: true)
-        
-//        let cameraPlayback = CameraPlaybackController()
-//        cameraPlayback.friend = friend
-//        cameraPlayback.clips = self.clips
-//        cameraPlayback.playerIndex = indexPath.row
-//        cameraPlayback.nameLabel.text = nameLabel.text
-//        let atxt = cameraPlayback.nameLabel.attributedText!.mutableCopy() as! NSMutableAttributedString
-//        cameraPlayback.nameLabel.width = atxt.size().width
-//        cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
-//        cameraPlayback.profileImg.image = profileImg.image
-//        cameraPlayback.collectionView = self.collectionView
-//        
-//        self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
-    }
+        collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: index, inSection: 0), atScrollPosition: .CenteredHorizontally, animated: true)
+    }        
     
-}
-
-class MiniPlayer: NSObject {
-    var clip: Clip
-    var player: AVPlayer
-    var playerLayer: AVPlayerLayer
-    let textField = UITextField()
-    var dateLabel = UILabel()
-    
-    init(clip: Clip, frame: CGRect) {
-        
-        self.clip = clip
-
-        let outputPath = NSTemporaryDirectory() + clip.fname
-        let fileUrl = NSURL(fileURLWithPath: outputPath)
-        player = AVPlayer(URL: fileUrl)
-        playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = frame
-        
-        if (clip.txt == ""){
-            textField.hidden = true
-        }
-        else {
-            textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-            textField.textColor = UIColor.whiteColor()
-            textField.font = UIFont.systemFontOfSize(10)
-            textField.textAlignment = NSTextAlignment.Center
-            textField.height = 20
-            textField.width = frame.width
-            textField.userInteractionEnabled = false
-            textField.text = clip.txt
-            textField.center.y =  frame.height * clip.y
-        }
-        
-        dateLabel.origin = CGPoint(x: 8, y: 8)
-        dateLabel.text = NSDate(timeIntervalSince1970: clip.date).shortTimeAgoSinceNow()
-        dateLabel.size = CGSize(width: 50, height: 14)
-        dateLabel.textColor = UIColor(white: 1, alpha: 0.8)
-        dateLabel.font = UIFont(name: "OpenSans", size: 11.0)
-//        dateLabel.font = UIFont.systemFontOfSize(11)
-        
-    }
-    
-    func playing() -> Bool {
-        return player.rate != 0 && player.error == nil
-    }
-    
-    func play(){
-        player.seekToTime(kCMTimeZero)
-        player.play()
-    }
-    
-    func pause(){
-        player.pause()
-        player.seekToTime(kCMTimeZero)
-    }
 }

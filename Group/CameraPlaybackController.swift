@@ -42,7 +42,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     let textField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var clips = [Clip]()
-    var playerIndex = 0
+    var playIndex = 0
     
     var player: ClipPlayer!
     var nextPlayer: ClipPlayer!
@@ -57,7 +57,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        player = ClipPlayer(clip: clips[playerIndex], frame: self.view.bounds)
+        player = ClipPlayer(clip: clips[playIndex], frame: self.view.bounds)
         
         view.layer.addSublayer(player.playerLayer)
         
@@ -68,13 +68,13 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
                                                          object:player.player.currentItem)
         
         // Cache next clip
-        if clips.count > playerIndex + 1 {
-            nextPlayer = ClipPlayer(clip: clips[playerIndex+1], frame: self.view.bounds)
+        if clips.count > playIndex + 1 {
+            nextPlayer = ClipPlayer(clip: clips[playIndex+1], frame: self.view.bounds)
         }
 
         // Cache prev clip
-        if playerIndex > 0 {
-            prevPlayer = ClipPlayer(clip: clips[playerIndex-1], frame: self.view.bounds)
+        if playIndex > 0 {
+            prevPlayer = ClipPlayer(clip: clips[playIndex-1], frame: self.view.bounds)
         }
         
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
@@ -84,8 +84,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         textField.height = 34
         textField.width = UIScreen.mainScreen().bounds.width
         textField.userInteractionEnabled = false
-        textField.text = clips[playerIndex].txt
-        textField.center.y = self.view.height * clips[playerIndex].y
+        textField.text = clips[playIndex].txt
+        textField.center.y = self.view.height * clips[playIndex].y
         
         if textField.text == "" {
             textField.hidden = true
@@ -103,7 +103,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
         
         dateLabel.origin.y = profileImg.y
-        dateLabel.text = NSDate(timeIntervalSince1970: clips[playerIndex].date).shortTimeAgoSinceNow()
+        dateLabel.text = NSDate(timeIntervalSince1970: clips[playIndex].date).shortTimeAgoSinceNow()
         dateLabel.size = CGSize(width: 50, height: nameLabel.height)
         dateLabel.textColor = UIColor(white: 1, alpha: 0.6)
         dateLabel.font = UIFont(name: "OpenSans", size: 12.0)
@@ -131,13 +131,13 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         let location = sender.locationInView(self.view)
         
         if location.x > 0.25*UIScreen.mainScreen().bounds.width {
-            if clips.count > playerIndex + 1 {
+            if clips.count > playIndex + 1 {
                 playNextClip()
             } else {
                 close()
             }
         } else {
-            if playerIndex > 0 {
+            if playIndex > 0 {
                 playPrevClip()
             } else {
                 close()
@@ -159,12 +159,12 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         player = prevPlayer
         
-        playerIndex -= 1
+        playIndex -= 1
         
-        textField.text = clips[playerIndex].txt
-        textField.center.y = self.view.height * clips[playerIndex].y
+        textField.text = clips[playIndex].txt
+        textField.center.y = self.view.height * clips[playIndex].y
         textField.hidden = textField.text == ""
-        dateLabel.text = NSDate(timeIntervalSince1970: clips[playerIndex].date).shortTimeAgoSinceNow()
+        dateLabel.text = NSDate(timeIntervalSince1970: clips[playIndex].date).shortTimeAgoSinceNow()
         
         view.layer.addSublayer(player.playerLayer)
         
@@ -180,8 +180,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
                                                          object: player.player.currentItem)
         
         // Cache prev clip
-        if playerIndex > 0 {
-            prevPlayer = ClipPlayer(clip: clips[playerIndex-1], frame: self.view.bounds)
+        if playIndex > 0 {
+            prevPlayer = ClipPlayer(clip: clips[playIndex-1], frame: self.view.bounds)
         }
     }
     
@@ -191,12 +191,12 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         player = nextPlayer
         
-        playerIndex += 1
+        playIndex += 1
         
-        textField.text = clips[playerIndex].txt
-        textField.center.y = self.view.height * clips[playerIndex].y
+        textField.text = clips[playIndex].txt
+        textField.center.y = self.view.height * clips[playIndex].y
         textField.hidden = textField.text == ""
-        dateLabel.text = NSDate(timeIntervalSince1970: clips[playerIndex].date).shortTimeAgoSinceNow()
+        dateLabel.text = NSDate(timeIntervalSince1970: clips[playIndex].date).shortTimeAgoSinceNow()
         
         view.layer.addSublayer(player.playerLayer)
         
@@ -213,13 +213,13 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         
         // Cache next clip
-        if clips.count > playerIndex + 1 {
-            nextPlayer = ClipPlayer(clip: clips[playerIndex+1], frame: self.view.bounds)
+        if clips.count > playIndex + 1 {
+            nextPlayer = ClipPlayer(clip: clips[playIndex+1], frame: self.view.bounds)
         }
     }
 
     func playerDidFinishPlaying(notification: NSNotification) {
-        if clips.count > playerIndex + 1 {
+        if clips.count > playIndex + 1 {
             playNextClip()
         } else {
             close()
@@ -227,15 +227,15 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     }
     
     func close(){
-        if (friend.clipIndex < playerIndex){
-            friend.clipIndex = playerIndex
+        if (friend.clipIndex < playIndex){
+            friend.clipIndex = playIndex
             let realm = try! Realm()
             try! realm.write {
                 realm.create(UserModel.self, value: ["uid": friend.uid, "clipIndex": friend.clipIndex], update: true)
             }
         }
         self.dismissViewControllerAnimated(true, completion: nil)
-        collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: playerIndex, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)
+        collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: playIndex, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)
     }
     
     override func prefersStatusBarHidden() -> Bool {
