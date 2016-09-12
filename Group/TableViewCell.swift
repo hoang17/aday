@@ -91,6 +91,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         let mp = clip.player!
         cell.layer.addSublayer(mp.playerLayer)
         cell.addSubview(mp.textField);
+        cell.addSubview(mp.dateLabel)
         cell.bringSubviewToFront(mp.textField)
         cell.layer.cornerRadius = 5
         cell.layer.masksToBounds = false
@@ -175,6 +176,7 @@ class MiniPlayer: NSObject {
     var player: AVPlayer
     var playerLayer: AVPlayerLayer
     let textField = UITextField()
+    var dateLabel = UILabel()
     
     init(clip: Clip, frame: CGRect) {
         
@@ -200,6 +202,14 @@ class MiniPlayer: NSObject {
             textField.text = clip.txt
             textField.center.y =  frame.height * clip.y
         }
+        
+        dateLabel.origin = CGPoint(x: 8, y: 8)
+        dateLabel.text = NSDate(timeIntervalSince1970: clip.date).shortTimeAgoSinceNow()
+        dateLabel.size = CGSize(width: 50, height: 14)
+        dateLabel.textColor = UIColor(white: 1, alpha: 0.8)
+        dateLabel.font = UIFont(name: "OpenSans", size: 11.0)
+//        dateLabel.font = UIFont.systemFontOfSize(11)
+        
     }
     
     func playing() -> Bool {
