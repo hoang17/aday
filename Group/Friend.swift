@@ -6,11 +6,11 @@ import UIKit
 
 class Friend: NSObject {
     
-    var uid: String
+    var fb: String
     var name: String
     
-    init(uid: String, name:String) {
-        self.uid = uid
+    init(fb: String, name:String) {
+        self.fb = fb
         self.name = name
     }
 }

@@ -47,7 +47,7 @@ class LoadFriends: NSObject {
                     let fb = valueDict.valueForKey("id") as! String
                     let name = valueDict.valueForKey("name") as! String
                     
-                    let friend = Friend(uid: fb, name: name)
+                    let friend = Friend(fb: fb, name: name)
                     friends.append(friend)
                     self.updateFriends(fb, name: name)
                 }

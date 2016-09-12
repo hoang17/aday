@@ -12,6 +12,7 @@ class User: NSObject {
     var fabric: String
     var phone: String
     var fb: String
+    var clipIndex:Int = 0
     var clips: [Clip]!
     
     init(uid: String, name:String, email: String, fabric: String, phone: String, fb:String) {
@@ -23,4 +24,18 @@ class User: NSObject {
         self.fb = fb
     }
     
+    init(data: UserModel) {
+        self.uid = data.uid
+        self.name = data.name
+        self.email = data.email
+        self.fabric = data.fabric
+        self.phone = data.phone
+        self.fb = data.fb
+        self.clipIndex = data.clipIndex
+        self.clips = [Clip]()
+        for c in data.clips{
+            let clip = Clip(data: c)
+            clips.append(clip)
+        }
+    }
 }

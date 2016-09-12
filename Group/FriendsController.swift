@@ -8,10 +8,12 @@ import FBSDKCoreKit
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import RealmSwift
 
 class FriendsController: UITableViewController {
     
     var friends = [User]()
+    var keys = [String:User]()
     
     var reuseIdentifier = "cell"
     
@@ -20,6 +22,24 @@ class FriendsController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
+//        let realmURLs = [
+//            realmURL,
+//            realmURL.URLByAppendingPathExtension("lock"),
+//            realmURL.URLByAppendingPathExtension("log_a"),
+//            realmURL.URLByAppendingPathExtension("log_b"),
+//            realmURL.URLByAppendingPathExtension("note")
+//        ]
+//        let manager = NSFileManager.defaultManager()
+//        for URL in realmURLs {
+//            do {
+//                try manager.removeItemAtURL(URL)
+//            } catch {
+//                // handle error
+//            }
+//        }
+        
         
         view.backgroundColor = .whiteColor()
         
@@ -41,53 +61,71 @@ class FriendsController: UITableViewController {
         
         print("...loading friends for user \(userID)...")
         
+        let realm = try! Realm()
+        let list = realm.objects(UserModel.self)
+        for data in list {
+            let friend = User(data: data)
+            self.friends.append(friend)
+            self.keys[friend.uid] = friend
+        }
+        
+        
 //        ref.child("user-friends/\(userID)").observeEventType(.Value, withBlock: { snapshot in
         ref.child("users").observeEventType(.Value, withBlock: { snapshot in
+            
             print("...returning friends...")
             for item in snapshot.children {
-                let uid = item.key!
-                let name = item.value["name"] as! String
-                let email = item.value["email"] as! String
-                let phone = item.value["phone"] as! String
-                let fabric = item.value["fabric"] as! String
-                let fb = item.value["fb"] as! String
-                let friend = User(uid: uid, name:name, email:email, fabric:fabric, phone:phone, fb:fb)
-                self.friends.append(friend)
+                
+                if (self.keys[item.key] == nil){
+                    
+                    dispatch_group_enter(self.myGroup)
+                
+                    let uid = item.key!
+                    let name = item.value["name"] as! String
+                    let email = item.value["email"] as! String
+                    let phone = item.value["phone"] as! String
+                    let fabric = item.value["fabric"] as! String
+                    let fb = item.value["fb"] as! String
+                    let friend = User(uid: uid, name:name, email:email, fabric:fabric, phone:phone, fb:fb)
+                    self.friends.append(friend)
+                    
+                
+                    // Load clips
+                    print("...loading clips for friend \(friend.uid)...")
+                    ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).observeEventType(.Value, withBlock: { snapshot in
+                        
+                        var clips = [Clip]()
+                        
+                        print("...returning clips...")
+                        
+                        for item in snapshot.children {
+                            let clip = Clip(snapshot: item as! FIRDataSnapshot)
+                            clips.append(clip)
+                        }
+                        
+                        print("...loaded \(clips.count) clips")
+                        
+                        friend.clips = clips
+                        
+                        let data = UserModel()
+                        data.load(friend)
+                        try! realm.write {
+                            realm.add(data)
+                        }
+                        
+                        self.downloadClips(clips)
+                        
+                        dispatch_group_leave(self.myGroup)
+                        
+                    })
+                }
             }
-            print("...loaded \(self.friends.count) friends")
             
-            // Load clips
-            for friend in self.friends{
-                
-                dispatch_group_enter(self.myGroup)
-                
-                print("...loading clips for friend \(friend.uid)...")
-                ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).observeEventType(.Value, withBlock: { snapshot in
-                    
-                    var clips = [Clip]()
-                    
-                    print("...returning clips...")
-                    
-                    for item in snapshot.children {
-                        let clip = Clip(snapshot: item as! FIRDataSnapshot)
-                        clips.append(clip)
-                    }
-                    
-                    print("...loaded \(clips.count) clips")
-                    
-                    friend.clips = clips
-                    
-                    self.downloadClips(clips)
-                    
-                    dispatch_group_leave(self.myGroup)
-                    
-                })
-                
-                dispatch_group_notify(self.myGroup, dispatch_get_main_queue(), {
-                    self.tableView.reloadData()
-                })
-            }            
+            dispatch_group_notify(self.myGroup, dispatch_get_main_queue(), {
+                self.tableView.reloadData()
+            })
 
+            print("...loaded \(self.friends.count) friends")
         })
         
     }
@@ -100,6 +138,7 @@ class FriendsController: UITableViewController {
         let url = NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1")
         cell.profileImg.image = UIImage(data: NSData(contentsOfURL: url!)!)
         cell.clips = friends[indexPath.row].clips
+        cell.friend = friends[indexPath.row]
 //        cell.backgroundColor = UIColor.groupTableViewBackgroundColor()
 
         cell.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: 2, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)

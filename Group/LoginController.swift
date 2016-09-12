@@ -56,7 +56,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                 let session = Digits.sharedInstance().session()
                 if (session != nil){
                     // Associate the session userID with user model
-                    let user = ["name": currentUser!.displayName!,
+                    let user = ["uid": currentUser!.uid,
+                                "name": currentUser!.displayName!,
                                 "email": currentUser!.email!,
                                 "fb": FBSDKAccessToken.currentAccessToken().userID,
                                 "fabric": (session?.userID)!,
@@ -83,7 +84,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             
             // Associate the session userID with user model
             let currentUser = (FIRAuth.auth()?.currentUser)!
-            let user = ["name": currentUser.displayName!,
+            let user = ["uid": currentUser.uid,
+                        "name": currentUser.displayName!,
                         "email": currentUser.email!,
                         "fb": FBSDKAccessToken.currentAccessToken().userID,
                         "fabric": (session?.userID)!,

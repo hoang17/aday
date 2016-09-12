@@ -9,6 +9,7 @@
 import UIKit
 import AVKit
 import AVFoundation
+import RealmSwift
 
 class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
     
@@ -16,6 +17,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     var nameLabel = UILabel()
     var profileImg = UIImageView()
     var clips: [Clip]!
+    var friend: User!
     let cellWidth = 150
     let cellHeight = 266
     weak var controller: UIViewController?
@@ -103,6 +105,16 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cameraPlayback.nameLabel.width = atxt.size().width
         cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
         cameraPlayback.profileImg.image = profileImg.image
+        
+        if (self.friend.clipIndex > indexPath.row){
+            let data = UserModel()
+            data.load(self.friend)
+            let realm = try! Realm()
+            try! realm.write {
+                data.clipIndex = indexPath.row
+            }
+            self.friend.clipIndex = indexPath.row
+        }
         
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
     }

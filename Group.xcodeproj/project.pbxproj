@@ -14,9 +14,10 @@
 		371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068E11D83003100BDFC42 /* CameraPlaybackController.swift */; };
 		372D8DB11D125EAE008DBADA /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB01D125EAE008DBADA /* ProfileController.swift */; };
 		372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB41D12BF2B008DBADA /* FriendsController.swift */; };
-		372D8DB71D12C0F8008DBADA /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB61D12C0F8008DBADA /* Friend.swift */; };
+		372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB61D12C0F8008DBADA /* UserModel.swift */; };
 		372D8DB91D1304E7008DBADA /* FacebookLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB81D1304E7008DBADA /* FacebookLoader.swift */; };
 		372D8DBD1D1310D3008DBADA /* Clip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DBC1D1310D3008DBADA /* Clip.swift */; };
+		373BD22A1D868BFB00233A58 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373BD2291D868BFB00233A58 /* Friend.swift */; };
 		3785F6711D85636B00F32915 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F6701D85636B00F32915 /* MainController.swift */; };
 		3785F6851D857A0700F32915 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F6841D857A0700F32915 /* TableViewCell.swift */; };
 		3785F70D1D85EB5C00F32915 /* Cabin-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3785F6E61D85EB5C00F32915 /* Cabin-Bold.ttf */; };
@@ -76,6 +77,7 @@
 		3785F76D1D85ED8B00F32915 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3785F7601D85ED8B00F32915 /* Roboto-Regular.ttf */; };
 		3785F76E1D85ED8B00F32915 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3785F7611D85ED8B00F32915 /* Roboto-Thin.ttf */; };
 		3785F76F1D85ED8B00F32915 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3785F7621D85ED8B00F32915 /* Roboto-ThinItalic.ttf */; };
+		3785F7751D861E0900F32915 /* ClipModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F7741D861E0900F32915 /* ClipModel.swift */; };
 		37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FBE1D14F33700B19492 /* UIView+Frame.swift */; };
 		37E00FDA1D168F5D00B19492 /* more@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E00FD91D168F5D00B19492 /* more@2x.png */; };
 		37FEFEBA1D11D33600C078AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEFEB91D11D33600C078AC /* AppDelegate.swift */; };
@@ -107,9 +109,10 @@
 		371068E11D83003100BDFC42 /* CameraPlaybackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPlaybackController.swift; sourceTree = "<group>"; };
 		372D8DB01D125EAE008DBADA /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		372D8DB41D12BF2B008DBADA /* FriendsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
-		372D8DB61D12C0F8008DBADA /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
+		372D8DB61D12C0F8008DBADA /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		372D8DB81D1304E7008DBADA /* FacebookLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacebookLoader.swift; sourceTree = "<group>"; };
 		372D8DBC1D1310D3008DBADA /* Clip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Clip.swift; sourceTree = "<group>"; };
+		373BD2291D868BFB00233A58 /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		3785F6701D85636B00F32915 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		3785F6831D8568B500F32915 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		3785F6841D857A0700F32915 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
@@ -170,6 +173,7 @@
 		3785F7601D85ED8B00F32915 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		3785F7611D85ED8B00F32915 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		3785F7621D85ED8B00F32915 /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
+		3785F7741D861E0900F32915 /* ClipModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipModel.swift; sourceTree = "<group>"; };
 		37E00FBE1D14F33700B19492 /* UIView+Frame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Frame.swift"; sourceTree = "<group>"; };
 		37E00FD91D168F5D00B19492 /* more@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "more@2x.png"; sourceTree = "<group>"; };
 		37FEFEB61D11D33600C078AC /* Group.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Group.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -212,6 +216,15 @@
 				37E00FBE1D14F33700B19492 /* UIView+Frame.swift */,
 			);
 			name = Helpers;
+			sourceTree = "<group>";
+		};
+		37449C801D8685B600EADA55 /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+				372D8DB61D12C0F8008DBADA /* UserModel.swift */,
+				3785F7741D861E0900F32915 /* ClipModel.swift */,
+			);
+			name = DataModel;
 			sourceTree = "<group>";
 		};
 		3785F6861D85EACF00F32915 /* Fonts */ = {
@@ -368,6 +381,7 @@
 		37FEFEB81D11D33600C078AC /* Group */ = {
 			isa = PBXGroup;
 			children = (
+				37449C801D8685B600EADA55 /* DataModel */,
 				3785F6861D85EACF00F32915 /* Fonts */,
 				372D8DC51D13A305008DBADA /* Helpers */,
 				37FEFED51D12397000C078AC /* Layouts */,
@@ -394,8 +408,8 @@
 		37FEFED41D12395800C078AC /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				373BD2291D868BFB00233A58 /* Friend.swift */,
 				37FEFED61D123A3700C078AC /* User.swift */,
-				372D8DB61D12C0F8008DBADA /* Friend.swift */,
 				372D8DBC1D1310D3008DBADA /* Clip.swift */,
 			);
 			name = Models;
@@ -616,15 +630,17 @@
 				371068DA1D7DE0A000BDFC42 /* CameraViewController.swift in Sources */,
 				37FEFED71D123A3700C078AC /* User.swift in Sources */,
 				3785F6711D85636B00F32915 /* MainController.swift in Sources */,
-				372D8DB71D12C0F8008DBADA /* Friend.swift in Sources */,
+				372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */,
 				371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */,
 				372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */,
 				37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */,
 				37FEFEBC1D11D33600C078AC /* LoginController.swift in Sources */,
 				371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */,
+				3785F7751D861E0900F32915 /* ClipModel.swift in Sources */,
 				372D8DB91D1304E7008DBADA /* FacebookLoader.swift in Sources */,
 				37FEFEBA1D11D33600C078AC /* AppDelegate.swift in Sources */,
 				372D8DB11D125EAE008DBADA /* ProfileController.swift in Sources */,
+				373BD22A1D868BFB00233A58 /* Friend.swift in Sources */,
 				371068E01D80453200BDFC42 /* RecordButton.swift in Sources */,
 				372D8DBD1D1310D3008DBADA /* Clip.swift in Sources */,
 			);

@@ -13,7 +13,8 @@ target 'Group' do
     pod 'FBSDKShareKit'
     pod 'ESTabBarController'
     pod 'UIColor-HexString'
-    pod 'DateTools'
     pod 'SnapKit'
+    pod 'DateTools'
+    pod 'RealmSwift'
     pod 'jot'
 end

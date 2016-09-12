@@ -38,6 +38,15 @@ class Clip: NSObject {
         date = snapshot.value!["date"] as! Double
     }
     
+    init(data: ClipModel){
+        self.id = data.id
+        self.uid = data.uid
+        self.fname =  data.fname
+        self.txt = data.txt
+        self.y = CGFloat(data.y)
+        self.date = data.date
+    }
+    
     func toAnyObject() -> AnyObject {
         return [
             "id": id,
