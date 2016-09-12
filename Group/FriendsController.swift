@@ -9,6 +9,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 import RealmSwift
+import Kingfisher
 
 class FriendsController: UITableViewController {
     
@@ -157,8 +158,9 @@ class FriendsController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! TableViewCell
         cell.controller = self
         cell.nameLabel.text = friends[indexPath.row].name
-        let url = NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1")
-        cell.profileImg.image = UIImage(data: NSData(contentsOfURL: url!)!)
+//        let url = NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1")
+//        cell.profileImg.image = UIImage(data: NSData(contentsOfURL: url!)!)
+        cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
         cell.clips = friends[indexPath.row].clips
         cell.friend = friends[indexPath.row]
 //        cell.backgroundColor = UIColor.groupTableViewBackgroundColor()

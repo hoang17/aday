@@ -16,5 +16,6 @@ target 'Group' do
     pod 'SnapKit'
     pod 'DateTools'
     pod 'RealmSwift'
+    pod 'Kingfisher'
     pod 'jot'
 end
