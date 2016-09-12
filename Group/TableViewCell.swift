@@ -34,8 +34,8 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         nameLabel.origin = CGPoint(x: 60, y: 15)
         nameLabel.size = CGSize(width: self.width, height: 35)
         nameLabel.textColor = UIColor.blackColor()
-//        nameLabel.font = UIFont(name: "SourceSansPro-Bold", size: 13.0)
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 13.0)
+//        nameLabel.font = UIFont(name: "SourceSansPro-Bold", size: 13.0)
 //        nameLabel.font = UIFont.boldSystemFontOfSize(13)
         
         let layout = UICollectionViewFlowLayout()
@@ -97,22 +97,15 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
         let cameraPlayback = CameraPlaybackController()
+        cameraPlayback.friend = friend
         cameraPlayback.clips = self.clips
         cameraPlayback.playerIndex = indexPath.row
-        
         cameraPlayback.nameLabel.text = nameLabel.text
         let atxt = cameraPlayback.nameLabel.attributedText!.mutableCopy() as! NSMutableAttributedString
         cameraPlayback.nameLabel.width = atxt.size().width
         cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
         cameraPlayback.profileImg.image = profileImg.image
-        
-        if (friend.clipIndex < indexPath.row){
-            friend.clipIndex = indexPath.row
-            let realm = try! Realm()            
-            try! realm.write {
-                realm.create(UserModel.self, value: ["uid": friend.uid, "clipIndex": friend.clipIndex], update: true)
-            }
-        }
+        cameraPlayback.collectionView = self.collectionView
         
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
     }

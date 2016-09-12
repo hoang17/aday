@@ -15,10 +15,9 @@ class FriendsController: UITableViewController {
     
     var friends = [User]()
     
-    var reuseIdentifier = "cell"
+    var cells = [Int:TableViewCell]()
     
     var myGroup = dispatch_group_create()
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,7 +52,7 @@ class FriendsController: UITableViewController {
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         tableView.separatorStyle = .None
 
-        tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+//        tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
 
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
@@ -155,19 +154,17 @@ class FriendsController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! TableViewCell
-        cell.controller = self
-        cell.nameLabel.text = friends[indexPath.row].name
-//        let url = NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1")
-//        cell.profileImg.image = UIImage(data: NSData(contentsOfURL: url!)!)
-        cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
-        cell.clips = friends[indexPath.row].clips
-        cell.friend = friends[indexPath.row]
-//        cell.backgroundColor = UIColor.groupTableViewBackgroundColor()
-
-        cell.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: cell.friend.clipIndex, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)
-        
-        return cell
+        if cells[indexPath.row] == nil {
+            let cell = TableViewCell()
+            cell.controller = self
+            cell.nameLabel.text = friends[indexPath.row].name
+            cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
+            cell.clips = friends[indexPath.row].clips
+            cell.friend = friends[indexPath.row]
+            cell.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: cell.friend.clipIndex, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)
+            cells[indexPath.row] = cell
+        }
+        return cells[indexPath.row]!
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
