@@ -110,10 +110,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
             friend.clipIndex = indexPath.row
             let realm = try! Realm()            
             try! realm.write {
-                realm.create(UserModel.self,
-                    value: ["uid": friend.uid,
-                            "clipIndex": friend.clipIndex],
-                    update: true)
+                realm.create(UserModel.self, value: ["uid": friend.uid, "clipIndex": friend.clipIndex], update: true)
             }
         }
         

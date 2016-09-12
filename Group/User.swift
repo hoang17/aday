@@ -13,7 +13,7 @@ class User: NSObject {
     var phone: String
     var fb: String
     var clipIndex:Int = 0
-    var clips: [Clip]!
+    var clips = [Clip]()
     
     init(uid: String, name:String, email: String, fabric: String, phone: String, fb:String) {
         self.uid = uid

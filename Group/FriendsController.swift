@@ -13,7 +13,6 @@ import RealmSwift
 class FriendsController: UITableViewController {
     
     var friends = [User]()
-    var keys = [String:User]()
     
     var reuseIdentifier = "cell"
     
@@ -59,17 +58,16 @@ class FriendsController: UITableViewController {
         
         let ref = FIRDatabase.database().reference()
         
-        print("...loading friends for user \(userID)...")
-        
         let realm = try! Realm()
         let list = realm.objects(UserModel.self)
         for data in list {
             let friend = User(data: data)
             self.friends.append(friend)
-            self.keys[friend.uid] = friend
         }
         
         var change = false
+        
+        print("...loading friends for user \(userID)...")
         
 //        ref.child("user-friends/\(userID)").observeEventType(.Value, withBlock: { snapshot in
         ref.child("users").observeEventType(.Value, withBlock: { snapshot in
@@ -77,12 +75,13 @@ class FriendsController: UITableViewController {
             print("...returning friends...")
             for item in snapshot.children {
                 
-                if (self.keys[item.key] == nil){
+                // check if friend has been saved to local
+                let cache = realm.objectForPrimaryKey(UserModel.self, key: item.key)
+                
+                if (cache == nil){
                     
                     change = true
                     
-                    dispatch_group_enter(self.myGroup)
-                
                     let uid = item.key!
                     let name = item.value["name"] as! String
                     let email = item.value["email"] as! String
@@ -92,45 +91,63 @@ class FriendsController: UITableViewController {
                     let friend = User(uid: uid, name:name, email:email, fabric:fabric, phone:phone, fb:fb)
                     self.friends.append(friend)
                     
-                
-                    // Load clips
-                    print("...loading clips for friend \(friend.uid)...")
-                    ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).observeEventType(.Value, withBlock: { snapshot in
-                        
-                        var clips = [Clip]()
-                        
-                        print("...returning clips...")
-                        
-                        for item in snapshot.children {
-                            let clip = Clip(snapshot: item as! FIRDataSnapshot)
-                            clips.append(clip)
-                        }
-                        
-                        print("...loaded \(clips.count) clips")
-                        
-                        friend.clips = clips
-                        
-                        let data = UserModel()
-                        data.load(friend)
-                        try! realm.write {
-                            realm.add(data, update: true)
-                        }
-                        
-                        self.downloadClips(clips)
-                        
-                        dispatch_group_leave(self.myGroup)
-                        
-                    })
+                    let data = UserModel()
+                    data.load(friend)
+                    try! realm.write {
+                        realm.add(data, update: true)
+                    }
                 }
+            }
+            
+            print("...loaded \(self.friends.count) friends")
+            
+            // Load clips
+            for friend in self.friends{
+                
+                dispatch_group_enter(self.myGroup)
+                
+                print("...loading clips for friend \(friend.uid)...")
+                ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).observeEventType(.Value, withBlock: { snapshot in
+                    
+                    print("...returning clips...")
+                    
+                    for item in snapshot.children {
+                        
+                        // check if clip has been saved to local
+                        let cache = realm.objectForPrimaryKey(ClipModel.self, key: item.key)
+                        
+                        if (cache == nil){
+                            
+                            change = true
+                            
+                            let clip = Clip(snapshot: item as! FIRDataSnapshot)
+                            
+                            friend.clips.append(clip)
+                        }
+                    }
+                    
+                    print("...loaded \(friend.clips.count) clips")
+                    
+                    let data = UserModel()
+                    data.load(friend)
+                    try! realm.write {
+                        realm.create(UserModel.self, value: ["uid": data.uid, "clips": data.clips], update: true)
+                    }
+                    
+                    self.downloadClips(friend.clips)
+                    
+                    dispatch_group_leave(self.myGroup)
+                    
+                })
+                
             }
             
             dispatch_group_notify(self.myGroup, dispatch_get_main_queue(), {
                 if (change){
                     self.tableView.reloadData()
                 }
-            })
+            })            
 
-            print("...loaded \(self.friends.count) friends")
         })
         
     }

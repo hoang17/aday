@@ -22,4 +22,9 @@ class ClipModel: Object {
         flag = clip.flag
         date = clip.date
     }
+    
+    override static func primaryKey() -> String? {
+        return "id"
+    }
+    
 }
