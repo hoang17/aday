@@ -45,7 +45,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
-        layout.minimumInteritemSpacing = 3
+        layout.minimumLineSpacing = 3
         
         collectionView = UICollectionView(frame: self.bounds, collectionViewLayout: layout)
         collectionView.origin.y = 55
@@ -60,7 +60,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         self.addSubview(nameLabel)
         self.addSubview(collectionView)
     }
-        
+    
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
     }

@@ -139,9 +139,10 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         
         geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
             
-            // Place details
-            var placeMark: CLPlacemark!
-            placeMark = placemarks?[0]
+            let placeMark: CLPlacemark! = placemarks?[0]
+            if (placeMark == nil){
+                return
+            }
             
             // Address dictionary
             print(placeMark.addressDictionary)
