@@ -13,16 +13,33 @@ import FirebaseStorage
 import FirebaseAuth
 import DigitsKit
 import SnapKit
+import MapKit
 
-class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
+class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLocationManagerDelegate {
 
     let textField = UITextField()
+    let locationField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var outputFileURL:NSURL?
     var fileName = "output.mp4"
+    var gotLo = false
+    var lo = Location()
+
+    let locationManager = CLLocationManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Begin setting location
+        
+        self.locationManager.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
+        }
+        /// End location
 
         let outputPath = NSTemporaryDirectory() + fileName
         outputFileURL = NSURL(fileURLWithPath: outputPath)
@@ -80,13 +97,64 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         textField.returnKeyType = UIReturnKeyType.Done
         textField.userInteractionEnabled = true
         
-        view.addSubview(textField);
+        view.addSubview(textField)
         view.bringSubviewToFront(textField)
+        
+        locationField.origin = CGPoint(x: 0, y: 0.8 * UIScreen.mainScreen().bounds.height)
+        locationField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+        locationField.textColor = UIColor.whiteColor()
+        locationField.font = UIFont.systemFontOfSize(14.0)
+        locationField.textAlignment = NSTextAlignment.Center
+        locationField.height = 32
+        locationField.width = UIScreen.mainScreen().bounds.width
+        locationField.hidden = true
+        
+        view.addSubview(locationField)
+        view.bringSubviewToFront(locationField)
+ 
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
 
         let pan = UIPanGestureRecognizer(target:self, action:#selector(panGesture))
         textField.addGestureRecognizer(pan)
+        
+    }
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if self.gotLo {
+            return
+        }
+        
+        self.gotLo = true
+        
+        let co = manager.location!.coordinate
+        
+        self.lo.latitude = co.latitude
+        self.lo.longitude = co.longitude
+        
+        print("locations = \(co.latitude) \(co.longitude)")
+        
+        let geoCoder = CLGeocoder()
+        let location = CLLocation(latitude: co.latitude, longitude: co.longitude)
+        
+        geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+            
+            // Place details
+            var placeMark: CLPlacemark!
+            placeMark = placemarks?[0]
+            
+            // Address dictionary
+            print(placeMark.addressDictionary)
+            let locationName = placeMark.addressDictionary!["Name"] as! NSString
+            let city = placeMark.addressDictionary!["City"] as! NSString
+            let country = placeMark.addressDictionary!["Country"] as! NSString
+            
+            self.lo.name = "\(locationName), \(city), \(country)"
+            
+            self.locationField.text = self.lo.name
+            self.locationField.hidden = false
+            
+        })
         
     }
     
@@ -121,12 +189,11 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
                 let fname = uploadFile
                 let txt = self.textField.text
                 let y = self.textLocation.y/self.view.frame.height
-                let clip = Clip(id: id, uid: uid!, fname: fname, txt: txt!, y: y)
+                let clip = Clip(id: id, uid: uid!, fname: fname, txt: txt!, y: y, location: self.lo)
                 ref.child(id).setValue(clip.toAnyObject())
                 
-                print("Save clip to db \(id)")
+                print("Clip is saved to db \(id)")
                 
-//                self.back()
             }
         }
     }

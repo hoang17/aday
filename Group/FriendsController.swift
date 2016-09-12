@@ -21,24 +21,29 @@ class FriendsController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
-//        let realmURLs = [
-//            realmURL,
-//            realmURL.URLByAppendingPathExtension("lock"),
-//            realmURL.URLByAppendingPathExtension("log_a"),
-//            realmURL.URLByAppendingPathExtension("log_b"),
-//            realmURL.URLByAppendingPathExtension("note")
-//        ]
-//        let manager = NSFileManager.defaultManager()
-//        for URL in realmURLs {
-//            do {
-//                try manager.removeItemAtURL(URL)
-//            } catch {
-//                // handle error
-//            }
-//        }
-        
+        let realm: Realm
+        do {
+            realm = try Realm()
+        }
+        catch {
+            let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
+            let realmURLs = [
+                realmURL,
+                realmURL.URLByAppendingPathExtension("lock"),
+                realmURL.URLByAppendingPathExtension("log_a"),
+                realmURL.URLByAppendingPathExtension("log_b"),
+                realmURL.URLByAppendingPathExtension("note")
+            ]
+            let manager = NSFileManager.defaultManager()
+            for URL in realmURLs {
+                do {
+                    try manager.removeItemAtURL(URL)
+                } catch {
+                    // handle error
+                }
+            }
+            realm = try! Realm()
+        }
         
         view.backgroundColor = .whiteColor()
         
@@ -55,8 +60,6 @@ class FriendsController: UITableViewController {
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
         let ref = FIRDatabase.database().reference()
-        
-        let realm = try! Realm()
         
 //        try! realm.write {
 //            realm.deleteAll()
@@ -110,7 +113,7 @@ class FriendsController: UITableViewController {
                 dispatch_group_enter(self.myGroup)
                 
                 print("...loading clips for friend \(friend.uid)...")
-                ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).queryLimitedToLast(20).observeEventType(.Value, withBlock: { snapshot in
+                ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).queryLimitedToLast(20).observeSingleEventOfType(.Value, withBlock: { snapshot in
                     
                     print("...returning clips...")
                     

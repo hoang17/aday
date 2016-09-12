@@ -12,6 +12,9 @@ class ClipModel: Object {
     dynamic var y: Float = 0.0
     dynamic var date: Double = 0.0
     dynamic var flag = false
+    dynamic var long: Double = 0
+    dynamic var lat: Double = 0
+    dynamic var lname: String = "" // location name
     
     func load(clip: Clip){
         id = clip.id
@@ -21,6 +24,9 @@ class ClipModel: Object {
         y = Float(clip.y)
         flag = clip.flag
         date = clip.date
+        long = clip.long
+        lat = clip.lat
+        lname = clip.lname
     }
     
     override static func primaryKey() -> String? {

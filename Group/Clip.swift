@@ -6,23 +6,35 @@ import UIKit
 import Foundation
 import FirebaseDatabase
 
+struct Location {
+    var longitude: Double?
+    var latitude: Double?
+    var name: String?
+}
+
 class Clip: NSObject {
     
     var id: String
     var uid: String
-    var fname: String
+    var fname: String // file name
     var txt: String
     var y: CGFloat // text position
     var flag = false
     var date: Double    
     var player: MiniPlayer?
+    var long: Double
+    var lat: Double
+    var lname: String // location name
     
-    init(id: String, uid: String, fname: String, txt: String, y: CGFloat) {
+    init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location:Location) {
         self.id = id
         self.uid = uid
         self.fname =  fname
         self.txt = txt
         self.y = y
+        self.long = location.longitude ?? 0
+        self.lat = location.latitude ?? 0
+        self.lname = location.name ?? ""
         self.date = NSDate().timeIntervalSince1970
     }
     
@@ -36,6 +48,9 @@ class Clip: NSObject {
             flag = snapshot.value!["flag"] as! Bool
         }
         date = snapshot.value!["date"] as! Double
+        long = (snapshot.value!["long"] as? Double) ?? 0
+        lat = (snapshot.value!["lat"] as? Double) ?? 0
+        lname = (snapshot.value!["lname"] as? String) ?? ""
     }
     
     init(data: ClipModel){
@@ -45,6 +60,9 @@ class Clip: NSObject {
         self.txt = data.txt
         self.y = CGFloat(data.y)
         self.date = data.date
+        self.long = data.long
+        self.lat = data.lat
+        self.lname = data.lname
     }
     
     func toAnyObject() -> AnyObject {
@@ -55,6 +73,9 @@ class Clip: NSObject {
             "txt": txt,
             "y": y,
             "flag": flag,
+            "long": long,
+            "lat": lat,
+            "lname": lname,
             "date": date
         ]
     }
