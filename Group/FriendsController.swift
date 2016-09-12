@@ -191,6 +191,12 @@ class FriendsController: UITableViewController {
             cell.friend = friends[indexPath.row]
 //            cell.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: cell.friend.clipIndex, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)
             cells[indexPath.row] = cell
+
+            for clip in cell.clips{
+                if clip.player == nil {
+                    clip.player = MiniPlayer(clip: clip, frame: CGRect(x: 0,y: 0,width: cell.cellWidth, height: cell.cellHeight))
+                }
+            }
         }
         return cells[indexPath.row]!
     }
