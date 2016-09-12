@@ -20,6 +20,9 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     var friend: User!
     let cellWidth = 150
     let cellHeight = 266
+    var player: MiniPlayer!
+    var index: Int = 0
+    
     weak var controller: UIViewController?
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -94,20 +97,67 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         return cell
     }
     
+    func playerDidFinishPlaying(){
+        player.player.seekToTime(kCMTimeZero)
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                            object:player.player.currentItem)
+        if index+1 < clips.count {
+            index += 1
+            collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: index, inSection: 0), atScrollPosition: .CenteredHorizontally, animated: true)
+            let clip = clips![index]
+            player = clip.player!
+            player.player.seekToTime(kCMTimeZero)
+            player.player.play()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                             object: clip.player!.player.currentItem)
+        }
+    }
+    
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        let cameraPlayback = CameraPlaybackController()
-        cameraPlayback.friend = friend
-        cameraPlayback.clips = self.clips
-        cameraPlayback.playerIndex = indexPath.row
-        cameraPlayback.nameLabel.text = nameLabel.text
-        let atxt = cameraPlayback.nameLabel.attributedText!.mutableCopy() as! NSMutableAttributedString
-        cameraPlayback.nameLabel.width = atxt.size().width
-        cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
-        cameraPlayback.profileImg.image = profileImg.image
-        cameraPlayback.collectionView = self.collectionView
+        if player != nil {
+            player.player.pause()
+            player.player.seekToTime(kCMTimeZero)
+            NSNotificationCenter.defaultCenter().removeObserver(self,
+                                                                name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                                object:player.player.currentItem)
+        }
         
-        self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
+        index = indexPath.row
+        let clip = clips![indexPath.row]
+        player = clip.player!
+        if player.player.rate != 0 && player.player.error == nil {
+            player.player.pause()
+            player.player.seekToTime(kCMTimeZero)
+            NSNotificationCenter.defaultCenter().removeObserver(self,
+                                                                name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                                object:player.player.currentItem)
+        }
+        else{
+            player.player.seekToTime(kCMTimeZero)
+            player.player.play()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                             object: clip.player!.player.currentItem)
+            
+        }
+        
+        collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .CenteredHorizontally, animated: true)
+        
+//        let cameraPlayback = CameraPlaybackController()
+//        cameraPlayback.friend = friend
+//        cameraPlayback.clips = self.clips
+//        cameraPlayback.playerIndex = indexPath.row
+//        cameraPlayback.nameLabel.text = nameLabel.text
+//        let atxt = cameraPlayback.nameLabel.attributedText!.mutableCopy() as! NSMutableAttributedString
+//        cameraPlayback.nameLabel.width = atxt.size().width
+//        cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
+//        cameraPlayback.profileImg.image = profileImg.image
+//        cameraPlayback.collectionView = self.collectionView
+//        
+//        self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
     }
     
 }
@@ -127,11 +177,6 @@ class MiniPlayer: NSObject {
         player = AVPlayer(URL: fileUrl)
         playerLayer = AVPlayerLayer(player: player)
         playerLayer.frame = frame
-        
-        //        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-        //                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
-        //                                                         object: player!.currentItem)
-        //        player!.play()
         
         if (clip.txt == ""){
             textField.hidden = true

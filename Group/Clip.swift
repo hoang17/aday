@@ -14,7 +14,7 @@ class Clip: NSObject {
     var txt: String
     var y: CGFloat // text position
     var flag = false
-    var date: Double
+    var date: Double    
     var player: MiniPlayer?
     
     init(id: String, uid: String, fname: String, txt: String, y: CGFloat) {

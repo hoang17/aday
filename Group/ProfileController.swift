@@ -8,7 +8,7 @@ import FirebaseDatabase
 import Crashlytics
 import DigitsKit
 import FBSDKLoginKit
-//import SnapKit
+import AVFoundation
 
 class HomeController: UIViewController {
     
@@ -86,13 +86,27 @@ class HomeController: UIViewController {
     func syncContacts() {
         // TODO
         
+        // Fix clip thumb
         let ref = FIRDatabase.database().reference().child("clips")
         
         ref.queryOrderedByChild("uid").observeSingleEventOfType(.Value, withBlock: { snapshot in
             for item in snapshot.children {
                 let clip = Clip(snapshot: item as! FIRDataSnapshot)
-                clip.y = clip.y/568
-                ref.child(clip.id).setValue(clip.toAnyObject())
+                
+                do {
+                    let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
+                    let imgGenerator = AVAssetImageGenerator(asset: asset)
+                    imgGenerator.appliesPreferredTrackTransform = true
+                    let cgImage = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
+                    let uiImage = UIImage(CGImage: cgImage)
+                    let imageView = UIImageView(image: uiImage)
+                    // lay out this image view, or if it already exists, set its image property to uiImage
+                } catch let error as NSError {
+                    print("Error generating thumbnail: \(error)")
+                }
+                
+                
+//                ref.child(clip.id).setValue(clip.toAnyObject())
             }
         })
         
