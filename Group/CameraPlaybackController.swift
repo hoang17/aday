@@ -18,7 +18,6 @@ class ClipPlayer: NSObject {
     var clip: Clip
     var player: AVPlayer
     var playerLayer: AVPlayerLayer
-    let textField = UITextField()
     
     init(clip: Clip, frame: CGRect) {
         self.clip = clip
@@ -30,7 +29,6 @@ class ClipPlayer: NSObject {
     }
     
     func pause(){
-        player.seekToTime(kCMTimeZero)
         player.pause()
     }
     
@@ -45,7 +43,11 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var clips = [Clip]()
     var playerIndex = 0
-    var players = [Int:ClipPlayer]()
+    
+    var player: ClipPlayer!
+    var nextPlayer: ClipPlayer!
+    var prevPlayer: ClipPlayer!
+    
     var profileImg = UIImageView()
     var nameLabel = UILabel()
     var dateLabel = UILabel()
@@ -55,19 +57,24 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        players[playerIndex] = ClipPlayer(clip: clips[playerIndex], frame: self.view.bounds)
+        player = ClipPlayer(clip: clips[playerIndex], frame: self.view.bounds)
         
-        view.layer.addSublayer(players[playerIndex]!.playerLayer)
+        view.layer.addSublayer(player.playerLayer)
         
-        players[playerIndex]!.play()
+        player.play()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object: players[playerIndex]!.player.currentItem)
+                                                         object:player.player.currentItem)
         
         // Cache next clip
         if clips.count > playerIndex + 1 {
-            players[playerIndex+1] = ClipPlayer(clip: clips[playerIndex+1], frame: self.view.bounds)
+            nextPlayer = ClipPlayer(clip: clips[playerIndex+1], frame: self.view.bounds)
+        }
+
+        // Cache prev clip
+        if playerIndex > 0 {
+            prevPlayer = ClipPlayer(clip: clips[playerIndex-1], frame: self.view.bounds)
         }
         
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
@@ -116,10 +123,10 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     
     func tapGesture(sender:UITapGestureRecognizer){
         
-        players[playerIndex]!.pause()
+        player.pause()
         NSNotificationCenter.defaultCenter().removeObserver(self,
                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                            object:players[playerIndex]!.player.currentItem)
+                                                            object:player.player.currentItem)
         
         let location = sender.locationInView(self.view)
         
@@ -139,14 +146,18 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     }
     
     func swipeDownGesture(){
-        players[playerIndex]!.pause()
+        player.pause()
         NSNotificationCenter.defaultCenter().removeObserver(self,
                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                            object:players[playerIndex]!.player.currentItem)
+                                                            object:player.player.currentItem)
         close()
     }
     
     func playPrevClip(){
+        
+        nextPlayer = player
+        
+        player = prevPlayer
         
         playerIndex -= 1
         
@@ -155,30 +166,30 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         textField.hidden = textField.text == ""
         dateLabel.text = NSDate(timeIntervalSince1970: clips[playerIndex].date).shortTimeAgoSinceNow()
         
-        if players[playerIndex] == nil {
-            players[playerIndex] = ClipPlayer(clip: clips[playerIndex], frame: self.view.bounds)
-        }
-        
-        view.layer.addSublayer(players[playerIndex]!.playerLayer)
+        view.layer.addSublayer(player.playerLayer)
         
         view.bringSubviewToFront(textField)
         view.bringSubviewToFront(profileImg)
         view.bringSubviewToFront(nameLabel)
         view.bringSubviewToFront(dateLabel)
         
-        players[playerIndex]!.play()
+        player.play()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object: players[playerIndex]!.player.currentItem)
+                                                         object: player.player.currentItem)
         
         // Cache prev clip
-        if playerIndex > 0 && players[playerIndex-1] == nil {
-            players[playerIndex-1] = ClipPlayer(clip: clips[playerIndex-1], frame: self.view.bounds)
+        if playerIndex > 0 {
+            prevPlayer = ClipPlayer(clip: clips[playerIndex-1], frame: self.view.bounds)
         }
     }
     
     func playNextClip(){
+        
+        prevPlayer = player
+        
+        player = nextPlayer
         
         playerIndex += 1
         
@@ -187,23 +198,23 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         textField.hidden = textField.text == ""
         dateLabel.text = NSDate(timeIntervalSince1970: clips[playerIndex].date).shortTimeAgoSinceNow()
         
-        view.layer.addSublayer(players[playerIndex]!.playerLayer)
+        view.layer.addSublayer(player.playerLayer)
         
         view.bringSubviewToFront(textField)
         view.bringSubviewToFront(profileImg)
         view.bringSubviewToFront(nameLabel)
         view.bringSubviewToFront(dateLabel)
         
-        players[playerIndex]!.play()
+        player.play()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object: players[playerIndex]!.player.currentItem)
+                                                         object: player.player.currentItem)
         
         
         // Cache next clip
-        if clips.count > playerIndex + 1 && players[playerIndex+1] == nil {
-            players[playerIndex+1] = ClipPlayer(clip: clips[playerIndex+1], frame: self.view.bounds)
+        if clips.count > playerIndex + 1 {
+            nextPlayer = ClipPlayer(clip: clips[playerIndex+1], frame: self.view.bounds)
         }
     }
 
