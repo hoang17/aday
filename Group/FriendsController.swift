@@ -52,13 +52,16 @@ class FriendsController: UITableViewController {
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         tableView.separatorStyle = .None
 
-//        tableView.registerClass(TableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
-
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
         let ref = FIRDatabase.database().reference()
         
         let realm = try! Realm()
+        
+//        try! realm.write {
+//            realm.deleteAll()
+//        }
+
         let list = realm.objects(UserModel.self)
         for data in list {
             let friend = User(data: data)
@@ -107,7 +110,7 @@ class FriendsController: UITableViewController {
                 dispatch_group_enter(self.myGroup)
                 
                 print("...loading clips for friend \(friend.uid)...")
-                ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).observeEventType(.Value, withBlock: { snapshot in
+                ref.child("clips").queryOrderedByChild("uid").queryEqualToValue(friend.uid).queryLimitedToLast(20).observeEventType(.Value, withBlock: { snapshot in
                     
                     print("...returning clips...")
                     

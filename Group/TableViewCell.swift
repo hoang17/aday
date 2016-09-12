@@ -28,6 +28,8 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        self.selectionStyle = .None;
+        
         profileImg.origin = CGPoint(x: 10, y: 15)
         profileImg.size = CGSize(width: 40, height: 40)
         profileImg.layer.cornerRadius = profileImg.frame.height/2
