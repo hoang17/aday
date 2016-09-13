@@ -87,16 +87,9 @@ class FriendsController: UITableViewController {
                 let cache = realm.objectForPrimaryKey(UserModel.self, key: item.key)
                 
                 if (cache == nil){
-                    
                     change = true
                     
-                    let uid = item.key!
-                    let name = item.value["name"] as! String
-                    let email = item.value["email"] as! String
-                    let phone = item.value["phone"] as! String
-                    let fabric = item.value["fabric"] as! String
-                    let fb = item.value["fb"] as! String
-                    let friend = User(uid: uid, name:name, email:email, fabric:fabric, phone:phone, fb:fb)
+                    let friend = User(snapshot: item as! FIRDataSnapshot)
                     self.friends.append(friend)
                     
                     let data = UserModel()
@@ -166,6 +159,7 @@ class FriendsController: UITableViewController {
             let cell = TableViewCell()
             cell.controller = self
             cell.nameLabel.text = friends[indexPath.row].name
+            cell.locationLabel.text = friends[indexPath.row].city + " · " + friends[indexPath.row].country
             cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
             cell.clips = friends[indexPath.row].clips
             cell.friend = friends[indexPath.row]

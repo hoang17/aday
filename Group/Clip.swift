@@ -10,6 +10,10 @@ struct Location {
     var longitude: Double?
     var latitude: Double?
     var name: String?
+    var city: String?
+    var country: String?
+    var sublocal: String?
+    var subarea: String?
 }
 
 class Clip: NSObject {
@@ -24,6 +28,10 @@ class Clip: NSObject {
     var long: Double
     var lat: Double
     var lname: String // location name
+    var city: String
+    var country: String
+    var sublocal: String
+    var subarea: String
     
     init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location:Location) {
         self.id = id
@@ -34,6 +42,10 @@ class Clip: NSObject {
         self.long = location.longitude ?? 0
         self.lat = location.latitude ?? 0
         self.lname = location.name ?? ""
+        self.city = location.city ?? ""
+        self.country = location.country ?? ""
+        self.sublocal = location.sublocal ?? ""
+        self.subarea = location.subarea ?? ""
         self.date = NSDate().timeIntervalSince1970
     }
     
@@ -50,6 +62,10 @@ class Clip: NSObject {
         long = (snapshot.value!["long"] as? Double) ?? 0
         lat = (snapshot.value!["lat"] as? Double) ?? 0
         lname = (snapshot.value!["lname"] as? String) ?? ""
+        city = (snapshot.value!["city"] as? String) ?? ""
+        country = (snapshot.value!["country"] as? String) ?? ""
+        sublocal = (snapshot.value!["sublocal"] as? String) ?? ""
+        subarea = (snapshot.value!["subarea"] as? String) ?? ""
     }
     
     init(data: ClipModel){
@@ -62,6 +78,10 @@ class Clip: NSObject {
         self.long = data.long
         self.lat = data.lat
         self.lname = data.lname
+        self.city = data.city
+        self.country = data.country
+        self.sublocal = data.sublocal
+        self.subarea = data.subarea
     }
     
     func toAnyObject() -> AnyObject {
@@ -75,6 +95,10 @@ class Clip: NSObject {
             "long": long,
             "lat": lat,
             "lname": lname,
+            "city": city,
+            "country": country,
+            "sublocal": sublocal,
+            "subarea": subarea,
             "date": date
         ]
     }

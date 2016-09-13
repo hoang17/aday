@@ -25,6 +25,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     
     var profileImg = UIImageView()
     var nameLabel = UILabel()
+    var locationLabel = UILabel()
     var dateLabel = UILabel()
     var friend: User!
     var collectionView: UICollectionView!
@@ -37,6 +38,11 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
             players[playIndex] = ClipPlayer(clip: clips[playIndex])
         }
         return players[playIndex]
+    }
+    
+    func locationText() -> String {
+        let clip = clips[playIndex]
+        return "\(clip.sublocal), \(clip.subarea) · \(clip.city) · \(clip.country)"
     }
 
     override func viewDidLoad() {
@@ -70,12 +76,18 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
         
-        nameLabel.origin = CGPoint(x: 60, y: profileImg.y)
+        nameLabel.origin = CGPoint(x: 60, y: 12)
         nameLabel.height = 28
         nameLabel.textColor = UIColor.whiteColor()
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
         
-        dateLabel.origin.y = profileImg.y
+        locationLabel.origin = CGPoint(x: 60, y: 35)
+        locationLabel.size = CGSize(width: self.view.width, height: 14)
+        locationLabel.textColor = UIColor(white: 1, alpha: 0.6)
+        locationLabel.font = UIFont(name: "OpenSans", size: 10.0)
+        locationLabel.text = locationText()
+        
+        dateLabel.origin.y = nameLabel.y
         dateLabel.text = NSDate(timeIntervalSince1970: clips[playIndex].date).shortTimeAgoSinceNow()
         dateLabel.size = CGSize(width: 50, height: nameLabel.height)
         dateLabel.textColor = UIColor(white: 1, alpha: 0.6)
@@ -84,6 +96,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         view.addSubview(textField);
         view.addSubview(profileImg)
         view.addSubview(nameLabel)
+        view.addSubview(locationLabel)
         view.addSubview(dateLabel)
         
         let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
@@ -132,6 +145,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         player = playerAtIndex(playIndex)
         
+        locationLabel.text = locationText()
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y
         textField.hidden = textField.text == ""
@@ -143,6 +157,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         view.bringSubviewToFront(profileImg)
         view.bringSubviewToFront(nameLabel)
         view.bringSubviewToFront(dateLabel)
+        view.bringSubviewToFront(locationLabel)
         
         player.play()
         
@@ -161,6 +176,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         player = playerAtIndex(playIndex)
         
+        locationLabel.text = locationText()
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y
         textField.hidden = textField.text == ""
@@ -172,6 +188,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         view.bringSubviewToFront(profileImg)
         view.bringSubviewToFront(nameLabel)
         view.bringSubviewToFront(dateLabel)
+        view.bringSubviewToFront(locationLabel)
         
         player.play()
         

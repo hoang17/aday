@@ -15,6 +15,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     
     var collectionView: UICollectionView!
     var nameLabel = UILabel()
+    var locationLabel = UILabel()
     var profileImg = UIImageView()
     var clips: [Clip]!
     var friend: User!
@@ -24,21 +25,30 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     
     weak var controller: UIViewController?
 
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)!
+    }
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.selectionStyle = .None;
         
-        profileImg.origin = CGPoint(x: 10, y: 15)
+        profileImg.origin = CGPoint(x: 10, y: 13)
         profileImg.size = CGSize(width: 40, height: 40)
         profileImg.layer.cornerRadius = profileImg.frame.height/2
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
     
-        nameLabel.origin = CGPoint(x: 60, y: 15)
+        nameLabel.origin = CGPoint(x: 60, y: 10)
         nameLabel.size = CGSize(width: self.width, height: 35)
         nameLabel.textColor = UIColor.blackColor()
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 13.0)
+        
+        locationLabel.origin = CGPoint(x: 60, y: 36)
+        locationLabel.size = CGSize(width: self.width, height: 14)
+        locationLabel.textColor = UIColor.grayColor()
+        locationLabel.font = UIFont(name: "OpenSans", size: 10.0)
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
@@ -55,11 +65,8 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         
         self.addSubview(profileImg)
         self.addSubview(nameLabel)
+        self.addSubview(locationLabel)
         self.addSubview(collectionView)
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)!
     }
     
     // MARK: UICollectionViewDataSource

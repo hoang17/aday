@@ -12,6 +12,8 @@ class UserModel: Object {
     dynamic var phone: String!
     dynamic var fabric: String!
     dynamic var clipIndex:Int = 0
+    dynamic var city: String!
+    dynamic var country: String!
     let clips = List<ClipModel>()
     
     func load(user: User){
@@ -21,6 +23,8 @@ class UserModel: Object {
         fb = user.fb
         phone = user.phone
         fabric = user.fabric
+        city = user.city
+        country = user.country
         clipIndex = user.clipIndex
         for clip in user.clips{
             let data = ClipModel()

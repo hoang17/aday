@@ -146,13 +146,18 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
             
             // Address dictionary
             print(placeMark.addressDictionary)
-            let locationName = placeMark.addressDictionary!["Name"] as! NSString
-            let city = placeMark.addressDictionary!["City"] as! NSString
-            let country = placeMark.addressDictionary!["Country"] as! NSString
+            let name = placeMark.addressDictionary!["Name"] as! String
+            let city = placeMark.addressDictionary!["City"] as! String
+            let country = placeMark.addressDictionary!["CountryCode"] as! String
+            let sublocal = placeMark.addressDictionary!["SubLocality"] as! String
+            let subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as! String
             
-            self.lo.name = "\(locationName), \(city), \(country)"
-            
-            self.locationField.text = self.lo.name
+            self.lo.name = name
+            self.lo.city = city
+            self.lo.country = country
+            self.lo.sublocal = sublocal
+            self.lo.subarea = subarea
+            self.locationField.text = name + ", " + sublocal + ", " + subarea
             self.locationField.hidden = false
             
         })
