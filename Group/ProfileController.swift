@@ -184,18 +184,30 @@ class ProfileController: FormViewController {
     }
     
     func logOut() {
-        do{
-            FBSDKLoginManager().logOut()
-            Digits.sharedInstance().logOut()
-            try FIRAuth.auth()?.signOut()
-            print("User Logged Out")
-            
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.showLogin()
-            
-        } catch {
-            print(error)
-        }
+        
+        let alert = UIAlertController(title: "Logout", message: "Are you sure you want to logout?", preferredStyle: UIAlertControllerStyle.Alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (action: UIAlertAction!) in
+            do{
+                FBSDKLoginManager().logOut()
+                Digits.sharedInstance().logOut()
+                try FIRAuth.auth()?.signOut()
+                print("user logged out")
+                
+                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                appDelegate.showLogin()
+                
+            } catch {
+                print(error)
+            }
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
+            print("logout cancelled")
+        }))
+                
+        presentViewController(alert, animated: true, completion: nil)
+        
     }
     
     override func didReceiveMemoryWarning() {
