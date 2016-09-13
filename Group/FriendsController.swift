@@ -189,7 +189,6 @@ class FriendsController: UITableViewController {
             cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
             cell.clips = friends[indexPath.row].clips
             cell.friend = friends[indexPath.row]
-//            cell.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: cell.friend.clipIndex, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)
             cells[indexPath.row] = cell
 
             for clip in cell.clips{

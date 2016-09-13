@@ -21,10 +21,10 @@ class Clip: NSObject {
     var y: CGFloat // text position
     var flag = false
     var date: Double    
-    var player: MiniPlayer?
     var long: Double
     var lat: Double
     var lname: String // location name
+    var player: MiniPlayer?
     
     init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location:Location) {
         self.id = id
