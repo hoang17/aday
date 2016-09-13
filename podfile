@@ -17,5 +17,6 @@ target 'Group' do
     pod 'DateTools'
     pod 'RealmSwift'
     pod 'Kingfisher'
+    pod 'Eureka'
     pod 'jot'
 end

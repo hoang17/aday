@@ -9,70 +9,122 @@ import Crashlytics
 import DigitsKit
 import FBSDKLoginKit
 import AVFoundation
+import Eureka
 
-class ProfileController: UIViewController {
+class ProfileController: FormViewController {
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
-//        self.navigationController!.setNavigationBarHidden(true, animated: true)
+        form +++ Section() { section in
+            section.header = {
+                let header = HeaderFooterView<UIView>(.Callback({
+                
+                    let img = UIImageView(frame: CGRect(x: 0, y: 0, width: 90, height: 90))
+                    img.layer.cornerRadius = img.frame.height/2
+                    img.layer.masksToBounds = false
+                    img.clipsToBounds = true
+                    img.contentMode = UIViewContentMode.ScaleAspectFit
+                    img.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(FBSDKAccessToken.currentAccessToken().userID)/picture?type=large&return_ssl_resources=1"))
+                    let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.width, height: 100))
+                    img.center = view.center
+                    img.y += 20
+                    view.addSubview(img)
+                    return view
+                }))
+                return header
+            }()
+        }
+            
+        form +++ Section("My Account")
+            <<< NameRow(){ row in
+                row.title = "Name"
+                row.placeholder = "Enter your name"
+            }
+            <<< AccountRow(){
+                $0.title = "Username"
+                $0.placeholder = "Enter your username"
+            }
+            <<< PhoneRow(){
+                $0.title = "Mobile Number"
+                $0.placeholder = "Enter your mobile number"
+            }
+            <<< EmailRow(){
+                $0.title = "Email"
+                $0.placeholder = "Enter your email address"
+            }
+            <<< PasswordRow(){
+                $0.title = "Password"
+                $0.placeholder = "Enter your password"
+            }
+            <<< DateRow(){
+                $0.title = "Birthday"
+                $0.value = NSDate(timeIntervalSinceReferenceDate: 0)
+            }
+            <<< ButtonRow("Notification"){
+                $0.title = $0.tag
+                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
+                    return CameraViewController()
+                }, completionCallback: nil)
+            }
+            
+            +++ Section("Support")
+            <<< ButtonRow("Help Center"){
+                $0.title = $0.tag
+                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
+                    return CameraViewController()
+                    }, completionCallback: nil)
+                
+            }
+            <<< ButtonRow("Report Issues"){
+                $0.title = $0.tag
+                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
+                    return CameraViewController()
+                    }, completionCallback: nil)
+            }
+            <<< ButtonRow("Send Suggestions"){
+                $0.title = $0.tag
+                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
+                    return CameraViewController()
+                    }, completionCallback: nil)
+            }
+            <<< ButtonRow("Business Contact"){
+                $0.title = $0.tag
+                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
+                    return CameraViewController()
+                    }, completionCallback: nil)
+            }
         
-        // Logout button
-        let logoutButton = UIButton(type: .System)
-        logoutButton.setTitle("Logout", forState: .Normal)
-        logoutButton.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-        logoutButton.backgroundColor = view.tintColor
-        logoutButton.layer.cornerRadius = 3
-        logoutButton.addTarget(self, action: #selector(logOut), forControlEvents: .TouchUpInside)
-        self.view.addSubview(logoutButton)
-        logoutButton.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(20)
-            make.left.equalTo(self.view).offset(50)
-            make.right.equalTo(self.view).offset(-50)
-        }
+            +++ Section("More Information")
+            <<< ButtonRow("Privacy Policy"){
+                $0.title = $0.tag
+                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
+                    return CameraViewController()
+                    }, completionCallback: nil)
+            }
+            <<< ButtonRow("Terms of Service"){
+                $0.title = $0.tag
+                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
+                    return CameraViewController()
+                    }, completionCallback: nil)
+            }
+            
+            +++ Section("Account Actions")
+            <<< ButtonRow("Clear Cache"){
+                $0.title = $0.tag
+                }.onCellSelection({ (cell, row) in
+                    self.clearCache()
+                })
+            <<< ButtonRow("Log Out"){
+                $0.title = $0.tag
+                }.onCellSelection({ (cell, row) in
+                    self.logOut()
+                })
         
-        // My profile button
-        let button = UIButton(type: .System)
-        button.setTitle("My Profile", forState: .Normal)
-        button.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-        button.backgroundColor = view.tintColor
-        button.layer.cornerRadius = 3
-        button.addTarget(self, action: #selector(openMyProfile), forControlEvents: .TouchUpInside)
-        self.view.addSubview(button)
-        button.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(70)
-            make.left.equalTo(self.view).offset(50)
-            make.right.equalTo(self.view).offset(-50)
-        }
-        
-        // Sync contacts button
-        let button1 = UIButton(type: .System)
-        button1.setTitle("Sync Contacts", forState: .Normal)
-        button1.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-        button1.backgroundColor = view.tintColor
-        button1.layer.cornerRadius = 3
-        button1.addTarget(self, action: #selector(syncContacts), forControlEvents: .TouchUpInside)
-        self.view.addSubview(button1)
-        button1.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(120)
-            make.left.equalTo(self.view).offset(50)
-            make.right.equalTo(self.view).offset(-50)
-        }
-
-        // Sync facebook friends
-        let button3 = UIButton(type: .System)
-        button3.setTitle("Sync Friends", forState: .Normal)
-        button3.setTitleColor(.whiteColor(), forState: UIControlState.Normal)
-        button3.backgroundColor = view.tintColor
-        button3.layer.cornerRadius = 3
-        button3.addTarget(self, action: #selector(syncFacebookFriends), forControlEvents: .TouchUpInside)
-        self.view.addSubview(button3)
-        button3.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(170)
-            make.left.equalTo(self.view).offset(50)
-            make.right.equalTo(self.view).offset(-50)
-        }
+    }
+    
+    func clearCache(){
         
     }
 
@@ -129,8 +181,6 @@ class ProfileController: UIViewController {
             
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.showLogin()
-
-//            self.presentViewController(LoginController(), animated: true, completion: nil)
             
         } catch {
             print(error)

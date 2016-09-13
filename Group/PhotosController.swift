@@ -102,7 +102,7 @@ class PhotosController: UIViewController, UICollectionViewDataSource, UICollecti
         
         let img = UIImageView(image: players[indexPath.row].thumb)
         img.frame = cell.bounds
-        img.contentMode = UIViewContentMode.ScaleAspectFit;
+        img.contentMode = UIViewContentMode.ScaleAspectFit
         cell.addSubview(img)
         
         let player = self.players[indexPath.row]
