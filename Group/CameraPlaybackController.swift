@@ -42,7 +42,14 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     
     func locationText() -> String {
         let clip = clips[playIndex]
-        return "\(clip.sublocal), \(clip.subarea) · \(clip.city) · \(clip.country)"
+        if clip.subarea != "" && clip.city != "" && clip.country != "" {
+            return "\(clip.subarea) · \(clip.city) · \(clip.country)"
+        } else if clip.city != "" && clip.country != "" {
+            return "\(clip.city) · \(clip.country)"
+        } else if clip.lname != "" {
+            return clip.lname
+        }
+        return ""
     }
 
     override func viewDidLoad() {
@@ -70,18 +77,18 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
             textField.hidden = true
         }
         
-        profileImg.origin = CGPoint(x: 20, y: 17)
+        profileImg.origin = CGPoint(x: 15, y: 15)
         profileImg.size = CGSize(width: 30, height: 30)
         profileImg.layer.cornerRadius = profileImg.height/2
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
         
-        nameLabel.origin = CGPoint(x: 60, y: 12)
+        nameLabel.origin = CGPoint(x: 55, y: 9)
         nameLabel.height = 28
         nameLabel.textColor = UIColor.whiteColor()
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
         
-        locationLabel.origin = CGPoint(x: 60, y: 35)
+        locationLabel.origin = CGPoint(x: 55, y: 31)
         locationLabel.size = CGSize(width: self.view.width, height: 14)
         locationLabel.textColor = UIColor(white: 1, alpha: 0.6)
         locationLabel.font = UIFont(name: "OpenSans", size: 10.0)
