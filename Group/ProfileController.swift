@@ -185,7 +185,7 @@ class ProfileController: FormViewController {
     
     func logOut() {
         
-        let alert = UIAlertController(title: "Logout", message: "Are you sure you want to logout?", preferredStyle: UIAlertControllerStyle.Alert)
+        let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: UIAlertControllerStyle.Alert)
         
         alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (action: UIAlertAction!) in
             do{
@@ -205,7 +205,7 @@ class ProfileController: FormViewController {
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
             print("logout cancelled")
         }))
-                
+        
         presentViewController(alert, animated: true, completion: nil)
         
     }
