@@ -20,21 +20,29 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var clips = [Clip]()
     var playIndex = 0
-    
-    var player: MiniPlayer!
+    var players = [Int:ClipPlayer]()
+    var player: ClipPlayer!
     
     var profileImg = UIImageView()
     var nameLabel = UILabel()
     var dateLabel = UILabel()
     var friend: User!
     var collectionView: UICollectionView!
+    
+    func playerAtIndex(playIndex: Int) -> ClipPlayer? {
+        if (playIndex < 0 || playIndex >= clips.count){
+            return nil
+        }
+        if players[playIndex] == nil {
+            players[playIndex] = ClipPlayer(clip: clips[playIndex])
+        }
+        return players[playIndex]
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        player = MiniPlayer(clip: clips[playIndex], frame: self.view.frame)
-        
-        view.layer.addSublayer(player.playerLayer)
+        view.addSubview(player)
         
         player.play()
         
@@ -122,14 +130,14 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         playIndex -= 1
         
-        player = MiniPlayer(clip: clips[playIndex], frame: self.view.frame)
+        player = playerAtIndex(playIndex)
         
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y
         textField.hidden = textField.text == ""
         dateLabel.text = NSDate(timeIntervalSince1970: clips[playIndex].date).shortTimeAgoSinceNow()
         
-        view.layer.addSublayer(player.playerLayer)
+        view.addSubview(player)
         
         view.bringSubviewToFront(textField)
         view.bringSubviewToFront(profileImg)
@@ -141,6 +149,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player.player.currentItem)
+        
+        // cache prev player
+        playerAtIndex(playIndex-1)
         
     }
     
@@ -148,14 +159,14 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         playIndex += 1
         
-        player = MiniPlayer(clip: clips[playIndex], frame: self.view.frame)
+        player = playerAtIndex(playIndex)
         
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y
         textField.hidden = textField.text == ""
         dateLabel.text = NSDate(timeIntervalSince1970: clips[playIndex].date).shortTimeAgoSinceNow()
         
-        view.layer.addSublayer(player.playerLayer)
+        view.addSubview(player)
         
         view.bringSubviewToFront(textField)
         view.bringSubviewToFront(profileImg)
@@ -168,6 +179,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player.player.currentItem)
         
+        // cache next player
+        playerAtIndex(playIndex+1)
     }
 
     func playerDidFinishPlaying(notification: NSNotification) {
