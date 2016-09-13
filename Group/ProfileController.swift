@@ -113,15 +113,20 @@ class ProfileController: FormViewController {
             +++ Section("Account Actions")
             <<< ButtonRow("Clear Cache"){
                 $0.title = $0.tag
-                }.cellUpdate({ (cell, row) in
-                    cell.accessoryType = .DisclosureIndicator
+                }
+                .cellUpdate({ (cell, row) in
+                    cell.accessoryType = .None
                 })
                 .onCellSelection({ (cell, row) in
                     self.clearCache()
                 })
             <<< ButtonRow("Log Out"){
                 $0.title = $0.tag
-                }.onCellSelection({ (cell, row) in
+                }
+                .cellUpdate({ (cell, row) in
+                    cell.accessoryType = .None
+                })
+                .onCellSelection({ (cell, row) in
                     self.logOut()
                 })
         
