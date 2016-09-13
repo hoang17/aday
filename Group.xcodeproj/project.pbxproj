@@ -18,6 +18,7 @@
 		372D8DB91D1304E7008DBADA /* FacebookLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB81D1304E7008DBADA /* FacebookLoader.swift */; };
 		372D8DBD1D1310D3008DBADA /* Clip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DBC1D1310D3008DBADA /* Clip.swift */; };
 		373BD22A1D868BFB00233A58 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373BD2291D868BFB00233A58 /* Friend.swift */; };
+		3776FAD51D8806A0005D7583 /* PhotosController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3776FAD41D8806A0005D7583 /* PhotosController.swift */; };
 		3785F6711D85636B00F32915 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F6701D85636B00F32915 /* MainController.swift */; };
 		3785F6851D857A0700F32915 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F6841D857A0700F32915 /* TableViewCell.swift */; };
 		3785F70D1D85EB5C00F32915 /* Cabin-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3785F6E61D85EB5C00F32915 /* Cabin-Bold.ttf */; };
@@ -115,6 +116,7 @@
 		372D8DB81D1304E7008DBADA /* FacebookLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacebookLoader.swift; sourceTree = "<group>"; };
 		372D8DBC1D1310D3008DBADA /* Clip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Clip.swift; sourceTree = "<group>"; };
 		373BD2291D868BFB00233A58 /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
+		3776FAD41D8806A0005D7583 /* PhotosController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosController.swift; sourceTree = "<group>"; };
 		3785F6701D85636B00F32915 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		3785F6831D8568B500F32915 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		3785F6841D857A0700F32915 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
@@ -349,6 +351,7 @@
 				372D8DB41D12BF2B008DBADA /* FriendsController.swift */,
 				3785F6841D857A0700F32915 /* TableViewCell.swift */,
 				37EF00221D8714CB005D39A1 /* LocationController.swift */,
+				3776FAD41D8806A0005D7583 /* PhotosController.swift */,
 				37E00FDC1D16EC4A00B19492 /* Camera */,
 			);
 			name = Controllers;
@@ -638,6 +641,7 @@
 				3785F6711D85636B00F32915 /* MainController.swift in Sources */,
 				372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */,
 				371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */,
+				3776FAD51D8806A0005D7583 /* PhotosController.swift in Sources */,
 				372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */,
 				37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */,
 				37FEFEBC1D11D33600C078AC /* LoginController.swift in Sources */,

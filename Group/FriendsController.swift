@@ -170,12 +170,6 @@ class FriendsController: UITableViewController {
             cell.clips = friends[indexPath.row].clips
             cell.friend = friends[indexPath.row]
             cells[indexPath.row] = cell
-
-            for clip in cell.clips{
-                if clip.player == nil {
-                    clip.player = MiniPlayer(clip: clip, frame: CGRect(x: 0,y: 0,width: cell.cellWidth, height: cell.cellHeight))
-                }
-            }
         }
         return cells[indexPath.row]!
     }

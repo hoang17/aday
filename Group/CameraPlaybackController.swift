@@ -32,7 +32,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        player = clips[playIndex].player
+        player = MiniPlayer(clip: clips[playIndex], frame: self.view.frame)
         
         view.layer.addSublayer(player.playerLayer)
         
@@ -122,7 +122,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         playIndex -= 1
         
-        player = clips[playIndex].player
+        player = MiniPlayer(clip: clips[playIndex], frame: self.view.frame)
         
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y
@@ -148,7 +148,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         playIndex += 1
         
-        player = clips[playIndex].player
+        player = MiniPlayer(clip: clips[playIndex], frame: self.view.frame)
         
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y

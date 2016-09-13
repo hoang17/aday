@@ -8,7 +8,7 @@
 
 import UIKit
 import MapKit
-
+import Photos
 
 class LocationController: UIViewController, CLLocationManagerDelegate {
 
@@ -27,7 +27,25 @@ class LocationController: UIViewController, CLLocationManagerDelegate {
 //            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
 //            locationManager.startUpdatingLocation()
         }
+        
+        let manager = PHImageManager.defaultManager()
+        
+        let allPhotosOptions = PHFetchOptions()
+        allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        
+        let fetchResult = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: allPhotosOptions)
+        fetchResult.enumerateObjectsUsingBlock {
+            let asset = $0.0 as? PHAsset
+            let option = PHImageRequestOptions()
+            option.synchronous = true
+            var thumbnail = UIImage()
+            manager.requestImageForAsset(asset!, targetSize: CGSize(width: 100.0, height: 100.0), contentMode: .AspectFit, options: option, resultHandler: {(result, info)->Void in
+                thumbnail = result!
+            })
+            
+        }
     }
+    
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let locValue:CLLocationCoordinate2D = manager.location!.coordinate

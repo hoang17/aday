@@ -43,6 +43,47 @@ class MiniViewCell: UICollectionViewCell {
     
 }
 
+class Player: UIView {
+    var player: AVPlayer!
+    var playerLayer: AVPlayerLayer!
+    var thumb: UIImage!
+    
+    init(playerItem: AVPlayerItem, frame: CGRect) {
+        super.init(frame: frame)
+        player = AVPlayer(playerItem: playerItem)
+        playerLayer = AVPlayerLayer(player: player)
+        playerLayer.frame = frame
+        layer.addSublayer(playerLayer)
+    }
+    
+    init(filePath: String, frame: CGRect) {
+        super.init(frame: frame)
+        let fileUrl = NSURL(fileURLWithPath: filePath)
+        player = AVPlayer(URL: fileUrl)
+        playerLayer = AVPlayerLayer(player: player)
+        playerLayer.frame = frame
+        layer.addSublayer(playerLayer)
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)!
+    }
+    
+    func playing() -> Bool {
+        return player.rate != 0 && player.error == nil
+    }
+    
+    func play(){
+        player.seekToTime(kCMTimeZero)
+        player.play()
+    }
+    
+    func pause(){
+        player.pause()
+        player.seekToTime(kCMTimeZero)
+    }
+}
+
 class MiniPlayer: NSObject {
     var clip: Clip
     var player: AVPlayer

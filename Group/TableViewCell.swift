@@ -81,17 +81,17 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MiniViewCell", forIndexPath: indexPath) as! MiniViewCell
-
+        cell.subviews.forEach({ $0.removeFromSuperview() })
+        
         let clip = clips![indexPath.row]
-        let mp = clip.player!
-//        cell.layer.addSublayer(mp.playerLayer)
+        let mp = MiniPlayer(clip: clip, frame: cell.bounds)
         
         let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
         let image = UIImage(contentsOfFile: filename)
         let img = UIImageView(image: image)
         img.frame = cell.bounds
         
-        cell.addSubview(img)        
+        cell.addSubview(img)
         cell.addSubview(mp.textField)
         cell.addSubview(mp.dateLabel)
         cell.index = indexPath.row
@@ -111,11 +111,11 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
             index += 1
             collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: index, inSection: 0), atScrollPosition: .CenteredHorizontally, animated: true)
             let clip = clips![index]
-            player = clip.player!
+            player = MiniPlayer(clip: clip, frame: CGRect(x: 0,y: 0,width: cellWidth, height: cellHeight))
             player.play()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                              name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                             object: clip.player!.player.currentItem)
+                                                             object: player.player.currentItem)
         }
     }
     
@@ -151,7 +151,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
             
             index = playIndex
             let clip = clips![index]
-            player = clip.player!
+            player = MiniPlayer(clip: clip, frame: CGRect(x: 0,y: 0,width: cellWidth, height: cellHeight))
             player.play()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                              name: AVPlayerItemDidPlayToEndTimeNotification,
