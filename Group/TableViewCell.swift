@@ -82,7 +82,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MiniViewCell", forIndexPath: indexPath) as! MiniViewCell
 
-        let clip = clips![indexPath.row]        
+        let clip = clips![indexPath.row]
         let mp = clip.player!
 //        cell.layer.addSublayer(mp.playerLayer)
         

@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import AVKit
+import AssetsLibrary
 
 class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
     
@@ -25,7 +26,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var videoInput: AVCaptureDeviceInput?
     var videoFileOutput:AVCaptureMovieFileOutput?
     var cameraPreviewLayer:AVCaptureVideoPreviewLayer?
-    let outputPath = NSTemporaryDirectory() + "output.mov"    
+    let outputPath = NSTemporaryDirectory() + "output.mov"
     let fileName = "output.mp4"
     
     var isRecording = false
@@ -142,35 +143,36 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         
         // Delete file if existed
         let filePath = NSTemporaryDirectory() + fileName;
-        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+        let fileManager = NSFileManager.defaultManager()
+        if fileManager.fileExistsAtPath(filePath) {
             do {
-                try NSFileManager.defaultManager().removeItemAtPath(filePath)
+                try fileManager.removeItemAtPath(filePath)
             } catch {
                 print(error)
             }
         }
         
-        let savePathUrl =  NSURL(string: savePath)!
+        let savePathUrl = NSURL(string: savePath)
         let asset = AVURLAsset(URL: inputURL, options: nil)
         
         let exportSession: AVAssetExportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetMediumQuality)!
-        exportSession.outputFileType = AVFileTypeQuickTimeMovie
+        exportSession.outputFileType = AVFileTypeMPEG4
         exportSession.outputURL = savePathUrl
         exportSession.exportAsynchronouslyWithCompletionHandler {            
             switch exportSession.status {
             case AVAssetExportSessionStatus.Completed:
-                // Show preview
+                print("export completed")
                 dispatch_async(dispatch_get_main_queue(), {
                     let cameraPreview = CameraPreviewController()
                     cameraPreview.fileName = self.fileName
                     self.presentViewController(cameraPreview, animated: true, completion: nil)
                 })
             case  AVAssetExportSessionStatus.Failed:
-                print("failed \(exportSession.error)")
+                print("export failed \(exportSession.error)")
             case AVAssetExportSessionStatus.Cancelled:
-                print("cancelled \(exportSession.error)")
+                print("export cancelled \(exportSession.error)")
             default:
-                print("complete")
+                print("default")
             }
         }
     }
@@ -260,11 +262,25 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         
         print("Video Captured")
         
-//        let cameraPreview = CameraPreviewController()
-//        self.presentViewController(cameraPreview, animated: true, completion: nil)
+        print(captureOutput.recordedFileSize)
+        print(outputFileURL)
+
+        let library = ALAssetsLibrary()
+        library.writeVideoAtPathToSavedPhotosAlbum(outputFileURL, completionBlock: { (assetURL:NSURL!, error:NSError?) -> Void in
+            if error != nil {
+                print(error)
+                return
+            }
+            print(assetURL)
+        })
         
         let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
         self.convertVideoWithMediumQuality(outputFileURL)
+
+//        let cameraPreview = CameraPreviewController()
+//        cameraPreview.fileName = "output.mov"
+//        self.presentViewController(cameraPreview, animated: true, completion: nil)
+        
     }
     
     override func prefersStatusBarHidden() -> Bool {

@@ -14,27 +14,6 @@ import DigitsKit
 import DateTools
 import RealmSwift
 
-class ClipPlayer: NSObject {
-    var player: AVPlayer
-    var playerLayer: AVPlayerLayer
-    
-    init(clip: Clip, frame: CGRect) {
-        player = clip.player!.player
-        playerLayer = clip.player!.playerLayer
-        playerLayer.frame = frame
-    }
-    
-    func play(){
-        player.seekToTime(kCMTimeZero)
-        player.play()
-    }
-    
-    func pause(){
-        player.pause()
-        player.seekToTime(kCMTimeZero)
-    }
-}
-
 class CameraPlaybackController: UIViewController, UITextFieldDelegate {
 
     let textField = UITextField()
@@ -42,7 +21,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var clips = [Clip]()
     var playIndex = 0
     
-    var player: ClipPlayer!
+    var player: MiniPlayer!
     
     var profileImg = UIImageView()
     var nameLabel = UILabel()
@@ -53,7 +32,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        player = ClipPlayer(clip: clips[playIndex], frame: self.view.bounds)
+        player = clips[playIndex].player
         
         view.layer.addSublayer(player.playerLayer)
         
@@ -143,7 +122,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         playIndex -= 1
         
-        player = ClipPlayer(clip: clips[playIndex], frame: self.view.bounds)
+        player = clips[playIndex].player
         
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y
@@ -169,7 +148,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         playIndex += 1
         
-        player = ClipPlayer(clip: clips[playIndex], frame: self.view.bounds)
+        player = clips[playIndex].player
         
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y

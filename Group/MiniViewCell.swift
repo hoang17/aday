@@ -58,7 +58,7 @@ class MiniPlayer: NSObject {
         let fileUrl = NSURL(fileURLWithPath: outputPath)
         player = AVPlayer(URL: fileUrl)
         playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = frame
+        playerLayer.frame = UIScreen.mainScreen().bounds
         
         if clip.txt == "" {
             textField.hidden = true

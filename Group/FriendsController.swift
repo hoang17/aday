@@ -27,6 +27,7 @@ class FriendsController: UITableViewController {
             realm = try Realm()
         }
         catch {
+            print(error)
             let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
             let realmURLs = [
                 realmURL,
@@ -119,28 +120,7 @@ class FriendsController: UITableViewController {
                     print("...returning clips...")
 
                     for item in snapshot.children {
-                        
-//                        // Generate thumb image
-//                        do {
-//                            let clip = Clip(snapshot: item as! FIRDataSnapshot)
-//                            let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
-//                            let imgGenerator = AVAssetImageGenerator(asset: asset)
-//                            imgGenerator.appliesPreferredTrackTransform = true
-//                            let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
-//                            let uiimg = UIImage(CGImage: cgimg)
-//                            let data = UIImageJPEGRepresentation(uiimg, 0.5)
-//                            let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
-//                            
-//                            let fileManager = NSFileManager.defaultManager()
-//                            if fileManager.fileExistsAtPath(filename) {
-//                                try fileManager.removeItemAtPath(filename)
-//                            }
-//                            data!.writeToFile(filename, atomically: true)
-//                            
-//                        } catch {
-//                            print(error)
-//                        }
-                        
+                                                
                         // check if clip has been saved to local
                         let cache = realm.objectForPrimaryKey(ClipModel.self, key: item.key)
                         

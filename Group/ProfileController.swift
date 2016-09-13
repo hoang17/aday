@@ -87,28 +87,28 @@ class ProfileController: UIViewController {
         // TODO
         
         // Fix clip thumb
-        let ref = FIRDatabase.database().reference().child("clips")
-        
-        ref.queryOrderedByChild("uid").observeSingleEventOfType(.Value, withBlock: { snapshot in
-            for item in snapshot.children {
-                let clip = Clip(snapshot: item as! FIRDataSnapshot)
-                
-                do {
-                    let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
-                    let imgGenerator = AVAssetImageGenerator(asset: asset)
-                    imgGenerator.appliesPreferredTrackTransform = true
-                    let cgImage = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
-                    let uiImage = UIImage(CGImage: cgImage)
-                    let imageView = UIImageView(image: uiImage)
-                    // lay out this image view, or if it already exists, set its image property to uiImage
-                } catch {
-                    print(error)
-                }
-                
-                
-//                ref.child(clip.id).setValue(clip.toAnyObject())
-            }
-        })
+//        let ref = FIRDatabase.database().reference().child("clips")
+//        
+//        ref.queryOrderedByChild("uid").observeSingleEventOfType(.Value, withBlock: { snapshot in
+//            for item in snapshot.children {
+//                let clip = Clip(snapshot: item as! FIRDataSnapshot)
+//                
+//                do {
+//                    let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
+//                    let imgGenerator = AVAssetImageGenerator(asset: asset)
+//                    imgGenerator.appliesPreferredTrackTransform = true
+//                    let cgImage = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
+//                    let uiImage = UIImage(CGImage: cgImage)
+//                    let imageView = UIImageView(image: uiImage)
+//                    // lay out this image view, or if it already exists, set its image property to uiImage
+//                } catch {
+//                    print(error)
+//                }
+//                
+//                
+////                ref.child(clip.id).setValue(clip.toAnyObject())
+//            }
+//        })
         
     }
     

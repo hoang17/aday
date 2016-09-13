@@ -21,7 +21,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
     let locationField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var outputFileURL:NSURL?
-    var fileName = "output.mp4"
+    var fileName: String!
     var gotLo = false
     var lo = Location()
 
