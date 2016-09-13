@@ -20,7 +20,6 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     var friend: User!
     let cellWidth = 150
     let cellHeight = 266
-//    var player: MiniPlayer!
     var index: Int = 0
     
     weak var controller: UIViewController?
@@ -40,8 +39,6 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         nameLabel.size = CGSize(width: self.width, height: 35)
         nameLabel.textColor = UIColor.blackColor()
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 13.0)
-//        nameLabel.font = UIFont(name: "SourceSansPro-Bold", size: 13.0)
-//        nameLabel.font = UIFont.boldSystemFontOfSize(13)
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
@@ -89,28 +86,9 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cell.addSubview(mp.img)
         cell.addSubview(mp.textField)
         cell.addSubview(mp.dateLabel)
-//        cell.index = indexPath.row
-//        cell.tableCell = self
         
         return cell
     }
-    
-//    func playerDidFinishPlaying(){
-//        player.player.seekToTime(kCMTimeZero)
-//        NSNotificationCenter.defaultCenter().removeObserver(self,
-//                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                            object:player.player.currentItem)
-//        if index+1 < clips.count {
-//            index += 1
-//            collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: index, inSection: 0), atScrollPosition: .CenteredHorizontally, animated: true)
-//            let clip = clips![index]
-//            player = MiniPlayer(clip: clip, frame: CGRect(x: 0,y: 0,width: cellWidth, height: cellHeight))
-//            player.play()
-//            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-//                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                             object: player.player.currentItem)
-//        }
-//    }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         play(indexPath.row)
@@ -119,11 +97,6 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     func play(playIndex: Int) {
         
         let cameraPlayback = CameraPlaybackController()
-        
-//        for clip in self.clips {
-//            let player = ClipPlayer(clip: clip)
-//            cameraPlayback.players.append(player)
-//        }
         
         cameraPlayback.clips = self.clips
         
@@ -142,44 +115,4 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
     }
-    
-//    func playMini(playIndex: Int){
-//        
-//        if index != playIndex || player == nil {
-//            if player != nil {
-//                player.pause()
-//                NSNotificationCenter.defaultCenter().removeObserver(self,
-//                                                                    name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                                    object:player.player.currentItem)
-//            }
-//            
-//            index = playIndex
-//            let clip = clips![index]
-//            player = MiniPlayer(clip: clip, frame: CGRect(x: 0,y: 0,width: cellWidth, height: cellHeight))
-//            player.play()
-//            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-//                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                             object: player.player.currentItem)
-//            
-//        }
-//        else {
-//            if player.playing() {
-//                player.pause()
-//                NSNotificationCenter.defaultCenter().removeObserver(self,
-//                                                                    name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                                    object:player.player.currentItem)
-//            }
-//            else{
-//                player.play()
-//                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-//                                                                 name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                                 object: player.player.currentItem)
-//                
-//            }
-//            
-//        }
-//    
-//        collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: index, inSection: 0), atScrollPosition: .CenteredHorizontally, animated: true)
-//    }
-    
 }
