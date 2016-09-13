@@ -41,6 +41,7 @@ class ProfileController: FormViewController {
             <<< NameRow(){ row in
                 row.title = "Name"
                 row.placeholder = "Enter your name"
+                row.value = FIRAuth.auth()!.currentUser?.displayName
             }
             <<< AccountRow(){
                 $0.title = "Username"
@@ -49,10 +50,12 @@ class ProfileController: FormViewController {
             <<< PhoneRow(){
                 $0.title = "Mobile Number"
                 $0.placeholder = "Enter your mobile number"
+                $0.value = Digits.sharedInstance().session()?.phoneNumber
             }
             <<< EmailRow(){
                 $0.title = "Email"
                 $0.placeholder = "Enter your email address"
+                $0.value = FIRAuth.auth()!.currentUser?.email
             }
             <<< PasswordRow(){
                 $0.title = "Password"
