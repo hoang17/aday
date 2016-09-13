@@ -88,7 +88,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         nameLabel.textColor = UIColor.whiteColor()
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
         
-        locationLabel.origin = CGPoint(x: 55, y: 30)
+        locationLabel.origin = CGPoint(x: 55, y: 31)
         locationLabel.size = CGSize(width: self.view.width, height: 14)
         locationLabel.textColor = UIColor(white: 1, alpha: 0.6)
         locationLabel.font = UIFont(name: "OpenSans", size: 10.0)
