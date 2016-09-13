@@ -92,10 +92,11 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         "phone": (session?.phoneNumber)!]
             FIRDatabase.database().reference().child("users").child(currentUser.uid).setValue(user)
             
-            // navigate to home            
-            self.dismissViewControllerAnimated(true, completion: nil)
-//            self.navigationController!.pushViewController(HomeController(), animated: false)
-//            self.navigationController!.pushViewController(FriendsController(), animated: true)
+            // navigate to home
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.showMain()
+            
+//            self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
     

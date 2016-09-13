@@ -31,48 +31,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Facebook setup
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 
-//        for name in UIFont.familyNames() {
-//            print(name)
-//            print(UIFont.fontNamesForFamilyName(name))
-//        }
         
-        // Setup font
+//        // Setup font
 //        UITextField.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
 //        UITextView.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
 //        UILabel.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
         
-        // Setup nav controller        
-        //let loginController: LoginController = LoginController()
-//        let navigationController = UINavigationController()
-//        navigationController.navigationBarHidden = false
-//        navigationController.hidesBarsOnSwipe = true
-        
-//        if (FBSDKAccessToken.currentAccessToken() != nil && Digits.sharedInstance().session() != nil)
-//        {
-//            // Setup FirebaseAuth
-//            let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
-//            FIRAuth.auth()?.signInWithCredential(credential){(currentUser, error) in
-//                if (error == nil){
-//                    // User already logged in
-//                    self.logUser()
-////                    navigationController.pushViewController(LoginController(), animated: false)
-////                    navigationController.pushViewController(HomeController(), animated: false)
-////                    navigationController.pushViewController(FriendsController(), animated: false)
-//                }
-//                else{
-////                    navigationController.pushViewController(LoginController(), animated: false)
-//                }
-//            }
-//        } else{
-////            navigationController.pushViewController(LoginController(), animated: false)
-//        }
-        
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        window!.rootViewController = MainController()
         window!.backgroundColor = UIColor.whiteColor()
+        
+        if Digits.sharedInstance().session() != nil {
+            self.logUser()
+            self.window!.rootViewController = MainController()
+        } else {
+            window!.rootViewController = LoginController()
+        }
+        
         window!.makeKeyAndVisible()
         
         return true
+    }
+    
+    func showLogin() {
+        UIView.transitionWithView(self.window!, duration: 0.5, options: .TransitionFlipFromLeft, animations: {
+            self.window!.rootViewController = LoginController()
+            }, completion: nil)
+    }
+    
+    func showMain() {
+        UIView.transitionWithView(self.window!, duration: 0.5, options: .TransitionFlipFromRight, animations: {
+            self.window!.rootViewController = MainController()
+            }, completion: nil)
     }
 
     // Handling open login url

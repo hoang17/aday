@@ -126,7 +126,11 @@ class ProfileController: UIViewController {
             Digits.sharedInstance().logOut()
             try FIRAuth.auth()?.signOut()
             print("User Logged Out")
-            self.presentViewController(LoginController(), animated: true, completion: nil)
+            
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.showLogin()
+
+//            self.presentViewController(LoginController(), animated: true, completion: nil)
             
         } catch {
             print(error)

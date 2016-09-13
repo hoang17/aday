@@ -31,7 +31,7 @@ class MainController: UIViewController {
         
         // View controllers.
         tabBarController.setViewController(FriendsController(), atIndex: 0)
-        tabBarController.setViewController(PhotosController(), atIndex: 2)
+        tabBarController.setViewController(ProfileController(), atIndex: 2)
         
         tabBarController.setAction({
             self.presentViewController(CameraViewController(), animated: true, completion: nil)
