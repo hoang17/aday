@@ -16,9 +16,9 @@ class MainController: UIViewController {
         
         super.viewDidLoad()
         
-        let tabBarController = ESTabBarController(tabIconNames: ["clock", "target", "map"])
+//        let tabBarController = ESTabBarController(tabIconNames: ["clock", "target", "map"])
         
-//        let tabBarController = ESTabBarController(tabIconNames: ["archive", "clock", "target", "map", "globe"])
+        let tabBarController = ESTabBarController(tabIconNames: ["clock", "globe", "target", "map", "archive"])
         
         self.addChildViewController(tabBarController)
         self.view.addSubview(tabBarController.view)
@@ -31,11 +31,13 @@ class MainController: UIViewController {
         
         // View controllers.
         tabBarController.setViewController(FriendsController(), atIndex: 0)
-        tabBarController.setViewController(ProfileController(), atIndex: 2)
+        tabBarController.setViewController(SearchController(), atIndex: 1)
+        tabBarController.setViewController(MapController(), atIndex: 3)
+        tabBarController.setViewController(ProfileController(), atIndex: 4)
         
         tabBarController.setAction({
             self.presentViewController(CameraViewController(), animated: true, completion: nil)
-        }, atIndex: 1)
+        }, atIndex: 2)
 
 //        tabBarController.highlightButtonAtIndex(1)
         
