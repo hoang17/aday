@@ -10,6 +10,7 @@ import DigitsKit
 import FBSDKLoginKit
 import AVFoundation
 import Eureka
+import FirebaseStorage
 
 class ProfileController: FormViewController {
     
@@ -114,6 +115,15 @@ class ProfileController: FormViewController {
             }
             
             +++ Section("Account Actions")
+            <<< ButtonRow("Sync Contacts"){
+                $0.title = $0.tag
+                }
+                .cellUpdate({ (cell, row) in
+                    cell.accessoryType = .None
+                })
+                .onCellSelection({ (cell, row) in
+                    self.syncContacts()
+                })
             <<< ButtonRow("Clear Cache"){
                 $0.title = $0.tag
                 }
@@ -147,31 +157,55 @@ class ProfileController: FormViewController {
     }
 
     func syncContacts() {
+        
         // TODO
         
+        
+        let storage = FIRStorage.storage()
+        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com")
+        
+        let metadata = FIRStorageMetadata()
+        metadata.contentType = "image/jpeg"
+        
         // Fix clip thumb
-//        let ref = FIRDatabase.database().reference().child("clips")
-//        
-//        ref.queryOrderedByChild("uid").observeSingleEventOfType(.Value, withBlock: { snapshot in
-//            for item in snapshot.children {
-//                let clip = Clip(snapshot: item as! FIRDataSnapshot)
-//                
-//                do {
-//                    let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
-//                    let imgGenerator = AVAssetImageGenerator(asset: asset)
-//                    imgGenerator.appliesPreferredTrackTransform = true
-//                    let cgImage = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
-//                    let uiImage = UIImage(CGImage: cgImage)
-//                    let imageView = UIImageView(image: uiImage)
-//                    // lay out this image view, or if it already exists, set its image property to uiImage
-//                } catch {
-//                    print(error)
-//                }
-//                
-//                
-////                ref.child(clip.id).setValue(clip.toAnyObject())
-//            }
-//        })
+        let ref = FIRDatabase.database().reference().child("clips")
+        
+        ref.queryOrderedByChild("uid").observeSingleEventOfType(.Value, withBlock: { snapshot in
+            for item in snapshot.children {
+                let clip = Clip(snapshot: item as! FIRDataSnapshot)
+             
+                // Generate thumb image
+                do {
+                    let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
+                    let imgGenerator = AVAssetImageGenerator(asset: asset)
+                    imgGenerator.appliesPreferredTrackTransform = true
+                    let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
+                    let uiimg = UIImage(CGImage: cgimg)
+                    let data = UIImageJPEGRepresentation(uiimg, 0.5)
+                    let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
+                    
+                    if data!.writeToFile(filename, atomically: true) {
+                        // Upload thumb image
+                        let thumb = clip.fname + ".jpg"
+                        let fileUrl = NSURL(fileURLWithPath: NSTemporaryDirectory() + thumb)
+                        gs.child("thumbs/" + thumb).putFile(fileUrl, metadata: metadata) { metadata, error in
+                            // upload done
+                            if (error != nil) {
+                                print(error)
+                            } else {
+                                clip.thumb = (metadata!.downloadURL()?.absoluteString)!
+                                print("Thumb uploaded to " + clip.thumb)
+                                ref.child(clip.id).setValue(clip.toAnyObject())
+                            }
+                        }
+                    }
+                    
+                } catch {
+                    print(error)
+                }
+                
+            }
+        })
         
     }
     

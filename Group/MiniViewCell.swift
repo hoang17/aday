@@ -9,6 +9,8 @@
 import UIKit
 import AVKit
 import AVFoundation
+import Kingfisher
+import FirebaseStorage
 
 class MiniViewCell: UICollectionViewCell {
     
@@ -84,10 +86,14 @@ class MiniPlayer: NSObject {
     
     init(clip: Clip, frame: CGRect) {
         
-        let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
-        let image = UIImage(contentsOfFile: filename)
-        img = UIImageView(image: image)
-        img.frame = frame
+//        let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
+//        let image = UIImage(contentsOfFile: filename)
+//        img = UIImageView(image: image)
+//        img.frame = frame
+        
+        
+        img = UIImageView(frame:frame)
+        img.kf_setImageWithURL(NSURL(string: clip.thumb))
         
         if clip.txt == "" {
             textField.hidden = true

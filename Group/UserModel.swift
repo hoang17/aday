@@ -14,6 +14,7 @@ class UserModel: Object {
     dynamic var clipIndex:Int = 0
     dynamic var city: String!
     dynamic var country: String!
+    dynamic var uploaded: Double = 0.0
     let clips = List<ClipModel>()
     
     func load(user: User){
@@ -26,6 +27,7 @@ class UserModel: Object {
         city = user.city
         country = user.country
         clipIndex = user.clipIndex
+        uploaded = user.uploaded
         for clip in user.clips{
             let data = ClipModel()
             data.load(clip)

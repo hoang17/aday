@@ -26,7 +26,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             make.left.equalTo(self.view).offset(50)
             make.right.equalTo(self.view).offset(-50)
         }
-        loginButton.readPermissions = ["public_profile", "email", "user_friends", "user_likes"]
+        loginButton.readPermissions = ["public_profile", "email", "user_friends", "user_likes", "user_location"]
         loginButton.delegate = self
         
         if (FBSDKAccessToken.currentAccessToken() != nil && Digits.sharedInstance().session() == nil){
@@ -61,7 +61,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                                 "email": currentUser!.email!,
                                 "fb": FBSDKAccessToken.currentAccessToken().userID,
                                 "fabric": (session?.userID)!,
-                                "phone": (session?.phoneNumber)!]
+                                "phone": (session?.phoneNumber)!,
+                                "city": "",
+                                "country": ""]
                     FIRDatabase.database().reference().child("users").child(currentUser!.uid).setValue(user)
                 }
                 else{
@@ -89,7 +91,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         "email": currentUser.email!,
                         "fb": FBSDKAccessToken.currentAccessToken().userID,
                         "fabric": (session?.userID)!,
-                        "phone": (session?.phoneNumber)!]
+                        "phone": (session?.phoneNumber)!,
+                        "city": "",
+                        "country": ""]
             FIRDatabase.database().reference().child("users").child(currentUser.uid).setValue(user)
             
             // navigate to home

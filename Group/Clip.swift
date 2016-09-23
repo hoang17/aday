@@ -32,8 +32,9 @@ class Clip: NSObject {
     var country: String
     var sublocal: String
     var subarea: String
+    var thumb: String = ""
     
-    init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location:Location) {
+    init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location: Location, thumb: String) {
         self.id = id
         self.uid = uid
         self.fname =  fname
@@ -46,6 +47,7 @@ class Clip: NSObject {
         self.country = location.country ?? ""
         self.sublocal = location.sublocal ?? ""
         self.subarea = location.subarea ?? ""
+        self.thumb = thumb
         self.date = NSDate().timeIntervalSince1970
     }
     
@@ -66,6 +68,7 @@ class Clip: NSObject {
         country = (snapshot.value!["country"] as? String) ?? ""
         sublocal = (snapshot.value!["sublocal"] as? String) ?? ""
         subarea = (snapshot.value!["subarea"] as? String) ?? ""
+        thumb = (snapshot.value!["thumb"] as? String) ?? ""
     }
     
     init(data: ClipModel){
@@ -82,6 +85,7 @@ class Clip: NSObject {
         self.country = data.country
         self.sublocal = data.sublocal
         self.subarea = data.subarea
+        self.thumb = data.thumb
     }
     
     func toAnyObject() -> AnyObject {
@@ -99,6 +103,7 @@ class Clip: NSObject {
             "country": country,
             "sublocal": sublocal,
             "subarea": subarea,
+            "thumb": thumb,
             "date": date
         ]
     }

@@ -176,32 +176,66 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         print("Uploading \(uploadFile)...")
         
         let storage = FIRStorage.storage()
-        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
+        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com")
         
         let metadata = FIRStorageMetadata()
         metadata.contentType = "video/mp4"
         
-        gs.child(uploadFile).putFile(outputFileURL!, metadata: metadata) { metadata, error in
+        gs.child("clips/" + uploadFile).putFile(outputFileURL!, metadata: metadata) { metadata, error in
             // upload done
             if (error != nil) {
                 print(error)
             } else {
-                print("File uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
+                print("CLip uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
                 
-                // Save clip to db
-                let ref = FIRDatabase.database().reference().child("clips")
-                let id = ref.childByAutoId().key
-                let uid = FIRAuth.auth()?.currentUser?.uid
-                let fname = uploadFile
-                let txt = self.textField.text
-                let y = self.textLocation.y/self.view.frame.height
-                let clip = Clip(id: id, uid: uid!, fname: fname, txt: txt!, y: y, location: self.lo)
-                ref.child(id).setValue(clip.toAnyObject())
-                
-                print("Clip is saved to db \(id)")
+                // Generate thumb image
+                do {
+                    let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + self.fileName), options: nil)
+                    let imgGenerator = AVAssetImageGenerator(asset: asset)
+                    imgGenerator.appliesPreferredTrackTransform = true
+                    let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
+                    let uiimg = UIImage(CGImage: cgimg)
+                    let data = UIImageJPEGRepresentation(uiimg, 0.5)
+                    let filePath = NSTemporaryDirectory() + self.fileName + ".jpg"
+                    
+                    if data!.writeToFile(filePath, atomically: true) {
+                        // Upload thumb image
+                        let thumb = uploadFile + ".jpg"
+                        let fileUrl = NSURL(fileURLWithPath: filePath)
+                        metadata!.contentType = "image/jpg"
+                        gs.child("thumbs/" + thumb).putFile(fileUrl, metadata: metadata) { metadata, error in
+                            // upload done
+                            if (error != nil) {
+                                print(error)
+                            } else {
+                                print("Thumb uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
+                               
+                                // Save clip to db
+                                let ref = FIRDatabase.database().reference().child("clips")
+                                let id = ref.childByAutoId().key
+                                let uid = FIRAuth.auth()?.currentUser?.uid
+                                let fname = uploadFile
+                                let txt = self.textField.text
+                                let y = self.textLocation.y/self.view.frame.height
+                                let clip = Clip(id: id, uid: uid!, fname: fname, txt: txt!, y: y, location: self.lo, thumb: (metadata!.downloadURL()?.absoluteString)!)
+                                ref.child(id).setValue(clip.toAnyObject())
+                                
+                                print("Clip is saved to db \(id)")
+                                
+                                let users = FIRDatabase.database().reference().child("users")
+                                users.child(uid!).updateChildValues(["uploaded":NSDate().timeIntervalSince1970])
+                                
+                            }
+                        }
+                    }
+                    
+                } catch {
+                    print(error)
+                }
                 
             }
         }
+        
     }
     
     // Limit text length to textfield width

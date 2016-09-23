@@ -29,6 +29,7 @@ class SearchController: UITableViewController {
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.sizeToFit()
+        searchController.searchBar.placeholder = "Search for friends"
         self.tableView.tableHeaderView = searchController.searchBar
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
 
@@ -88,10 +89,10 @@ class SearchController: UITableViewController {
     }
     
     func filterContentForSearchText(searchText: String, scope: String = "All") {
-        filteredUsers = users.filter({( candy : User) -> Bool in
+        filteredUsers = users.filter({( user : User) -> Bool in
 //            let categoryMatch = (scope == "All") || (candy.category == scope)
             let categoryMatch = scope == "All"
-            return categoryMatch && candy.name.lowercaseString.containsString(searchText.lowercaseString)
+            return categoryMatch && user.name.lowercaseString.containsString(searchText.lowercaseString)
         })
         tableView.reloadData()
     }

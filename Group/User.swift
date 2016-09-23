@@ -17,6 +17,7 @@ class User: NSObject {
     var country: String
     var clipIndex:Int = 0
     var clips = [Clip]()
+    var uploaded: Double = 0.0 // last uploaded time
     
     init(uid: String, name:String, email: String, fabric: String, phone: String, fb:String, city: String, country: String) {
         self.uid = uid
@@ -36,8 +37,9 @@ class User: NSObject {
         self.phone = snapshot.value!["phone"] as! String
         self.fabric = snapshot.value!["fabric"] as! String
         self.fb = snapshot.value!["fb"] as! String
-        self.city = snapshot.value!["city"] as! String
-        self.country = snapshot.value!["country"] as! String
+        self.city = (snapshot.value!["city"] as? String) ?? ""
+        self.country = (snapshot.value!["country"] as? String) ?? ""
+        self.uploaded = (snapshot.value!["uploaded"] as? Double) ?? 0
     }
     
     init(data: UserModel) {
@@ -50,6 +52,7 @@ class User: NSObject {
         self.city = data.city
         self.country = data.country
         self.clipIndex = data.clipIndex
+        self.uploaded = data.uploaded
         self.clips = [Clip]()
         for c in data.clips{
             let clip = Clip(data: c)

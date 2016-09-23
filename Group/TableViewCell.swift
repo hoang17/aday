@@ -57,6 +57,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         collectionView = UICollectionView(frame: self.bounds, collectionViewLayout: layout)
         collectionView.origin.y = 55
         collectionView.height = 290
+        collectionView.width = UIScreen.mainScreen().bounds.width
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.registerClass(MiniViewCell.self, forCellWithReuseIdentifier: "MiniViewCell")

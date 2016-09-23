@@ -19,6 +19,7 @@ class ClipModel: Object {
     dynamic var country: String = ""
     dynamic var sublocal: String = ""
     dynamic var subarea: String = ""
+    dynamic var thumb: String = ""
     
     func load(clip: Clip){
         id = clip.id
@@ -35,6 +36,7 @@ class ClipModel: Object {
         country = clip.country
         sublocal = clip.sublocal
         subarea = clip.subarea
+        thumb = clip.thumb
     }
     
     override static func primaryKey() -> String? {

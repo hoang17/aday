@@ -58,7 +58,7 @@ class FriendsController: UITableViewController {
         tableView.separatorInset = UIEdgeInsetsZero
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         tableView.separatorStyle = .None
-
+        
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
         let ref = FIRDatabase.database().reference()
@@ -145,9 +145,10 @@ class FriendsController: UITableViewController {
             
             dispatch_group_notify(self.myGroup, dispatch_get_main_queue(), {
                 if (change){
+                    print("reload data")
                     self.tableView.reloadData()
                 }
-            })            
+            })
 
         })
         
@@ -195,21 +196,20 @@ class FriendsController: UITableViewController {
                     } else {
                         print("File downloaded " + fileName)
                         
-                        // Generate thumb image
-                        do {
-                            let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
-                            let imgGenerator = AVAssetImageGenerator(asset: asset)
-                            imgGenerator.appliesPreferredTrackTransform = true
-                            let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
-                            let uiimg = UIImage(CGImage: cgimg)
-                            let data = UIImageJPEGRepresentation(uiimg, 0.5)
-                            let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
-                            data!.writeToFile(filename, atomically: true)
-                            
-                        } catch {
-                            print(error)
-                        }
-                        
+//                        // Generate thumb image
+//                        do {
+//                            let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
+//                            let imgGenerator = AVAssetImageGenerator(asset: asset)
+//                            imgGenerator.appliesPreferredTrackTransform = true
+//                            let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
+//                            let uiimg = UIImage(CGImage: cgimg)
+//                            let data = UIImageJPEGRepresentation(uiimg, 0.5)
+//                            let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
+//                            data!.writeToFile(filename, atomically: true)
+//                            
+//                        } catch {
+//                            print(error)
+//                        }
                         
                     }
                 }
