@@ -13,10 +13,10 @@ target 'Group' do
     pod 'FBSDKShareKit'
     pod 'ESTabBarController'
     pod 'UIColor-HexString'
-    pod 'SnapKit'
+    pod 'SnapKit', '~> 0.22.0'
     pod 'DateTools'
     pod 'RealmSwift'
-    pod 'Kingfisher'
+    pod 'Kingfisher', '~> 2.6'
     pod 'Eureka'
     pod 'jot'
 end
