@@ -15,7 +15,7 @@ class LoadFriends: NSObject {
 //        let ref = FIRDatabase.database().reference()
 //        
 //        for i in 1...10 {
-//            // Create new user-friend at /user-friends/$userid/$friendid
+//            // Create new friend at /friends/$userid/$friendid
 //            let userID = "UNeULAhdjtciKv7VZ6vfmQHx01I3"
 //            let key = "key-\(i)"
 //            let friend = ["uid": key,
@@ -24,7 +24,7 @@ class LoadFriends: NSObject {
 //                          "phone": "123",
 //                          "fabric": "123123",
 //                          "fb": "111"]
-//            let update = ["/user-friends/\(userID)/\(key)/": friend]
+//            let update = ["/friends/\(userID)/\(key)/": friend]
 //            ref.updateChildValues(update)
 //        }
     }
@@ -60,14 +60,14 @@ class LoadFriends: NSObject {
     
     func updateFriends(fb: String, name: String) {
         
-        // Save user friend
+        // Save friend
         let ref = FIRDatabase.database().reference()
         
         ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             print(snapshot)
             let u = ((snapshot.value as! NSDictionary).allValues.first) as! NSDictionary
             let key : String = (snapshot.value as! NSDictionary).allKeys.first as! String
-            // Create new user-friend at /user-friends/$userid/$friendid
+            // Create new friend at /friends/$userid/$friendid
             let userID : String! = FIRAuth.auth()?.currentUser?.uid
             
             let friend = ["uid": key,
@@ -76,7 +76,7 @@ class LoadFriends: NSObject {
                 "phone": u["phone"] as! String,
                 "fabric": u["fabric"] as! String,
                 "fb": fb]
-            let update = ["/user-friends/\(userID)/\(key)/": friend]
+            let update = ["/friends/\(userID)/\(key)/": friend]
             ref.updateChildValues(update)
             
         }) { (error) in

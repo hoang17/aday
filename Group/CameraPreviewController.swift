@@ -211,19 +211,23 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
                                 print("Thumb uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
                                
                                 // Save clip to db
-                                let ref = FIRDatabase.database().reference().child("clips")
-                                let id = ref.childByAutoId().key
-                                let uid = FIRAuth.auth()?.currentUser?.uid
+                                let ref = FIRDatabase.database().reference()
+                                let id = ref.child("clips").childByAutoId().key
+                                let uid : String = FIRAuth.auth()!.currentUser!.uid
                                 let fname = uploadFile
                                 let txt = self.textField.text
                                 let y = self.textLocation.y/self.view.frame.height
-                                let clip = Clip(id: id, uid: uid!, fname: fname, txt: txt!, y: y, location: self.lo, thumb: (metadata!.downloadURL()?.absoluteString)!)
-                                ref.child(id).setValue(clip.toAnyObject())
+                                let clip = Clip(id: id, uid: uid, fname: fname, txt: txt!, y: y, location: self.lo, thumb: (metadata!.downloadURL()?.absoluteString)!)
+                                
+//                                ref.child(id).setValue(clip.toAnyObject())
+                                
+                                // Create new clip at /users/$userid/clips/$clipid
+                                let update = [
+                                    "/users/\(uid)/clips/\(id)/": clip.toAnyObject(),
+                                    "/users/\(uid)/uploaded":NSDate().timeIntervalSince1970]
+                                ref.updateChildValues(update)
                                 
                                 print("Clip is saved to db \(id)")
-                                
-                                let users = FIRDatabase.database().reference().child("users")
-                                users.child(uid!).updateChildValues(["uploaded":NSDate().timeIntervalSince1970])
                                 
                             }
                         }

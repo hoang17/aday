@@ -40,6 +40,10 @@ class User: NSObject {
         self.city = (snapshot.value!["city"] as? String) ?? ""
         self.country = (snapshot.value!["country"] as? String) ?? ""
         self.uploaded = (snapshot.value!["uploaded"] as? Double) ?? 0
+        for clipSnapshot in snapshot.childSnapshotForPath("clips").children {
+            let clip = Clip(snapshot: clipSnapshot as! FIRDataSnapshot)
+            self.clips.insert(clip, atIndex: 0)
+        }
     }
     
     init(data: UserModel) {
