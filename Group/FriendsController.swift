@@ -23,30 +23,41 @@ class FriendsController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//        let realm: Realm
-//        do {
-//            realm = try Realm()
+        // try to initialize Realm, clean all if error
+        let realm: Realm
+        do {
+            realm = try Realm()
+        }
+        catch {
+            print(error)
+            let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
+            let realmURLs = [
+                realmURL,
+                realmURL.URLByAppendingPathExtension("lock"),
+                realmURL.URLByAppendingPathExtension("log_a"),
+                realmURL.URLByAppendingPathExtension("log_b"),
+                realmURL.URLByAppendingPathExtension("note")
+            ]
+            let manager = NSFileManager.defaultManager()
+            for URL in realmURLs {
+                do {
+                    try manager.removeItemAtURL(URL)
+                } catch {
+                    // handle error
+                }
+            }
+            realm = try! Realm()
+        }
+        
+//        try! realm.write {
+//            realm.deleteAll()
 //        }
-//        catch {
-//            print(error)
-//            let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
-//            let realmURLs = [
-//                realmURL,
-//                realmURL.URLByAppendingPathExtension("lock"),
-//                realmURL.URLByAppendingPathExtension("log_a"),
-//                realmURL.URLByAppendingPathExtension("log_b"),
-//                realmURL.URLByAppendingPathExtension("note")
-//            ]
-//            let manager = NSFileManager.defaultManager()
-//            for URL in realmURLs {
-//                do {
-//                    try manager.removeItemAtURL(URL)
-//                } catch {
-//                    // handle error
-//                }
-//            }
-//            realm = try! Realm()
-//        }
+        
+        let list = realm.objects(UserModel.self).sorted("uploaded")
+        for data in list {
+            let friend = User(data: data)
+            self.friends.insert(friend, atIndex: 0)
+        }
         
         view.backgroundColor = .whiteColor()
         
@@ -72,9 +83,17 @@ class FriendsController: UITableViewController {
             self.friends = [User]()
             
             for item in snapshot.children {
+                
                 let friend = User(snapshot: item as! FIRDataSnapshot)
                 self.friends.insert(friend, atIndex: 0)
                 self.downloadClips(friend.clips)
+                
+                let data = UserModel()
+                data.load(friend)
+                try! realm.write {
+                    realm.add(data, update: true)
+                }
+                
             }
             
             print("...loaded \(self.friends.count) friends")
