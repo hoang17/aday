@@ -18,5 +18,6 @@ target 'Group' do
     pod 'RealmSwift'
     pod 'Kingfisher'
     pod 'Eureka'
+    pod 'APAddressBook'
     pod 'jot'
 end

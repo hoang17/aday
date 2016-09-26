@@ -10,26 +10,6 @@ import FirebaseDatabase
 
 class LoadFriends: NSObject {
     
-    func loadFriends() {
-        
-//        let ref = FIRDatabase.database().reference()
-//        
-//        for i in 1...10 {
-//            // Create new friend at /friends/$userid/$friendid
-//            let userID = "UNeULAhdjtciKv7VZ6vfmQHx01I3"
-//            let key = "key-\(i)"
-//            let friend = ["uid": key,
-//                          "name": "name",
-//                          "email": "some@email.com",
-//                          "phone": "123",
-//                          "fabric": "123123",
-//                          "fb": "111"]
-//            let update = ["/friends/\(userID)/\(key)/": friend]
-//            ref.updateChildValues(update)
-//        }
-    }
-
-    
     func loadFacebookFriends(completionHandler:(friends:[Friend]?)->()) {
         
         var friends = [Friend]()

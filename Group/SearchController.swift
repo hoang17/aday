@@ -8,12 +8,16 @@
 
 import UIKit
 import FirebaseDatabase
+import FBSDKCoreKit
+import APAddressBook
+import DigitsKit
 
 class SearchController: UITableViewController {
     // MARK: - Properties
 //    var detailViewController: DetailViewController? = nil
     var users = [User]()
     var filteredUsers = [User]()
+    var userkeys = [String:User]()
     let searchController = UISearchController(searchResultsController: nil)
     
     // MARK: - View Setup
@@ -35,27 +39,98 @@ class SearchController: UITableViewController {
 
         let ref = FIRDatabase.database().reference()
         
-        ref.child("users").observeEventType(.Value, withBlock: { snapshot in
-            print("...returning users...")
-            for item in snapshot.children {
-                let user = User(snapshot: item as! FIRDataSnapshot)
-                self.users.append(user)
+//        ref.child("users").observeEventType(.Value, withBlock: { snapshot in
+//            print("...returning users...")
+//            for item in snapshot.children {
+//                let user = User(snapshot: item as! FIRDataSnapshot)
+//                self.users.append(user)
+//                
+//                
+//            }
+//            self.tableView.reloadData()
+//        })
+        
+        // Load facebook friends
+        
+        let request = FBSDKGraphRequest(graphPath:"me/friends", parameters: ["fields": "name", "limit":"200"] );
+        request.startWithCompletionHandler { (connection, result, error) -> Void in
+            
+            if error == nil {
+                
+                let resultdict = result as! NSDictionary
+                let data : NSArray = resultdict.objectForKey("data") as! NSArray
+                for i in 0 ..< data.count
+                {
+                    let valueDict : NSDictionary = data[i] as! NSDictionary
+                    let fb = valueDict.valueForKey("id") as! String
+                    
+                    ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                        
+                        let user = User(snapshot: snapshot.children.allObjects.first as! FIRDataSnapshot)
+                        if self.userkeys[user.uid] == nil{
+                            self.users.append(user)
+                            self.userkeys[user.uid] = user
+                            self.tableView.reloadData()
+                        }
+                        
+                    }) { (error) in
+                        print(error)
+                    }
+                    
+                }
+                print("Found \(self.users.count) friends")
+            } else {
+                print("Error Getting Friends \(error)");
             }
-            self.tableView.reloadData()
+        }
+        
+        
+        // Load contacts friends
+        let addressBook = APAddressBook()
+        addressBook.loadContacts({(contacts, error) in
+            
+            if error != nil {
+                print(error)
+                return
+            }
+            
+            for contact in contacts! {
+                
+                if let phones = contact.phones {
+                    for phone in phones {
+//                        var number = phone.number!.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
+                        var number = phone.number!.removeWhitespace()
+                        if number.hasPrefix("0"){
+                            number = "+84" + String(number.characters.dropFirst())
+                        }
+                        
+                        if number == Digits.sharedInstance().session()?.phoneNumber {
+                            continue
+                        }
+                        
+                        ref.child("users").queryOrderedByChild("phone").queryEqualToValue(number).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                            
+                            if let snap = snapshot.children.allObjects.first as? FIRDataSnapshot {
+                                let user = User(snapshot: snap)
+                                if self.userkeys[user.uid] == nil{
+                                    self.users.append(user)
+                                    self.userkeys[user.uid] = user
+                                    self.tableView.reloadData()
+                                }
+                            }
+                            
+                        }) { (error) in
+                            print(error)
+                        }
+                        
+                    }
+                }
+                
+            }
         })
-        
-        // Setup the Scope Bar
-//        searchController.searchBar.scopeButtonTitles = ["All", "Chocolate", "Hard", "Other"]
-//        tableView.tableHeaderView = searchController.searchBar
-        
-//        if let splitViewController = splitViewController {
-//            let controllers = splitViewController.viewControllers
-//            detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
-//        }
     }
     
     override func viewWillAppear(animated: Bool) {
-//        clearsSelectionOnViewWillAppear = splitViewController!.collapsed
         super.viewWillAppear(animated)
     }
     
@@ -84,19 +159,27 @@ class SearchController: UITableViewController {
             user = users[indexPath.row]
         }
         cell.textLabel!.text = user.name
-//        cell.detailTextLabel!.text = user.category
         return cell
     }
     
     func filterContentForSearchText(searchText: String, scope: String = "All") {
         filteredUsers = users.filter({( user : User) -> Bool in
-//            let categoryMatch = (scope == "All") || (candy.category == scope)
             let categoryMatch = scope == "All"
             return categoryMatch && user.name.lowercaseString.containsString(searchText.lowercaseString)
         })
         tableView.reloadData()
     }
 
+}
+
+extension String {
+    func replace(string:String, replacement:String) -> String {
+        return self.stringByReplacingOccurrencesOfString(string, withString: replacement, options: NSStringCompareOptions.LiteralSearch, range: nil)
+    }
+    
+    func removeWhitespace() -> String {
+        return self.stringByReplacingOccurrencesOfString("\\s", withString: "", options: NSStringCompareOptions.RegularExpressionSearch, range: nil)
+    }
 }
 
 extension SearchController: UISearchBarDelegate {
@@ -109,9 +192,6 @@ extension SearchController: UISearchBarDelegate {
 extension SearchController: UISearchResultsUpdating {
     // MARK: - UISearchResultsUpdating Delegate
     func updateSearchResultsForSearchController(searchController: UISearchController) {
-//        let searchBar = searchController.searchBar
-//        let scope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
-//        filterContentForSearchText(searchController.searchBar.text!, scope: scope)
         filterContentForSearchText(searchController.searchBar.text!)
     }
 }
