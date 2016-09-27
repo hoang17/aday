@@ -79,6 +79,7 @@
 		3785F76E1D85ED8B00F32915 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3785F7611D85ED8B00F32915 /* Roboto-Thin.ttf */; };
 		3785F76F1D85ED8B00F32915 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3785F7621D85ED8B00F32915 /* Roboto-ThinItalic.ttf */; };
 		3785F7751D861E0900F32915 /* ClipModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F7741D861E0900F32915 /* ClipModel.swift */; };
+		37C9C37C1D9A08510081F825 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37C9C37B1D9A08510081F825 /* MapKit.framework */; };
 		37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FBE1D14F33700B19492 /* UIView+Frame.swift */; };
 		37E00FDA1D168F5D00B19492 /* more@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E00FD91D168F5D00B19492 /* more@2x.png */; };
 		37EF00231D8714CB005D39A1 /* LocationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EF00221D8714CB005D39A1 /* LocationController.swift */; };
@@ -180,6 +181,7 @@
 		3785F7611D85ED8B00F32915 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		3785F7621D85ED8B00F32915 /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
 		3785F7741D861E0900F32915 /* ClipModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipModel.swift; sourceTree = "<group>"; };
+		37C9C37B1D9A08510081F825 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		37E00FBE1D14F33700B19492 /* UIView+Frame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Frame.swift"; sourceTree = "<group>"; };
 		37E00FD91D168F5D00B19492 /* more@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "more@2x.png"; sourceTree = "<group>"; };
 		37EF00221D8714CB005D39A1 /* LocationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationController.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37C9C37C1D9A08510081F825 /* MapKit.framework in Frameworks */,
 				26259060293337CDF69D9ECD /* Pods_Group.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -441,6 +444,7 @@
 		D543431A1101CCD7E38B4AE5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				37C9C37B1D9A08510081F825 /* MapKit.framework */,
 				910E826AC7A98A9CD441C878 /* Pods_Group.framework */,
 			);
 			name = Frameworks;
@@ -483,6 +487,11 @@
 				TargetAttributes = {
 					37FEFEB51D11D33600C078AC = {
 						CreatedOnToolsVersion = 7.3.1;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
