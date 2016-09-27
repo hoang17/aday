@@ -50,7 +50,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             let list = realm.objects(UserModel.self)
             for data in list {
                 if data.clips.count > 0 {
-                    let clip = Clip(data: data.clips.last!)
+                    let clip = Clip(data: data.clips.first!)
                     artworks.append(Artwork(clip: clip))
                     
 //                    let point = MKPointAnnotation()
@@ -67,8 +67,6 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             print(error)
         }
         
-        
-
     }
     
     
@@ -82,8 +80,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         if let annotation = annotation as? Artwork {
             let identifier = "pin"
             var view: MKPinAnnotationView
-            if let dequeuedView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
-                as? MKPinAnnotationView { // 2
+            if let dequeuedView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier) as? MKPinAnnotationView { // 2
                 dequeuedView.annotation = annotation
                 view = dequeuedView
             } else {
@@ -91,11 +88,15 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                 view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 view.canShowCallout = true
                 view.calloutOffset = CGPoint(x: -5, y: 5)
-                view.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure) as UIView
+//                view.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure) as UIView
                 
-                let url = NSURL(string: annotation.clip.thumb)
-                let data = NSData(contentsOfURL: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check
-                view.image = UIImage(data: data!)
+                let imageView = UIImageView(frame:CGRectMake(0, 0, 32, 32))
+                imageView.kf_setImageWithURL(NSURL(string: annotation.clip.thumb))
+                view.leftCalloutAccessoryView = imageView
+                
+//                let url = NSURL(string: annotation.clip.thumb)
+//                let data = NSData(contentsOfURL: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check
+//                view.image = UIImage(data: data!)
             }
             
             view.pinColor = annotation.pinColor()
