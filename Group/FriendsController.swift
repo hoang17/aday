@@ -76,26 +76,6 @@ class FriendsController: UITableViewController {
         
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
-//        ref.child("users").child(userID).observeEventType(.Value, withBlock: { snapshot in
-//            let user = User(snapshot: snapshot)            
-//            for friendId in user.friends.keys{
-//                ref.child("users").child(friendId).observeEventType(.Value, withBlock: { snapshot in
-//                    let friend = User(snapshot: snapshot)
-//                    
-//                    let data = UserModel()
-//                    data.load(friend)
-//                    try! realm.write {
-//                        realm.add(data, update: true)
-//                    }
-//
-//                    self.reloadData(realm)
-//                    
-//                })
-//            }
-//            
-//        })
-
-        
         print("...loading friends for user \(userID)...")
         
         ref.child("users").queryOrderedByChild("friends/\(userID)").queryEqualToValue(true).observeEventType(.Value, withBlock: { snapshot in
