@@ -16,7 +16,7 @@ class PhotosController: UIViewController, UICollectionViewDataSource, UICollecti
     var collectionView: UICollectionView!
     let cellWidth = 150
     let cellHeight = 266
-    var players = [Player]();
+    var players = [PlayerView]();
 
     var myGroup = dispatch_group_create()
     
@@ -43,7 +43,7 @@ class PhotosController: UIViewController, UICollectionViewDataSource, UICollecti
             
             self.manager.requestPlayerItemForVideo(asset!, options: options, resultHandler: { (playerItem, _) -> Void in
                 
-                let player = Player(playerItem: playerItem!, frame: CGRect(x: 0,y: 0,width: self.cellWidth, height: self.cellHeight))
+                let player = PlayerView(playerItem: playerItem!, frame: CGRect(x: 0,y: 0,width: self.cellWidth, height: self.cellHeight))
                 self.players.append(player)
 //                self.playerItems.append(playerItem!);
                 

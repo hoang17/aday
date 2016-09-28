@@ -150,7 +150,7 @@ class ProfileController: FormViewController {
     }
 
     func syncFacebookFriends(){
-        let friendloader = LoadFriends()
+        let friendloader = FriendsLoader()
         friendloader.loadFacebookFriends { (friends) in
             // TODO
         }

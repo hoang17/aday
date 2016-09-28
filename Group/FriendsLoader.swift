@@ -8,7 +8,7 @@ import FBSDKCoreKit
 import FirebaseAuth
 import FirebaseDatabase
 
-class LoadFriends: NSObject {
+class FriendsLoader: NSObject {
     
     func loadFacebookFriends(completionHandler:(friends:[Friend]?)->()) {
         

@@ -89,12 +89,8 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cell.subviews.forEach({ $0.removeFromSuperview() })
         
         let clip = clips![indexPath.row]
-        let mp = MiniPlayer(clip: clip, frame: cell.bounds)
-        
-        cell.addSubview(mp.img)
-        cell.addSubview(mp.textField)
-        cell.addSubview(mp.dateLabel)
-        
+        let thumb = ClipThumbnail(clip: clip, frame: cell.bounds)
+        cell.addSubview(thumb)        
         return cell
     }
     
