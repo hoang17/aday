@@ -64,10 +64,10 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                                 "phone": (session?.phoneNumber)!,
                                 "city": "",
                                 "country": ""]
-                    FIRDatabase.database().reference().child("users").child(currentUser!.uid).setValue(user)
+                    FIRDatabase.database().reference().child("users").child(currentUser!.uid).updateChildValues(user)
                 }
                 else{
-                    FIRDatabase.database().reference().child("users").child(currentUser!.uid).setValue(["name": currentUser!.displayName!,"email": currentUser!.email!])
+                    FIRDatabase.database().reference().child("users").child(currentUser!.uid).updateChildValues(["name": currentUser!.displayName!,"email": currentUser!.email!])
                 }
             }
             
@@ -94,7 +94,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         "phone": (session?.phoneNumber)!,
                         "city": "",
                         "country": ""]
-            FIRDatabase.database().reference().child("users").child(currentUser.uid).setValue(user)
+            FIRDatabase.database().reference().child("users").child(currentUser.uid).updateChildValues(user)
             
             // navigate to home
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate

@@ -52,9 +52,8 @@ class LocationController: UIViewController, CLLocationManagerDelegate {
         print("locations = \(locValue.latitude) \(locValue.longitude)")
         
         let geoCoder = CLGeocoder()
-        let location = CLLocation(latitude: locValue.latitude, longitude: locValue.longitude)
         
-        geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+        geoCoder.reverseGeocodeLocation(manager.location!, completionHandler: { (placemarks, error) -> Void in
             
             // Place details
             let placeMark: CLPlacemark! = placemarks?[0]

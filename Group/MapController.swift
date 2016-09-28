@@ -10,6 +10,8 @@ import UIKit
 import MapKit
 import AddressBook
 import RealmSwift
+import FirebaseDatabase
+import FirebaseAuth
 
 class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
 
@@ -74,6 +76,23 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(manager.location!.coordinate, regionRadius * 2.0, regionRadius * 2.0)
         mapView.setRegion(coordinateRegion, animated: false)
         locationManager.stopUpdatingLocation()
+        
+        let geoCoder = CLGeocoder()
+        geoCoder.reverseGeocodeLocation(manager.location!, completionHandler: { (placemarks, error) -> Void in
+            
+            let placeMark: CLPlacemark! = placemarks?[0]
+            if (placeMark == nil){
+                return
+            }
+            let city = (placeMark.addressDictionary!["City"] as? NSString) ?? ""
+            let country = (placeMark.addressDictionary!["Country"] as? NSString) ?? ""
+            let uid : String! = FIRAuth.auth()?.currentUser?.uid
+            let update = ["city": city, "country": country]
+            let ref = FIRDatabase.database().reference().child("users").child(uid)
+            ref.updateChildValues(update)
+            
+        })
+        
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {

@@ -49,15 +49,16 @@ class FriendsController: UITableViewController {
             realm = try! Realm()
         }
         
-//        try! realm.write {
-//            realm.deleteAll()
-//        }
         
         let list = realm.objects(UserModel.self).sorted("uploaded")
         for data in list {
             let friend = User(data: data)
             self.friends.insert(friend, atIndex: 0)
         }
+        
+//        try! realm.write {
+//            realm.deleteAll()
+//        }
         
         view.backgroundColor = .whiteColor()
         
@@ -71,14 +72,33 @@ class FriendsController: UITableViewController {
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         tableView.separatorStyle = .None
         
-        let userID : String! = FIRAuth.auth()?.currentUser?.uid
-        
         let ref = FIRDatabase.database().reference()
         
+        let userID : String! = FIRAuth.auth()?.currentUser?.uid
+        
+//        ref.child("users").child(userID).observeEventType(.Value, withBlock: { snapshot in
+//            let user = User(snapshot: snapshot)            
+//            for friendId in user.friends.keys{
+//                ref.child("users").child(friendId).observeEventType(.Value, withBlock: { snapshot in
+//                    let friend = User(snapshot: snapshot)
+//                    
+//                    let data = UserModel()
+//                    data.load(friend)
+//                    try! realm.write {
+//                        realm.add(data, update: true)
+//                    }
+//
+//                    self.reloadData(realm)
+//                    
+//                })
+//            }
+//            
+//        })
+
         
         print("...loading friends for user \(userID)...")
         
-        ref.child("users").queryOrderedByChild("uploaded").observeEventType(.Value, withBlock: { snapshot in
+        ref.child("users").queryOrderedByChild("friends/\(userID)").queryEqualToValue(true).observeEventType(.Value, withBlock: { snapshot in
             
             self.friends = [User]()
             
@@ -96,12 +116,26 @@ class FriendsController: UITableViewController {
                 
             }
             
+            self.friends.sortInPlace({ $0.uploaded > $1.uploaded })
+            
             print("...loaded \(self.friends.count) friends")
             
-            print("reload data")
             self.tableView.reloadData()
         })
         
+    }
+    
+    func reloadData(realm: Realm) {
+        let list = realm.objects(UserModel.self).sorted("uploaded")
+        self.friends = [User]()
+        for data in list {
+            let friend = User(data: data)
+            self.friends.insert(friend, atIndex: 0)
+        }
+        
+        print("...loaded \(self.friends.count) friends")
+        print("reload data")
+        self.tableView.reloadData()
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
