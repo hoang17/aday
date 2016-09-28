@@ -16,7 +16,6 @@ class UserModel: Object {
     dynamic var country: String!
     dynamic var uploaded: Double = 0.0
     let clips = List<ClipModel>()
-//    let friends = List<UserModel>()
     
     func load(user: User){
         uid = user.uid
