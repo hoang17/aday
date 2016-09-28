@@ -16,8 +16,6 @@ class FriendsController: UITableViewController {
     
     var friends = [User]()
     
-//    var cells = [Int:TableViewCell]()
-    
     var myGroup = dispatch_group_create()
 
     override func viewDidLoad() {
@@ -105,34 +103,7 @@ class FriendsController: UITableViewController {
         
     }
     
-    func reloadData(realm: Realm) {
-        let list = realm.objects(UserModel.self).sorted("uploaded")
-        self.friends = [User]()
-        for data in list {
-            let friend = User(data: data)
-            self.friends.insert(friend, atIndex: 0)
-        }
-        
-        print("...loaded \(self.friends.count) friends")
-        print("reload data")
-        self.tableView.reloadData()
-    }
-    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-//        if cells[indexPath.row] == nil {
-//            let cell = TableViewCell()
-//            cell.controller = self
-//            cell.nameLabel.text = friends[indexPath.row].name
-//            cell.locationLabel.text = friends[indexPath.row].city + " · " + friends[indexPath.row].country
-//            cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
-//            cell.clips = friends[indexPath.row].clips
-//            cell.friend = friends[indexPath.row]
-//            cells[indexPath.row] = cell
-//        }
-//        cells[indexPath.row] = cell
-//        return cells[indexPath.row]!
-        
         let cell = TableViewCell()
         cell.controller = self
         cell.nameLabel.text = friends[indexPath.row].name
@@ -168,23 +139,7 @@ class FriendsController: UITableViewController {
                     if error != nil {
                         print(error)
                     } else {
-                        print("File downloaded " + fileName)
-                        
-//                        // Generate thumb image
-//                        do {
-//                            let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
-//                            let imgGenerator = AVAssetImageGenerator(asset: asset)
-//                            imgGenerator.appliesPreferredTrackTransform = true
-//                            let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
-//                            let uiimg = UIImage(CGImage: cgimg)
-//                            let data = UIImageJPEGRepresentation(uiimg, 0.5)
-//                            let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
-//                            data!.writeToFile(filename, atomically: true)
-//                            
-//                        } catch {
-//                            print(error)
-//                        }
-                        
+                        print("File downloaded " + fileName)                        
                     }
                 }
             }
