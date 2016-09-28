@@ -100,14 +100,16 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         view.addSubview(textField)
         view.bringSubviewToFront(textField)
         
-        locationField.origin = CGPoint(x: 0, y: 0.8 * UIScreen.mainScreen().bounds.height)
+        locationField.origin = CGPoint(x: 0, y: 0)
         locationField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-        locationField.textColor = UIColor.whiteColor()
-        locationField.font = UIFont.systemFontOfSize(14.0)
+        locationField.textColor = UIColor(white: 1, alpha: 0.6)
+        locationField.font = UIFont.systemFontOfSize(12.0)
         locationField.textAlignment = NSTextAlignment.Center
-        locationField.height = 32
+        locationField.height = 20
         locationField.width = UIScreen.mainScreen().bounds.width
         locationField.hidden = true
+        locationField.returnKeyType = UIReturnKeyType.Done
+        locationField.delegate = self
         
         view.addSubview(locationField)
         view.bringSubviewToFront(locationField)
@@ -129,15 +131,16 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         
         let co = manager.location!.coordinate
         
+        manager.stopUpdatingLocation()
+        
         self.lo.latitude = co.latitude
         self.lo.longitude = co.longitude
         
         print("locations = \(co.latitude) \(co.longitude)")
         
         let geoCoder = CLGeocoder()
-        let location = CLLocation(latitude: co.latitude, longitude: co.longitude)
         
-        geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+        geoCoder.reverseGeocodeLocation(manager.location!, completionHandler: { (placemarks, error) -> Void in
             
             let placeMark: CLPlacemark! = placemarks?[0]
             if (placeMark == nil){
@@ -157,8 +160,8 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
             self.lo.country = country
             self.lo.sublocal = sublocal
             self.lo.subarea = subarea
-            self.locationField.text = name + ", " + sublocal + ", " + subarea
-            self.locationField.hidden = false
+            self.locationField.text = name
+            self.locationField.hidden = true
             
         })
         
@@ -286,7 +289,9 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
 
     // Show textfield
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-
+        
+        locationField.resignFirstResponder()
+        
         if textField.hidden {
             if let touch = touches.first {
                 textLocation = touch.locationInView(self.view)

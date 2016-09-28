@@ -139,7 +139,7 @@ class FriendsController: UITableViewController {
                     if error != nil {
                         print(error)
                     } else {
-                        print("File downloaded " + fileName)                        
+                        print("File downloaded " + fileName)
                     }
                 }
             }

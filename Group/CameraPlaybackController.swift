@@ -42,8 +42,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     
     func locationText() -> String {
         let clip = clips[playIndex]
-        if clip.subarea != "" && clip.city != "" && clip.country != "" {
-            return "\(clip.subarea) · \(clip.city) · \(clip.country)"
+        if clip.subarea != "" && clip.city != "" {
+            return "\(clip.subarea) · \(clip.city)"
         } else if clip.city != "" && clip.country != "" {
             return "\(clip.city) · \(clip.country)"
         } else if clip.lname != "" {

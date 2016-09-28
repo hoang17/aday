@@ -46,11 +46,11 @@ class LoadFriends: NSObject {
         ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             print(snapshot)
 
-            let key : String = (snapshot.value as! NSDictionary).allKeys.first as! String
+            let friendId : String = (snapshot.value as! NSDictionary).allKeys.first as! String
             // Create new friend at /users/$userid/friends/$friendid
             let userID : String! = FIRAuth.auth()?.currentUser?.uid
             
-            let update = ["/users/\(userID)/friends/\(key)/": true]
+            let update = ["/users/\(userID)/friends/\(friendId)/": true]
             ref.updateChildValues(update)
             
 //            let u = ((snapshot.value as! NSDictionary).allValues.first) as! NSDictionary

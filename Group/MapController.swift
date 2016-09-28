@@ -84,8 +84,8 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             if (placeMark == nil){
                 return
             }
-            let city = (placeMark.addressDictionary!["City"] as? NSString) ?? ""
-            let country = (placeMark.addressDictionary!["Country"] as? NSString) ?? ""
+            let city = (placeMark.addressDictionary!["City"] as? String) ?? ""
+            let country = (placeMark.addressDictionary!["CountryCode"] as? String) ?? ""
             let uid : String! = FIRAuth.auth()?.currentUser?.uid
             let update = ["city": city, "country": country]
             let ref = FIRDatabase.database().reference().child("users").child(uid)
