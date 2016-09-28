@@ -17,6 +17,7 @@ class User: NSObject {
     var country: String
     var clipIndex:Int = 0
     var clips = [Clip]()
+    var friends = [String:Bool]()
     var uploaded: Double = 0.0 // last uploaded time
     
     init(uid: String, name:String, email: String, fabric: String, phone: String, fb:String, city: String, country: String) {
@@ -44,6 +45,7 @@ class User: NSObject {
             let clip = Clip(snapshot: clipSnapshot as! FIRDataSnapshot)
             self.clips.insert(clip, atIndex: 0)
         }
+        self.friends = snapshot.value!["uploaded"] as? [String : Bool] ?? [String:Bool]()
     }
     
     init(data: UserModel) {

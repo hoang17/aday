@@ -135,9 +135,9 @@ class Artwork: NSObject, MKAnnotation {
         case "Sculpture", "Plaque":
             return .Red
         case "Mural", "Monument":
-            return .Purple
-        default:
             return .Green
+        default:
+            return .Purple
         }
     }
     

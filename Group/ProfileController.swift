@@ -159,53 +159,7 @@ class ProfileController: FormViewController {
     func syncContacts() {
         
         // TODO
-        
-        
-        let storage = FIRStorage.storage()
-        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com")
-        
-        let metadata = FIRStorageMetadata()
-        metadata.contentType = "image/jpeg"
-        
-        // Fix clip thumb
-        let ref = FIRDatabase.database().reference().child("clips")
-        
-        ref.queryOrderedByChild("uid").observeSingleEventOfType(.Value, withBlock: { snapshot in
-            for item in snapshot.children {
-                let clip = Clip(snapshot: item as! FIRDataSnapshot)
-             
-                // Generate thumb image
-                do {
-                    let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + clip.fname), options: nil)
-                    let imgGenerator = AVAssetImageGenerator(asset: asset)
-                    imgGenerator.appliesPreferredTrackTransform = true
-                    let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
-                    let uiimg = UIImage(CGImage: cgimg)
-                    let data = UIImageJPEGRepresentation(uiimg, 0.5)
-                    let filename = NSTemporaryDirectory() + clip.fname + ".jpg"
-                    
-                    if data!.writeToFile(filename, atomically: true) {
-                        // Upload thumb image
-                        let thumb = clip.fname + ".jpg"
-                        let fileUrl = NSURL(fileURLWithPath: NSTemporaryDirectory() + thumb)
-                        gs.child("thumbs/" + thumb).putFile(fileUrl, metadata: metadata) { metadata, error in
-                            // upload done
-                            if (error != nil) {
-                                print(error)
-                            } else {
-                                clip.thumb = (metadata!.downloadURL()?.absoluteString)!
-                                print("Thumb uploaded to " + clip.thumb)
-                                ref.child(clip.id).setValue(clip.toAnyObject())
-                            }
-                        }
-                    }
-                    
-                } catch {
-                    print(error)
-                }
-                
-            }
-        })
+        syncFacebookFriends()
         
     }
     
@@ -248,7 +202,6 @@ class ProfileController: FormViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
     
 }
 

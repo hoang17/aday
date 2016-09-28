@@ -45,19 +45,27 @@ class LoadFriends: NSObject {
         
         ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             print(snapshot)
-            let u = ((snapshot.value as! NSDictionary).allValues.first) as! NSDictionary
+
             let key : String = (snapshot.value as! NSDictionary).allKeys.first as! String
-            // Create new friend at /friends/$userid/$friendid
+            // Create new friend at /users/$userid/friends/$friendid
             let userID : String! = FIRAuth.auth()?.currentUser?.uid
             
-            let friend = ["uid": key,
-                "name": name,
-                "email": u["email"] as! String,
-                "phone": u["phone"] as! String,
-                "fabric": u["fabric"] as! String,
-                "fb": fb]
-            let update = ["/friends/\(userID)/\(key)/": friend]
+            let update = ["/users/\(userID)/friends/\(key)/": true]
             ref.updateChildValues(update)
+            
+//            let u = ((snapshot.value as! NSDictionary).allValues.first) as! NSDictionary
+//            let key : String = (snapshot.value as! NSDictionary).allKeys.first as! String
+//            // Create new friend at /friends/$userid/$friendid
+//            let userID : String! = FIRAuth.auth()?.currentUser?.uid
+//            
+//            let friend = ["uid": key,
+//                "name": name,
+//                "email": u["email"] as! String,
+//                "phone": u["phone"] as! String,
+//                "fabric": u["fabric"] as! String,
+//                "fb": fb]
+//            let update = ["/friends/\(userID)/\(key)/": friend]
+//            ref.updateChildValues(update)
             
         }) { (error) in
             print(error.localizedDescription)
