@@ -104,7 +104,7 @@ class SearchController: UITableViewController {
                             number = "+84" + String(number.characters.dropFirst())
                         }
                         
-                        if number == Digits.sharedInstance().session()?.phoneNumber {
+                        if number == AppDelegate.currentUser.phone {
                             continue
                         }
                         

@@ -51,7 +51,7 @@ class ProfileController: FormViewController {
             <<< PhoneRow(){
                 $0.title = "Mobile Number"
                 $0.placeholder = "Enter your mobile number"
-                $0.value = Digits.sharedInstance().session()?.phoneNumber
+                $0.value = AppDelegate.currentUser.phone
             }
             <<< EmailRow(){
                 $0.title = "Email"

@@ -47,6 +47,9 @@ class FriendsController: UITableViewController {
             realm = try! Realm()
         }
         
+        let userID : String! = FIRAuth.auth()?.currentUser?.uid
+        
+        AppDelegate.currentUser = User(data: realm.objectForPrimaryKey(UserModel.self, key: userID)!)
         
         let list = realm.objects(UserModel.self).sorted("uploaded")
         for data in list {
@@ -71,8 +74,6 @@ class FriendsController: UITableViewController {
         tableView.separatorStyle = .None
         
         let ref = FIRDatabase.database().reference()
-        
-        let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
         print("...loading friends for user \(userID)...")
         

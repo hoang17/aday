@@ -235,6 +235,15 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
+		373696EE1D9D1CD9008DBFD4 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				37EF00221D8714CB005D39A1 /* LocationController.swift */,
+				3776FAD41D8806A0005D7583 /* PhotosController.swift */,
+			);
+			name = Support;
+			sourceTree = "<group>";
+		};
 		37449C801D8685B600EADA55 /* DataModels */ = {
 			isa = PBXGroup;
 			children = (
@@ -368,12 +377,11 @@
 		37E00FC31D15C40600B19492 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				373696EE1D9D1CD9008DBFD4 /* Support */,
 				3785F6701D85636B00F32915 /* MainController.swift */,
 				37FEFEBB1D11D33600C078AC /* LoginController.swift */,
 				372D8DB01D125EAE008DBADA /* ProfileController.swift */,
 				372D8DB41D12BF2B008DBADA /* FriendsController.swift */,
-				37EF00221D8714CB005D39A1 /* LocationController.swift */,
-				3776FAD41D8806A0005D7583 /* PhotosController.swift */,
 				37F7DF911D916EEA0057F7E1 /* SearchController.swift */,
 				37F7DF931D916F2B0057F7E1 /* MapController.swift */,
 				37E00FDC1D16EC4A00B19492 /* Camera */,
