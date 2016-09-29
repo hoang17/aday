@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window!.backgroundColor = UIColor.whiteColor()
         
-        if Digits.sharedInstance().session() != nil {
+        if FIRAuth.auth()?.currentUser != nil {
             self.logUser()
             self.window!.rootViewController = MainController()
         } else {

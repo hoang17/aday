@@ -62,10 +62,10 @@ class ProfileController: FormViewController {
                 $0.title = "Password"
                 $0.placeholder = "Enter your password"
             }
-            <<< DateRow(){
-                $0.title = "Birthday"
-                $0.value = NSDate(timeIntervalSinceReferenceDate: 0)
-            }
+//            <<< DateRow(){
+//                $0.title = "Birthday"
+//                $0.value = NSDate(timeIntervalSinceReferenceDate: 0)
+//            }
             <<< ButtonRow("Notification"){
                 $0.title = $0.tag
                 $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{

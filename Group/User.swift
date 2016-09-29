@@ -35,8 +35,8 @@ class User: NSObject {
         self.uid = snapshot.key
         self.name = snapshot.value!["name"] as! String
         self.email = snapshot.value!["email"] as! String
-        self.phone = snapshot.value!["phone"] as! String
-        self.fabric = snapshot.value!["fabric"] as! String
+        self.phone = (snapshot.value!["phone"] as? String) ?? ""
+        self.fabric = (snapshot.value!["fabric"] as? String) ?? ""
         self.fb = snapshot.value!["fb"] as! String
         self.city = (snapshot.value!["city"] as? String) ?? ""
         self.country = (snapshot.value!["country"] as? String) ?? ""

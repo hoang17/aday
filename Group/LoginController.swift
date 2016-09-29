@@ -27,10 +27,16 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             make.right.equalTo(self.view).offset(-50)
         }
         loginButton.readPermissions = ["public_profile", "email", "user_friends", "user_likes", "user_location"]
-        loginButton.delegate = self
+        loginButton.delegate = self        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
-        if (FBSDKAccessToken.currentAccessToken() != nil && Digits.sharedInstance().session() == nil){
-            showDigitsLogin()
+        if FIRAuth.auth()?.currentUser != nil {
+            // navigate to home
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.showMain()
         }
     }
     
@@ -38,8 +44,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
         
-        if (error != nil) {
+        if error != nil {
             // Process error
+            print(error)
             print("login error")
         }
         else if result.isCancelled {
@@ -60,8 +67,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                                 "name": currentUser!.displayName!,
                                 "email": currentUser!.email!,
                                 "fb": FBSDKAccessToken.currentAccessToken().userID,
-                                "fabric": (session?.userID)!,
-                                "phone": (session?.phoneNumber)!,
                                 "city": "",
                                 "country": ""]
                     FIRDatabase.database().reference().child("users").child(currentUser!.uid).updateChildValues(user)
@@ -80,20 +85,15 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         configuration.phoneNumber = "+84"
         Digits.sharedInstance().authenticateWithViewController(self, configuration: configuration) { (session, error) in
             
-            if ((error) != nil) {
+            if error != nil {
+                print(error)
                 return
             }
             
             // Associate the session userID with user model
             let currentUser = (FIRAuth.auth()?.currentUser)!
-            let user = ["uid": currentUser.uid,
-                        "name": currentUser.displayName!,
-                        "email": currentUser.email!,
-                        "fb": FBSDKAccessToken.currentAccessToken().userID,
-                        "fabric": (session?.userID)!,
-                        "phone": (session?.phoneNumber)!,
-                        "city": "",
-                        "country": ""]
+            let user = ["fabric": (session?.userID)!,
+                        "phone": (session?.phoneNumber)!]
             FIRDatabase.database().reference().child("users").child(currentUser.uid).updateChildValues(user)
             
             // navigate to home
@@ -105,12 +105,13 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
-        do{
+        
+        do {
             Digits.sharedInstance().logOut()
             try FIRAuth.auth()?.signOut()
             print("User Logged Out")
         } catch {
-            print("Logout error")
+            print(error)
         }
     }
     
