@@ -19,6 +19,5 @@ target 'Group' do
     pod 'Kingfisher'
     pod 'Eureka'
     pod 'APAddressBook'
-    pod 'AFImageHelper'
     pod 'jot'
 end
