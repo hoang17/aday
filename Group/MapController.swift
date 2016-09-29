@@ -12,20 +12,22 @@ import AddressBook
 import RealmSwift
 import FirebaseDatabase
 import FirebaseAuth
+import AVKit
+import AVFoundation
 
 class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
 
     var mapView = MKMapView()
     
-    let regionRadius: CLLocationDistance = 1000
+    let regionRadius: CLLocationDistance = 5000
     
     var clipAnnotations = [ClipAnnotation]()
-    
-    var points = [MKPointAnnotation]()
     
     let locationManager = CLLocationManager()
     
     var myLocation:CLLocationCoordinate2D?
+    
+    var playIndex = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,8 +54,19 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             let list = realm.objects(UserModel.self)
             for data in list {
                 for clipdata in data.clips {
+                    
                     let clip = Clip(data: clipdata)
-                    clipAnnotations.append(ClipAnnotation(clip: clip))
+                    let ca = ClipAnnotation(clip: clip)
+                    clipAnnotations.append(ca)
+                    
+//                    let point = CLLocationCoordinate2D(latitude: clipdata.lat, longitude: clipdata.long)
+//                    // check if clip location is new
+//                    if self.isNewPoint(point) {
+//                        let clip = Clip(data: clipdata)
+//                        let ca = ClipAnnotation(clip: clip)
+//                        clipAnnotations.append(ca)
+//                        // self.addCircle(ca.coordinate, radius: 50)
+//                    }
                 }
             }
             mapView.addAnnotations(clipAnnotations)
@@ -64,8 +77,96 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
     }
     
+    func playPrevClip(){
+        
+        playIndex -= 1
+        
+        playIndex = playerAtIndex(playIndex)
+        
+        mapView.selectAnnotation(clipAnnotations[playIndex], animated: true)
+        
+    }
+    
+    func playNextClip(){
+        
+        playIndex += 1
+        
+        playIndex = playerAtIndex(playIndex)
+        
+        mapView.selectAnnotation(clipAnnotations[playIndex], animated: true)
+        
+    }
+    
+    func playerAtIndex(playIndex: Int) -> Int {
+        if (playIndex < 0 || playIndex >= clipAnnotations.count){
+            return 0
+        }
+        return playIndex
+    }
+    
+    
+    func playerDidFinishPlaying(notification: NSNotification) {
+        if clipAnnotations.count > playIndex + 1 {
+            playNextClip()
+        } else {
+            // close()
+        }
+    }
+    
+    func isNewPoint(point: CLLocationCoordinate2D) -> Bool {
+        if clipAnnotations.isEmpty {
+            return true
+        }
+        for ca in clipAnnotations {
+            if self.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
+                return false
+            }
+        }
+        return true
+    }
+    
+    func addCircle(coordinate: CLLocationCoordinate2D, radius: CLLocationDistance) {
+        let circle = MKCircle(centerCoordinate: coordinate, radius: radius)
+        mapView.addOverlay(circle)
+    }
+    
+    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+        // If you want to include other shapes, then this check is needed. If you only want circles, then remove it.
+//        if overlay is MKCircle {
+//        }
+        
+        let circle = MKCircleRenderer(overlay: overlay)
+        circle.alpha = 0.1
+        circle.lineWidth = 1
+        circle.strokeColor = UIColor.redColor()
+//        circle.fillColor = UIColor.blackColor()
+        circle.fillColor = UIColor(red: 255, green: 0, blue: 0, alpha: 0.1)
+        
+//        let mapPoint = MKMapPointForCoordinate(overlay.coordinate)
+//        let circlePoint = circle.pointForMapPoint(mapPoint)
+//        let inside = CGPathContainsPoint(circle.path, nil, circlePoint, false)
+//        if inside {
+//            //do something
+//        }
+        
+        return circle
+    }
+    
+    
+    func isPointInsideCircle(point: CLLocationCoordinate2D, circleCentre centre: CLLocationCoordinate2D, radius: Double) -> Bool {
+        let pointALocation = CLLocation(latitude: point.latitude, longitude: point.longitude)
+        let pointBLocation = CLLocation(latitude: centre.latitude, longitude: centre.longitude)
+        let distanceMeters: Double = pointALocation.distanceFromLocation(pointBLocation)
+        if distanceMeters > radius {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+    
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let coordinateRegion = MKCoordinateRegionMakeWithDistance(manager.location!.coordinate, regionRadius * 2.0, regionRadius * 2.0)
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(manager.location!.coordinate, regionRadius, regionRadius)
         mapView.setRegion(coordinateRegion, animated: false)
         locationManager.stopUpdatingLocation()
         
@@ -107,9 +208,21 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         calloutView.center = CGPoint(x: view.bounds.size.width/3, y: -calloutView.bounds.size.height*0.52)
         view.addSubview(calloutView)
-//        mapView.setCenterCoordinate((view.annotation?.coordinate)!, animated: true)
+      
+        mapView.setCenterCoordinate((view.annotation?.coordinate)!, animated: true)
+        
+        playIndex = clipAnnotations.indexOf(clipAnnotation) ?? 0
+        
+        calloutView.miniPlayer.play()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                         object:calloutView.miniPlayer.player.currentItem)
+        
         
     }
+    
+    
     
     func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
         for subview in view.subviews {

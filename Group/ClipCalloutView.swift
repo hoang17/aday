@@ -23,8 +23,11 @@ class ClipCalloutView: UIView {
     
     init(clip: Clip, frame: CGRect) {
         super.init(frame: frame)
-        img = UIImageView(frame:frame)
-        img.kf_setImageWithURL(NSURL(string: clip.thumb))
+        
+//        img = UIImageView(frame:frame)
+//        img.kf_setImageWithURL(NSURL(string: clip.thumb))
+        
+        miniPlayer = MiniPlayer(clip: clip, frame: frame)
         
         if clip.txt == "" {
             textField.hidden = true
@@ -40,13 +43,15 @@ class ClipCalloutView: UIView {
             textField.text = clip.txt
             textField.center.y =  frame.height * clip.y
         }
-        dateLabel.origin = CGPoint(x: 8, y: 8)
+        dateLabel.origin = CGPoint(x: 5, y: 3)
         dateLabel.text = NSDate(timeIntervalSince1970: clip.date).shortTimeAgoSinceNow()
-        dateLabel.size = CGSize(width: 50, height: 14)
+        dateLabel.size = CGSize(width: 50, height: 10)
         dateLabel.textColor = UIColor(white: 1, alpha: 0.8)
-        dateLabel.font = UIFont(name: "OpenSans", size: 11.0)
+        dateLabel.font = UIFont(name: "OpenSans", size: 9.0)
         
-        addSubview(img)
+//        addSubview(img)
+        
+        addSubview(miniPlayer)
         addSubview(textField)
         addSubview(dateLabel)
     }
