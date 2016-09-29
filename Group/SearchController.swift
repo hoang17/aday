@@ -112,10 +112,12 @@ class SearchController: UITableViewController {
                             
                             if let snap = snapshot.children.allObjects.first as? FIRDataSnapshot {
                                 let user = User(snapshot: snap)
-                                if self.userkeys[user.uid] == nil{
-                                    self.users.append(user)
-                                    self.userkeys[user.uid] = user
-                                    self.tableView.reloadData()
+                                if user.uid != AppDelegate.currentUser.uid {
+                                    if self.userkeys[user.uid] == nil{
+                                        self.users.append(user)
+                                        self.userkeys[user.uid] = user
+                                        self.tableView.reloadData()
+                                    }
                                 }
                             }
                             
