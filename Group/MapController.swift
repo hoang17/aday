@@ -27,6 +27,8 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
     
     var myLocation:CLLocationCoordinate2D?
     
+    var calloutView: PlayerCalloutView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -144,14 +146,22 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         let clipAnnotation = view.annotation as! ClipAnnotation
         
-        let calloutView = PlayerCalloutView(clips: clipAnnotation.clips, frame: CGRect(x: 0,y: 0, width: 90,height: 190))
+        calloutView = PlayerCalloutView(clips: clipAnnotation.clips, frame: CGRect(x: 0,y: 0, width: 90,height: 190))
         calloutView.locationName.text = clipAnnotation.title
         calloutView.locationSub.text = clipAnnotation.subtitle
         
         calloutView.center = CGPoint(x: view.bounds.size.width/3, y: -calloutView.bounds.size.height*0.52)
         view.addSubview(calloutView)
       
+        let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
+        view.addGestureRecognizer(tap)
+        
 //        mapView.setCenterCoordinate((view.annotation?.coordinate)!, animated: true)
+    }
+    
+    func tapGesture(sender:UITapGestureRecognizer){
+        calloutView.pause()
+        calloutView.playNextClip()
     }
     
     func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {

@@ -44,33 +44,9 @@ class PlayerCalloutView: UIView {
         
         self.clips = clips
         self.backgroundColor = UIColor.clearColor()
-        play()
-        
-        let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
-        self.addGestureRecognizer(tap)
+        play()        
     }
     
-    func tapGesture(sender:UITapGestureRecognizer){
-        pause()
-        playNextClip()
-        
-//        let location = sender.locationInView(self.view)
-//        
-//        if location.x > 0.25*UIScreen.mainScreen().bounds.width {
-//            if clips.count > playIndex + 1 {
-//                playNextClip()
-//            } else {
-//                close()
-//            }
-//        } else {
-//            if playIndex > 0 {
-//                playPrevClip()
-//            } else {
-//                close()
-//            }
-//        }
-    }
-
     func playPrevClip(){
         playIndex -= 1
         if playIndex >= 0 {
@@ -80,9 +56,10 @@ class PlayerCalloutView: UIView {
     
     func playNextClip(){
         playIndex += 1
-        if playIndex < clips.count {
-            play()
+        if playIndex >= clips.count {
+            playIndex = 0
         }
+        play()
     }
     
     func play() {
@@ -99,17 +76,13 @@ class PlayerCalloutView: UIView {
     }
     
     func playerDidFinishPlaying(notification: NSNotification) {
-        if clips.count > playIndex + 1 {
-            playNextClip()
+        if playIndex+1 < clips.count {
+            play()
         } else {
-            rewind()
+            playIndex = 0
+            players[playIndex]?.miniPlayer.pause()
+            self.bringSubviewToFront(players[playIndex]!)
         }
-    }
-    
-    func rewind() {
-        playIndex = 0
-        players[playIndex]?.miniPlayer.pause()
-        self.bringSubviewToFront(players[playIndex]!)
     }
     
     func pause() {
