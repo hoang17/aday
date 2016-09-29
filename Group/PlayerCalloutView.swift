@@ -18,6 +18,7 @@ class PlayerCalloutView: UIView {
     var locationSub = UILabel()
     var clips = [Clip]()
     var playIndex = 0
+    var players = [Int:ClipCalloutView]()
     
     init(clips: [Clip], frame: CGRect) {
         super.init(frame: frame)
@@ -33,7 +34,7 @@ class PlayerCalloutView: UIView {
         locationName.layer.masksToBounds = true
         locationName.clipsToBounds = true
         locationName.layer.borderColor = UIColor.lightGrayColor().CGColor;
-        locationName.layer.borderWidth = 1
+        locationName.layer.borderWidth = 0.5
         
         let atxt = locationName.attributedText!.mutableCopy() as! NSMutableAttributedString
         locationName.width = atxt.size().width + 20
@@ -62,24 +63,30 @@ class PlayerCalloutView: UIView {
     }
     
     func play() {
-        
-//        subviews.forEach({ $0.removeFromSuperview() })
-        
-        let clipCallOut = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 90,height: 160))
-        self.addSubview(clipCallOut)
-        self.bringSubviewToFront(clipCallOut)
-        clipCallOut.miniPlayer.play()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object:clipCallOut.miniPlayer.player.currentItem)
+        if players[playIndex] == nil {
+            let clipCallOut = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 90,height: 160))
+            self.addSubview(clipCallOut)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                             object:clipCallOut.miniPlayer.player.currentItem)
+            players[playIndex] = clipCallOut
+        }
+        players[playIndex]!.miniPlayer.play()
+        self.bringSubviewToFront(players[playIndex]!)
     }
     
     func playerDidFinishPlaying(notification: NSNotification) {
         if clips.count > playIndex + 1 {
             playNextClip()
         } else {
-            // close()
+            rewind()
         }
+    }
+    
+    func rewind() {
+        playIndex = 0
+        players[playIndex]?.miniPlayer.pause()
+        self.bringSubviewToFront(players[playIndex]!)
     }
     
     required init(coder aDecoder: NSCoder) {
