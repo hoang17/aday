@@ -24,6 +24,10 @@ class ClipCalloutView: UIView {
     init(clip: Clip, frame: CGRect) {
         super.init(frame: frame)
         
+        self.layer.cornerRadius = 5
+        self.layer.masksToBounds = false
+        self.clipsToBounds = true
+        
 //        img = UIImageView(frame:frame)
 //        img.kf_setImageWithURL(NSURL(string: clip.thumb))
         
