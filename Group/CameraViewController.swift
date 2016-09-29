@@ -152,7 +152,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             }
         }
         
-        let savePathUrl = NSURL(string: savePath)
+        let savePathUrl = NSURL(string: savePath!)
         let asset = AVURLAsset(URL: inputURL, options: nil)
         
         let exportSession: AVAssetExportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetMediumQuality)!

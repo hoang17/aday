@@ -12,7 +12,6 @@
 		371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */; };
 		371068E01D80453200BDFC42 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DF1D80453200BDFC42 /* RecordButton.swift */; };
 		371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068E11D83003100BDFC42 /* CameraPlaybackController.swift */; };
-		372D8DB11D125EAE008DBADA /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB01D125EAE008DBADA /* ProfileController.swift */; };
 		372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB41D12BF2B008DBADA /* FriendsController.swift */; };
 		372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB61D12C0F8008DBADA /* UserModel.swift */; };
 		372D8DB91D1304E7008DBADA /* FriendsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB81D1304E7008DBADA /* FriendsLoader.swift */; };
@@ -116,7 +115,6 @@
 		371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPreviewController.swift; sourceTree = "<group>"; };
 		371068DF1D80453200BDFC42 /* RecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
 		371068E11D83003100BDFC42 /* CameraPlaybackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPlaybackController.swift; sourceTree = "<group>"; };
-		372D8DB01D125EAE008DBADA /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		372D8DB41D12BF2B008DBADA /* FriendsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
 		372D8DB61D12C0F8008DBADA /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		372D8DB81D1304E7008DBADA /* FriendsLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsLoader.swift; sourceTree = "<group>"; };
@@ -383,7 +381,6 @@
 				373696EE1D9D1CD9008DBFD4 /* Support */,
 				3785F6701D85636B00F32915 /* MainController.swift */,
 				37FEFEBB1D11D33600C078AC /* LoginController.swift */,
-				372D8DB01D125EAE008DBADA /* ProfileController.swift */,
 				372D8DB41D12BF2B008DBADA /* FriendsController.swift */,
 				37F7DF911D916EEA0057F7E1 /* SearchController.swift */,
 				37F7DF931D916F2B0057F7E1 /* MapController.swift */,
@@ -513,6 +510,7 @@
 					37FEFEB51D11D33600C078AC = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = L5KGYLLYBX;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
 								enabled = 1;
@@ -666,7 +664,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -695,7 +693,6 @@
 				37F7DF941D916F2B0057F7E1 /* MapController.swift in Sources */,
 				372D8DB91D1304E7008DBADA /* FriendsLoader.swift in Sources */,
 				37FEFEBA1D11D33600C078AC /* AppDelegate.swift in Sources */,
-				372D8DB11D125EAE008DBADA /* ProfileController.swift in Sources */,
 				371068E01D80453200BDFC42 /* RecordButton.swift in Sources */,
 				37EF00231D8714CB005D39A1 /* LocationController.swift in Sources */,
 				37C9C3851D9C1A2A0081F825 /* ClipCalloutView.swift in Sources */,
@@ -813,6 +810,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ping.Group;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -828,6 +826,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ping.Group;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};

@@ -1,4 +1,4 @@
-platform :ios, "9.0"
+platform :ios, "10.0"
 use_frameworks!
 target 'Group' do
     pod 'Firebase'
@@ -13,11 +13,10 @@ target 'Group' do
     pod 'FBSDKShareKit'
     pod 'ESTabBarController'
     pod 'UIColor-HexString'
-    pod 'SnapKit'
+    pod 'SnapKit', '0.22.0'
     pod 'DateTools'
-    pod 'RealmSwift'
-    pod 'Kingfisher'
-    pod 'Eureka'
+    pod 'RealmSwift', '1.1.0'
+    pod 'Kingfisher', '2.5.1'
     pod 'APAddressBook'
     pod 'jot'
 end

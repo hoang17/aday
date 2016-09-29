@@ -2,8 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Enable photo to save video</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Enable camera to record video</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Enable contacts to sync friends</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Enable location to checkin</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Enable microphone to record video</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

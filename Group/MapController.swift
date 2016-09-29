@@ -53,10 +53,6 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             for data in list {
                 for clipdata in data.clips {
                     
-//                    let clip = Clip(data: clipdata)
-//                    let ca = ClipAnnotation(clip: clip)
-//                    clipAnnotations.append(ca)
-                    
                     let point = CLLocationCoordinate2D(latitude: clipdata.lat, longitude: clipdata.long)
                     
                     // check if clip location is new
@@ -93,23 +89,14 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
     
     func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
         // If you want to include other shapes, then this check is needed. If you only want circles, then remove it.
-//        if overlay is MKCircle {
-//        }
+        // if overlay is MKCircle { }
         
         let circle = MKCircleRenderer(overlay: overlay)
         circle.alpha = 0.1
         circle.lineWidth = 1
         circle.strokeColor = UIColor.redColor()
-//        circle.fillColor = UIColor.blackColor()
-        circle.fillColor = UIColor(red: 255, green: 0, blue: 0, alpha: 0.1)
-        
-//        let mapPoint = MKMapPointForCoordinate(overlay.coordinate)
-//        let circlePoint = circle.pointForMapPoint(mapPoint)
-//        let inside = CGPathContainsPoint(circle.path, nil, circlePoint, false)
-//        if inside {
-//            //do something
-//        }
-        
+        circle.fillColor = UIColor.blackColor()
+        // circle.fillColor = UIColor(red: 255, green: 0, blue: 0, alpha: 0.1)
         return circle
     }
     
@@ -161,21 +148,10 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         calloutView.locationName.text = clipAnnotation.title
         calloutView.locationSub.text = clipAnnotation.subtitle
         
-//        let tapGesture = UITapGestureRecognizer(target: self, action: Selector(("CallPhoneNumber:")))
-//        calloutView.starbucksPhone.addGestureRecognizer(tapGesture)
-//        calloutView.starbucksPhone.isUserInteractionEnabled = true
-//        calloutView.starbucksImage.image = clipAnnotation.image
-        
         calloutView.center = CGPoint(x: view.bounds.size.width/3, y: -calloutView.bounds.size.height*0.52)
         view.addSubview(calloutView)
       
 //        mapView.setCenterCoordinate((view.annotation?.coordinate)!, animated: true)
-        
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-//                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                         object:calloutView.miniPlayer.player.currentItem)
-        
-        
     }
     
     func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
@@ -195,12 +171,6 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                 annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
                 annotationView!.canShowCallout = false
                 annotationView!.animatesDrop = true
-                
-//                annotationView.calloutOffset = CGPoint(x: -5, y: 5)
-//                annotationView.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure) as UIView
-//                let imageView = UIImageView(frame:CGRectMake(0, 0, 32, 32))
-//                imageView.kf_setImageWithURL(NSURL(string: annotation.clip.thumb))
-//                annotationView.leftCalloutAccessoryView = imageView
                 
             } else {
                 annotationView!.annotation = annotation
@@ -240,18 +210,8 @@ class ClipAnnotation: NSObject, MKAnnotation {
         return clips.first!.sublocal
     }
     
-    func pinColor() -> MKPinAnnotationColor  {
-        
+    func pinColor() -> MKPinAnnotationColor {
         return .Red
-        
-//        switch clip.city {
-//        case "Sculpture", "Plaque":
-//            return .Purple
-//        case "Mural", "Monument":
-//            return .Green
-//        default:
-//            return .Red
-//        }
     }
     
     // annotation callout opens this mapItem in Maps app

@@ -39,7 +39,7 @@ class FriendsController: UITableViewController {
             let manager = NSFileManager.defaultManager()
             for URL in realmURLs {
                 do {
-                    try manager.removeItemAtURL(URL)
+                    try manager.removeItemAtURL(URL!)
                 } catch {
                     // handle error
                 }
@@ -49,7 +49,10 @@ class FriendsController: UITableViewController {
         
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
-        AppDelegate.currentUser = User(data: realm.objectForPrimaryKey(UserModel.self, key: userID)!)
+        
+        if let user = realm.objectForPrimaryKey(UserModel.self, key: userID) {
+            AppDelegate.currentUser = User(data: user)
+        }
         
         let list = realm.objects(UserModel.self).sorted("uploaded")
         for data in list {

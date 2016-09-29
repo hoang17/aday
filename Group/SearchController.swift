@@ -104,7 +104,7 @@ class SearchController: UITableViewController {
                             number = "+84" + String(number.characters.dropFirst())
                         }
                         
-                        if number == AppDelegate.currentUser.phone {
+                        if AppDelegate.currentUser != nil && number == AppDelegate.currentUser.phone {
                             continue
                         }
                         
