@@ -13,11 +13,8 @@ import Kingfisher
 import FirebaseStorage
 
 class ClipCalloutView: UIView {
-    var locationName = UILabel()
-    var locationSub = UILabel()
-    var miniPlayer: MiniPlayer!
     
-    var img: UIImageView!
+    var miniPlayer: MiniPlayer!
     let textField = UITextField()
     var dateLabel = UILabel()
     
@@ -27,9 +24,6 @@ class ClipCalloutView: UIView {
         self.layer.cornerRadius = 5
         self.layer.masksToBounds = false
         self.clipsToBounds = true
-        
-//        img = UIImageView(frame:frame)
-//        img.kf_setImageWithURL(NSURL(string: clip.thumb))
         
         miniPlayer = MiniPlayer(clip: clip, frame: frame)
         
@@ -52,8 +46,6 @@ class ClipCalloutView: UIView {
         dateLabel.size = CGSize(width: 50, height: 10)
         dateLabel.textColor = UIColor(white: 1, alpha: 0.8)
         dateLabel.font = UIFont(name: "OpenSans", size: 9.0)
-        
-//        addSubview(img)
         
         addSubview(miniPlayer)
         addSubview(textField)

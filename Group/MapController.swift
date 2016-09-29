@@ -27,8 +27,6 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
     
     var myLocation:CLLocationCoordinate2D?
     
-    var playIndex = 0
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -55,18 +53,29 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             for data in list {
                 for clipdata in data.clips {
                     
-                    let clip = Clip(data: clipdata)
-                    let ca = ClipAnnotation(clip: clip)
-                    clipAnnotations.append(ca)
+//                    let clip = Clip(data: clipdata)
+//                    let ca = ClipAnnotation(clip: clip)
+//                    clipAnnotations.append(ca)
                     
-//                    let point = CLLocationCoordinate2D(latitude: clipdata.lat, longitude: clipdata.long)
-//                    // check if clip location is new
-//                    if self.isNewPoint(point) {
-//                        let clip = Clip(data: clipdata)
-//                        let ca = ClipAnnotation(clip: clip)
-//                        clipAnnotations.append(ca)
-//                        // self.addCircle(ca.coordinate, radius: 50)
-//                    }
+                    let point = CLLocationCoordinate2D(latitude: clipdata.lat, longitude: clipdata.long)
+                    
+                    // check if clip location is new
+                    var isnew = true
+                    for ca in clipAnnotations {
+                        if self.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
+                            isnew = false
+                            let clip = Clip(data: clipdata)
+                            ca.clips.append(clip)
+                            break
+                        }
+                    }
+                    
+                    if isnew {
+                        let clip = Clip(data: clipdata)
+                        let ca = ClipAnnotation(clip: clip)
+                        clipAnnotations.append(ca)
+                        // self.addCircle(ca.coordinate, radius: 50)
+                    }
                 }
             }
             mapView.addAnnotations(clipAnnotations)
@@ -75,54 +84,6 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             print(error)
         }
         
-    }
-    
-    func playPrevClip(){
-        
-        playIndex -= 1
-        
-        playIndex = playerAtIndex(playIndex)
-        
-        mapView.selectAnnotation(clipAnnotations[playIndex], animated: true)
-        
-    }
-    
-    func playNextClip(){
-        
-        playIndex += 1
-        
-        playIndex = playerAtIndex(playIndex)
-        
-        mapView.selectAnnotation(clipAnnotations[playIndex], animated: true)
-        
-    }
-    
-    func playerAtIndex(playIndex: Int) -> Int {
-        if (playIndex < 0 || playIndex >= clipAnnotations.count){
-            return 0
-        }
-        return playIndex
-    }
-    
-    
-    func playerDidFinishPlaying(notification: NSNotification) {
-        if clipAnnotations.count > playIndex + 1 {
-            playNextClip()
-        } else {
-            // close()
-        }
-    }
-    
-    func isNewPoint(point: CLLocationCoordinate2D) -> Bool {
-        if clipAnnotations.isEmpty {
-            return true
-        }
-        for ca in clipAnnotations {
-            if self.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
-                return false
-            }
-        }
-        return true
     }
     
     func addCircle(coordinate: CLLocationCoordinate2D, radius: CLLocationDistance) {
@@ -151,7 +112,6 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         return circle
     }
-    
     
     func isPointInsideCircle(point: CLLocationCoordinate2D, circleCentre centre: CLLocationCoordinate2D, radius: Double) -> Bool {
         let pointALocation = CLLocation(latitude: point.latitude, longitude: point.longitude)
@@ -197,7 +157,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         let clipAnnotation = view.annotation as! ClipAnnotation
         
-        let calloutView = ClipCalloutView(clip: clipAnnotation.clip, frame: CGRect(x: 0,y: 0, width: 90,height: 160))
+        let calloutView = PlayerCalloutView(clips: clipAnnotation.clips, frame: CGRect(x: 0,y: 0, width: 90,height: 190))
         calloutView.locationName.text = clipAnnotation.title
         calloutView.locationSub.text = clipAnnotation.subtitle
         
@@ -209,20 +169,14 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         calloutView.center = CGPoint(x: view.bounds.size.width/3, y: -calloutView.bounds.size.height*0.52)
         view.addSubview(calloutView)
       
-        mapView.setCenterCoordinate((view.annotation?.coordinate)!, animated: true)
+//        mapView.setCenterCoordinate((view.annotation?.coordinate)!, animated: true)
         
-        playIndex = clipAnnotations.indexOf(clipAnnotation) ?? 0
-        
-        calloutView.miniPlayer.play()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object:calloutView.miniPlayer.player.currentItem)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+//                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
+//                                                         object:calloutView.miniPlayer.player.currentItem)
         
         
     }
-    
-    
     
     func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
         for subview in view.subviews {
@@ -240,6 +194,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                 
                 annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
                 annotationView!.canShowCallout = false
+                annotationView!.animatesDrop = true
                 
 //                annotationView.calloutOffset = CGPoint(x: -5, y: 5)
 //                annotationView.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure) as UIView
@@ -267,30 +222,36 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
 }
 
 class ClipAnnotation: NSObject, MKAnnotation {
+    
     let title: String?
     let coordinate: CLLocationCoordinate2D
     let clip: Clip
+    var clips = [Clip]()
     
     init(clip: Clip) {
         self.clip = clip
+        self.clips.append(clip)
         self.title = clip.lname
         self.coordinate = CLLocationCoordinate2D(latitude: clip.lat, longitude: clip.long)
         super.init()
     }
-
+    
     var subtitle: String? {
-        return clip.sublocal
+        return clips.first!.sublocal
     }
     
     func pinColor() -> MKPinAnnotationColor  {
-        switch clip.city {
-        case "Sculpture", "Plaque":
-            return .Purple
-        case "Mural", "Monument":
-            return .Green
-        default:
-            return .Red
-        }
+        
+        return .Red
+        
+//        switch clip.city {
+//        case "Sculpture", "Plaque":
+//            return .Purple
+//        case "Mural", "Monument":
+//            return .Green
+//        default:
+//            return .Red
+//        }
     }
     
     // annotation callout opens this mapItem in Maps app
