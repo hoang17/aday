@@ -27,7 +27,9 @@ class ProfileController: FormViewController {
                     img.layer.masksToBounds = false
                     img.clipsToBounds = true
                     img.contentMode = UIViewContentMode.ScaleAspectFit
-                    img.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(FBSDKAccessToken.currentAccessToken().userID)/picture?type=large&return_ssl_resources=1"))
+                    if FBSDKAccessToken.currentAccessToken() != nil {
+                        img.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(FBSDKAccessToken.currentAccessToken().userID)/picture?type=large&return_ssl_resources=1"))
+                    }
                     let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.width, height: 100))
                     img.center = view.center
                     img.y += 20
