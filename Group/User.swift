@@ -15,10 +15,11 @@ class User: NSObject {
     var fb: String
     var city: String
     var country: String
-    var clipIndex:Int = 0
+    var username: String = ""
+    var password: String = ""
+    var uploaded: Double = 0.0 // last uploaded time
     var clips = [Clip]()
     var friends = [String:Bool]()
-    var uploaded: Double = 0.0 // last uploaded time
     
     init(uid: String, name:String, email: String, fabric: String, phone: String, fb:String, city: String, country: String) {
         self.uid = uid
@@ -46,6 +47,8 @@ class User: NSObject {
             self.clips.insert(clip, atIndex: 0)
         }
         self.friends = snapshot.value!["friends"] as? [String : Bool] ?? [String:Bool]()
+        self.username = (snapshot.value!["username"] as? String) ?? ""
+        self.password = (snapshot.value!["password"] as? String) ?? ""
     }
     
     init(data: UserModel) {
@@ -57,8 +60,9 @@ class User: NSObject {
         self.fb = data.fb
         self.city = data.city
         self.country = data.country
-        self.clipIndex = data.clipIndex
         self.uploaded = data.uploaded
+        self.username = data.username
+        self.password = data.password
         self.clips = [Clip]()
         for c in data.clips{
             let clip = Clip(data: c)
