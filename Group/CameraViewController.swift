@@ -54,7 +54,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             // Get the available devices that is capable of taking video
             let devices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) as! [AVCaptureDevice]
             for device in devices {
-                if device.position == AVCaptureDevicePosition.Front {
+                if device.position == AVCaptureDevicePosition.Back {
                     videoDevice = device
                 }
             }
@@ -196,6 +196,10 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 captureSession.removeInput(input as! AVCaptureInput)
             }
             
+            audioDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
+            let audioInput: AVCaptureDeviceInput = try AVCaptureDeviceInput(device: audioDevice)
+            captureSession.addInput(audioInput)
+            
             let position = (videoInput?.device.position == AVCaptureDevicePosition.Front) ? AVCaptureDevicePosition.Back : AVCaptureDevicePosition.Front
             
             for device in AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) {
@@ -212,7 +216,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             
             
         } catch {
-            
+            print(error)
         }
         
         captureSession.startRunning()
