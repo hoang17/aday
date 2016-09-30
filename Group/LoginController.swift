@@ -78,11 +78,19 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                                 "email": currentUser!.email!,
                                 "fb": FBSDKAccessToken.currentAccessToken().userID,
                                 "city": "",
-                                "country": ""]
+                                "country": "",
+                                "fabric": (session?.userID)!,
+                                "phone": (session?.phoneNumber)!]
                     FIRDatabase.database().reference().child("users").child(currentUser!.uid).updateChildValues(user)
                 }
                 else{
-                    FIRDatabase.database().reference().child("users").child(currentUser!.uid).updateChildValues(["name": currentUser!.displayName!,"email": currentUser!.email!])
+                    let user = ["uid": currentUser!.uid,
+                                "name": currentUser!.displayName!,
+                                "email": currentUser!.email!,
+                                "fb": FBSDKAccessToken.currentAccessToken().userID,
+                                "city": "",
+                                "country": ""]
+                    FIRDatabase.database().reference().child("users").child(currentUser!.uid).updateChildValues(user)
                 }
             }
             

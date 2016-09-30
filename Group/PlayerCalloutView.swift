@@ -18,7 +18,7 @@ class PlayerCalloutView: UIView {
     var locationSub = UILabel()
     var clips = [Clip]()
     var playIndex = 0
-    var players = [Int:ClipCalloutView]()
+    var clipCallout: ClipCalloutView?
     
     init(clips: [Clip], frame: CGRect) {
         super.init(frame: frame)
@@ -63,16 +63,14 @@ class PlayerCalloutView: UIView {
     }
     
     func play() {
-        if players[playIndex] == nil {
-            let clipCallOut = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192))
-            self.addSubview(clipCallOut)
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                             object:clipCallOut.miniPlayer.player.currentItem)
-            players[playIndex] = clipCallOut
-        }
-        players[playIndex]!.miniPlayer.play()
-        self.bringSubviewToFront(players[playIndex]!)
+        clipCallout?.removeFromSuperview()
+        clipCallout = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192))
+        self.addSubview(clipCallout!)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                         object:clipCallout!.miniPlayer.player.currentItem)
+        
+        clipCallout!.miniPlayer.play()
     }
     
     func playerDidFinishPlaying(notification: NSNotification) {
@@ -80,13 +78,12 @@ class PlayerCalloutView: UIView {
             playNextClip()
         } else {
             playIndex = 0
-            players[playIndex]?.miniPlayer.pause()
-            self.bringSubviewToFront(players[playIndex]!)
+            clipCallout?.miniPlayer.pause()
         }
     }
     
     func pause() {
-        players[playIndex]?.miniPlayer.pause()
+        clipCallout?.miniPlayer.pause()
     }
     
     required init(coder aDecoder: NSCoder) {
