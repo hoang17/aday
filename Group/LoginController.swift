@@ -15,7 +15,17 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        self.navigationController!.setNavigationBarHidden(true, animated: false)
+//        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "Image")!)
+        let background = UIImage(named: "Image")
+        var imageView : UIImageView!
+        imageView = UIImageView(frame: view.bounds)
+        imageView.contentMode =  UIViewContentMode.ScaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.image = background
+        imageView.center = view.center
+        view.addSubview(imageView)
+        self.view.sendSubviewToBack(imageView)
+        
         
         // Setup login button
         let loginButton = FBSDKLoginButton()

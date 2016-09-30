@@ -11,6 +11,7 @@
 		371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */; };
 		371068E01D80453200BDFC42 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DF1D80453200BDFC42 /* RecordButton.swift */; };
 		371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068E11D83003100BDFC42 /* CameraPlaybackController.swift */; };
+		3724B0791D9E65B300181071 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3724B0781D9E65B300181071 /* LaunchScreen.storyboard */; };
 		372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB41D12BF2B008DBADA /* FriendsController.swift */; };
 		372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB61D12C0F8008DBADA /* UserModel.swift */; };
 		372D8DB91D1304E7008DBADA /* FriendsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB81D1304E7008DBADA /* FriendsLoader.swift */; };
@@ -89,7 +90,6 @@
 		37FEFEBA1D11D33600C078AC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEFEB91D11D33600C078AC /* AppDelegate.swift */; };
 		37FEFEBC1D11D33600C078AC /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEFEBB1D11D33600C078AC /* LoginController.swift */; };
 		37FEFEC11D11D33600C078AC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37FEFEC01D11D33600C078AC /* Assets.xcassets */; };
-		37FEFEC41D11D33600C078AC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37FEFEC21D11D33600C078AC /* LaunchScreen.storyboard */; };
 		37FEFECC1D11D38E00C078AC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37FEFECB1D11D38E00C078AC /* GoogleService-Info.plist */; };
 		37FEFED71D123A3700C078AC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEFED61D123A3700C078AC /* User.swift */; };
 		6F94B92CF5620D58B22E1CC4 /* Pods_Pinly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A647296DF3F992D66408496 /* Pods_Pinly.framework */; };
@@ -114,6 +114,7 @@
 		371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPreviewController.swift; sourceTree = "<group>"; };
 		371068DF1D80453200BDFC42 /* RecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
 		371068E11D83003100BDFC42 /* CameraPlaybackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPlaybackController.swift; sourceTree = "<group>"; };
+		3724B0781D9E65B300181071 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		372D8DB41D12BF2B008DBADA /* FriendsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
 		372D8DB61D12C0F8008DBADA /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		372D8DB81D1304E7008DBADA /* FriendsLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsLoader.swift; sourceTree = "<group>"; };
@@ -194,7 +195,6 @@
 		37FEFEB91D11D33600C078AC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		37FEFEBB1D11D33600C078AC /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		37FEFEC01D11D33600C078AC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		37FEFEC31D11D33600C078AC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		37FEFEC51D11D33600C078AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		37FEFECB1D11D38E00C078AC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		37FEFED61D123A3700C078AC /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -456,7 +456,7 @@
 		37FEFED51D12397000C078AC /* Layouts */ = {
 			isa = PBXGroup;
 			children = (
-				37FEFEC21D11D33600C078AC /* LaunchScreen.storyboard */,
+				3724B0781D9E65B300181071 /* LaunchScreen.storyboard */,
 			);
 			name = Layouts;
 			sourceTree = "<group>";
@@ -544,7 +544,6 @@
 				3785F7121D85EB5C00F32915 /* Cabin-Regular.ttf in Resources */,
 				3785F73D1D85ECF400F32915 /* Lato-Black.ttf in Resources */,
 				3785F7201D85EB5C00F32915 /* OpenSans-SemiboldItalic.ttf in Resources */,
-				37FEFEC41D11D33600C078AC /* LaunchScreen.storyboard in Resources */,
 				3785F7431D85ECF400F32915 /* Lato-Italic.ttf in Resources */,
 				3785F70E1D85EB5C00F32915 /* Cabin-BoldItalic.ttf in Resources */,
 				3785F7451D85ECF400F32915 /* Lato-LightItalic.ttf in Resources */,
@@ -594,6 +593,7 @@
 				3785F74A1D85ECF400F32915 /* SourceSansPro-BlackItalic.ttf in Resources */,
 				37FEFEC11D11D33600C078AC /* Assets.xcassets in Resources */,
 				3785F7461D85ECF400F32915 /* Lato-Regular.ttf in Resources */,
+				3724B0791D9E65B300181071 /* LaunchScreen.storyboard in Resources */,
 				3785F71F1D85EB5C00F32915 /* OpenSans-Semibold.ttf in Resources */,
 				3785F7541D85ECF400F32915 /* SourceSansPro-SemiboldItalic.ttf in Resources */,
 				3785F7111D85EB5C00F32915 /* Cabin-MediumItalic.ttf in Resources */,
@@ -699,17 +699,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		37FEFEC21D11D33600C078AC /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				37FEFEC31D11D33600C078AC /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		37FEFEC61D11D33600C078AC /* Debug */ = {

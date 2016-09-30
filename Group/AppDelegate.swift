@@ -36,9 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         
 //        // Setup font
-//        UITextField.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
-//        UITextView.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
-//        UILabel.appearance().font = UIFont(name: "HelveticaNeue-Light", size: 13.0)
+//        UITextField.appearance().font = UIFont(name: "OpenSans", size: 13.0)
+//        UITextView.appearance().font = UIFont(name: "OpenSans", size: 13.0)
+//        UILabel.appearance().font = UIFont(name: "OpenSans", size: 13.0)
         
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window!.backgroundColor = UIColor.whiteColor()
