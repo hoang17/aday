@@ -117,9 +117,6 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cameraPlayback.collectionView = self.collectionView
         cameraPlayback.friend = friend
         
-        cameraPlayback.view.backgroundColor = UIColor.redColor()
-        print(cameraPlayback.view.frame)
-        
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
     }
 }
