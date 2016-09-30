@@ -30,28 +30,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var friend: User!
     var collectionView: UICollectionView!
     
-    func playerAtIndex(playIndex: Int) -> ClipPlayer? {
-        if (playIndex < 0 || playIndex >= clips.count){
-            return nil
-        }
-        if players[playIndex] == nil {
-            players[playIndex] = ClipPlayer(clip: clips[playIndex])
-        }
-        return players[playIndex]
-    }
-    
-    func locationText() -> String {
-        let clip = clips[playIndex]
-        if clip.subarea != "" && clip.city != "" {
-            return "\(clip.subarea) · \(clip.city)"
-        } else if clip.city != "" && clip.country != "" {
-            return "\(clip.city) · \(clip.country)"
-        } else if clip.lname != "" {
-            return clip.lname
-        }
-        return ""
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -146,43 +124,45 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         close()
     }
     
+    func playerAtIndex(playIndex: Int) -> ClipPlayer? {
+        if playIndex < 0 || playIndex >= clips.count {
+            return nil
+        }
+        if players[playIndex] == nil {
+            players[playIndex] = ClipPlayer(clip: clips[playIndex], frame: UIScreen.mainScreen().bounds)
+        }
+        return players[playIndex]
+    }
+    
+    func locationText() -> String {
+        let clip = clips[playIndex]
+        if clip.subarea != "" && clip.city != "" {
+            return "\(clip.subarea) · \(clip.city)"
+        } else if clip.city != "" && clip.country != "" {
+            return "\(clip.city) · \(clip.country)"
+        } else if clip.lname != "" {
+            return clip.lname
+        }
+        return ""
+    }
+    
     func playPrevClip(){
-        
         playIndex -= 1
-        
-        player = playerAtIndex(playIndex)
-        
-        locationLabel.text = locationText()
-        textField.text = clips[playIndex].txt
-        textField.center.y = self.view.height * clips[playIndex].y
-        textField.hidden = textField.text == ""
-        dateLabel.text = NSDate(timeIntervalSince1970: clips[playIndex].date).shortTimeAgoSinceNow()
-        
-        view.addSubview(player)
-        
-        view.bringSubviewToFront(textField)
-        view.bringSubviewToFront(profileImg)
-        view.bringSubviewToFront(nameLabel)
-        view.bringSubviewToFront(dateLabel)
-        view.bringSubviewToFront(locationLabel)
-        
-        player.play()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object: player.player.currentItem)
-        
+        play()
         // cache prev player
         playerAtIndex(playIndex-1)
-        
     }
     
     func playNextClip(){
-        
         playIndex += 1
+        play()
+        // cache next player
+        playerAtIndex(playIndex+1)
+    }
+    
+    func play() {
         
         player = playerAtIndex(playIndex)
-        
         locationLabel.text = locationText()
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * clips[playIndex].y
@@ -202,9 +182,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player.player.currentItem)
-        
-        // cache next player
-        playerAtIndex(playIndex+1)
     }
 
     func playerDidFinishPlaying(notification: NSNotification) {

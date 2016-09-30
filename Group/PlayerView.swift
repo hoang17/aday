@@ -20,10 +20,6 @@ class PlayerView: UIView {
     init(playerItem: AVPlayerItem, frame: CGRect) {
         super.init(frame: frame)
         
-        self.layer.cornerRadius = 5
-        self.layer.masksToBounds = false
-        self.clipsToBounds = true
-        
         player = AVPlayer(playerItem: playerItem)
         playerLayer = AVPlayerLayer(player: player)
         playerLayer.frame = frame
@@ -33,14 +29,12 @@ class PlayerView: UIView {
     init(filePath: String, frame: CGRect) {
         super.init(frame: frame)
 
-        self.layer.cornerRadius = 5
-        self.layer.masksToBounds = false
-        self.clipsToBounds = true
-        
         let fileUrl = NSURL(fileURLWithPath: filePath)
         player = AVPlayer(URL: fileUrl)
         playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = frame
+        playerLayer.frame = CGRect(x: 0, y: 0, width: frame.width+1, height: frame.height) // fix one pixel
+        self.playerLayer.backgroundColor = UIColor.yellowColor().CGColor
+        self.backgroundColor = UIColor.greenColor()
         layer.addSublayer(playerLayer)
     }
     
@@ -63,15 +57,7 @@ class PlayerView: UIView {
     }
 }
 
-class ClipPlayer : MiniPlayer {
-    
-    init(clip: Clip) {
-        super.init(clip: clip, frame: UIScreen.mainScreen().bounds)
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+class ClipPlayer : MiniPlayer {    
 }
 
 class MiniPlayer : PlayerView {

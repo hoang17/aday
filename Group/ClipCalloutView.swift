@@ -25,6 +25,9 @@ class ClipCalloutView: UIView {
         let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
         
         miniPlayer = MiniPlayer(clip: clip, frame: frame)
+        miniPlayer.layer.cornerRadius = 5
+        miniPlayer.layer.masksToBounds = false
+        miniPlayer.clipsToBounds = true
         
         profileImg.origin = CGPoint(x: frame.width/2-12, y: frame.height-16)
         profileImg.size = CGSize(width: 24, height: 24)
