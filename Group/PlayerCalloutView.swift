@@ -27,7 +27,7 @@ class PlayerCalloutView: UIView {
         locationName.textAlignment = NSTextAlignment.Center
         locationName.y = 194
         locationName.height = 28
-        locationName.userInteractionEnabled = false
+        locationName.userInteractionEnabled = true
         locationName.backgroundColor = UIColor.whiteColor()
         locationName.layer.cornerRadius = 5
         locationName.layer.masksToBounds = true

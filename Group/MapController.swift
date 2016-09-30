@@ -70,8 +70,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                     if self.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
                         isnew = false
                         let clip = Clip(data: clipdata)
-                        ca.clips.append(clip)
-                        ca.clips.sortInPlace({ $0.date > $1.date })
+                        ca.addClip(clip)
                         break
                     }
                 }
@@ -156,7 +155,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         calloutView.locationName.text = clipAnnotation.title
         calloutView.locationSub.text = clipAnnotation.subtitle
         
-        calloutView.center = CGPoint(x: view.bounds.size.width/3, y: -calloutView.bounds.size.height*0.52)
+        calloutView.center = CGPoint(x: view.bounds.size.width/3, y: -calloutView.bounds.size.height*0.52-5)
         view.addSubview(calloutView)
       
         let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
@@ -197,6 +196,33 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             
             annotationView!.pinColor = annotation.pinColor()
             
+            let cellwidth: CGFloat = 20
+            let width : CGFloat = (CGFloat(annotation.users.count) * cellwidth) + 10
+            
+            let container = UIView(frame: CGRect(x: -(width/2)+7.5, y: -8, width: width, height: 22))
+            container.backgroundColor = UIColor.whiteColor()
+            container.layer.cornerRadius = 5
+            container.layer.masksToBounds = true
+            container.clipsToBounds = true
+            container.layer.borderColor = UIColor.lightGrayColor().CGColor;
+            container.layer.borderWidth = 0.5
+            annotationView?.addSubview(container)
+            
+            var i : CGFloat = 7.5
+            for user in annotation.users.values {
+                let profileImg = UIImageView()
+                profileImg.origin = CGPoint(x: i, y: 3)
+                profileImg.size = CGSize(width: 16, height: 16)
+                profileImg.layer.cornerRadius = profileImg.height/2
+                profileImg.layer.masksToBounds = false
+                profileImg.clipsToBounds = true
+                profileImg.layer.borderWidth = 0.5
+                profileImg.layer.borderColor = UIColor.lightGrayColor().CGColor
+                profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1"))
+                container.addSubview(profileImg)
+                i += cellwidth
+            }
+            
             return annotationView
         }
         return nil
@@ -216,13 +242,25 @@ class ClipAnnotation: NSObject, MKAnnotation {
     let coordinate: CLLocationCoordinate2D
     let clip: Clip
     var clips = [Clip]()
+    var users = [String:UserModel]()
     
     init(clip: Clip) {
+        let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
+        self.users[clip.uid] = user
         self.clip = clip
         self.clips.append(clip)
         self.title = clip.lname
         self.coordinate = CLLocationCoordinate2D(latitude: clip.lat, longitude: clip.long)
         super.init()
+    }
+    
+    func addClip(clip: Clip) {
+        if self.users[clip.uid] == nil {
+            let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
+            self.users[clip.uid] = user
+        }
+        self.clips.append(clip)
+        self.clips.sortInPlace({ $0.date > $1.date })
     }
     
     var subtitle: String? {
