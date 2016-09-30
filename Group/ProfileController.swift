@@ -11,6 +11,7 @@ import FBSDKLoginKit
 import AVFoundation
 import Eureka
 import FirebaseStorage
+import SafariServices
 
 class ProfileController: FormViewController {
     
@@ -107,45 +108,82 @@ class ProfileController: FormViewController {
             }
             
             +++ Section("Support")
-            <<< ButtonRow("Help Center"){
+            <<< ButtonRow("Get Help from Twitter"){
                 $0.title = $0.tag
-                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
-                    return CameraViewController()
-                    }, completionCallback: nil)
-                
             }
-            <<< ButtonRow("Report Issues"){
-                $0.title = $0.tag
-                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
-                    return CameraViewController()
-                    }, completionCallback: nil)
-            }
+                .onCellSelection({ (cell, row) in
+                    let url = "https://mobile.twitter.com/pinly_app"
+                    if #available(iOS 9.0, *) {
+                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    } else {
+                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                    }
+                })
+//            <<< ButtonRow("Report Issues"){
+//                $0.title = $0.tag
+//            }
+//                .onCellSelection({ (cell, row) in
+//                    let url = "https://m.facebook.com/pinlyapp/"
+//                    if #available(iOS 9.0, *) {
+//                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
+//                        self.presentViewController(vc, animated: true, completion: nil)
+//                    } else {
+//                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+//                    }
+//                })
+
             <<< ButtonRow("Send Suggestions"){
                 $0.title = $0.tag
-                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
-                    return CameraViewController()
-                    }, completionCallback: nil)
             }
+                .onCellSelection({ (cell, row) in
+                    let url = "https://m.facebook.com/pinlyapp/"
+                    if #available(iOS 9.0, *) {
+                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    } else {
+                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                    }
+                })
             <<< ButtonRow("Business Contact"){
                 $0.title = $0.tag
-                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
-                    return CameraViewController()
-                    }, completionCallback: nil)
             }
+                .onCellSelection({ (cell, row) in
+                    let url = "https://m.facebook.com/pinlyapp/"
+                    if #available(iOS 9.0, *) {
+                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    } else {
+                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                    }
+                })
         
             +++ Section("More Information")
             <<< ButtonRow("Privacy Policy"){
                 $0.title = $0.tag
-                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
-                    return CameraViewController()
-                    }, completionCallback: nil)
-            }
+                }
+                .onCellSelection({ (cell, row) in
+                    let url = "https://aday-b6ecc.firebaseapp.com/privacy.html"
+                    if #available(iOS 9.0, *) {
+                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    } else {
+                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                    }
+                })
+            
             <<< ButtonRow("Terms of Service"){
                 $0.title = $0.tag
-                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
-                    return CameraViewController()
-                    }, completionCallback: nil)
-            }
+                }
+                .onCellSelection({ (cell, row) in
+                    let url = "https://aday-b6ecc.firebaseapp.com/terms.html"
+                    if #available(iOS 9.0, *) {
+                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    } else {
+                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                    }
+                })
             
             +++ Section("Account Actions")
             <<< ButtonRow("Sync Contacts"){

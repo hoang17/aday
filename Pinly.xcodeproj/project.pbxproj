@@ -12,6 +12,7 @@
 		371068E01D80453200BDFC42 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DF1D80453200BDFC42 /* RecordButton.swift */; };
 		371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068E11D83003100BDFC42 /* CameraPlaybackController.swift */; };
 		3724B0791D9E65B300181071 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3724B0781D9E65B300181071 /* LaunchScreen.storyboard */; };
+		3724B07B1D9E76A200181071 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3724B07A1D9E76A200181071 /* WebViewController.swift */; };
 		372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB41D12BF2B008DBADA /* FriendsController.swift */; };
 		372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB61D12C0F8008DBADA /* UserModel.swift */; };
 		372D8DB91D1304E7008DBADA /* FriendsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB81D1304E7008DBADA /* FriendsLoader.swift */; };
@@ -115,6 +116,7 @@
 		371068DF1D80453200BDFC42 /* RecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
 		371068E11D83003100BDFC42 /* CameraPlaybackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPlaybackController.swift; sourceTree = "<group>"; };
 		3724B0781D9E65B300181071 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		3724B07A1D9E76A200181071 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		372D8DB41D12BF2B008DBADA /* FriendsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
 		372D8DB61D12C0F8008DBADA /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		372D8DB81D1304E7008DBADA /* FriendsLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsLoader.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 		373696EE1D9D1CD9008DBFD4 /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				3724B07A1D9E76A200181071 /* WebViewController.swift */,
 			);
 			name = Support;
 			sourceTree = "<group>";
@@ -679,6 +682,7 @@
 				37AE2C511D9D280100A6C4A5 /* PlayerCalloutView.swift in Sources */,
 				37C9C3871D9C230D0081F825 /* PlayerView.swift in Sources */,
 				3785F6711D85636B00F32915 /* MainController.swift in Sources */,
+				3724B07B1D9E76A200181071 /* WebViewController.swift in Sources */,
 				372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */,
 				371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */,
 				372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */,
