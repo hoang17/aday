@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		26259060293337CDF69D9ECD /* Pods_Group.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 910E826AC7A98A9CD441C878 /* Pods_Group.framework */; };
 		371068DA1D7DE0A000BDFC42 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068D91D7DE0A000BDFC42 /* CameraViewController.swift */; };
 		371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */; };
 		371068E01D80453200BDFC42 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DF1D80453200BDFC42 /* RecordButton.swift */; };
@@ -93,6 +92,7 @@
 		37FEFEC41D11D33600C078AC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37FEFEC21D11D33600C078AC /* LaunchScreen.storyboard */; };
 		37FEFECC1D11D38E00C078AC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37FEFECB1D11D38E00C078AC /* GoogleService-Info.plist */; };
 		37FEFED71D123A3700C078AC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEFED61D123A3700C078AC /* User.swift */; };
+		6F94B92CF5620D58B22E1CC4 /* Pods_Pinly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A647296DF3F992D66408496 /* Pods_Pinly.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -109,7 +109,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3708CE3C9772F2D6563EAD6D /* Pods-Group.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Group.release.xcconfig"; path = "Pods/Target Support Files/Pods-Group/Pods-Group.release.xcconfig"; sourceTree = "<group>"; };
+		26B1EB474AFE555291DA0DD7 /* Pods-Pinly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pinly.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pinly/Pods-Pinly.debug.xcconfig"; sourceTree = "<group>"; };
 		371068D91D7DE0A000BDFC42 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPreviewController.swift; sourceTree = "<group>"; };
 		371068DF1D80453200BDFC42 /* RecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
@@ -198,8 +198,8 @@
 		37FEFEC51D11D33600C078AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		37FEFECB1D11D38E00C078AC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		37FEFED61D123A3700C078AC /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		402C4573867076340B49BF7B /* Pods-Group.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Group.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Group/Pods-Group.debug.xcconfig"; sourceTree = "<group>"; };
-		910E826AC7A98A9CD441C878 /* Pods_Group.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Group.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		419DFE0751051819538693FF /* Pods-Pinly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pinly.release.xcconfig"; path = "Pods/Target Support Files/Pods-Pinly/Pods-Pinly.release.xcconfig"; sourceTree = "<group>"; };
+		9A647296DF3F992D66408496 /* Pods_Pinly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pinly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,7 +208,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				37C9C37C1D9A08510081F825 /* MapKit.framework in Frameworks */,
-				26259060293337CDF69D9ECD /* Pods_Group.framework in Frameworks */,
+				6F94B92CF5620D58B22E1CC4 /* Pods_Pinly.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,8 +218,8 @@
 		2F1664EE9252496BC45507E7 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				402C4573867076340B49BF7B /* Pods-Group.debug.xcconfig */,
-				3708CE3C9772F2D6563EAD6D /* Pods-Group.release.xcconfig */,
+				26B1EB474AFE555291DA0DD7 /* Pods-Pinly.debug.xcconfig */,
+				419DFE0751051819538693FF /* Pods-Pinly.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -465,7 +465,7 @@
 			isa = PBXGroup;
 			children = (
 				37C9C37B1D9A08510081F825 /* MapKit.framework */,
-				910E826AC7A98A9CD441C878 /* Pods_Group.framework */,
+				9A647296DF3F992D66408496 /* Pods_Pinly.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -619,7 +619,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Group/Pods-Group-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Pinly/Pods-Pinly-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		21256160131106EB17A5B841 /* [CP] Copy Pods Resources */ = {
@@ -634,7 +634,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Group/Pods-Group-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Pinly/Pods-Pinly-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		37FEFECD1D11D4BE00C078AC /* ShellScript */ = {
@@ -798,7 +798,7 @@
 		};
 		37FEFEC91D11D33600C078AC /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 402C4573867076340B49BF7B /* Pods-Group.debug.xcconfig */;
+			baseConfigurationReference = 26B1EB474AFE555291DA0DD7 /* Pods-Pinly.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -814,7 +814,7 @@
 		};
 		37FEFECA1D11D33600C078AC /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3708CE3C9772F2D6563EAD6D /* Pods-Group.release.xcconfig */;
+			baseConfigurationReference = 419DFE0751051819538693FF /* Pods-Pinly.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
