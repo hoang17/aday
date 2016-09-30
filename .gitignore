@@ -1,0 +1,6 @@
+*~
+.DS_Store
+Pods
+Podfile.lock
+Group.xcworkspace
+Pinly.xcworkspace
