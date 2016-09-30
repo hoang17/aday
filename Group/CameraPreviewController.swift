@@ -172,9 +172,11 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         
         self.back()
         
-        var number = Digits.sharedInstance().session()!.phoneNumber
-        number.removeAtIndex(number.startIndex)
-        let uploadFile = "\(number)_\(arc4random()%1000000).mp4"
+//        var number = Digits.sharedInstance().session()!.phoneNumber
+//        number.removeAtIndex(number.startIndex)
+        
+        let uid : String = (FIRAuth.auth()?.currentUser?.uid)!
+        let uploadFile = "\(uid)_\(arc4random()%1000000).mp4"
         
         print("Uploading \(uploadFile)...")
         
@@ -222,13 +224,14 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
                                 let y = self.textLocation.y/self.view.frame.height
                                 let clip = Clip(id: id, uid: uid, fname: fname, txt: txt!, y: y, location: self.lo, thumb: (metadata!.downloadURL()?.absoluteString)!)
                                 
-//                                ref.child(id).setValue(clip.toAnyObject())
-                                
                                 // Create new clip at /users/$userid/clips/$clipid
                                 let update = [
                                     "/users/\(uid)/clips/\(id)/": clip.toAnyObject(),
-                                    "/users/\(uid)/uploaded":NSDate().timeIntervalSince1970]
+                                    "/users/\(uid)/uploaded":clip.date]
                                 ref.updateChildValues(update)
+
+                                // Create new clip at /clips/$clipid
+                                ref.child("clips").child(id).setValue(clip.toAnyObject())
                                 
                                 print("Clip is saved to db \(id)")
                                 

@@ -28,7 +28,7 @@ class PlayerCalloutView: UIView {
         locationName.height = 28
         locationName.userInteractionEnabled = false
         locationName.text = clips[playIndex].lname
-        locationName.y = 162
+        locationName.y = 194
         locationName.backgroundColor = UIColor.whiteColor()
         locationName.layer.cornerRadius = 5
         locationName.layer.masksToBounds = true
@@ -38,39 +38,15 @@ class PlayerCalloutView: UIView {
         
         let atxt = locationName.attributedText!.mutableCopy() as! NSMutableAttributedString
         locationName.width = atxt.size().width + 20
-        locationName.x = (90 - locationName.width)/2
+        locationName.x = (frame.width - locationName.width)/2
         
         self.addSubview(locationName)
         
         self.clips = clips
         self.backgroundColor = UIColor.clearColor()
-        play()
-        
-        let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
-        self.addGestureRecognizer(tap)
+        play()        
     }
     
-    func tapGesture(sender:UITapGestureRecognizer){
-        pause()
-        playNextClip()
-        
-//        let location = sender.locationInView(self.view)
-//        
-//        if location.x > 0.25*UIScreen.mainScreen().bounds.width {
-//            if clips.count > playIndex + 1 {
-//                playNextClip()
-//            } else {
-//                close()
-//            }
-//        } else {
-//            if playIndex > 0 {
-//                playPrevClip()
-//            } else {
-//                close()
-//            }
-//        }
-    }
-
     func playPrevClip(){
         playIndex -= 1
         if playIndex >= 0 {
@@ -80,14 +56,15 @@ class PlayerCalloutView: UIView {
     
     func playNextClip(){
         playIndex += 1
-        if playIndex < clips.count {
+        if playIndex >= clips.count {
+            playIndex = 0
+        }
             play()
         }
-    }
     
     func play() {
         if players[playIndex] == nil {
-            let clipCallOut = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 90,height: 160))
+            let clipCallOut = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192))
             self.addSubview(clipCallOut)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                              name: AVPlayerItemDidPlayToEndTimeNotification,
@@ -99,17 +76,13 @@ class PlayerCalloutView: UIView {
     }
     
     func playerDidFinishPlaying(notification: NSNotification) {
-        if clips.count > playIndex + 1 {
+        if playIndex+1 < clips.count {
             playNextClip()
         } else {
-            rewind()
+            playIndex = 0
+            players[playIndex]?.miniPlayer.pause()
+            self.bringSubviewToFront(players[playIndex]!)
         }
-    }
-    
-    func rewind() {
-        playIndex = 0
-        players[playIndex]?.miniPlayer.pause()
-        self.bringSubviewToFront(players[playIndex]!)
     }
     
     func pause() {

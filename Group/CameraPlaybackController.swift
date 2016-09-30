@@ -216,13 +216,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     }
     
     func close(){
-        if (friend.clipIndex < playIndex){
-            friend.clipIndex = playIndex
-            let realm = try! Realm()
-            try! realm.write {
-                realm.create(UserModel.self, value: ["uid": friend.uid, "clipIndex": friend.clipIndex], update: true)
-            }
-        }
         self.dismissViewControllerAnimated(true, completion: nil)
         collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: playIndex, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)
     }

@@ -27,7 +27,9 @@ class ProfileController: FormViewController {
                     img.layer.masksToBounds = false
                     img.clipsToBounds = true
                     img.contentMode = UIViewContentMode.ScaleAspectFit
+                    if FBSDKAccessToken.currentAccessToken() != nil {
                     img.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(FBSDKAccessToken.currentAccessToken().userID)/picture?type=large&return_ssl_resources=1"))
+                    }
                     let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.width, height: 100))
                     img.center = view.center
                     img.y += 20
@@ -43,25 +45,56 @@ class ProfileController: FormViewController {
                 row.title = "Name"
                 row.placeholder = "Enter your name"
                 row.value = FIRAuth.auth()!.currentUser?.displayName
+                row.disabled = true
             }
             <<< AccountRow(){
                 $0.title = "Username"
+                $0.value = AppDelegate.currentUser?.username
                 $0.placeholder = "Enter your username"
             }
+                .onChange({ row in
+                    let uid : String! = FIRAuth.auth()?.currentUser?.uid
+                    let update = ["username": row.value ?? ""]
+                    let ref = FIRDatabase.database().reference().child("users").child(uid)
+                    ref.updateChildValues(update)
+                })
             <<< PhoneRow(){
                 $0.title = "Mobile Number"
                 $0.placeholder = "Enter your mobile number"
-                $0.value = AppDelegate.currentUser.phone
+                $0.value = AppDelegate.currentUser?.phone
+                $0.disabled = true
             }
             <<< EmailRow(){
                 $0.title = "Email"
                 $0.placeholder = "Enter your email address"
                 $0.value = FIRAuth.auth()!.currentUser?.email
+                $0.disabled = true
             }
             <<< PasswordRow(){
                 $0.title = "Password"
+                $0.value = AppDelegate.currentUser?.password
                 $0.placeholder = "Enter your password"
             }
+                .onChange({ row in
+//                    let values = self.form.values()
+//                    let email = values["email"] as! String
+                    let password = row.value ?? ""
+                    
+                    let uid : String! = FIRAuth.auth()?.currentUser?.uid
+                    let update = ["password": password]
+                    let ref = FIRDatabase.database().reference().child("users").child(uid)
+                    ref.updateChildValues(update)
+                    
+//                    let credential = FIREmailPasswordAuthProvider.credentialWithEmail(email, password: password)
+//                    FIRAuth.auth()?.currentUser!.linkWithCredential(credential) { (user, error) in
+//                        if error == nil {
+//                            print("linked \(user)")
+//                        } else {
+//                            print(error)
+//                        }
+//                    }
+
+                })
 //            <<< DateRow(){
 //                $0.title = "Birthday"
 //                $0.value = NSDate(timeIntervalSinceReferenceDate: 0)
@@ -150,6 +183,7 @@ class ProfileController: FormViewController {
     }
 
     func syncFacebookFriends(){
+        
         let friendloader = FriendsLoader()
         friendloader.loadFacebookFriends { (friends) in
             // TODO
@@ -163,12 +197,18 @@ class ProfileController: FormViewController {
         
     }
     
-    func openMyProfile() {
-        let currentUser = (FIRAuth.auth()?.currentUser)!
-        let message = "\(currentUser.displayName!) - \(currentUser.email!) \n \(Digits.sharedInstance().session()!.phoneNumber)"
-        let alertController = UIAlertController(title: "You are logged in!", message: message, preferredStyle: .Alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: .None))
-        self.presentViewController(alertController, animated: true, completion: .None)
+    func fixClips() {
+        let ref = FIRDatabase.database().reference()
+        ref.child("users").observeSingleEventOfType(.Value, withBlock: { snapshot in
+            
+            for item in snapshot.children {
+                
+                let user = User(snapshot: item as! FIRDataSnapshot)
+                for clip in user.clips {
+                    ref.child("clips").child(clip.id).setValue(clip.toAnyObject())
+                }
+            }
+        })
     }
     
     func logOut() {

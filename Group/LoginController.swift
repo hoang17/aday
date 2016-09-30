@@ -22,7 +22,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         self.view.addSubview(loginButton)
         
         loginButton.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(100)
+            make.center.equalTo(self.view)
             make.left.equalTo(self.view).offset(50)
             make.right.equalTo(self.view).offset(-50)
         }

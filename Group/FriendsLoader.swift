@@ -50,7 +50,8 @@ class FriendsLoader: NSObject {
             // Create new friend at /users/$userid/friends/$friendid
             let userID : String! = FIRAuth.auth()?.currentUser?.uid
             
-            let update = ["/users/\(userID)/friends/\(friendId)/": true]
+            let update = ["/users/\(userID)/friends/\(friendId)/": true,
+                          "/users/\(friendId)/friends/\(userID)/": true]
             ref.updateChildValues(update)
             
 //            let u = ((snapshot.value as! NSDictionary).allValues.first) as! NSDictionary
