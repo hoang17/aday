@@ -148,6 +148,8 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             return
         }
         
+        mapView.showsUserLocation = false
+        
         let clipAnnotation = view.annotation as! ClipAnnotation
         
         calloutView = PlayerCalloutView(clips: clipAnnotation.clips, frame: CGRect(x: 0,y: 0, width: 108,height: 222))
@@ -173,9 +175,8 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             calloutView.pause()
             calloutView.removeFromSuperview()
         }
-//        for subview in view.subviews {
-//            subview.removeFromSuperview()
-//        }
+        
+        mapView.showsUserLocation = true
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
