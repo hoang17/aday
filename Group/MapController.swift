@@ -146,7 +146,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         let clipAnnotation = view.annotation as! ClipAnnotation
         
-        calloutView = PlayerCalloutView(clips: clipAnnotation.clips, frame: CGRect(x: 0,y: 0, width: 90,height: 190))
+        calloutView = PlayerCalloutView(clips: clipAnnotation.clips, frame: CGRect(x: 0,y: 0, width: 108,height: 222))
         calloutView.locationName.text = clipAnnotation.title
         calloutView.locationSub.text = clipAnnotation.subtitle
         

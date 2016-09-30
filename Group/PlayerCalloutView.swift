@@ -28,7 +28,7 @@ class PlayerCalloutView: UIView {
         locationName.height = 28
         locationName.userInteractionEnabled = false
         locationName.text = clips[playIndex].lname
-        locationName.y = 162
+        locationName.y = 194
         locationName.backgroundColor = UIColor.whiteColor()
         locationName.layer.cornerRadius = 5
         locationName.layer.masksToBounds = true
@@ -38,7 +38,7 @@ class PlayerCalloutView: UIView {
         
         let atxt = locationName.attributedText!.mutableCopy() as! NSMutableAttributedString
         locationName.width = atxt.size().width + 20
-        locationName.x = (90 - locationName.width)/2
+        locationName.x = (frame.width - locationName.width)/2
         
         self.addSubview(locationName)
         
@@ -64,7 +64,7 @@ class PlayerCalloutView: UIView {
     
     func play() {
         if players[playIndex] == nil {
-            let clipCallOut = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 90,height: 160))
+            let clipCallOut = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192))
             self.addSubview(clipCallOut)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                              name: AVPlayerItemDidPlayToEndTimeNotification,
