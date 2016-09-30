@@ -19,6 +19,11 @@ class PlayerView: UIView {
     
     init(playerItem: AVPlayerItem, frame: CGRect) {
         super.init(frame: frame)
+        
+        self.layer.cornerRadius = 5
+        self.layer.masksToBounds = false
+        self.clipsToBounds = true
+        
         player = AVPlayer(playerItem: playerItem)
         playerLayer = AVPlayerLayer(player: player)
         playerLayer.frame = frame
@@ -27,6 +32,11 @@ class PlayerView: UIView {
     
     init(filePath: String, frame: CGRect) {
         super.init(frame: frame)
+
+        self.layer.cornerRadius = 5
+        self.layer.masksToBounds = false
+        self.clipsToBounds = true
+        
         let fileUrl = NSURL(fileURLWithPath: filePath)
         player = AVPlayer(URL: fileUrl)
         playerLayer = AVPlayerLayer(player: player)

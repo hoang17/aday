@@ -51,10 +51,14 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             let audioInput: AVCaptureDeviceInput = try AVCaptureDeviceInput(device: audioDevice)
             captureSession.addInput(audioInput)
             
+            let userDefaults = NSUserDefaults.standardUserDefaults()
+            let frontCamera = (userDefaults.valueForKey("frontCamera") as? Bool) ?? false
+            let devicePosition : AVCaptureDevicePosition = frontCamera ? .Front : .Back
+            
             // Get the available devices that is capable of taking video
             let devices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) as! [AVCaptureDevice]
             for device in devices {
-                if device.position == AVCaptureDevicePosition.Back {
+                if device.position == devicePosition {
                     videoDevice = device
                 }
             }
@@ -177,7 +181,6 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         }
     }
     
-    
     func back(){
         self.dismissViewControllerAnimated(true) {
             //
@@ -201,6 +204,11 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             captureSession.addInput(audioInput)
             
             let position = (videoInput?.device.position == AVCaptureDevicePosition.Front) ? AVCaptureDevicePosition.Back : AVCaptureDevicePosition.Front
+            let frontCamera = position == .Front
+            
+            let userDefaults = NSUserDefaults.standardUserDefaults()
+            userDefaults.setValue(frontCamera, forKey: "frontCamera")
+            // userDefaults.synchronize()
             
             for device in AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) {
                 

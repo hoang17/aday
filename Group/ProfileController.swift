@@ -217,11 +217,12 @@ class ProfileController: FormViewController {
     }
     
     func clearCache(){
-        // TODO
+        try! AppDelegate.realm.write {
+            AppDelegate.realm.deleteAll()
+        }
     }
 
     func syncContacts() {
-        
         let friendloader = FriendsLoader()
         friendloader.loadFacebookFriends()
         friendloader.loadAddressBook()

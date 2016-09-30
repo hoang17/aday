@@ -13,6 +13,7 @@ import Crashlytics
 import DigitsKit
 import FBSDKCoreKit
 import FBSDKLoginKit
+import RealmSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,6 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     static var currentUser: User!
+    
+    static var realm: Realm!
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -34,6 +37,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Facebook setup
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
 
+        do {
+            AppDelegate.realm = try Realm()
+        } catch {
+            print(error)
+            let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
+            let realmURLs = [
+                realmURL,
+                realmURL.URLByAppendingPathExtension("lock"),
+                realmURL.URLByAppendingPathExtension("log_a"),
+                realmURL.URLByAppendingPathExtension("log_b"),
+                realmURL.URLByAppendingPathExtension("note")
+            ]
+            let manager = NSFileManager.defaultManager()
+            for URL in realmURLs {
+                do {
+                    try manager.removeItemAtURL(URL!)
+                } catch {
+                    print(error)
+                }
+            }
+            AppDelegate.realm = try! Realm()
+        }
+
+//        try! AppDelegate.realm.write {
+//            AppDelegate.realm.deleteAll()
+//        }
         
 //        // Setup font
 //        UITextField.appearance().font = UIFont(name: "OpenSans", size: 13.0)
@@ -45,6 +74,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if FIRAuth.auth()?.currentUser != nil {
             self.logUser()
+            
+            let userID : String! = FIRAuth.auth()?.currentUser?.uid
+            
+            if let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: userID) {
+                AppDelegate.currentUser = User(data: user)
+                print("loaded from local current user")
+                print(AppDelegate.currentUser.name)
+                
+            } else {
+                let ref = FIRDatabase.database().reference()
+                ref.child("users").child(userID).observeEventType(.Value, withBlock: { snapshot in
+                    AppDelegate.currentUser = User(snapshot: snapshot)
+                    let data = UserModel()
+                    data.load(AppDelegate.currentUser)
+                    try! AppDelegate.realm.write {
+                        AppDelegate.realm.add(data, update: true)
+                    }
+                    print("loaded from remote current user")
+                    print(AppDelegate.currentUser.name)
+                })
+            }
+            
+            
             self.window!.rootViewController = MainController()
         } else {
             window!.rootViewController = LoginController()

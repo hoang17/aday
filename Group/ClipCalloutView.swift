@@ -17,15 +17,21 @@ class ClipCalloutView: UIView {
     var miniPlayer: MiniPlayer!
     let textField = UITextField()
     var dateLabel = UILabel()
+    var profileImg = UIImageView()
     
     init(clip: Clip, frame: CGRect) {
         super.init(frame: frame)
         
-        self.layer.cornerRadius = 5
-        self.layer.masksToBounds = false
-        self.clipsToBounds = true
+        let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
         
         miniPlayer = MiniPlayer(clip: clip, frame: frame)
+        
+        profileImg.origin = CGPoint(x: frame.width/2-12, y: frame.height-16)
+        profileImg.size = CGSize(width: 24, height: 24)
+        profileImg.layer.cornerRadius = profileImg.height/2
+        profileImg.layer.masksToBounds = false
+        profileImg.clipsToBounds = true
+        profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(user!.fb)/picture?type=large&return_ssl_resources=1"))
         
         if clip.txt == "" {
             textField.hidden = true
@@ -48,6 +54,7 @@ class ClipCalloutView: UIView {
         dateLabel.font = UIFont(name: "OpenSans", size: 9.0)
         
         addSubview(miniPlayer)
+        addSubview(profileImg)
         addSubview(textField)
         addSubview(dateLabel)
     }

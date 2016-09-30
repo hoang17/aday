@@ -21,65 +21,17 @@ class FriendsController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // try to initialize Realm, clean all if error
-        let realm: Realm
-        do {
-            realm = try Realm()
-        }
-        catch {
-            print(error)
-            let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
-            let realmURLs = [
-                realmURL,
-                realmURL.URLByAppendingPathExtension("lock"),
-                realmURL.URLByAppendingPathExtension("log_a"),
-                realmURL.URLByAppendingPathExtension("log_b"),
-                realmURL.URLByAppendingPathExtension("note")
-            ]
-            let manager = NSFileManager.defaultManager()
-            for URL in realmURLs {
-                do {
-                    try manager.removeItemAtURL(URL!)
-                } catch {
-                    // handle error
-                }
-            }
-            realm = try! Realm()
-        }
+        let realm = AppDelegate.realm
         
         let ref = FIRDatabase.database().reference()
         
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
-        
-        if let user = realm.objectForPrimaryKey(UserModel.self, key: userID) {
-            
-            AppDelegate.currentUser = User(data: user)
-            print("loaded from local current user")
-            print(AppDelegate.currentUser.name)
-            
-        } else {
-            
-            ref.child("users").child(userID).observeEventType(.Value, withBlock: { snapshot in
-                AppDelegate.currentUser = User(snapshot: snapshot)
-                let data = UserModel()
-                data.load(AppDelegate.currentUser)
-                try! realm.write {
-                    realm.add(data, update: true)
-                }
-                print("loaded from remote current user")
-                print(AppDelegate.currentUser.name)
-            })
-        }
         
         let list = realm.objects(UserModel.self).sorted("uploaded")
         for data in list {
             let friend = User(data: data)
             self.friends.insert(friend, atIndex: 0)
         }
-        
-//        try! realm.write {
-//            realm.deleteAll()
-//        }
         
         view.backgroundColor = .whiteColor()
         

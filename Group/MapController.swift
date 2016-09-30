@@ -57,39 +57,34 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             mapView.setCenterCoordinate(coor, animated: false)
         }
         
-        do {
-            let realm = try Realm()
-            let list = realm.objects(UserModel.self).sorted("uploaded", ascending: false)
-            for data in list {
-                for clipdata in data.clips {
-                    
-                    let point = CLLocationCoordinate2D(latitude: clipdata.lat, longitude: clipdata.long)
-                    
-                    // check if clip location is new
-                    var isnew = true
-                    for ca in clipAnnotations {
-                        if self.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
-                            isnew = false
-                            let clip = Clip(data: clipdata)
-                            ca.clips.append(clip)
-                            ca.clips.sortInPlace({ $0.date > $1.date })
-                            break
-                        }
-                    }
-                    
-                    if isnew {
+        let realm = AppDelegate.realm
+        let list = realm.objects(UserModel.self).sorted("uploaded", ascending: false)
+        for data in list {
+            for clipdata in data.clips {
+                
+                let point = CLLocationCoordinate2D(latitude: clipdata.lat, longitude: clipdata.long)
+                
+                // check if clip location is new
+                var isnew = true
+                for ca in clipAnnotations {
+                    if self.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
+                        isnew = false
                         let clip = Clip(data: clipdata)
-                        let ca = ClipAnnotation(clip: clip)
-                        clipAnnotations.append(ca)
-                        // self.addCircle(ca.coordinate, radius: 50)
+                        ca.clips.append(clip)
+                        ca.clips.sortInPlace({ $0.date > $1.date })
+                        break
                     }
                 }
+                
+                if isnew {
+                    let clip = Clip(data: clipdata)
+                    let ca = ClipAnnotation(clip: clip)
+                    clipAnnotations.append(ca)
+                    // self.addCircle(ca.coordinate, radius: 50)
+                }
             }
-            mapView.addAnnotations(clipAnnotations)
         }
-        catch {
-            print(error)
-        }
+        mapView.addAnnotations(clipAnnotations)
         
     }
     
