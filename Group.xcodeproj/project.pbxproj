@@ -16,7 +16,6 @@
 		372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB61D12C0F8008DBADA /* UserModel.swift */; };
 		372D8DB91D1304E7008DBADA /* FriendsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB81D1304E7008DBADA /* FriendsLoader.swift */; };
 		372D8DBD1D1310D3008DBADA /* Clip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DBC1D1310D3008DBADA /* Clip.swift */; };
-		3776FAD51D8806A0005D7583 /* PhotosController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3776FAD41D8806A0005D7583 /* PhotosController.swift */; };
 		3785F6711D85636B00F32915 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F6701D85636B00F32915 /* MainController.swift */; };
 		3785F6851D857A0700F32915 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F6841D857A0700F32915 /* TableViewCell.swift */; };
 		3785F70D1D85EB5C00F32915 /* Cabin-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3785F6E61D85EB5C00F32915 /* Cabin-Bold.ttf */; };
@@ -85,7 +84,6 @@
 		37D2E4EC1D9D61D900046AB9 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D2E4EB1D9D61D900046AB9 /* ProfileController.swift */; };
 		37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00FBE1D14F33700B19492 /* UIView+Frame.swift */; };
 		37E00FDA1D168F5D00B19492 /* more@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E00FD91D168F5D00B19492 /* more@2x.png */; };
-		37EF00231D8714CB005D39A1 /* LocationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EF00221D8714CB005D39A1 /* LocationController.swift */; };
 		37EF00251D873D5E005D39A1 /* MiniViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EF00241D873D5E005D39A1 /* MiniViewCell.swift */; };
 		37F7DF921D916EEA0057F7E1 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37F7DF911D916EEA0057F7E1 /* SearchController.swift */; };
 		37F7DF941D916F2B0057F7E1 /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37F7DF931D916F2B0057F7E1 /* MapController.swift */; };
@@ -120,7 +118,6 @@
 		372D8DB61D12C0F8008DBADA /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		372D8DB81D1304E7008DBADA /* FriendsLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsLoader.swift; sourceTree = "<group>"; };
 		372D8DBC1D1310D3008DBADA /* Clip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Clip.swift; sourceTree = "<group>"; };
-		3776FAD41D8806A0005D7583 /* PhotosController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosController.swift; sourceTree = "<group>"; };
 		3785F6701D85636B00F32915 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		3785F6831D8568B500F32915 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		3785F6841D857A0700F32915 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
@@ -190,7 +187,6 @@
 		37D2E4EB1D9D61D900046AB9 /* ProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		37E00FBE1D14F33700B19492 /* UIView+Frame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Frame.swift"; sourceTree = "<group>"; };
 		37E00FD91D168F5D00B19492 /* more@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "more@2x.png"; sourceTree = "<group>"; };
-		37EF00221D8714CB005D39A1 /* LocationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationController.swift; sourceTree = "<group>"; };
 		37EF00241D873D5E005D39A1 /* MiniViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniViewCell.swift; sourceTree = "<group>"; };
 		37F7DF911D916EEA0057F7E1 /* SearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		37F7DF931D916F2B0057F7E1 /* MapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
@@ -240,8 +236,6 @@
 		373696EE1D9D1CD9008DBFD4 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				37EF00221D8714CB005D39A1 /* LocationController.swift */,
-				3776FAD41D8806A0005D7583 /* PhotosController.swift */,
 			);
 			name = Support;
 			sourceTree = "<group>";
@@ -507,7 +501,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = ping;
 				TargetAttributes = {
 					37FEFEB51D11D33600C078AC = {
@@ -686,7 +680,6 @@
 				3785F6711D85636B00F32915 /* MainController.swift in Sources */,
 				372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */,
 				371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */,
-				3776FAD51D8806A0005D7583 /* PhotosController.swift in Sources */,
 				372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */,
 				37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */,
 				37FEFEBC1D11D33600C078AC /* LoginController.swift in Sources */,
@@ -698,7 +691,6 @@
 				372D8DB91D1304E7008DBADA /* FriendsLoader.swift in Sources */,
 				37FEFEBA1D11D33600C078AC /* AppDelegate.swift in Sources */,
 				371068E01D80453200BDFC42 /* RecordButton.swift in Sources */,
-				37EF00231D8714CB005D39A1 /* LocationController.swift in Sources */,
 				37C9C3851D9C1A2A0081F825 /* ClipCalloutView.swift in Sources */,
 				372D8DBD1D1310D3008DBADA /* Clip.swift in Sources */,
 				37C9C3821D9B6CCF0081F825 /* Friend.swift in Sources */,
@@ -756,7 +748,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -795,9 +787,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
