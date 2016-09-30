@@ -47,17 +47,17 @@ class ProfileController: FormViewController {
                 row.value = FIRAuth.auth()!.currentUser?.displayName
                 row.disabled = true
             }
-            <<< AccountRow(){
-                $0.title = "Username"
-                $0.value = AppDelegate.currentUser?.username
-                $0.placeholder = "Enter your username"
-            }
-                .onChange({ row in
-                    let uid : String! = FIRAuth.auth()?.currentUser?.uid
-                    let update = ["username": row.value ?? ""]
-                    let ref = FIRDatabase.database().reference().child("users").child(uid)
-                    ref.updateChildValues(update)
-                })
+//            <<< AccountRow(){
+//                $0.title = "Username"
+//                $0.value = AppDelegate.currentUser?.username
+//                $0.placeholder = "Enter your username"
+//            }
+//                .onChange({ row in
+//                    let uid : String! = FIRAuth.auth()?.currentUser?.uid
+//                    let update = ["username": row.value ?? ""]
+//                    let ref = FIRDatabase.database().reference().child("users").child(uid)
+//                    ref.updateChildValues(update)
+//                })
             <<< PhoneRow(){
                 $0.title = "Mobile Number"
                 $0.placeholder = "Enter your mobile number"
@@ -70,31 +70,31 @@ class ProfileController: FormViewController {
                 $0.value = FIRAuth.auth()!.currentUser?.email
                 $0.disabled = true
             }
-            <<< PasswordRow(){
-                $0.title = "Password"
-                $0.value = AppDelegate.currentUser?.password
-                $0.placeholder = "Enter your password"
-            }
-                .onChange({ row in
-//                    let values = self.form.values()
-//                    let email = values["email"] as! String
-                    let password = row.value ?? ""
-                    
-                    let uid : String! = FIRAuth.auth()?.currentUser?.uid
-                    let update = ["password": password]
-                    let ref = FIRDatabase.database().reference().child("users").child(uid)
-                    ref.updateChildValues(update)
-                    
-//                    let credential = FIREmailPasswordAuthProvider.credentialWithEmail(email, password: password)
-//                    FIRAuth.auth()?.currentUser!.linkWithCredential(credential) { (user, error) in
-//                        if error == nil {
-//                            print("linked \(user)")
-//                        } else {
-//                            print(error)
-//                        }
-//                    }
-
-                })
+//            <<< PasswordRow(){
+//                $0.title = "Password"
+//                $0.value = AppDelegate.currentUser?.password
+//                $0.placeholder = "Enter your password"
+//            }
+//                .onChange({ row in
+////                    let values = self.form.values()
+////                    let email = values["email"] as! String
+//                    let password = row.value ?? ""
+//                    
+//                    let uid : String! = FIRAuth.auth()?.currentUser?.uid
+//                    let update = ["password": password]
+//                    let ref = FIRDatabase.database().reference().child("users").child(uid)
+//                    ref.updateChildValues(update)
+//                    
+////                    let credential = FIREmailPasswordAuthProvider.credentialWithEmail(email, password: password)
+////                    FIRAuth.auth()?.currentUser!.linkWithCredential(credential) { (user, error) in
+////                        if error == nil {
+////                            print("linked \(user)")
+////                        } else {
+////                            print(error)
+////                        }
+////                    }
+//
+//                })
 //            <<< DateRow(){
 //                $0.title = "Birthday"
 //                $0.value = NSDate(timeIntervalSinceReferenceDate: 0)
