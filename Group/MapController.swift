@@ -51,7 +51,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         do {
             let realm = try Realm()
-            let list = realm.objects(UserModel.self)
+            let list = realm.objects(UserModel.self).sorted("uploaded", ascending: false)
             for data in list {
                 for clipdata in data.clips {
                     
@@ -64,6 +64,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                             isnew = false
                             let clip = Clip(data: clipdata)
                             ca.clips.append(clip)
+                            ca.clips.sortInPlace({ $0.date > $1.date })
                             break
                         }
                     }
@@ -165,8 +166,10 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
     }
     
     func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
-        calloutView.pause()
-        calloutView.removeFromSuperview()
+        if calloutView != nil {
+            calloutView.pause()
+            calloutView.removeFromSuperview()
+        }
 //        for subview in view.subviews {
 //            subview.removeFromSuperview()
 //        }

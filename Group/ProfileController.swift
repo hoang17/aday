@@ -183,6 +183,7 @@ class ProfileController: FormViewController {
     }
 
     func syncFacebookFriends(){
+        
         let friendloader = FriendsLoader()
         friendloader.loadFacebookFriends { (friends) in
             // TODO
@@ -194,6 +195,20 @@ class ProfileController: FormViewController {
         // TODO
         syncFacebookFriends()
         
+    }
+    
+    func fixClips() {
+        let ref = FIRDatabase.database().reference()
+        ref.child("users").observeSingleEventOfType(.Value, withBlock: { snapshot in
+            
+            for item in snapshot.children {
+                
+                let user = User(snapshot: item as! FIRDataSnapshot)
+                for clip in user.clips {
+                    ref.child("clips").child(clip.id).setValue(clip.toAnyObject())
+                }
+            }
+        })
     }
     
     func logOut() {
