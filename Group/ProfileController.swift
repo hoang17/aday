@@ -196,14 +196,6 @@ class ProfileController: FormViewController {
         
     }
     
-    func openMyProfile() {
-        let currentUser = (FIRAuth.auth()?.currentUser)!
-        let message = "\(currentUser.displayName!) - \(currentUser.email!) \n \(Digits.sharedInstance().session()!.phoneNumber)"
-        let alertController = UIAlertController(title: "You are logged in!", message: message, preferredStyle: .Alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: .None))
-        self.presentViewController(alertController, animated: true, completion: .None)
-    }
-    
     func logOut() {
         
         let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: UIAlertControllerStyle.Alert)

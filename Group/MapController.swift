@@ -165,9 +165,11 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
     }
     
     func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
-        for subview in view.subviews {
-            subview.removeFromSuperview()
-        }
+        calloutView.pause()
+        calloutView.removeFromSuperview()
+//        for subview in view.subviews {
+//            subview.removeFromSuperview()
+//        }
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {

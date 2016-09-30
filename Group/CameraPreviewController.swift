@@ -172,9 +172,11 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         
         self.back()
         
-        var number = Digits.sharedInstance().session()!.phoneNumber
-        number.removeAtIndex(number.startIndex)
-        let uploadFile = "\(number)_\(arc4random()%1000000).mp4"
+//        var number = Digits.sharedInstance().session()!.phoneNumber
+//        number.removeAtIndex(number.startIndex)
+        
+        let uid : String = (FIRAuth.auth()?.currentUser?.uid)!
+        let uploadFile = "\(uid)_\(arc4random()%1000000).mp4"
         
         print("Uploading \(uploadFile)...")
         
