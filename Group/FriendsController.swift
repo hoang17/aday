@@ -39,7 +39,7 @@ class FriendsController: UITableViewController {
             let manager = NSFileManager.defaultManager()
             for URL in realmURLs {
                 do {
-                    try manager.removeItemAtURL(URL!)
+                    try manager.removeItemAtURL(URL)
                 } catch {
                     // handle error
                 }
@@ -47,11 +47,28 @@ class FriendsController: UITableViewController {
             realm = try! Realm()
         }
         
+        let ref = FIRDatabase.database().reference()
+        
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
-        
         if let user = realm.objectForPrimaryKey(UserModel.self, key: userID) {
+            
             AppDelegate.currentUser = User(data: user)
+            print("loaded from local current user")
+            print(AppDelegate.currentUser.name)
+            
+        } else {
+            
+            ref.child("users").child(userID).observeEventType(.Value, withBlock: { snapshot in
+                AppDelegate.currentUser = User(snapshot: snapshot)
+                let data = UserModel()
+                data.load(AppDelegate.currentUser)
+                try! realm.write {
+                    realm.add(data, update: true)
+                }
+                print("loaded from remote current user")
+                print(AppDelegate.currentUser.name)
+            })
         }
         
         let list = realm.objects(UserModel.self).sorted("uploaded")
@@ -75,8 +92,6 @@ class FriendsController: UITableViewController {
         tableView.separatorInset = UIEdgeInsetsZero
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         tableView.separatorStyle = .None
-        
-        let ref = FIRDatabase.database().reference()
         
         print("...loading friends for user \(userID)...")
         
