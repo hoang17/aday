@@ -7,10 +7,12 @@ import Contacts
 import FBSDKCoreKit
 import FirebaseAuth
 import FirebaseDatabase
+import APAddressBook
+
 
 class FriendsLoader: NSObject {
     
-    func loadFacebookFriends(completionHandler:(friends:[Friend]?)->()) {
+    func loadFacebookFriends() {
         
         var friends = [Friend]()
         
@@ -44,7 +46,6 @@ class FriendsLoader: NSObject {
         let ref = FIRDatabase.database().reference()
         
         ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            print(snapshot)
 
             let friendId : String = (snapshot.value as! NSDictionary).allKeys.first as! String
             // Create new friend at /users/$userid/friends/$friendid
@@ -54,23 +55,61 @@ class FriendsLoader: NSObject {
                           "/users/\(friendId)/friends/\(userID)/": true]
             ref.updateChildValues(update)
             
-//            let u = ((snapshot.value as! NSDictionary).allValues.first) as! NSDictionary
-//            let key : String = (snapshot.value as! NSDictionary).allKeys.first as! String
-//            // Create new friend at /friends/$userid/$friendid
-//            let userID : String! = FIRAuth.auth()?.currentUser?.uid
-//            
-//            let friend = ["uid": key,
-//                "name": name,
-//                "email": u["email"] as! String,
-//                "phone": u["phone"] as! String,
-//                "fabric": u["fabric"] as! String,
-//                "fb": fb]
-//            let update = ["/friends/\(userID)/\(key)/": friend]
-//            ref.updateChildValues(update)
-            
         }) { (error) in
             print(error.localizedDescription)
         }
+    }
+    
+    func loadAddressBook() {
+        
+        let ref = FIRDatabase.database().reference()
+        
+        // Load contacts friends
+        let addressBook = APAddressBook()
+        addressBook.loadContacts({(contacts, error) in
+            
+            if error != nil {
+                print(error)
+                return
+            }
+            
+            for contact in contacts! {
+                
+                if let phones = contact.phones {
+                    for phone in phones {
+                        var number = phone.number!.removeWhitespace()
+                        if number.hasPrefix("0"){
+                            number = "+84" + String(number.characters.dropFirst())
+                        }
+                        
+                        if AppDelegate.currentUser != nil && number == AppDelegate.currentUser.phone {
+                            continue
+                        }
+                        
+                        ref.child("users").queryOrderedByChild("phone").queryEqualToValue(number).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                            
+                            if let snap = snapshot.children.allObjects.first as? FIRDataSnapshot {
+                                let friend = User(snapshot: snap)
+                                
+                                // Create new friend at /users/$userid/friends/$friendid
+                                let userID : String! = FIRAuth.auth()?.currentUser?.uid
+                                
+                                let update = ["/users/\(userID)/friends/\(friend.uid)/": true,
+                                    "/users/\(friend.uid)/friends/\(userID)/": true]
+                                ref.updateChildValues(update)
+                                
+                            }
+                            
+                        }) { (error) in
+                            print(error)
+                        }
+                        
+                    }
+                }
+                
+            }
+        })
+        
     }
     
 }

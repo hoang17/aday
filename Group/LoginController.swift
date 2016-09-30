@@ -47,6 +47,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             // navigate to home
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.showMain()
+            
+            syncContacts()
         }
     }
     
@@ -70,28 +72,20 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
             
             FIRAuth.auth()?.signInWithCredential(credential) { (currentUser, error) in
-                let session = Digits.sharedInstance().session()
-                if (session != nil){
-                    // Associate the session userID with user model
-                    let user = ["uid": currentUser!.uid,
-                                "name": currentUser!.displayName!,
-                                "email": currentUser!.email!,
-                                "fb": FBSDKAccessToken.currentAccessToken().userID,
-                                "city": "",
-                                "country": "",
-                                "fabric": (session?.userID)!,
-                                "phone": (session?.phoneNumber)!]
-                    FIRDatabase.database().reference().child("users").child(currentUser!.uid).updateChildValues(user)
-                }
-                else{
-                    let user = ["uid": currentUser!.uid,
-                                "name": currentUser!.displayName!,
-                                "email": currentUser!.email!,
-                                "fb": FBSDKAccessToken.currentAccessToken().userID,
-                                "city": "",
-                                "country": ""]
-                    FIRDatabase.database().reference().child("users").child(currentUser!.uid).updateChildValues(user)
-                }
+                
+                let ref = FIRDatabase.database().reference()
+                
+                let uid = currentUser!.uid
+                
+                // Associate the session userID with user model
+                let user = ["uid": uid,
+                            "name": currentUser!.displayName!,
+                            "email": currentUser!.email!,
+                            "fb": FBSDKAccessToken.currentAccessToken().userID]
+                ref.child("users").child(uid).updateChildValues(user)
+                
+                let update = ["/users/\(uid)/friends/\(uid)/": true]
+                ref.updateChildValues(update)
             }
             
             showDigitsLogin()
@@ -131,6 +125,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         } catch {
             print(error)
         }
+    }
+    
+    func syncContacts() {
+        let friendloader = FriendsLoader()
+        friendloader.loadFacebookFriends()
+        friendloader.loadAddressBook()
     }
     
     override func didReceiveMemoryWarning() {

@@ -39,17 +39,6 @@ class SearchController: UITableViewController {
 
         let ref = FIRDatabase.database().reference()
         
-//        ref.child("users").observeEventType(.Value, withBlock: { snapshot in
-//            print("...returning users...")
-//            for item in snapshot.children {
-//                let user = User(snapshot: item as! FIRDataSnapshot)
-//                self.users.append(user)
-//                
-//                
-//            }
-//            self.tableView.reloadData()
-//        })
-        
         // Load facebook friends
         
         let request = FBSDKGraphRequest(graphPath:"me/friends", parameters: ["fields": "name", "limit":"200"] );
@@ -98,7 +87,6 @@ class SearchController: UITableViewController {
                 
                 if let phones = contact.phones {
                     for phone in phones {
-//                        var number = phone.number!.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
                         var number = phone.number!.removeWhitespace()
                         if number.hasPrefix("0"){
                             number = "+84" + String(number.characters.dropFirst())
@@ -172,16 +160,6 @@ class SearchController: UITableViewController {
         tableView.reloadData()
     }
 
-}
-
-extension String {
-    func replace(string:String, replacement:String) -> String {
-        return self.stringByReplacingOccurrencesOfString(string, withString: replacement, options: NSStringCompareOptions.LiteralSearch, range: nil)
-    }
-    
-    func removeWhitespace() -> String {
-        return self.stringByReplacingOccurrencesOfString("\\s", withString: "", options: NSStringCompareOptions.RegularExpressionSearch, range: nil)
-    }
 }
 
 extension SearchController: UISearchBarDelegate {

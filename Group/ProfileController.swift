@@ -217,22 +217,14 @@ class ProfileController: FormViewController {
     }
     
     func clearCache(){
-        
-    }
-
-    func syncFacebookFriends(){
-        
-        let friendloader = FriendsLoader()
-        friendloader.loadFacebookFriends { (friends) in
-            // TODO
-        }
+        // TODO
     }
 
     func syncContacts() {
         
-        // TODO
-        syncFacebookFriends()
-        
+        let friendloader = FriendsLoader()
+        friendloader.loadFacebookFriends()
+        friendloader.loadAddressBook()
     }
     
     func fixClips() {
