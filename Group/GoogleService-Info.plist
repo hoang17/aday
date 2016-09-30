@@ -17,7 +17,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.ping.Group</string>
+	<string>com.ping.Pinly</string>
 	<key>PROJECT_ID</key>
 	<string>aday-b6ecc</string>
 	<key>STORAGE_BUCKET</key>

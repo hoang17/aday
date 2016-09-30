@@ -190,7 +190,7 @@
 		37EF00241D873D5E005D39A1 /* MiniViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniViewCell.swift; sourceTree = "<group>"; };
 		37F7DF911D916EEA0057F7E1 /* SearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		37F7DF931D916F2B0057F7E1 /* MapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
-		37FEFEB61D11D33600C078AC /* Group.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Group.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FEFEB61D11D33600C078AC /* Pinly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pinly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEFEB91D11D33600C078AC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		37FEFEBB1D11D33600C078AC /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		37FEFEC01D11D33600C078AC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -399,7 +399,7 @@
 		37FEFEAD1D11D33600C078AC = {
 			isa = PBXGroup;
 			children = (
-				37FEFEB81D11D33600C078AC /* Group */,
+				37FEFEB81D11D33600C078AC /* Pinly */,
 				37FEFEB71D11D33600C078AC /* Products */,
 				2F1664EE9252496BC45507E7 /* Pods */,
 				D543431A1101CCD7E38B4AE5 /* Frameworks */,
@@ -409,12 +409,12 @@
 		37FEFEB71D11D33600C078AC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37FEFEB61D11D33600C078AC /* Group.app */,
+				37FEFEB61D11D33600C078AC /* Pinly.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		37FEFEB81D11D33600C078AC /* Group */ = {
+		37FEFEB81D11D33600C078AC /* Pinly */ = {
 			isa = PBXGroup;
 			children = (
 				3785F6861D85EACF00F32915 /* Fonts */,
@@ -426,6 +426,7 @@
 				37C9C3831D9C1A050081F825 /* Views */,
 				37E00FC31D15C40600B19492 /* Controllers */,
 			);
+			name = Pinly;
 			path = Group;
 			sourceTree = "<group>";
 		};
@@ -472,9 +473,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		37FEFEB51D11D33600C078AC /* Group */ = {
+		37FEFEB51D11D33600C078AC /* Pinly */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 37FEFEC81D11D33600C078AC /* Build configuration list for PBXNativeTarget "Group" */;
+			buildConfigurationList = 37FEFEC81D11D33600C078AC /* Build configuration list for PBXNativeTarget "Pinly" */;
 			buildPhases = (
 				7666CA950EC497F78F5AA945 /* [CP] Check Pods Manifest.lock */,
 				37FEFEB21D11D33600C078AC /* Sources */,
@@ -489,9 +490,9 @@
 			);
 			dependencies = (
 			);
-			name = Group;
+			name = Pinly;
 			productName = Group;
-			productReference = 37FEFEB61D11D33600C078AC /* Group.app */;
+			productReference = 37FEFEB61D11D33600C078AC /* Pinly.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -516,7 +517,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 37FEFEB11D11D33600C078AC /* Build configuration list for PBXProject "Group" */;
+			buildConfigurationList = 37FEFEB11D11D33600C078AC /* Build configuration list for PBXProject "Pinly" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -529,7 +530,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				37FEFEB51D11D33600C078AC /* Group */,
+				37FEFEB51D11D33600C078AC /* Pinly */,
 			);
 		};
 /* End PBXProject section */
@@ -804,7 +805,7 @@
 				INFOPLIST_FILE = Group/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ping.Group;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ping.Pinly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_VERSION = 2.3;
@@ -820,7 +821,7 @@
 				INFOPLIST_FILE = Group/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ping.Group;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ping.Pinly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_VERSION = 2.3;
@@ -830,7 +831,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		37FEFEB11D11D33600C078AC /* Build configuration list for PBXProject "Group" */ = {
+		37FEFEB11D11D33600C078AC /* Build configuration list for PBXProject "Pinly" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				37FEFEC61D11D33600C078AC /* Debug */,
@@ -839,7 +840,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		37FEFEC81D11D33600C078AC /* Build configuration list for PBXNativeTarget "Group" */ = {
+		37FEFEC81D11D33600C078AC /* Build configuration list for PBXNativeTarget "Pinly" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				37FEFEC91D11D33600C078AC /* Debug */,
