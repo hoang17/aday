@@ -77,7 +77,7 @@ class PlayerCalloutView: UIView {
     
     func playerDidFinishPlaying(notification: NSNotification) {
         if playIndex+1 < clips.count {
-            play()
+            playNextClip()
         } else {
             playIndex = 0
             players[playIndex]?.miniPlayer.pause()
