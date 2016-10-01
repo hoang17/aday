@@ -9,29 +9,40 @@ class UserModel: Object {
     dynamic var name: String!
     dynamic var email: String!
     dynamic var fb: String!
+    dynamic var fb_token: String = ""
     dynamic var phone: String!
     dynamic var fabric: String!
-    dynamic var clipIndex:Int = 0
     dynamic var city: String!
     dynamic var country: String!
     dynamic var uploaded: Double = 0.0
+    dynamic var username: String = ""
+    dynamic var password: String = ""
     let clips = List<ClipModel>()
-    
+    let following = List<FollowingFriend>()
+        
     func load(user: User){
         uid = user.uid
         name = user.name
         email = user.email
         fb = user.fb
+        fb_token = user.fb_token
         phone = user.phone
         fabric = user.fabric
         city = user.city
         country = user.country
-        clipIndex = user.clipIndex
         uploaded = user.uploaded
+        username = user.username
+        password = user.password
         for clip in user.clips{
             let data = ClipModel()
             data.load(clip)
             clips.append(data)
+        }
+        
+        for friendUid in user.following.keys {
+            let friend = FollowingFriend()
+            friend.uid = friendUid
+            following.append(friend)
         }
     }
     

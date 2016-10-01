@@ -100,14 +100,16 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         view.addSubview(textField)
         view.bringSubviewToFront(textField)
         
-        locationField.origin = CGPoint(x: 0, y: 0.8 * UIScreen.mainScreen().bounds.height)
+        locationField.origin = CGPoint(x: 0, y: 0)
         locationField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-        locationField.textColor = UIColor.whiteColor()
-        locationField.font = UIFont.systemFontOfSize(14.0)
+        locationField.textColor = UIColor(white: 1, alpha: 0.6)
+        locationField.font = UIFont.systemFontOfSize(12.0)
         locationField.textAlignment = NSTextAlignment.Center
-        locationField.height = 32
+        locationField.height = 20
         locationField.width = UIScreen.mainScreen().bounds.width
         locationField.hidden = true
+        locationField.returnKeyType = UIReturnKeyType.Done
+        locationField.delegate = self
         
         view.addSubview(locationField)
         view.bringSubviewToFront(locationField)
@@ -129,38 +131,43 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         
         let co = manager.location!.coordinate
         
+        manager.stopUpdatingLocation()
+        
         self.lo.latitude = co.latitude
         self.lo.longitude = co.longitude
         
         print("locations = \(co.latitude) \(co.longitude)")
         
         let geoCoder = CLGeocoder()
-        let location = CLLocation(latitude: co.latitude, longitude: co.longitude)
         
-        geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+        if let location = manager.location {
             
-            let placeMark: CLPlacemark! = placemarks?[0]
-            if (placeMark == nil){
-                return
-            }
-            
-            // Address dictionary
-            print(placeMark.addressDictionary)
-            let name = placeMark.addressDictionary!["Name"] as! String
-            let city = placeMark.addressDictionary!["City"] as! String
-            let country = placeMark.addressDictionary!["CountryCode"] as! String
-            let sublocal = placeMark.addressDictionary!["SubLocality"] as! String
-            let subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as! String
-            
-            self.lo.name = name
-            self.lo.city = city
-            self.lo.country = country
-            self.lo.sublocal = sublocal
-            self.lo.subarea = subarea
-            self.locationField.text = name + ", " + sublocal + ", " + subarea
-            self.locationField.hidden = false
-            
-        })
+            geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+                
+                let placeMark: CLPlacemark! = placemarks?[0]
+                if (placeMark == nil){
+                    return
+                }
+                
+                // Address dictionary
+                print(placeMark.addressDictionary)
+                let name = placeMark.addressDictionary!["Name"] as! String
+                let city = placeMark.addressDictionary!["City"] as! String
+                let country = placeMark.addressDictionary!["CountryCode"] as! String
+                let sublocal = placeMark.addressDictionary!["SubLocality"] as! String
+                let subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as! String
+                
+                self.lo.name = name
+                self.lo.city = city
+                self.lo.country = country
+                self.lo.sublocal = sublocal
+                self.lo.subarea = subarea
+                self.locationField.text = name
+                self.locationField.hidden = true
+                
+            })
+        }
+        
         
     }
     
@@ -169,9 +176,11 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         
         self.back()
         
-        var number = Digits.sharedInstance().session()!.phoneNumber
-        number.removeAtIndex(number.startIndex)
-        let uploadFile = "\(number)_\(arc4random()%1000000).mp4"
+//        var number = Digits.sharedInstance().session()!.phoneNumber
+//        number.removeAtIndex(number.startIndex)
+        
+        let uid : String = (FIRAuth.auth()?.currentUser?.uid)!
+        let uploadFile = "\(uid)_\(arc4random()%1000000).mp4"
         
         print("Uploading \(uploadFile)...")
         
@@ -211,19 +220,24 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
                                 print("Thumb uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
                                
                                 // Save clip to db
-                                let ref = FIRDatabase.database().reference().child("clips")
-                                let id = ref.childByAutoId().key
-                                let uid = FIRAuth.auth()?.currentUser?.uid
+                                let ref = FIRDatabase.database().reference()
+                                let id = ref.child("clips").childByAutoId().key
+                                let uid : String = FIRAuth.auth()!.currentUser!.uid
                                 let fname = uploadFile
                                 let txt = self.textField.text
                                 let y = self.textLocation.y/self.view.frame.height
-                                let clip = Clip(id: id, uid: uid!, fname: fname, txt: txt!, y: y, location: self.lo, thumb: (metadata!.downloadURL()?.absoluteString)!)
-                                ref.child(id).setValue(clip.toAnyObject())
+                                let clip = Clip(id: id, uid: uid, fname: fname, txt: txt!, y: y, location: self.lo, thumb: (metadata!.downloadURL()?.absoluteString)!)
+                                
+                                // Create new clip at /users/$userid/clips/$clipid
+                                let update = [
+                                    "/users/\(uid)/clips/\(id)/": clip.toAnyObject(),
+                                    "/users/\(uid)/uploaded":clip.date]
+                                ref.updateChildValues(update)
+
+                                // Create new clip at /clips/$clipid
+                                ref.child("clips").child(id).setValue(clip.toAnyObject())
                                 
                                 print("Clip is saved to db \(id)")
-                                
-                                let users = FIRDatabase.database().reference().child("users")
-                                users.child(uid!).updateChildValues(["uploaded":NSDate().timeIntervalSince1970])
                                 
                             }
                         }
@@ -282,7 +296,9 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
 
     // Show textfield
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-
+        
+        locationField.resignFirstResponder()
+        
         if textField.hidden {
             if let touch = touches.first {
                 textLocation = touch.locationInView(self.view)

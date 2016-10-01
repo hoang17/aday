@@ -4,6 +4,19 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Pinly</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>MKDirectionsRequest</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.apple.maps.directionsrequest</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -57,7 +70,7 @@
 	<key>FacebookAppID</key>
 	<string>1595757224051098</string>
 	<key>FacebookDisplayName</key>
-	<string>Group</string>
+	<string>Pinly</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -67,10 +80,27 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>MKDirectionsApplicationSupportedModes</key>
+	<array>
+		<string>MKDirectionsModeBike</string>
+		<string>MKDirectionsModeCar</string>
+		<string>MKDirectionsModeStreetCar</string>
+		<string>MKDirectionsModeTaxi</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Enable camera to record video</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Enable contacts to sync friends</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We use location to find near by places</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Enable location to checkin</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Enable location to check in to places</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Enable microphone to record video</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Enable photo to save video</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>OpenSans-Bold.ttf</string>
@@ -84,8 +114,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 </dict>
 </plist>

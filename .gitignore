@@ -1,6 +1,7 @@
-Pods/*
 *~
 .DS_Store
+Pods/*
 Pods
-Group.xcworkspace
 Podfile.lock
+Pinly.xcworkspace
+
