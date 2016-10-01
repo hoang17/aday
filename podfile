@@ -20,4 +20,5 @@ target 'Pinly' do
     pod 'APAddressBook'
     pod 'jot'
     pod 'Eureka',  :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'swift2.3'
+    pod 'Permission'
 end

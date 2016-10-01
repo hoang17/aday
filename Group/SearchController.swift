@@ -11,6 +11,8 @@ import FirebaseDatabase
 import FBSDKCoreKit
 import APAddressBook
 import DigitsKit
+import Permission
+
 
 class SearchController: UITableViewController {
     // MARK: - Properties
@@ -23,6 +25,29 @@ class SearchController: UITableViewController {
     // MARK: - View Setup
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
+        if #available(iOS 9.0, *) {
+            let permission: Permission = .Contacts
+            
+            print(permission.status) // PermissionStatus.NotDetermined
+            
+            permission.request { status in
+                switch status {
+                case .Authorized:    print("authorized")
+                case .Denied:        print("denied")
+                case .Disabled:      print("disabled")
+                case .NotDetermined: print("not determined")
+                }
+            }
+
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        
+        
         
         self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         
