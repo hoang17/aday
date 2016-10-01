@@ -32,7 +32,7 @@ class PlayerView: UIView {
         let fileUrl = NSURL(fileURLWithPath: filePath)
         player = AVPlayer(URL: fileUrl)
         playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = CGRect(x: 0, y: 0, width: frame.width+1, height: frame.height) // fix one pixel
+        playerLayer.frame = CGRect(x: 0, y: 0, width: frame.width+1, height: frame.height+1) // fix one pixel
         layer.addSublayer(playerLayer)
 
 //        self.playerLayer.backgroundColor = UIColor.yellowColor().CGColor

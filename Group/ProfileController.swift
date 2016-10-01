@@ -100,12 +100,12 @@ class ProfileController: FormViewController {
 //                $0.title = "Birthday"
 //                $0.value = NSDate(timeIntervalSinceReferenceDate: 0)
 //            }
-            <<< ButtonRow("Notification"){
-                $0.title = $0.tag
-                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
-                    return CameraViewController()
-                }, completionCallback: nil)
-            }
+//            <<< ButtonRow("Notification"){
+//                $0.title = $0.tag
+//                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback{
+//                    return CameraViewController()
+//                }, completionCallback: nil)
+//            }
             
             +++ Section("Support")
             <<< ButtonRow("Get Help from Twitter"){

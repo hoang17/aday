@@ -53,7 +53,9 @@ class FriendsLoader: NSObject {
             let userID : String! = FIRAuth.auth()?.currentUser?.uid
             
             let update = ["/users/\(userID)/friends/\(friendId)/": true,
-                          "/users/\(friendId)/friends/\(userID)/": true]
+                          "/users/\(friendId)/friends/\(userID)/": true,
+                          "/users/\(friendId)/following/\(userID)/": true,
+                          "/users/\(userID)/following/\(friendId)/": true]
             ref.updateChildValues(update)
             
         }) { (error) in
@@ -96,7 +98,9 @@ class FriendsLoader: NSObject {
                                 let userID : String! = FIRAuth.auth()?.currentUser?.uid
                                 
                                 let update = ["/users/\(userID)/friends/\(friend.uid)/": true,
-                                    "/users/\(friend.uid)/friends/\(userID)/": true]
+                                    "/users/\(friend.uid)/friends/\(userID)/": true,
+                                    "/users/\(friend.uid)/following/\(userID)/": true,
+                                    "/users/\(userID)/following/\(friend.uid)/": true]
                                 ref.updateChildValues(update)
                                 
                             }

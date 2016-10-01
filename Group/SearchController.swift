@@ -11,7 +11,7 @@ import FirebaseDatabase
 import FBSDKCoreKit
 import APAddressBook
 import DigitsKit
-import Permission
+//import Permission
 
 
 class SearchController: UITableViewController {
@@ -29,23 +29,23 @@ class SearchController: UITableViewController {
         
         print(AppDelegate.currentUser)
         
-        if #available(iOS 9.0, *) {
-            let permission: Permission = .Contacts
-            
-            print(permission.status) // PermissionStatus.NotDetermined
-            
-            permission.request { status in
-                switch status {
-                case .Authorized:    print("authorized")
-                case .Denied:        print("denied")
-                case .Disabled:      print("disabled")
-                case .NotDetermined: print("not determined")
-                }
-            }
-            
-        } else {
-            // Fallback on earlier versions
-        }
+//        if #available(iOS 9.0, *) {
+//            let permission: Permission = .Contacts
+//            
+//            print(permission.status) // PermissionStatus.NotDetermined
+//            
+//            permission.request { status in
+//                switch status {
+//                case .Authorized:    print("authorized")
+//                case .Denied:        print("denied")
+//                case .Disabled:      print("disabled")
+//                case .NotDetermined: print("not determined")
+//                }
+//            }
+//            
+//        } else {
+//            // Fallback on earlier versions
+//        }
         
         
         ref.child("users").child(AppDelegate.currentUser.uid).observeEventType(.Value, withBlock: { snapshot in
