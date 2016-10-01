@@ -14,7 +14,7 @@ import DigitsKit
 
 class SearchController: UITableViewController {
     // MARK: - Properties
-//    var detailViewController: DetailViewController? = nil
+    //    var detailViewController: DetailViewController? = nil
     var users = [User]()
     var filteredUsers = [User]()
     var userkeys = [String:User]()
@@ -36,7 +36,7 @@ class SearchController: UITableViewController {
         searchController.searchBar.placeholder = "Search for friends"
         self.tableView.tableHeaderView = searchController.searchBar
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-
+        
         let ref = FIRDatabase.database().reference()
         
         // Load facebook friends
@@ -141,16 +141,37 @@ class SearchController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
+        let cell = SearchItemCell()
         let user: User
         if searchController.active && searchController.searchBar.text != "" {
             user = filteredUsers[indexPath.row]
         } else {
             user = users[indexPath.row]
         }
-        cell.textLabel!.text = user.name
+        
+        // Set cell data
+        if(user.name != "") {
+            cell.nameLabel.text = user.name
+        } else {
+            cell.nameLabel.text = ""
+        }
+        
+        if(user.fb != "") {
+            let imgUrl = NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1")
+            cell.profileImg.kf_setImageWithURL(imgUrl)
+        }
+        
+        cell.followButton.addTarget(self, action: #selector(SearchController.buttonClicked), forControlEvents: UIControlEvents.TouchUpInside)
+    
+   
         return cell
     }
+    
+    func buttonClicked(sender:UIButton!)
+    {
+        print("Button tapped")
+    }
+    
     
     func filterContentForSearchText(searchText: String, scope: String = "All") {
         filteredUsers = users.filter({( user : User) -> Bool in
@@ -159,7 +180,7 @@ class SearchController: UITableViewController {
         })
         tableView.reloadData()
     }
-
+    
 }
 
 extension SearchController: UISearchBarDelegate {

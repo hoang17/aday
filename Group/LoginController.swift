@@ -81,7 +81,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                 let user = ["uid": uid,
                             "name": currentUser!.displayName!,
                             "email": currentUser!.email!,
-                            "fb": FBSDKAccessToken.currentAccessToken().userID]
+                            "fb": FBSDKAccessToken.currentAccessToken().userID,
+                            "fb_token": FBSDKAccessToken.currentAccessToken().tokenString]
                 ref.child("users").child(uid).updateChildValues(user)
                 
                 let update = ["/users/\(uid)/friends/\(uid)/": true]

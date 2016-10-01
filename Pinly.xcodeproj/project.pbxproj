@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27CB4E111D9ED10E001F7857 /* SearchItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CB4E101D9ED10E001F7857 /* SearchItemCell.swift */; };
 		371068DA1D7DE0A000BDFC42 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068D91D7DE0A000BDFC42 /* CameraViewController.swift */; };
 		371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */; };
 		371068E01D80453200BDFC42 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DF1D80453200BDFC42 /* RecordButton.swift */; };
@@ -112,6 +113,7 @@
 
 /* Begin PBXFileReference section */
 		26B1EB474AFE555291DA0DD7 /* Pods-Pinly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pinly.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pinly/Pods-Pinly.debug.xcconfig"; sourceTree = "<group>"; };
+		27CB4E101D9ED10E001F7857 /* SearchItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchItemCell.swift; sourceTree = "<group>"; };
 		371068D91D7DE0A000BDFC42 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPreviewController.swift; sourceTree = "<group>"; };
 		371068DF1D80453200BDFC42 /* RecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
@@ -373,6 +375,7 @@
 				37C9C3841D9C1A2A0081F825 /* ClipCalloutView.swift */,
 				37AE2C501D9D280100A6C4A5 /* PlayerCalloutView.swift */,
 				37C9C3861D9C230D0081F825 /* PlayerView.swift */,
+				27CB4E101D9ED10E001F7857 /* SearchItemCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -668,7 +671,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -678,6 +681,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27CB4E111D9ED10E001F7857 /* SearchItemCell.swift in Sources */,
 				37D2E4EC1D9D61D900046AB9 /* ProfileController.swift in Sources */,
 				3785F6851D857A0700F32915 /* TableViewCell.swift in Sources */,
 				371068DA1D7DE0A000BDFC42 /* CameraViewController.swift in Sources */,

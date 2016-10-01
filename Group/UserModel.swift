@@ -9,6 +9,7 @@ class UserModel: Object {
     dynamic var name: String!
     dynamic var email: String!
     dynamic var fb: String!
+    dynamic var fb_token: String!
     dynamic var phone: String!
     dynamic var fabric: String!
     dynamic var city: String!
@@ -23,6 +24,7 @@ class UserModel: Object {
         name = user.name
         email = user.email
         fb = user.fb
+        fb_token = user.fb_token
         phone = user.phone
         fabric = user.fabric
         city = user.city
