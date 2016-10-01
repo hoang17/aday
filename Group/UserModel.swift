@@ -18,7 +18,8 @@ class UserModel: Object {
     dynamic var username: String = ""
     dynamic var password: String = ""
     let clips = List<ClipModel>()
-    
+    let following = List<FollowingFriend>()
+        
     func load(user: User){
         uid = user.uid
         name = user.name
@@ -36,6 +37,12 @@ class UserModel: Object {
             let data = ClipModel()
             data.load(clip)
             clips.append(data)
+        }
+        
+        for friendUid in user.following.keys {
+            let friend = FollowingFriend()
+            friend.uid = friendUid
+            following.append(friend)
         }
     }
     

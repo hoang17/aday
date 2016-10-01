@@ -21,12 +21,13 @@ class SearchController: UITableViewController {
     var filteredUsers = [User]()
     var userkeys = [String:User]()
     let searchController = UISearchController(searchResultsController: nil)
+    let ref = FIRDatabase.database().reference()
     
     // MARK: - View Setup
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        print(AppDelegate.currentUser)
         
         if #available(iOS 9.0, *) {
             let permission: Permission = .Contacts
@@ -41,13 +42,17 @@ class SearchController: UITableViewController {
                 case .NotDetermined: print("not determined")
                 }
             }
-
+            
         } else {
             // Fallback on earlier versions
         }
         
         
-        
+        ref.child("users").child(AppDelegate.currentUser.uid).observeEventType(.Value, withBlock: { snapshot in
+            
+            AppDelegate.currentUser = User(snapshot: snapshot)
+            self.tableView.reloadData()
+        })
         
         self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         
@@ -62,7 +67,7 @@ class SearchController: UITableViewController {
         self.tableView.tableHeaderView = searchController.searchBar
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         
-        let ref = FIRDatabase.database().reference()
+        
         
         // Load facebook friends
         
@@ -78,7 +83,7 @@ class SearchController: UITableViewController {
                     let valueDict : NSDictionary = data[i] as! NSDictionary
                     let fb = valueDict.valueForKey("id") as! String
                     
-                    ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                    self.ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                         
                         let user = User(snapshot: snapshot.children.allObjects.first as! FIRDataSnapshot)
                         if self.userkeys[user.uid] == nil{
@@ -121,10 +126,19 @@ class SearchController: UITableViewController {
                             continue
                         }
                         
-                        ref.child("users").queryOrderedByChild("phone").queryEqualToValue(number).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                        self.ref.child("users").queryOrderedByChild("phone").queryEqualToValue(number).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                             
                             if let snap = snapshot.children.allObjects.first as? FIRDataSnapshot {
                                 let user = User(snapshot: snap)
+                                
+                                //                                let userDict = snapshot.value as! [String : AnyObject]
+                                //                                // print user friend dict
+                                //                                print(userDict[user.uid]?["friends"])
+                                
+                                print(user.friends)
+                                
+                                
+                                
                                 if user.uid != AppDelegate.currentUser.uid {
                                     if self.userkeys[user.uid] == nil{
                                         self.users.append(user)
@@ -132,6 +146,7 @@ class SearchController: UITableViewController {
                                         self.tableView.reloadData()
                                     }
                                 }
+                                
                             }
                             
                         }) { (error) in
@@ -167,7 +182,7 @@ class SearchController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = SearchItemCell()
-        let user: User
+        var user: User
         if searchController.active && searchController.searchBar.text != "" {
             user = filteredUsers[indexPath.row]
         } else {
@@ -185,16 +200,51 @@ class SearchController: UITableViewController {
             let imgUrl = NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1")
             cell.profileImg.kf_setImageWithURL(imgUrl)
         }
+
+        if AppDelegate.currentUser.following[user.uid] != nil {
+            cell.followButton.setTitle("Unfollow", forState: .Normal)
+            cell.followButton.setTitleColor(UIColor.redColor(), forState: .Normal)
+        } else {
+         cell.followButton.setTitle("follow", forState: .Normal)
+            cell.followButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
+         
+                 }
+       cell.followButton.tag = indexPath.row
+        cell.followButton.addTarget(self, action: #selector(SearchController.followButtonHandler),
+                                    forControlEvents: UIControlEvents.TouchUpInside)
+
         
-        cell.followButton.addTarget(self, action: #selector(SearchController.followButtonHandler), forControlEvents: UIControlEvents.TouchUpInside)
-    
-   
+        
+        
         return cell
+
     }
+    
+    
     
     func followButtonHandler(sender:UIButton!)
     {
-        print("Button tapped")
+        if sender.titleLabel?.text == "follow" {
+            let friendId : String = self.users[sender.tag].uid
+            // Create new friend at /users/$userid/friends/$friendid
+            let userID : String! = AppDelegate.currentUser.uid
+            
+            let update = ["/users/\(userID)/following/\(friendId)/": true,
+                          "/users/\(friendId)/friends/\(userID)/": true]
+            ref.updateChildValues(update)
+            
+            self.tableView.reloadData()
+        } else {
+            let friendId : String = self.users[sender.tag].uid
+            // Create new friend at /users/$userid/friends/$friendid
+            let userID : String! = AppDelegate.currentUser.uid
+            
+            ref.child("/users/\(userID)/following/\(friendId)/").removeValue()
+            
+            self.tableView.reloadData()
+        }
+
+        
     }
     
     

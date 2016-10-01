@@ -21,6 +21,7 @@ class User: NSObject {
     var uploaded: Double = 0.0 // last uploaded time
     var clips = [Clip]()
     var friends = [String:Bool]()
+    var following = [String:Bool]()
     
     init(uid: String, name:String, email: String, fabric: String, phone: String, fb:String, fb_token:String, city: String, country: String) {
         self.uid = uid
@@ -50,6 +51,7 @@ class User: NSObject {
             self.clips.insert(clip, atIndex: 0)
         }
         self.friends = snapshot.value!["friends"] as? [String : Bool] ?? [String:Bool]()
+        self.following = snapshot.value!["following"] as? [String : Bool] ?? [String:Bool]()
         self.username = (snapshot.value!["username"] as? String) ?? ""
         self.password = (snapshot.value!["password"] as? String) ?? ""
     }
@@ -71,6 +73,10 @@ class User: NSObject {
         for c in data.clips{
             let clip = Clip(data: c)
             clips.append(clip)
+        }
+        
+        for friend in data.following {
+            following[friend.uid] = true
         }
     }
 }

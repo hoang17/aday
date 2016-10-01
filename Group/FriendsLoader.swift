@@ -28,6 +28,7 @@ class FriendsLoader: NSObject {
                     let valueDict : NSDictionary = data[i] as! NSDictionary
                     let fb = valueDict.valueForKey("id") as! String
                     let name = valueDict.valueForKey("name") as! String
+        
                     
                     let friend = Friend(fb: fb, name: name)
                     friends.append(friend)

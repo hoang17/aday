@@ -3,14 +3,24 @@
 //
 
 import UIKit
-
+import RealmSwift
 class Friend: NSObject {
     
     var fb: String
     var name: String
     
+    
     init(fb: String, name:String) {
         self.fb = fb
         self.name = name
+       
     }
+}
+
+
+
+class FollowingFriend: Object {
+    
+   dynamic var uid: String!
+   
 }
