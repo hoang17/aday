@@ -123,20 +123,25 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         locationManager.stopUpdatingLocation()
         
         let geoCoder = CLGeocoder()
-        geoCoder.reverseGeocodeLocation(manager.location!, completionHandler: { (placemarks, error) -> Void in
+        
+        if let location = manager.location {
             
-            let placeMark: CLPlacemark! = placemarks?[0]
-            if (placeMark == nil){
-                return
-            }
-            let city = (placeMark.addressDictionary!["City"] as? String) ?? ""
-            let country = (placeMark.addressDictionary!["CountryCode"] as? String) ?? ""
-            let uid : String! = FIRAuth.auth()?.currentUser?.uid
-            let update = ["city": city, "country": country]
-            let ref = FIRDatabase.database().reference().child("users").child(uid)
-            ref.updateChildValues(update)
-            
-        })
+            geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+                
+                let placeMark: CLPlacemark! = placemarks?[0]
+                if (placeMark == nil){
+                    return
+                }
+                let city = (placeMark.addressDictionary!["City"] as? String) ?? ""
+                let country = (placeMark.addressDictionary!["CountryCode"] as? String) ?? ""
+                let uid : String! = FIRAuth.auth()?.currentUser?.uid
+                let update = ["city": city, "country": country]
+                let ref = FIRDatabase.database().reference().child("users").child(uid)
+                ref.updateChildValues(update)
+                
+            })
+        }
+        
         
     }
     

@@ -140,30 +140,34 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         
         let geoCoder = CLGeocoder()
         
-        geoCoder.reverseGeocodeLocation(manager.location!, completionHandler: { (placemarks, error) -> Void in
+        if let location = manager.location {
             
-            let placeMark: CLPlacemark! = placemarks?[0]
-            if (placeMark == nil){
-                return
-            }
-            
-            // Address dictionary
-            print(placeMark.addressDictionary)
-            let name = placeMark.addressDictionary!["Name"] as! String
-            let city = placeMark.addressDictionary!["City"] as! String
-            let country = placeMark.addressDictionary!["CountryCode"] as! String
-            let sublocal = placeMark.addressDictionary!["SubLocality"] as! String
-            let subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as! String
-            
-            self.lo.name = name
-            self.lo.city = city
-            self.lo.country = country
-            self.lo.sublocal = sublocal
-            self.lo.subarea = subarea
-            self.locationField.text = name
-            self.locationField.hidden = true
-            
-        })
+            geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+                
+                let placeMark: CLPlacemark! = placemarks?[0]
+                if (placeMark == nil){
+                    return
+                }
+                
+                // Address dictionary
+                print(placeMark.addressDictionary)
+                let name = placeMark.addressDictionary!["Name"] as! String
+                let city = placeMark.addressDictionary!["City"] as! String
+                let country = placeMark.addressDictionary!["CountryCode"] as! String
+                let sublocal = placeMark.addressDictionary!["SubLocality"] as! String
+                let subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as! String
+                
+                self.lo.name = name
+                self.lo.city = city
+                self.lo.country = country
+                self.lo.sublocal = sublocal
+                self.lo.subarea = subarea
+                self.locationField.text = name
+                self.locationField.hidden = true
+                
+            })
+        }
+        
         
     }
     
