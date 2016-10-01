@@ -200,24 +200,24 @@ class SearchController: UITableViewController {
             let imgUrl = NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1")
             cell.profileImg.kf_setImageWithURL(imgUrl)
         }
-
+        
         if AppDelegate.currentUser.following[user.uid] != nil {
             cell.followButton.setTitle("Unfollow", forState: .Normal)
             cell.followButton.setTitleColor(UIColor.redColor(), forState: .Normal)
         } else {
-         cell.followButton.setTitle("follow", forState: .Normal)
+            cell.followButton.setTitle("follow", forState: .Normal)
             cell.followButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
-         
-                 }
-       cell.followButton.tag = indexPath.row
+            
+        }
+        cell.followButton.tag = indexPath.row
         cell.followButton.addTarget(self, action: #selector(SearchController.followButtonHandler),
                                     forControlEvents: UIControlEvents.TouchUpInside)
-
+        
         
         
         
         return cell
-
+        
     }
     
     
@@ -240,10 +240,10 @@ class SearchController: UITableViewController {
             let userID : String! = AppDelegate.currentUser.uid
             
             ref.child("/users/\(userID)/following/\(friendId)/").removeValue()
-            
+            ref.child("/users/\(friendId)/friends/\(userID)/").removeValue()
             self.tableView.reloadData()
         }
-
+        
         
     }
     
