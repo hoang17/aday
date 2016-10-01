@@ -13,7 +13,7 @@ class User: NSObject {
     var fabric: String
     var phone: String
     var fb: String
-    var fb_token: String
+    var fb_token: String = ""
     var city: String
     var country: String
     var username: String = ""
@@ -41,7 +41,7 @@ class User: NSObject {
         self.phone = (snapshot.value!["phone"] as? String) ?? ""
         self.fabric = (snapshot.value!["fabric"] as? String) ?? ""
         self.fb = snapshot.value!["fb"] as! String
-        self.fb_token = snapshot.value!["fb_token"] as! String
+        self.fb_token = (snapshot.value!["fb_token"] as? String) ?? ""
         self.city = (snapshot.value!["city"] as? String) ?? ""
         self.country = (snapshot.value!["country"] as? String) ?? ""
         self.uploaded = (snapshot.value!["uploaded"] as? Double) ?? 0

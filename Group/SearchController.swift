@@ -161,13 +161,13 @@ class SearchController: UITableViewController {
             cell.profileImg.kf_setImageWithURL(imgUrl)
         }
         
-        cell.followButton.addTarget(self, action: #selector(SearchController.buttonClicked), forControlEvents: UIControlEvents.TouchUpInside)
+        cell.followButton.addTarget(self, action: #selector(SearchController.followButtonHandler), forControlEvents: UIControlEvents.TouchUpInside)
     
    
         return cell
     }
     
-    func buttonClicked(sender:UIButton!)
+    func followButtonHandler(sender:UIButton!)
     {
         print("Button tapped")
     }
