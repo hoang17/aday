@@ -29,11 +29,13 @@ class ClipCalloutView: UIView {
         miniPlayer.layer.masksToBounds = false
         miniPlayer.clipsToBounds = true
         
-        profileImg.origin = CGPoint(x: frame.width/2-12, y: frame.height-16)
-        profileImg.size = CGSize(width: 24, height: 24)
+        profileImg.origin = CGPoint(x: frame.width/2-12, y: frame.height+34)
+        profileImg.size = CGSize(width: 19, height: 19)
         profileImg.layer.cornerRadius = profileImg.height/2
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
+        profileImg.layer.borderWidth = 0.5
+        profileImg.layer.borderColor = UIColor.lightGrayColor().CGColor
         profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(user!.fb)/picture?type=large&return_ssl_resources=1"))
         
         if clip.txt == "" {

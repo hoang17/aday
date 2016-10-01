@@ -156,6 +156,8 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         calloutView.locationSub.text = clipAnnotation.subtitle
         
         calloutView.center = CGPoint(x: view.bounds.size.width/3, y: -calloutView.bounds.size.height*0.52-5)
+        
+        view.subviews.forEach({ $0.hidden = true })
         view.addSubview(calloutView)
       
         let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
@@ -174,6 +176,8 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             calloutView.pause()
             calloutView.removeFromSuperview()
         }
+        
+        view.subviews.forEach({ $0.hidden = false })
         
         mapView.showsUserLocation = true
     }
@@ -194,21 +198,23 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                 annotationView!.annotation = annotation
             }
             
+            annotationView?.subviews.forEach({ $0.removeFromSuperview() })
+            
             annotationView!.pinColor = annotation.pinColor()
             
-            let cellwidth: CGFloat = 20
-            let width : CGFloat = (CGFloat(annotation.users.count) * cellwidth) + 10
+            let cellwidth: CGFloat = 18
+            let width : CGFloat = (CGFloat(annotation.users.count) * cellwidth) + 4
             
             let container = UIView(frame: CGRect(x: -(width/2)+7.5, y: -8, width: width, height: 22))
             container.backgroundColor = UIColor.whiteColor()
-            container.layer.cornerRadius = 5
+            container.layer.cornerRadius = container.height/2
             container.layer.masksToBounds = true
             container.clipsToBounds = true
             container.layer.borderColor = UIColor.lightGrayColor().CGColor;
             container.layer.borderWidth = 0.5
             annotationView?.addSubview(container)
             
-            var i : CGFloat = 7.5
+            var i : CGFloat = 3
             for user in annotation.users.values {
                 let profileImg = UIImageView()
                 profileImg.origin = CGPoint(x: i, y: 3)
