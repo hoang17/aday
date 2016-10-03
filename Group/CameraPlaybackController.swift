@@ -18,7 +18,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
 
     let textField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
-    var clips = [Clip]()
+    var clips = [ClipModel]()
     var playIndex = 0
     var players = [Int:ClipPlayer]()
     var player: ClipPlayer!
@@ -27,7 +27,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var nameLabel = UILabel()
     var locationLabel = UILabel()
     var dateLabel = UILabel()
-    var friend: User!
     var collectionView: UICollectionView!
     
     override func viewDidLoad() {
@@ -49,7 +48,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         textField.width = UIScreen.mainScreen().bounds.width
         textField.userInteractionEnabled = false
         textField.text = clips[playIndex].txt
-        textField.center.y = self.view.height * clips[playIndex].y
+        textField.center.y = self.view.height * CGFloat(clips[playIndex].y)
         
         if textField.text == "" {
             textField.hidden = true
@@ -158,7 +157,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         player = playerAtIndex(playIndex)
         locationLabel.text = locationText()
         textField.text = clips[playIndex].txt
-        textField.center.y = self.view.height * clips[playIndex].y
+        textField.center.y = self.view.height * CGFloat(clips[playIndex].y)
         textField.hidden = textField.text == ""
         dateLabel.text = NSDate(timeIntervalSince1970: clips[playIndex].date).shortTimeAgoSinceNow()
         

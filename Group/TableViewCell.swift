@@ -17,8 +17,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     var nameLabel = UILabel()
     var locationLabel = UILabel()
     var profileImg = UIImageView()
-    var clips: [Clip]!
-    var friend: User!
+    var clips: [ClipModel]!
     let cellWidth = 150
     let cellHeight = 266
     var index: Int = 0
@@ -115,7 +114,6 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
         cameraPlayback.profileImg.image = profileImg.image
         cameraPlayback.collectionView = self.collectionView
-        cameraPlayback.friend = friend
         
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
     }

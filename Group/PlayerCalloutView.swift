@@ -16,11 +16,11 @@ class PlayerCalloutView: UIView {
     
     var locationName = UILabel()
     var locationSub = UILabel()
-    var clips = [Clip]()
+    var clips = [ClipModel]()
     var playIndex = 0
     var clipCallout: ClipCalloutView?
     
-    init(clips: [Clip], frame: CGRect) {
+    init(clips: [ClipModel], frame: CGRect) {
         super.init(frame: frame)
         
         locationName.font = UIFont.systemFontOfSize(12)

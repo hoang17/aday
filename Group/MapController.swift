@@ -29,6 +29,8 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
     
     var calloutView: PlayerCalloutView!
     
+    var notificationToken: NotificationToken? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -58,32 +60,102 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         }
         
         let realm = AppDelegate.realm
-        let list = realm.objects(UserModel.self).sorted("uploaded", ascending: false)
-        for data in list {
-            for clipdata in data.clips {
-                
-                let point = CLLocationCoordinate2D(latitude: clipdata.lat, longitude: clipdata.long)
-                
-                // check if clip location is new
-                var isnew = true
-                for ca in clipAnnotations {
-                    if self.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
-                        isnew = false
-                        let clip = Clip(data: clipdata)
-                        ca.addClip(clip)
-                        break
-                    }
-                }
-                
-                if isnew {
-                    let clip = Clip(data: clipdata)
-                    let ca = ClipAnnotation(clip: clip)
-                    clipAnnotations.append(ca)
-                    // self.addCircle(ca.coordinate, radius: 50)
+        let clips = realm.objects(ClipModel.self).filter("follow = true").sorted("date", ascending: false)
+        
+        for clip in clips {
+            
+            let point = CLLocationCoordinate2D(latitude: clip.lat, longitude: clip.long)
+            
+            // check if clip location is new
+            var isnew = true
+            for ca in self.clipAnnotations {
+                if self.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
+                    isnew = false
+                    ca.addClip(clip)
+                    break
                 }
             }
+            if isnew {
+                let ca = ClipAnnotation(clip: clip)
+                self.clipAnnotations.append(ca)
+                // self.addCircle(ca.coordinate, radius: 50)
+            }
         }
-        mapView.addAnnotations(clipAnnotations)
+        self.mapView.addAnnotations(self.clipAnnotations)
+        
+        notificationToken = clips.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
+            switch changes {
+            case .Initial:
+                // Results are now populated and can be accessed without blocking the UI
+                break
+            case .Update(_, let deletions, let insertions, let modifications):
+                
+//                print(insertions)
+//                print(modifications)
+//                print(deletions)
+                
+                if insertions.count > 0 {
+                    
+                    let inserts = insertions.map { clips[$0] }
+                    
+                    for clip in inserts {
+                        
+                        let point = CLLocationCoordinate2D(latitude: clip.lat, longitude: clip.long)
+                        
+                        // check if clip location is new
+                        var isnew = true
+                        for ca in self!.clipAnnotations {
+                            if self!.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
+                                self?.mapView.removeAnnotation(ca)
+                                isnew = false
+                                ca.addClip(clip)
+                                self?.mapView.addAnnotation(ca)
+                                break
+                            }
+                        }
+                        
+                        if isnew {
+                            let ca = ClipAnnotation(clip: clip)
+                            self!.clipAnnotations.append(ca)
+                            self?.mapView.addAnnotation(ca)
+                            // self.addCircle(ca.coordinate, radius: 50)
+                        }
+                    }
+                    
+                } else if modifications.count > 0 || deletions.count > 0 {
+                
+                    self?.mapView.removeAnnotations((self?.clipAnnotations)!)
+                    self?.clipAnnotations = [ClipAnnotation]()
+                    for clip in clips {
+                        
+                        let point = CLLocationCoordinate2D(latitude: clip.lat, longitude: clip.long)
+                        
+                        // check if clip location is new
+                        var isnew = true
+                        for ca in self!.clipAnnotations {
+                            if self!.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
+                                isnew = false
+                                ca.addClip(clip)
+                                break
+                            }
+                        }
+                        
+                        if isnew {
+                            let ca = ClipAnnotation(clip: clip)
+                            self!.clipAnnotations.append(ca)
+                            // self.addCircle(ca.coordinate, radius: 50)
+                        }
+                    }
+                    self!.mapView.addAnnotations(self!.clipAnnotations)
+                    
+                }
+                
+                break
+            case .Error(let error):
+                print(error)
+                break
+            }
+        }
         
     }
     
@@ -169,6 +241,12 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         view.addGestureRecognizer(tap)
         
 //        mapView.setCenterCoordinate((view.annotation?.coordinate)!, animated: true)
+        
+        
+//        let ca = ClipAnnotation(clip: clipAnnotations[0].clip)
+//        mapView.addAnnotation(ca)
+        
+        
     }
     
     func tapGesture(sender:UITapGestureRecognizer){
@@ -210,7 +288,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             let cellwidth: CGFloat = 18
             let width : CGFloat = (CGFloat(annotation.users.count) * cellwidth) + 4
             
-            let container = UIView(frame: CGRect(x: -(width/2)+7.5, y: -8, width: width, height: 22))
+            let container = UIView(frame: CGRect(x: -(width/2)+7.5, y: -4, width: width, height: 22))
             container.backgroundColor = UIColor.whiteColor()
             container.layer.cornerRadius = container.height/2
             container.layer.masksToBounds = true
@@ -245,17 +323,21 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         location.mapItem().openInMapsWithLaunchOptions(launchOptions)
     }
     
+    deinit {
+        notificationToken?.stop()
+    }
+    
 }
 
 class ClipAnnotation: NSObject, MKAnnotation {
     
     let title: String?
     let coordinate: CLLocationCoordinate2D
-    let clip: Clip
-    var clips = [Clip]()
+    let clip: ClipModel
+    var clips = [ClipModel]()
     var users = [String:UserModel]()
     
-    init(clip: Clip) {
+    init(clip: ClipModel) {
         let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
         self.users[clip.uid] = user
         self.clip = clip
@@ -265,7 +347,7 @@ class ClipAnnotation: NSObject, MKAnnotation {
         super.init()
     }
     
-    func addClip(clip: Clip) {
+    func addClip(clip: ClipModel) {
         if self.users[clip.uid] == nil {
             let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
             self.users[clip.uid] = user
@@ -292,5 +374,4 @@ class ClipAnnotation: NSObject, MKAnnotation {
         
         return mapItem
     }
-    
 }

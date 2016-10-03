@@ -14,9 +14,13 @@ import AVFoundation
 
 class FriendsController: UITableViewController {
     
-    var friends = [User]()
+//    var friends = [User]()
+    
+    var friends: Results<UserModel>!
     
     var myGroup = dispatch_group_create()
+    
+    var notificationToken: NotificationToken? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,12 +31,30 @@ class FriendsController: UITableViewController {
         
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
-        let list = realm.objects(UserModel.self).sorted("uploaded")
-        for data in list {
-            let friend = User(data: data)
-            self.friends.insert(friend, atIndex: 0)
-        }
+        friends = realm.objects(UserModel.self).filter("follow = true").sorted("uploaded", ascending: false)
         
+        notificationToken = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
+            guard (self?.tableView) != nil else { return }
+            switch changes {
+            case .Initial:
+                // tableView.reloadData()
+                break
+            case .Update(_, let deletions, let insertions, let modifications):
+                self!.tableView.beginUpdates()
+                self!.tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) },
+                    withRowAnimation: .Automatic)
+                self!.tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) },
+                    withRowAnimation: .Automatic)
+                self!.tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) },
+                    withRowAnimation: .Automatic)
+                self!.tableView.endUpdates()
+                break
+            case .Error(let error):
+                print(error)
+                break
+            }
+        }
+    
         view.backgroundColor = .whiteColor()
         
         // Setup friends table
@@ -49,12 +71,9 @@ class FriendsController: UITableViewController {
         
         ref.child("users").queryOrderedByChild("friends/\(userID)").queryEqualToValue(true).observeEventType(.Value, withBlock: { snapshot in
             
-            self.friends = [User]()
-            
             for item in snapshot.children {
                 
                 let friend = User(snapshot: item as! FIRDataSnapshot)
-                self.friends.insert(friend, atIndex: 0)
                 self.downloadClips(friend.clips)
                 
                 let data = UserModel()
@@ -62,14 +81,10 @@ class FriendsController: UITableViewController {
                 try! realm.write {
                     realm.add(data, update: true)
                 }
-                
             }
-            
-            self.friends.sortInPlace({ $0.uploaded > $1.uploaded })
             
             print("...loaded \(self.friends.count) friends")
             
-            self.tableView.reloadData()
         })
         
     }
@@ -80,8 +95,7 @@ class FriendsController: UITableViewController {
         cell.nameLabel.text = friends[indexPath.row].name
         cell.locationLabel.text = friends[indexPath.row].city + " · " + friends[indexPath.row].country
         cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
-        cell.clips = friends[indexPath.row].clips
-        cell.friend = friends[indexPath.row]
+        cell.clips = Array(friends[indexPath.row].clips)
         return cell
     }
 
@@ -100,9 +114,8 @@ class FriendsController: UITableViewController {
             
             // Check if file not existed then download
             let filePath = NSTemporaryDirectory() + fileName;
-            if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-                print("File existed " + fileName)
-            } else {
+            if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+                
                 print("Downloading file \(fileName)...")
                 // File not existed then download
                 let localURL = NSURL(fileURLWithPath: filePath)
@@ -120,5 +133,9 @@ class FriendsController: UITableViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    deinit {
+        notificationToken?.stop()
     }
 }

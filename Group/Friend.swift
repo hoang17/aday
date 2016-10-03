@@ -3,7 +3,7 @@
 //
 
 import UIKit
-import RealmSwift
+
 class Friend: NSObject {
     
     var fb: String
@@ -15,12 +15,4 @@ class Friend: NSObject {
         self.name = name
        
     }
-}
-
-
-
-class FollowingFriend: Object {
-    
-   dynamic var uid: String!
-   
 }
