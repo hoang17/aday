@@ -29,7 +29,7 @@ class ClipCalloutView: UIView {
         miniPlayer.layer.masksToBounds = false
         miniPlayer.clipsToBounds = true
         
-        profileImg.origin = CGPoint(x: frame.width/2-12, y: frame.height+38)
+        profileImg.origin = CGPoint(x: frame.width/2-12, y: frame.height+35)
         profileImg.size = CGSize(width: 19, height: 19)
         profileImg.layer.cornerRadius = profileImg.height/2
         profileImg.layer.masksToBounds = false

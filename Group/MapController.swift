@@ -232,7 +232,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         calloutView.locationName.text = clipAnnotation.title
         calloutView.locationSub.text = clipAnnotation.subtitle
         
-        calloutView.center = CGPoint(x: view.bounds.size.width/3, y: -calloutView.bounds.size.height*0.52-5)
+        calloutView.center = CGPoint(x: view.bounds.size.width/3, y: -calloutView.bounds.size.height*0.52-2)
         
         view.subviews.forEach({ $0.hidden = true })
         view.addSubview(calloutView)
