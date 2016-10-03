@@ -218,14 +218,7 @@ class SearchController: UITableViewController {
                           "/users/\(friendId)/friends/\(userID)/": true]
             ref.updateChildValues(update)
             
-            let user = UserModel()
-            user.load(self.users[sender.tag])
-            
-            try! realm.write {
-                realm.add(user, update: true)
-            }
-            
-            print("followed " + user.name)
+            print("followed " + self.users[sender.tag].name)
             
         } else {
             
@@ -233,18 +226,20 @@ class SearchController: UITableViewController {
                           "/users/\(friendId)/friends/\(userID)/": false]
             ref.updateChildValues(update)
             
+            // Update realm: follow = false
+            
             let user = UserModel()
             user.load(self.users[sender.tag])
             user.follow = false
             
             let predicate = NSPredicate(format: "uid = %@", friendId)
             let clips = realm.objects(ClipModel.self).filter(predicate)
-            
+
             try! realm.write {
                 realm.add(user, update: true)
                 clips.setValue(false, forKeyPath: "follow")
             }
-            
+
             print("unfollowed " + user.name)
             
         }

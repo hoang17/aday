@@ -11,7 +11,6 @@ import AVKit
 import AVFoundation
 import SnapKit
 
-
 class SearchItemCell: UITableViewCell{
     
     var nameLabel = UILabel()
