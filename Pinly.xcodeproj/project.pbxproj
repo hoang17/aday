@@ -80,6 +80,7 @@
 		3785F7751D861E0900F32915 /* ClipModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F7741D861E0900F32915 /* ClipModel.swift */; };
 		37AE2C511D9D280100A6C4A5 /* PlayerCalloutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AE2C501D9D280100A6C4A5 /* PlayerCalloutView.swift */; };
 		37C1FE881D9EBD6400A58235 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C1FE871D9EBD6400A58235 /* String+Extension.swift */; };
+		37C1FE8C1DA2332A00A58235 /* ClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C1FE8B1DA2332A00A58235 /* ClipHelper.swift */; };
 		37C9C37C1D9A08510081F825 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37C9C37B1D9A08510081F825 /* MapKit.framework */; };
 		37C9C3821D9B6CCF0081F825 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C9C3811D9B6CCF0081F825 /* Friend.swift */; };
 		37C9C3851D9C1A2A0081F825 /* ClipCalloutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C9C3841D9C1A2A0081F825 /* ClipCalloutView.swift */; };
@@ -187,6 +188,7 @@
 		3785F7741D861E0900F32915 /* ClipModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipModel.swift; sourceTree = "<group>"; };
 		37AE2C501D9D280100A6C4A5 /* PlayerCalloutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCalloutView.swift; sourceTree = "<group>"; };
 		37C1FE871D9EBD6400A58235 /* String+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		37C1FE8B1DA2332A00A58235 /* ClipHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipHelper.swift; sourceTree = "<group>"; };
 		37C9C37B1D9A08510081F825 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		37C9C3811D9B6CCF0081F825 /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		37C9C3841D9C1A2A0081F825 /* ClipCalloutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipCalloutView.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				372D8DB81D1304E7008DBADA /* FriendsLoader.swift */,
 				37E00FBE1D14F33700B19492 /* UIView+Frame.swift */,
 				37C1FE871D9EBD6400A58235 /* String+Extension.swift */,
+				37C1FE8B1DA2332A00A58235 /* ClipHelper.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -699,6 +702,7 @@
 				37F7DF921D916EEA0057F7E1 /* SearchController.swift in Sources */,
 				371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */,
 				3785F7751D861E0900F32915 /* ClipModel.swift in Sources */,
+				37C1FE8C1DA2332A00A58235 /* ClipHelper.swift in Sources */,
 				37EF00251D873D5E005D39A1 /* MiniViewCell.swift in Sources */,
 				37F7DF941D916F2B0057F7E1 /* MapController.swift in Sources */,
 				372D8DB91D1304E7008DBADA /* FriendsLoader.swift in Sources */,

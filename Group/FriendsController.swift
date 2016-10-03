@@ -67,7 +67,7 @@ class FriendsController: UITableViewController {
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         tableView.separatorStyle = .None
         
-        print("...loading friends for user \(userID)...")
+        print("loading friends for \(userID)...")
         
         ref.child("users").queryOrderedByChild("friends/\(userID)").queryEqualToValue(true).observeEventType(.Value, withBlock: { snapshot in
             
@@ -83,7 +83,7 @@ class FriendsController: UITableViewController {
                 }
             }
             
-            print("...loaded \(self.friends.count) friends")
+            print("loaded friends")
             
         })
         
@@ -102,7 +102,7 @@ class FriendsController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friends.count
     }
-    
+        
     func downloadClips(clips: [Clip]){
         
         let storage = FIRStorage.storage()

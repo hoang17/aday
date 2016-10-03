@@ -195,15 +195,15 @@ class ProfileController: FormViewController {
                 .onCellSelection({ (cell, row) in
                     self.syncContacts()
                 })
-            <<< ButtonRow("Clear Cache"){
-                $0.title = $0.tag
-                }
-                .cellUpdate({ (cell, row) in
-                    cell.accessoryType = .None
-                })
-                .onCellSelection({ (cell, row) in
-                    self.clearCache()
-                })
+//            <<< ButtonRow("Clear Cache"){
+//                $0.title = $0.tag
+//                }
+//                .cellUpdate({ (cell, row) in
+//                    cell.accessoryType = .None
+//                })
+//                .onCellSelection({ (cell, row) in
+//                    self.clearCache()
+//                })
             <<< ButtonRow("Log Out"){
                 $0.title = $0.tag
                 }
@@ -217,9 +217,7 @@ class ProfileController: FormViewController {
     }
     
     func clearCache(){
-        try! AppDelegate.realm.write {
-            AppDelegate.realm.deleteAll()
-        }
+        // TODO
     }
 
     func syncContacts() {

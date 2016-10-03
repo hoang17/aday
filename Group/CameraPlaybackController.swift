@@ -12,7 +12,6 @@ import FirebaseStorage
 import FirebaseAuth
 import DigitsKit
 import DateTools
-import RealmSwift
 
 class CameraPlaybackController: UIViewController, UITextFieldDelegate {
 
