@@ -16,11 +16,11 @@ class PlayerCalloutView: UIView {
     
     var locationName = UILabel()
     var locationSub = UILabel()
-    var clips = [Clip]()
+    var clips = [ClipModel]()
     var playIndex = 0
     var clipCallout: ClipCalloutView?
     
-    init(clips: [Clip], frame: CGRect) {
+    init(clips: [ClipModel], frame: CGRect) {
         super.init(frame: frame)
         
         locationName.font = UIFont.systemFontOfSize(12)
@@ -70,7 +70,6 @@ class PlayerCalloutView: UIView {
             locationName.x = (frame.width - locationName.width)/2
         }
         
-        
         clipCallout?.removeFromSuperview()
         clipCallout = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192))
         self.addSubview(clipCallout!)
@@ -91,6 +90,9 @@ class PlayerCalloutView: UIView {
     }
     
     func pause() {
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
+                                                            object:clipCallout!.miniPlayer.player.currentItem)
         clipCallout?.miniPlayer.pause()
     }
     

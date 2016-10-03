@@ -9,6 +9,8 @@
 import UIKit
 import ESTabBarController
 import UIColor_HexString
+import FirebaseAuth
+import FirebaseDatabase
 
 class MainController: UIViewController {
     
@@ -16,7 +18,28 @@ class MainController: UIViewController {
         
         super.viewDidLoad()
         
-//        let tabBarController = ESTabBarController(tabIconNames: ["clock", "target", "map"])
+        // Init current user
+        
+        let userID : String! = FIRAuth.auth()?.currentUser?.uid
+        
+        if let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: userID) {
+            AppDelegate.currentUser = User(data: user)
+            print("loaded currentUser from local: " + AppDelegate.currentUser.name)
+        }
+        
+        let ref = FIRDatabase.database().reference()
+        ref.child("users").child(userID).observeEventType(.Value, withBlock: { snapshot in
+            AppDelegate.currentUser = User(snapshot: snapshot)
+            let data = UserModel()
+            data.load(AppDelegate.currentUser)
+            try! AppDelegate.realm.write {
+                AppDelegate.realm.add(data, update: true)
+            }
+            print("loaded currentUser from remote & save to local: " + AppDelegate.currentUser.name)
+        })
+        
+        
+        // Init tab bar
         
         let tabBarController = ESTabBarController(tabIconNames: ["clock", "globe", "target", "map", "archive"])
         

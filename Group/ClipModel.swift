@@ -20,6 +20,7 @@ class ClipModel: Object {
     dynamic var sublocal: String = ""
     dynamic var subarea: String = ""
     dynamic var thumb: String = ""
+    dynamic var follow: Bool = true
     
     func load(clip: Clip){
         id = clip.id

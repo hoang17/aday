@@ -19,7 +19,7 @@ class ClipCalloutView: UIView {
     var dateLabel = UILabel()
     var profileImg = UIImageView()
     
-    init(clip: Clip, frame: CGRect) {
+    init(clip: ClipModel, frame: CGRect) {
         super.init(frame: frame)
         
         let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
@@ -29,7 +29,7 @@ class ClipCalloutView: UIView {
         miniPlayer.layer.masksToBounds = false
         miniPlayer.clipsToBounds = true
         
-        profileImg.origin = CGPoint(x: frame.width/2-12, y: frame.height+34)
+        profileImg.origin = CGPoint(x: frame.width/2-12, y: frame.height+35)
         profileImg.size = CGSize(width: 19, height: 19)
         profileImg.layer.cornerRadius = profileImg.height/2
         profileImg.layer.masksToBounds = false
@@ -50,7 +50,7 @@ class ClipCalloutView: UIView {
             textField.width = frame.width
             textField.userInteractionEnabled = false
             textField.text = clip.txt
-            textField.center.y =  frame.height * clip.y
+            textField.center.y =  frame.height * CGFloat(clip.y)
         }
         dateLabel.origin = CGPoint(x: 5, y: 3)
         dateLabel.text = NSDate(timeIntervalSince1970: clip.date).shortTimeAgoSinceNow()

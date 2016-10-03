@@ -17,6 +17,7 @@ class UserModel: Object {
     dynamic var uploaded: Double = 0.0
     dynamic var username: String = ""
     dynamic var password: String = ""
+    dynamic var follow: Bool = true
     let clips = List<ClipModel>()
     let following = List<FollowingFriend>()
         
@@ -50,4 +51,9 @@ class UserModel: Object {
         return "uid"
     }
 
+}
+
+class FollowingFriend: Object {
+    
+    dynamic var uid: String!
 }

@@ -9,9 +9,7 @@
 import UIKit
 import AVKit
 import AVFoundation
-import RealmSwift
 import SnapKit
-
 
 class SearchItemCell: UITableViewCell{
     
@@ -46,7 +44,7 @@ class SearchItemCell: UITableViewCell{
         self.addSubview(nameLabel)
         
         // Set cell follow button
-        followButton.setTitle("Follow", forState: UIControlState.Normal)
+        followButton.setTitle("follow", forState: UIControlState.Normal)
         followButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
         self.addSubview(followButton) // Add to use snapkit
         followButton.snp_makeConstraints { (make) -> Void in
@@ -56,13 +54,5 @@ class SearchItemCell: UITableViewCell{
             make.right.equalTo(self.snp_right).offset(0)
             
         }
-        
-      
-        
     }
-    
-    
-    
-    
-    
 }

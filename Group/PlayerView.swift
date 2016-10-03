@@ -63,7 +63,7 @@ class ClipPlayer : MiniPlayer {
 
 class MiniPlayer : PlayerView {
     
-    init(clip: Clip, frame: CGRect) {
+    init(clip: ClipModel, frame: CGRect) {
         let filePath = NSTemporaryDirectory() + clip.fname
         super.init(filePath: filePath, frame: frame)
     }
@@ -78,7 +78,7 @@ class ClipThumbnail: UIView {
     let textField = UITextField()
     var dateLabel = UILabel()
     
-    init(clip: Clip, frame: CGRect) {
+    init(clip: ClipModel, frame: CGRect) {
         super.init(frame: frame)
         img = UIImageView(frame:frame)
         img.kf_setImageWithURL(NSURL(string: clip.thumb))
@@ -95,7 +95,7 @@ class ClipThumbnail: UIView {
             textField.width = frame.width
             textField.userInteractionEnabled = false
             textField.text = clip.txt
-            textField.center.y =  frame.height * clip.y
+            textField.center.y =  frame.height * CGFloat(clip.y)
         }
         dateLabel.origin = CGPoint(x: 8, y: 8)
         dateLabel.text = NSDate(timeIntervalSince1970: clip.date).shortTimeAgoSinceNow()

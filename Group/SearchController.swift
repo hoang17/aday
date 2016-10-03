@@ -27,8 +27,6 @@ class SearchController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(AppDelegate.currentUser)
-        
 //        if #available(iOS 9.0, *) {
 //            let permission: Permission = .Contacts
 //            
@@ -49,9 +47,10 @@ class SearchController: UITableViewController {
         
         
         ref.child("users").child(AppDelegate.currentUser.uid).observeEventType(.Value, withBlock: { snapshot in
-            
-            AppDelegate.currentUser = User(snapshot: snapshot)
-            self.tableView.reloadData()
+            self.tableView.reloadRowsAtIndexPaths(self.users.enumerate().map{ (index, element) in
+                    return NSIndexPath(forRow:index, inSection: 0)
+                },
+                withRowAnimation: .Automatic)
         })
         
         self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
@@ -66,7 +65,6 @@ class SearchController: UITableViewController {
         searchController.searchBar.placeholder = "Search for friends"
         self.tableView.tableHeaderView = searchController.searchBar
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-        
         
         
         // Load facebook friends
@@ -86,10 +84,14 @@ class SearchController: UITableViewController {
                     self.ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                         
                         let user = User(snapshot: snapshot.children.allObjects.first as! FIRDataSnapshot)
+                        
                         if self.userkeys[user.uid] == nil{
                             self.users.append(user)
                             self.userkeys[user.uid] = user
-                            self.tableView.reloadData()
+                            self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.users.count - 1, inSection: 0)],
+                                withRowAnimation: .Automatic)
+                            
+                            print("Found fb \(user.name)")
                         }
                         
                     }) { (error) in
@@ -97,9 +99,8 @@ class SearchController: UITableViewController {
                     }
                     
                 }
-                print("Found \(self.users.count) friends")
             } else {
-                print("Error Getting Friends \(error)");
+                print(error);
             }
         }
         
@@ -131,20 +132,13 @@ class SearchController: UITableViewController {
                             if let snap = snapshot.children.allObjects.first as? FIRDataSnapshot {
                                 let user = User(snapshot: snap)
                                 
-                                //                                let userDict = snapshot.value as! [String : AnyObject]
-                                //                                // print user friend dict
-                                //                                print(userDict[user.uid]?["friends"])
-                                
-                                print(user.friends)
-                                
-                                
-                                
-                                if user.uid != AppDelegate.currentUser.uid {
-                                    if self.userkeys[user.uid] == nil{
-                                        self.users.append(user)
-                                        self.userkeys[user.uid] = user
-                                        self.tableView.reloadData()
-                                    }
+                                if user.uid != AppDelegate.currentUser.uid && self.userkeys[user.uid] == nil {
+                                    self.users.append(user)
+                                    self.userkeys[user.uid] = user
+                                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.users.count - 1, inSection: 0)],
+                                        withRowAnimation: .Automatic)
+                                    
+                                    print("Found contact \(user.name)")
                                 }
                                 
                             }
@@ -190,19 +184,13 @@ class SearchController: UITableViewController {
         }
         
         // Set cell data
-        if(user.name != "") {
-            cell.nameLabel.text = user.name
-        } else {
-            cell.nameLabel.text = ""
-        }
+        cell.nameLabel.text = user.name
         
-        if(user.fb != "") {
-            let imgUrl = NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1")
-            cell.profileImg.kf_setImageWithURL(imgUrl)
-        }
+        let imgUrl = NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1")
+        cell.profileImg.kf_setImageWithURL(imgUrl)
         
-        if AppDelegate.currentUser.following[user.uid] != nil {
-            cell.followButton.setTitle("Unfollow", forState: .Normal)
+        if AppDelegate.currentUser.following[user.uid] != nil && AppDelegate.currentUser.following[user.uid] == true {
+            cell.followButton.setTitle("unfollow", forState: .Normal)
             cell.followButton.setTitleColor(UIColor.redColor(), forState: .Normal)
         } else {
             cell.followButton.setTitle("follow", forState: .Normal)
@@ -212,39 +200,49 @@ class SearchController: UITableViewController {
         cell.followButton.tag = indexPath.row
         cell.followButton.addTarget(self, action: #selector(SearchController.followButtonHandler),
                                     forControlEvents: UIControlEvents.TouchUpInside)
-        
-        
-        
-        
         return cell
-        
     }
     
     
     
-    func followButtonHandler(sender:UIButton!)
-    {
+    func followButtonHandler(sender:UIButton!) {
+    
+        let realm = AppDelegate.realm
+        
+        let friendId : String = self.users[sender.tag].uid
+        let userID : String! = AppDelegate.currentUser.uid
+        
         if sender.titleLabel?.text == "follow" {
-            let friendId : String = self.users[sender.tag].uid
-            // Create new friend at /users/$userid/friends/$friendid
-            let userID : String! = AppDelegate.currentUser.uid
             
             let update = ["/users/\(userID)/following/\(friendId)/": true,
                           "/users/\(friendId)/friends/\(userID)/": true]
             ref.updateChildValues(update)
             
-            self.tableView.reloadData()
-        } else {
-            let friendId : String = self.users[sender.tag].uid
-            // Create new friend at /users/$userid/friends/$friendid
-            let userID : String! = AppDelegate.currentUser.uid
+            print("followed " + self.users[sender.tag].name)
             
-            ref.child("/users/\(userID)/following/\(friendId)/").removeValue()
-            ref.child("/users/\(friendId)/friends/\(userID)/").removeValue()
-            self.tableView.reloadData()
+        } else {
+            
+            let update = ["/users/\(userID)/following/\(friendId)/": false,
+                          "/users/\(friendId)/friends/\(userID)/": false]
+            ref.updateChildValues(update)
+            
+            // Update realm: follow = false
+            
+            let user = UserModel()
+            user.load(self.users[sender.tag])
+            user.follow = false
+            
+            let predicate = NSPredicate(format: "uid = %@", friendId)
+            let clips = realm.objects(ClipModel.self).filter(predicate)
+
+            try! realm.write {
+                realm.add(user, update: true)
+                clips.setValue(false, forKeyPath: "follow")
+            }
+
+            print("unfollowed " + user.name)
+            
         }
-        
-        
     }
     
     
