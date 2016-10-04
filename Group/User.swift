@@ -46,9 +46,24 @@ class User: NSObject {
         self.city = (snapshot.value!["city"] as? String) ?? ""
         self.country = (snapshot.value!["country"] as? String) ?? ""
         self.uploaded = (snapshot.value!["uploaded"] as? Double) ?? 0
+        
         for clipSnapshot in snapshot.childSnapshotForPath("clips").children {
             let clip = Clip(snapshot: clipSnapshot as! FIRDataSnapshot)
-            self.clips.insert(clip, atIndex: 0)
+            
+            // check clip date
+            let date = NSDate(timeIntervalSince1970: clip.date)
+            let today = NSDate()
+            let dayago = NSCalendar.currentCalendar()
+                .dateByAddingUnit(
+                    .Day,
+                    value: -1,
+                    toDate: today, 
+                    options: []
+            )
+            // if dayago?.timeIntervalSince1970 > clip.date {
+            if date.compare(dayago!) == .OrderedDescending {
+                self.clips.insert(clip, atIndex: 0)
+            }
         }
         self.friends = snapshot.value!["friends"] as? [String : Bool] ?? [String:Bool]()
         self.following = snapshot.value!["following"] as? [String : Bool] ?? [String:Bool]()

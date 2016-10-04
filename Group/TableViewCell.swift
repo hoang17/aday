@@ -103,8 +103,6 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cameraPlayback.clips = self.clips
         
         cameraPlayback.player = cameraPlayback.playerAtIndex(playIndex)
-        cameraPlayback.playerAtIndex(playIndex+1)
-        cameraPlayback.playerAtIndex(playIndex-1)
         
         cameraPlayback.playIndex = playIndex
         cameraPlayback.nameLabel.text = nameLabel.text

@@ -31,7 +31,17 @@ class FriendsController: UITableViewController {
         
         let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
-        friends = realm.objects(UserModel.self).filter("follow = true").sorted("uploaded", ascending: false)
+        let today = NSDate()
+        let dayago = NSCalendar.currentCalendar()
+            .dateByAddingUnit(
+                .Day,
+                value: -1,
+                toDate: today,
+                options: []
+        )
+        let d : Double = (dayago?.timeIntervalSince1970)!
+        
+        friends = realm.objects(UserModel.self).filter("follow = true AND uploaded > \(d)").sorted("uploaded", ascending: false)
         
         notificationToken = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             guard (self?.tableView) != nil else { return }
@@ -83,7 +93,7 @@ class FriendsController: UITableViewController {
                 }
             }
             
-            print("loaded friends")
+            print("loaded \(snapshot.children.allObjects.count) friends")
             
         })
         

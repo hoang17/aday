@@ -19,8 +19,13 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var clips = [ClipModel]()
     var playIndex = 0
-    var players = [Int:ClipPlayer]()
     var player: ClipPlayer!
+    
+    var player1: ClipPlayer! // cache for smooth
+    var player2: ClipPlayer! // cache for smooth
+    
+    var nextplayer: ClipPlayer! // cache for smooth
+    var prevplayer: ClipPlayer! // cache for smooth
     
     var profileImg = UIImageView()
     var nameLabel = UILabel()
@@ -123,13 +128,15 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     }
     
     func playerAtIndex(playIndex: Int) -> ClipPlayer? {
-        if playIndex < 0 || playIndex >= clips.count {
-            return nil
+        
+        if playIndex > 0 {
+            prevplayer = ClipPlayer(clip: clips[playIndex-1], frame: UIScreen.mainScreen().bounds)
         }
-        if players[playIndex] == nil {
-            players[playIndex] = ClipPlayer(clip: clips[playIndex], frame: UIScreen.mainScreen().bounds)
+        if playIndex + 1 < clips.count {
+            nextplayer = ClipPlayer(clip: clips[playIndex+1], frame: UIScreen.mainScreen().bounds)
         }
-        return players[playIndex]
+        
+        return ClipPlayer(clip: clips[playIndex], frame: UIScreen.mainScreen().bounds)
     }
     
     func locationText() -> String {
@@ -139,21 +146,42 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     
     func playPrevClip(){
         playIndex -= 1
+        
+        player2 = player1
+        player1 = player
+        if player2 != nil {
+            player2.removeFromSuperview()
+        }
+        
+        nextplayer = player
+        player = prevplayer
         play()
-        // cache prev player
-        playerAtIndex(playIndex-1)
+        
+        if playIndex > 0 {
+            prevplayer = ClipPlayer(clip: clips[playIndex-1], frame: UIScreen.mainScreen().bounds)
+        }
     }
     
     func playNextClip(){
         playIndex += 1
+        
+        player2 = player1
+        player1 = player
+        if player2 != nil {
+            player2.removeFromSuperview()
+        }
+        
+        prevplayer = player
+        player = nextplayer
         play()
-        // cache next player
-        playerAtIndex(playIndex+1)
+        
+        if playIndex + 1 < clips.count {
+            nextplayer = ClipPlayer(clip: clips[playIndex+1], frame: UIScreen.mainScreen().bounds)
+        }
     }
     
     func play() {
         
-        player = playerAtIndex(playIndex)
         locationLabel.text = locationText()
         textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * CGFloat(clips[playIndex].y)

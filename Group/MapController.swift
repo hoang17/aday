@@ -60,7 +60,18 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         }
         
         let realm = AppDelegate.realm
-        let clips = realm.objects(ClipModel.self).filter("follow = true").sorted("date", ascending: false)
+        
+        let today = NSDate()
+        let dayago = NSCalendar.currentCalendar()
+            .dateByAddingUnit(
+                .Day,
+                value: -1,
+                toDate: today,
+                options: []
+        )
+        let d : Double = (dayago?.timeIntervalSince1970)!
+        
+        let clips = realm.objects(ClipModel.self).filter("follow = true AND date > \(d)").sorted("date", ascending: false)
         
         for clip in clips {
             
