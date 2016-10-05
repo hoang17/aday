@@ -16,9 +16,6 @@ class SearchItemCell: UITableViewCell{
     var nameLabel = UILabel()
     var followButton = UIButton()
     var profileImg = UIImageView()
-    var index: Int = 0
-    
-    weak var controller: UIViewController?
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
@@ -31,7 +28,7 @@ class SearchItemCell: UITableViewCell{
         
         // Set cell profile img
         profileImg.origin = CGPoint(x: 10, y: 4)
-        profileImg.size = CGSize(width: 40, height: 40)
+        profileImg.size = CGSize(width: 35, height: 35)
         profileImg.layer.cornerRadius = profileImg.frame.height/2
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
@@ -44,14 +41,12 @@ class SearchItemCell: UITableViewCell{
         self.addSubview(nameLabel)
         
         // Set cell follow button
-        followButton.setTitle("follow", forState: UIControlState.Normal)
+        followButton.size = CGSize(width: 80, height: 35)
         followButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
-        self.addSubview(followButton) // Add to use snapkit
+        self.addSubview(followButton)
         followButton.snp_makeConstraints { (make) -> Void in
-            make.width.equalTo(66)
-            make.height.equalTo(20)
-            make.bottom.equalTo(self.snp_bottom).offset(0)
-            make.right.equalTo(self.snp_right).offset(0)
+            make.top.equalTo(self.top).offset(4)
+            make.right.equalTo(self.right).offset(-10)
             
         }
     }

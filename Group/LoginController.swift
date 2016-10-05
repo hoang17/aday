@@ -87,9 +87,31 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                 
                 let update = ["/users/\(uid)/friends/\(uid)/": true]
                 ref.updateChildValues(update)
+                
+                ref.child("users").child(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                    
+                    AppDelegate.currentUser = User(snapshot: snapshot)
+                    let data = UserModel()
+                    data.load(AppDelegate.currentUser)
+                    try! AppDelegate.realm.write {
+                        AppDelegate.realm.add(data, update: true)
+                    }
+                    
+                    if (AppDelegate.currentUser.phone == "") {
+                        
+                        self.showDigitsLogin()
+                        
+                    } else {
+                        
+                        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                        appDelegate.showMain()
+                        
+                        self.syncContacts()
+                    }
+                })
+                
             }
             
-            showDigitsLogin()
         }
     }
     

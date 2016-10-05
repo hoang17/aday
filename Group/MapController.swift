@@ -65,7 +65,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         let dayago = NSCalendar.currentCalendar()
             .dateByAddingUnit(
                 .Day,
-                value: -1,
+                value: -30,
                 toDate: today,
                 options: []
         )
