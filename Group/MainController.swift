@@ -41,7 +41,7 @@ class MainController: UIViewController {
         
         // Init tab bar
         
-        let tabBarController = ESTabBarController(tabIconNames: ["clock", "globe", "target", "map", "archive"])
+        let tabBarController = ESTabBarController(tabIconNames: ["clock", "globe", "record", "map", "archive"])
         
         self.addChildViewController(tabBarController)
         self.view.addSubview(tabBarController.view)
