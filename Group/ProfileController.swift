@@ -163,7 +163,7 @@ class ProfileController: FormViewController {
                 $0.title = $0.tag
                 }
                 .onCellSelection({ (cell, row) in
-                    let url = "https://aday-b6ecc.firebaseapp.com/privacy.html"
+                    let url = "https://hoang17.github.io/html/privacy"
                     if #available(iOS 9.0, *) {
                         let vc = SFSafariViewController(URL: NSURL(string: url)!)
                         self.presentViewController(vc, animated: true, completion: nil)
@@ -176,7 +176,7 @@ class ProfileController: FormViewController {
                 $0.title = $0.tag
                 }
                 .onCellSelection({ (cell, row) in
-                    let url = "https://aday-b6ecc.firebaseapp.com/terms.html"
+                    let url = "https://hoang17.github.io/html/terms"
                     if #available(iOS 9.0, *) {
                         let vc = SFSafariViewController(URL: NSURL(string: url)!)
                         self.presentViewController(vc, animated: true, completion: nil)

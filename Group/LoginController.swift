@@ -9,6 +9,8 @@ import Crashlytics
 import DigitsKit
 import FBSDKCoreKit
 import FBSDKLoginKit
+import ActiveLabel
+import SafariServices
 
 class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 
@@ -37,7 +39,54 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             make.right.equalTo(self.view).offset(-50)
         }
         loginButton.readPermissions = ["public_profile", "email", "user_friends", "user_likes", "user_location"]
-        loginButton.delegate = self        
+        loginButton.delegate = self
+        
+        
+        // Setting label
+        
+        let label = ActiveLabel()
+        
+        let term = ActiveType.Custom(pattern: "\\sTerms of Service\\b")
+        let privacy = ActiveType.Custom(pattern: "\\sPrivacy Policy\\b")
+        
+        label.enabledTypes = [term, privacy]
+        label.customColor[term] = UIColor.purpleColor()
+        label.customSelectedColor[term] = UIColor.blueColor()
+        label.customColor[privacy] = UIColor.purpleColor()
+        label.customSelectedColor[privacy] = UIColor.blueColor()
+        
+        label.text = "By tapping Login with Facebook, you agree\n to the Terms of Service and Privacy Policy"
+        label.numberOfLines = 0
+        label.lineSpacing = 4
+        label.textColor = .blackColor()
+        label.font = UIFont(name: "OpenSans", size: 13.0)
+        
+        label.handleCustomTap(for: term) { element in
+            let url = "https://hoang17.github.io/html/terms"
+            if #available(iOS 9.0, *) {
+                let vc = SFSafariViewController(URL: NSURL(string: url)!)
+                self.presentViewController(vc, animated: true, completion: nil)
+            } else {
+                UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+            }
+        }
+        
+        label.handleCustomTap(for: privacy) { element in
+            let url = "https://hoang17.github.io/html/privacy"
+            if #available(iOS 9.0, *) {
+                let vc = SFSafariViewController(URL: NSURL(string: url)!)
+                self.presentViewController(vc, animated: true, completion: nil)
+            } else {
+                UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+            }
+        }
+        
+        self.view.addSubview(label)
+        
+        label.snp_makeConstraints { (make) -> Void in
+            make.centerX.equalTo(self.view)
+            make.bottom.equalTo(self.view).offset(-150)
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
