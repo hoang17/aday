@@ -22,6 +22,9 @@ class User: NSObject {
     var clips = [Clip]()
     var friends = [String:Bool]()
     var following = [String:Bool]()
+    var flags = [String:Bool]()
+    var flag: Bool = false
+    var trash: Bool = false
     
     init(uid: String, name:String, email: String, fabric: String, phone: String, fb:String, fb_token:String, city: String, country: String) {
         self.uid = uid
@@ -45,10 +48,22 @@ class User: NSObject {
         self.fb_token = (snapshot.value!["fb_token"] as? String) ?? ""
         self.city = (snapshot.value!["city"] as? String) ?? ""
         self.country = (snapshot.value!["country"] as? String) ?? ""
+        self.username = (snapshot.value!["username"] as? String) ?? ""
+        self.password = (snapshot.value!["password"] as? String) ?? ""
         self.uploaded = (snapshot.value!["uploaded"] as? Double) ?? 0
+        self.flag = (snapshot.value!["flag"] as? Bool) ?? false
+        self.trash = (snapshot.value!["trash"] as? Bool) ?? false
+        
+        self.friends = snapshot.value!["friends"] as? [String : Bool] ?? [String:Bool]()
+        self.following = snapshot.value!["following"] as? [String : Bool] ?? [String:Bool]()
+        self.flags = snapshot.value!["flags"] as? [String : Bool] ?? [String:Bool]()
         
         for clipSnapshot in snapshot.childSnapshotForPath("clips").children {
             let clip = Clip(snapshot: clipSnapshot as! FIRDataSnapshot)
+            
+            if clip.trash || (AppDelegate.currentUser != nil &&  AppDelegate.currentUser.flags[clip.id] != nil) {
+                continue
+            }
             
             // check clip date
             let date = NSDate(timeIntervalSince1970: clip.date)
@@ -65,10 +80,6 @@ class User: NSObject {
                 self.clips.insert(clip, atIndex: 0)
             }
         }
-        self.friends = snapshot.value!["friends"] as? [String : Bool] ?? [String:Bool]()
-        self.following = snapshot.value!["following"] as? [String : Bool] ?? [String:Bool]()
-        self.username = (snapshot.value!["username"] as? String) ?? ""
-        self.password = (snapshot.value!["password"] as? String) ?? ""
     }
     
     init(data: UserModel) {
@@ -84,10 +95,16 @@ class User: NSObject {
         self.uploaded = data.uploaded
         self.username = data.username
         self.password = data.password
+        self.flag = data.flag
+        self.trash = data.trash
         self.clips = [Clip]()
         for c in data.clips{
             let clip = Clip(data: c)
             clips.append(clip)
+        }
+        
+        for friend in data.friends {
+            friends[friend.uid] = true
         }
         
         for friend in data.following {

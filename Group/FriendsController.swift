@@ -86,8 +86,7 @@ class FriendsController: UITableViewController {
                 let friend = User(snapshot: item as! FIRDataSnapshot)
                 self.downloadClips(friend.clips)
                 
-                let data = UserModel()
-                data.load(friend)
+                let data = UserModel(user: friend)
                 try! realm.write {
                     realm.add(data, update: true)
                 }
@@ -106,13 +105,84 @@ class FriendsController: UITableViewController {
         cell.locationLabel.text = friends[indexPath.row].city + " · " + friends[indexPath.row].country
         cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
         cell.clips = Array(friends[indexPath.row].clips)
+        cell.uid = friends[indexPath.row].uid
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapMore))
+        cell.moreButton.addGestureRecognizer(tap)
         return cell
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friends.count
     }
+    
+    func tapMore(sender: UITapGestureRecognizer) {
         
+        let tapLocation = sender.locationInView(self.tableView)
+        let indexPath : NSIndexPath = self.tableView.indexPathForRowAtPoint(tapLocation)!
+        let friend = self.friends[indexPath.row]
+        let userID : String! = AppDelegate.currentUser.uid
+
+        // Create the action sheet
+        let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        
+        let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.Destructive) { (action) in
+            
+            FriendsLoader.sharedInstance.report(friend.uid)
+            
+            let alert = UIAlertController(title: "You have reported\n" + friend.name, message: "Thank you for your reporting. Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        
+        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
+            print("Share action button tapped")
+            self.shareButton()
+        }
+        
+        let unfollowAction = UIAlertAction(title: "Unfollow", style: UIAlertActionStyle.Default) { (action) in
+            FriendsLoader.sharedInstance.unfollow(friend.uid)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { (action) in
+            // print("Cancel action button tapped")
+        }
+        
+        if userID != friend.uid{
+            myActionSheet.addAction(reportAction)
+        }
+        
+        myActionSheet.addAction(shareAction)
+        
+        if userID != friend.uid{
+            myActionSheet.addAction(unfollowAction)
+        }
+        
+        myActionSheet.addAction(cancelAction)
+        
+//        // support iPads (popover view)
+//        myActionSheet.popoverPresentationController?.sourceView = self.showActionSheetButton
+//        myActionSheet.popoverPresentationController?.sourceRect = self.showActionSheetButton.bounds
+        
+        self.presentViewController(myActionSheet, animated: true, completion: nil)
+    }
+    
+    func shareButton() {
+        
+        // image to share
+        let image = UIImage(named: "Image")
+        
+        // set up activity view controller
+        let objectsToShare: [AnyObject] = [ image! ]
+        let activityViewController = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        
+        // exclude some activity types from the list (optional)
+        // activityViewController.excludedActivityTypes = [ UIActivityTypeAirDrop, UIActivityTypePostToFacebook ]
+        
+        // present the view controller
+        self.presentViewController(activityViewController, animated: true, completion: nil)
+    }
+    
     func downloadClips(clips: [Clip]){
         
         let storage = FIRStorage.storage()

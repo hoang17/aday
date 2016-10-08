@@ -16,12 +16,14 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     var nameLabel = UILabel()
     var locationLabel = UILabel()
     var profileImg = UIImageView()
+    var moreButton = UILabel()
     var clips: [ClipModel]!
     let cellWidth = 150
     let cellHeight = 266
     var index: Int = 0
+    var uid: String!
     
-    weak var controller: UIViewController?
+    weak var controller: FriendsController?
 
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
@@ -31,6 +33,13 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.selectionStyle = .None;
+        
+        moreButton.text = "..."
+        moreButton.origin = CGPoint(x: UIScreen.mainScreen().bounds.width-40, y: 10)
+        moreButton.size = CGSize(width: 40, height: 35)
+        moreButton.textColor = UIColor.blackColor()
+        moreButton.font = UIFont(name: "OpenSans-Bold", size: 20.0)
+        moreButton.userInteractionEnabled = true
         
         profileImg.origin = CGPoint(x: 10, y: 13)
         profileImg.size = CGSize(width: 40, height: 40)
@@ -64,6 +73,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         
         self.addSubview(profileImg)
         self.addSubview(nameLabel)
+        self.addSubview(moreButton)
         self.addSubview(locationLabel)
         self.addSubview(collectionView)
     }
@@ -86,9 +96,18 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MiniViewCell", forIndexPath: indexPath) as! MiniViewCell
         cell.subviews.forEach({ $0.removeFromSuperview() })
         
+//        let moreLabel = UILabel()
+//        moreLabel.text = "..."
+//        moreLabel.origin = CGPoint(x: cell.width-30, y: cell.height-30)
+//        moreLabel.size = CGSize(width: 30, height: 20)
+//        moreLabel.textColor = UIColor.whiteColor()
+//        moreLabel.font = UIFont(name: "OpenSans", size: 16.0)
+//        moreLabel.userInteractionEnabled = true
+        
         let clip = clips![indexPath.row]
         let thumb = ClipThumbnail(clip: clip, frame: cell.bounds)
-        cell.addSubview(thumb)        
+        cell.addSubview(thumb)
+        // cell.addSubview(moreLabel)
         return cell
     }
     
@@ -111,7 +130,9 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
         cameraPlayback.profileImg.image = profileImg.image
         cameraPlayback.collectionView = self.collectionView
-        
+        cameraPlayback.uid = self.uid
+
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
     }
+    
 }

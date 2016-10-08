@@ -21,8 +21,10 @@ class ClipModel: Object {
     dynamic var subarea: String = ""
     dynamic var thumb: String = ""
     dynamic var follow: Bool = true
+    dynamic var trash = false
     
-    func load(clip: Clip){
+    convenience init(clip: Clip){
+        self.init()
         id = clip.id
         uid = clip.uid
         fname = clip.fname
@@ -38,6 +40,7 @@ class ClipModel: Object {
         sublocal = clip.sublocal
         subarea = clip.subarea
         thumb = clip.thumb
+        trash = clip.trash
     }
     
     override static func primaryKey() -> String? {

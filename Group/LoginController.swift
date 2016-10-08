@@ -140,8 +140,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                 ref.child("users").child(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
                     
                     AppDelegate.currentUser = User(snapshot: snapshot)
-                    let data = UserModel()
-                    data.load(AppDelegate.currentUser)
+                    let data = UserModel(user: AppDelegate.currentUser)
                     try! AppDelegate.realm.write {
                         AppDelegate.realm.add(data, update: true)
                     }
@@ -200,9 +199,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     func syncContacts() {
-        let friendloader = FriendsLoader()
-        friendloader.loadFacebookFriends()
-        friendloader.loadAddressBook()
+        FriendsLoader.sharedInstance.loadFacebookFriends()
+        FriendsLoader.sharedInstance.loadAddressBook()
     }
     
     override func didReceiveMemoryWarning() {

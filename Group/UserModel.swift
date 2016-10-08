@@ -18,10 +18,15 @@ class UserModel: Object {
     dynamic var username: String = ""
     dynamic var password: String = ""
     dynamic var follow: Bool = true
+    dynamic var flag: Bool = false
+    dynamic var trash: Bool = false
     let clips = List<ClipModel>()
-    let following = List<FollowingFriend>()
+    let following = List<Following>()
+    let friends = List<Follower>()
+    let flags = List<Flag>()
         
-    func load(user: User){
+    convenience init(user: User){
+        self.init()
         uid = user.uid
         name = user.name
         email = user.email
@@ -34,16 +39,23 @@ class UserModel: Object {
         uploaded = user.uploaded
         username = user.username
         password = user.password
+        flag = user.flag
+        trash = user.trash
         for clip in user.clips{
-            let data = ClipModel()
-            data.load(clip)
+            let data = ClipModel(clip: clip)
             clips.append(data)
         }
         
-        for friendUid in user.following.keys {
-            let friend = FollowingFriend()
-            friend.uid = friendUid
-            following.append(friend)
+        for uid in user.following.keys {
+            following.append(Following(uid: uid))
+        }
+        
+        for uid in user.following.keys {
+            friends.append(Follower(uid: uid))
+        }
+
+        for id in user.flags.keys {
+            flags.append(Flag(id: id))
         }
     }
     
@@ -53,7 +65,29 @@ class UserModel: Object {
 
 }
 
-class FollowingFriend: Object {
+class Flag: Object {
+    dynamic var id: String!
     
+    convenience init(id: String) {
+        self.init()
+        self.id = id
+    }
+}
+
+class Following: Object {
     dynamic var uid: String!
+
+    convenience init(uid: String) {
+        self.init()
+        self.uid = uid
+    }
+}
+
+class Follower: Object {
+    dynamic var uid: String!
+    
+    convenience init(uid: String) {
+        self.init()
+        self.uid = uid
+    }
 }

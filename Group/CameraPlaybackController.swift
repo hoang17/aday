@@ -31,7 +31,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var nameLabel = UILabel()
     var locationLabel = UILabel()
     var dateLabel = UILabel()
+    var moreLabel = UILabel()
     var collectionView: UICollectionView!
+    var uid: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,13 +81,24 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         dateLabel.text = NSDate(timeIntervalSince1970: clips[playIndex].date).shortTimeAgoSinceNow()
         dateLabel.size = CGSize(width: 50, height: nameLabel.height)
         dateLabel.textColor = UIColor(white: 1, alpha: 0.6)
-        dateLabel.font = UIFont(name: "OpenSans", size: 12.0)
+        dateLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
         
+        moreLabel.text = "..."
+        moreLabel.origin = CGPoint(x: view.width-30, y: view.height-40)
+        moreLabel.size = CGSize(width: 30, height: 20)
+        moreLabel.textColor = UIColor.whiteColor()
+        moreLabel.font = UIFont(name: "OpenSans", size: 18.0)
+        moreLabel.userInteractionEnabled = true
+
         view.addSubview(textField);
         view.addSubview(profileImg)
         view.addSubview(nameLabel)
         view.addSubview(locationLabel)
         view.addSubview(dateLabel)
+        view.addSubview(moreLabel)
+        
+        let tapmore = UITapGestureRecognizer(target: self, action: #selector(tapMore))
+        moreLabel.addGestureRecognizer(tapmore)
         
         let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
         view.addGestureRecognizer(tap)
@@ -93,6 +106,77 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(swipeDownGesture))
         swipeDown.direction = UISwipeGestureRecognizerDirection.Down
         view.addGestureRecognizer(swipeDown)
+    }
+    
+    func tapMore(sender: UITapGestureRecognizer) {
+        
+        player.player.pause()
+        
+        let clip = clips[playIndex]
+        
+        let userID : String! = AppDelegate.currentUser.uid
+        
+        let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        
+        let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.Destructive) { (action) in
+            
+            let confirmAlert = UIAlertController(title: "Report", message: "Do you want to report this pin?", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            confirmAlert.addAction(UIAlertAction(title: "Report", style: .Destructive, handler: { (action) in
+                
+                let alert = UIAlertController(title: "This content has been reported\n", message: "Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) in
+                    self.close()
+                    FriendsLoader.sharedInstance.reportClip(clip)
+                }))
+                self.presentViewController(alert, animated: true, completion: nil)
+            }))
+            
+            confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) in
+                self.player.player.play()
+            }))
+            
+            self.presentViewController(confirmAlert, animated: true, completion: nil)
+            
+        }
+        
+//        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
+//            print("Share action button tapped")
+//            //            self.shareButton()
+//        }
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .Destructive) { (action) in
+            
+            let confirmAlert = UIAlertController(title: "Delete", message: "Do you want to delete this pin?", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            confirmAlert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { (action) in
+                self.close()
+                FriendsLoader.sharedInstance.deleteClip(clip)
+            }))
+            
+            confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) in
+                self.player.player.play()
+            }))
+            
+            self.presentViewController(confirmAlert, animated: true, completion: nil)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { (action) in
+            self.player.player.play()
+        }
+        
+        if userID != uid {
+            myActionSheet.addAction(reportAction)
+        }
+        
+//        myActionSheet.addAction(shareAction)
+        
+        if userID == uid {
+            myActionSheet.addAction(deleteAction)
+        }
+        
+        myActionSheet.addAction(cancelAction)
+        self.presentViewController(myActionSheet, animated: true, completion: nil)
     }
     
     func tapGesture(sender:UITapGestureRecognizer){
@@ -194,6 +278,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         view.bringSubviewToFront(profileImg)
         view.bringSubviewToFront(nameLabel)
         view.bringSubviewToFront(dateLabel)
+        view.bringSubviewToFront(moreLabel)
         view.bringSubviewToFront(locationLabel)
         
         player.play()

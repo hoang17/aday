@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Setup Firebase
         FIRApp.configure()
-        FIRDatabase.database().persistenceEnabled = true
+        // FIRDatabase.database().persistenceEnabled = true
 
         // Setup Fabric
         Fabric.with([Crashlytics.self, Answers.self, Digits.self])

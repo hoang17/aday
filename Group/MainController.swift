@@ -30,8 +30,7 @@ class MainController: UIViewController {
         let ref = FIRDatabase.database().reference()
         ref.child("users").child(userID).observeEventType(.Value, withBlock: { snapshot in
             AppDelegate.currentUser = User(snapshot: snapshot)
-            let data = UserModel()
-            data.load(AppDelegate.currentUser)
+            let data = UserModel(user: AppDelegate.currentUser)
             try! AppDelegate.realm.write {
                 AppDelegate.realm.add(data, update: true)
             }

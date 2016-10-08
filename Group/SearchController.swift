@@ -208,16 +208,15 @@ class SearchController: UITableViewController {
             
             // Update realm: follow = false
             
-            let user = UserModel()
-            user.load(self.users[sender.tag])
-            user.follow = false
+            let user = UserModel(user: self.users[sender.tag])
             
             let predicate = NSPredicate(format: "uid = %@", friendId)
             let clips = realm.objects(ClipModel.self).filter(predicate)
 
             try! realm.write {
-                realm.add(user, update: true)
+                user.follow = false
                 clips.setValue(false, forKeyPath: "follow")
+                // realm.add(user, update: true)
             }
 
             print("unfollowed " + user.name)

@@ -71,7 +71,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         )
         let d : Double = (dayago?.timeIntervalSince1970)!
         
-        let clips = realm.objects(ClipModel.self).filter("follow = true AND date > \(d)").sorted("date", ascending: false)
+        let clips = realm.objects(ClipModel.self).filter("follow = true AND trash = false AND date > \(d)").sorted("date", ascending: false)
         
         for clip in clips {
             

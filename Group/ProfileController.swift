@@ -221,9 +221,8 @@ class ProfileController: FormViewController {
     }
 
     func syncContacts() {
-        let friendloader = FriendsLoader()
-        friendloader.loadFacebookFriends()
-        friendloader.loadAddressBook()
+        FriendsLoader.sharedInstance.loadFacebookFriends()
+        FriendsLoader.sharedInstance.loadAddressBook()
     }
     
     func fixClips() {

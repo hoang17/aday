@@ -33,6 +33,7 @@ class Clip: NSObject {
     var sublocal: String
     var subarea: String
     var thumb: String = ""
+    var trash = false
     
     init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location: Location, thumb: String) {
         self.id = id
@@ -57,10 +58,8 @@ class Clip: NSObject {
         fname = snapshot.value!["fname"] as! String
         txt = snapshot.value!["txt"] as! String
         y = snapshot.value!["y"] as! CGFloat
-        if (snapshot.value!["flag"] as? Bool != nil){
-            flag = snapshot.value!["flag"] as! Bool
-        }
         date = snapshot.value!["date"] as! Double
+        flag = snapshot.value!["flag"] as? Bool ?? false
         long = (snapshot.value!["long"] as? Double) ?? 0
         lat = (snapshot.value!["lat"] as? Double) ?? 0
         lname = (snapshot.value!["lname"] as? String) ?? ""
@@ -69,6 +68,7 @@ class Clip: NSObject {
         sublocal = (snapshot.value!["sublocal"] as? String) ?? ""
         subarea = (snapshot.value!["subarea"] as? String) ?? ""
         thumb = (snapshot.value!["thumb"] as? String) ?? ""
+        trash = snapshot.value!["trash"] as? Bool ?? false
     }
     
     init(data: ClipModel){
@@ -86,6 +86,8 @@ class Clip: NSObject {
         self.sublocal = data.sublocal
         self.subarea = data.subarea
         self.thumb = data.thumb
+        self.flag = data.flag
+        self.trash = data.trash
     }
     
     func toAnyObject() -> AnyObject {
@@ -96,6 +98,7 @@ class Clip: NSObject {
             "txt": txt,
             "y": y,
             "flag": flag,
+            "trash": trash,
             "long": long,
             "lat": lat,
             "lname": lname,
