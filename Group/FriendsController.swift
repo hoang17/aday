@@ -154,22 +154,25 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
                     print(error)
                     return
                 }
-                
-                print(assetURL)
-                let video = FBSDKShareVideo(videoURL: assetURL)
-                let content = FBSDKShareVideoContent()
-                content.video = video
-                FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
-                
-//                let dialog = FBSDKShareDialog()
-//                dialog.fromViewController = self
-//                dialog.shareContent = content
-//                dialog.mode = .Native
-//                dialog.show()
-//                
-//                var shareToFacebook: SLComposeViewController = SLComposeViewController(forServiceType:  SLServiceTypeFacebook)
-//                shareToFacebook.setInitialText("Check out this beat! From the DropABeat App")
-//                self.presentViewController(shareToFacebook, animated: true, completion: nil)
+                if let assurl = assetURL {
+                    print(assetURL)
+                    let video = FBSDKShareVideo(videoURL: assetURL)
+                    let content = FBSDKShareVideoContent()
+                    content.video = video
+                    
+                    FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+                    
+//                    let dialog = FBSDKShareDialog()
+//                    dialog.fromViewController = self
+//                    dialog.delegate = self
+//                    dialog.shareContent = content
+//                    dialog.mode = .ShareSheet
+//                    dialog.show()
+                    
+//                    var shareToFacebook: SLComposeViewController = SLComposeViewController(forServiceType:  SLServiceTypeFacebook)
+//                    shareToFacebook.setInitialText("Check out this beat! From the DropABeat App")
+//                    self.presentViewController(shareToFacebook, animated: true, completion: nil)
+                }
             })
         }
         

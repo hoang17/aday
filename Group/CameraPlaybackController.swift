@@ -157,12 +157,14 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
                 if error != nil {
                     print(error)
                     return
-                }                
-                print(assetURL)
-                let video = FBSDKShareVideo(videoURL: assetURL)
-                let content = FBSDKShareVideoContent()
-                content.video = video
-                FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+                }
+                if let assurl = assetURL {
+                    print(assetURL)
+                    let video = FBSDKShareVideo(videoURL: assetURL)
+                    let content = FBSDKShareVideoContent()
+                    content.video = video
+                    FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+                }
             })
             
         }
