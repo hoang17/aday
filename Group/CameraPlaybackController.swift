@@ -209,13 +209,13 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
             self.player.player.play()
         }
         
-        if userID != friend.uid {
-            myActionSheet.addAction(reportAction)
-        }
-        
         myActionSheet.addAction(shareAction)
         myActionSheet.addAction(shareFBAction)
         myActionSheet.addAction(shareIGAction)
+        
+        if userID != friend.uid {
+            myActionSheet.addAction(reportAction)
+        }
         
         if userID == friend.uid {
             myActionSheet.addAction(deleteAction)
