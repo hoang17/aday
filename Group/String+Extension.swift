@@ -16,4 +16,8 @@ extension String {
     func removeWhitespace() -> String {
         return self.stringByReplacingOccurrencesOfString("\\s", withString: "", options: NSStringCompareOptions.RegularExpressionSearch, range: nil)
     }
+        
+    func urlencodedString() -> String {
+        return self.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())!
+    }
 }

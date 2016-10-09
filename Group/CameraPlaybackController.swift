@@ -158,7 +158,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
                     print(error)
                     return
                 }
-                if let assurl = assetURL {
+                if assetURL != nil {
                     print(assetURL)
                     let video = FBSDKShareVideo(videoURL: assetURL)
                     let content = FBSDKShareVideoContent()
@@ -166,8 +166,28 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
                     FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
                 }
             })
-            
         }
+        
+        let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { (action) in
+            
+            let filePath = NSTemporaryDirectory() + "exp_" + clip.fname
+            let inputURL = NSURL(fileURLWithPath: filePath)
+            
+            ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(inputURL, completionBlock: { (assetURL, error) in
+                if error != nil {
+                    print(error)
+                    return
+                }
+                if assetURL != nil {
+                    print(assetURL)
+                    let escapedString = assetURL.absoluteString!.urlencodedString()
+                    let escapedCaption = "Pinly".urlencodedString()
+                    let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
+                    UIApplication.sharedApplication().openURL(instagramURL)
+                }
+            })
+        }
+        
         
         let deleteAction = UIAlertAction(title: "Delete", style: .Destructive) { (action) in
             
@@ -195,6 +215,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         myActionSheet.addAction(shareAction)
         myActionSheet.addAction(shareFBAction)
+        myActionSheet.addAction(shareIGAction)
         
         if userID == friend.uid {
             myActionSheet.addAction(deleteAction)

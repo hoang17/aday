@@ -154,7 +154,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
                     print(error)
                     return
                 }
-                if let assurl = assetURL {
+                if assetURL != nil {
                     print(assetURL)
                     let video = FBSDKShareVideo(videoURL: assetURL)
                     let content = FBSDKShareVideoContent()
@@ -176,6 +176,26 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
             })
         }
         
+        let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { (action) in
+            
+            let filePath = NSTemporaryDirectory() + "exp_" + friend.clips.first!.fname
+            let inputURL = NSURL(fileURLWithPath: filePath)
+            
+            ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(inputURL, completionBlock: { (assetURL, error) in
+                if error != nil {
+                    print(error)
+                    return
+                }
+                if assetURL != nil {
+                    print(assetURL)
+                    let escapedString = assetURL.absoluteString!.urlencodedString()
+                    let escapedCaption = "Pinly".urlencodedString()
+                    let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
+                    UIApplication.sharedApplication().openURL(instagramURL)
+                }
+            })
+        }
+        
         let unfollowAction = UIAlertAction(title: "Unfollow", style: UIAlertActionStyle.Default) { (action) in
             FriendsLoader.sharedInstance.unfollow(friend.uid)
         }
@@ -190,6 +210,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
         myActionSheet.addAction(shareAction)
         myActionSheet.addAction(shareFBAction)
+        myActionSheet.addAction(shareIGAction)
         
         if userID != friend.uid{
             myActionSheet.addAction(unfollowAction)
