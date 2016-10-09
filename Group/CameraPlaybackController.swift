@@ -33,7 +33,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     var dateLabel = UILabel()
     var moreLabel = UILabel()
     var collectionView: UICollectionView!
-    var uid: String!
+    var friend: UserModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -141,6 +141,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         }
         
         let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
+            VideoHelper.sharedInstance.export(clip, friend: self.friend, profileImg: self.profileImg.image!)
             self.shareClip(clip)
         }
         
@@ -164,13 +165,13 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
             self.player.player.play()
         }
         
-        if userID != uid {
+        if userID != friend.uid {
             myActionSheet.addAction(reportAction)
         }
         
         myActionSheet.addAction(shareAction)
         
-        if userID == uid {
+        if userID == friend.uid {
             myActionSheet.addAction(deleteAction)
         }
         
@@ -179,8 +180,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     }
     
     func shareClip(clip: ClipModel) {
-        
-        VideoHelper.sharedInstance.export(clip)
         
         let filePath = NSTemporaryDirectory() + "exp_" + clip.fname
         let inputURL = NSURL(fileURLWithPath: filePath)

@@ -14,7 +14,7 @@ class VideoHelper {
     
     static let sharedInstance = VideoHelper()
     
-    func export(clip: ClipModel) {
+    func export(clip: ClipModel, friend: UserModel, profileImg: UIImage) {
         
         print("processing video...")
         
@@ -43,11 +43,36 @@ class VideoHelper {
         // video size
         let size = CGSizeMake(videoTrack.naturalSize.height, videoTrack.naturalSize.width)
         
-        //        let imglogo = UIImage(named: "globe")
-        //        let imglayer = CALayer()
-        //        imglayer.contents = imglogo?.CGImage
-        //        imglayer.frame = CGRectMake(5, 5, 100, 100)
-        //        imglayer.opacity = 0.6
+        let imglogo = UIImage(named: "pin")
+        let logolayer = CALayer()
+        logolayer.contents = imglogo?.CGImage
+        logolayer.frame = CGRectMake(size.width - 65, 5, 27, 32)
+        logolayer.opacity = 0.6
+
+        let logotxtLayer = LCTextLayer()
+        logotxtLayer.foregroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.6).CGColor
+        logotxtLayer.font = UIFont(name: "OpenSans-Bold", size: 14.0)
+        logotxtLayer.string = "Pinly"
+        logotxtLayer.fontSize = 14
+        logotxtLayer.frame = CGRectMake(size.width-50, 3, 100, 28)
+        
+        let imglayer = CALayer()
+        imglayer.contents = profileImg.circle.CGImage
+        imglayer.frame = CGRectMake(15, size.height-40, 30, 30)
+        
+        let nameLayer = LCTextLayer()
+        nameLayer.foregroundColor = UIColor.whiteColor().CGColor
+        nameLayer.font = UIFont(name: "OpenSans-Bold", size: 12.0)
+        nameLayer.string = friend.name
+        nameLayer.fontSize = 12
+        nameLayer.frame = CGRectMake(55, size.height-30, 300, 28)
+
+        let locationLayer = LCTextLayer()
+        locationLayer.foregroundColor = UIColor.whiteColor().CGColor
+        locationLayer.font = UIFont(name: "OpenSans", size: 12.0)
+        locationLayer.string = clip.subarea != "" ? clip.subarea + " · " + clip.city : clip.city + " · " + clip.country
+        locationLayer.fontSize = 12
+        locationLayer.frame = CGRectMake(55, size.height-45, 300, 28)
         
         let titleLayer = LCTextLayer()
         titleLayer.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
@@ -64,7 +89,11 @@ class VideoHelper {
         
         parentlayer.addSublayer(videolayer)
         parentlayer.addSublayer(titleLayer)
-        // parentlayer.addSublayer(imglayer)
+        parentlayer.addSublayer(imglayer)
+        parentlayer.addSublayer(nameLayer)
+        parentlayer.addSublayer(locationLayer)
+        parentlayer.addSublayer(logolayer)
+        parentlayer.addSublayer(logotxtLayer)
         
         let layerinstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: compositionVideoTrack)
         layerinstruction.setTransform(compositionVideoTrack.preferredTransform, atTime: kCMTimeZero)
@@ -82,12 +111,14 @@ class VideoHelper {
         //  create new file to receive data
         let savePath = NSURL(fileURLWithPath: NSTemporaryDirectory() + "exp_" + clip.fname).absoluteString
         
-//        // Delete file if existed
-//        let filePath = NSTemporaryDirectory() + "exp_" + clip.fname;
-//        let fileManager = NSFileManager.defaultManager()
-//        if fileManager.fileExistsAtPath(filePath) {
-//            try! fileManager.removeItemAtPath(filePath)
-//        }
+        // Delete file if existed
+        let exfilePath = NSTemporaryDirectory() + "exp_" + clip.fname;
+        let fileManager = NSFileManager.defaultManager()
+        if fileManager.fileExistsAtPath(exfilePath) {
+            print("file existed")
+            return
+//            try! fileManager.removeItemAtPath(exfilePath)
+        }
         
         let savePathUrl = NSURL(string: savePath!)
         
@@ -105,19 +136,12 @@ class VideoHelper {
                 print("cancelled \(exportSession.error)")
             case .Completed:
                 print("export completed")
-                
-//                dispatch_async(dispatch_get_main_queue(), {
-//                    
-//                    let library = ALAssetsLibrary()
-//                    library.writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL:NSURL!, error:NSError?) -> Void in
-//                        if error != nil {
-//                            print(error)
-//                            return
-//                        }
-//                        print(assetURL)
-//                    })
-//                    
-//                })
+                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
+                    print(assetURL)
+                    if error != nil {
+                        print(error)
+                    }
+                })
             default:
                 print("default")
             }

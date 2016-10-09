@@ -105,7 +105,7 @@ class FriendsController: UITableViewController {
         cell.locationLabel.text = friends[indexPath.row].city + " · " + friends[indexPath.row].country
         cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
         cell.clips = Array(friends[indexPath.row].clips)
-        cell.uid = friends[indexPath.row].uid
+        cell.friend = friends[indexPath.row]
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapMore))
         cell.moreButton.addGestureRecognizer(tap)
         return cell
@@ -119,6 +119,7 @@ class FriendsController: UITableViewController {
         
         let tapLocation = sender.locationInView(self.tableView)
         let indexPath : NSIndexPath = self.tableView.indexPathForRowAtPoint(tapLocation)!
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! TableViewCell
         let friend = self.friends[indexPath.row]
         let userID : String! = AppDelegate.currentUser.uid
 
@@ -135,7 +136,7 @@ class FriendsController: UITableViewController {
         }
         
         let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
-            print("Share action button tapped")
+            VideoHelper.sharedInstance.export(friend.clips.first!, friend: friend, profileImg: cell.profileImg.image!)
             self.shareButton(friend)
         }
         
