@@ -136,12 +136,12 @@ class VideoHelper {
                 print("cancelled \(exportSession.error)")
             case .Completed:
                 print("export completed")
-                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
-                    print(assetURL)
-                    if error != nil {
-                        print(error)
-                    }
-                })
+//                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
+//                    print(assetURL)
+//                    if error != nil {
+//                        print(error)
+//                    }
+//                })
             default:
                 print("default")
             }

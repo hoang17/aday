@@ -11,8 +11,11 @@ import FirebaseStorage
 import RealmSwift
 import Kingfisher
 import AVFoundation
+import FBSDKShareKit
+import Social
+import AssetsLibrary
 
-class FriendsController: UITableViewController {
+class FriendsController: UITableViewController, FBSDKSharingDelegate {
     
 //    var friends = [User]()
     
@@ -123,6 +126,8 @@ class FriendsController: UITableViewController {
         let friend = self.friends[indexPath.row]
         let userID : String! = AppDelegate.currentUser.uid
 
+        VideoHelper.sharedInstance.export(friend.clips.first!, friend: friend, profileImg: cell.profileImg.image!)
+        
         // Create the action sheet
         let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         
@@ -136,8 +141,36 @@ class FriendsController: UITableViewController {
         }
         
         let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
-            VideoHelper.sharedInstance.export(friend.clips.first!, friend: friend, profileImg: cell.profileImg.image!)
             self.shareButton(friend)
+        }
+        
+        let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) in
+            
+            let filePath = NSTemporaryDirectory() + "exp_" + friend.clips.first!.fname
+            let inputURL = NSURL(fileURLWithPath: filePath)
+            
+            ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(inputURL, completionBlock: { (assetURL, error) in
+                if error != nil {
+                    print(error)
+                    return
+                }
+                
+                print(assetURL)
+                let video = FBSDKShareVideo(videoURL: assetURL)
+                let content = FBSDKShareVideoContent()
+                content.video = video
+                FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+                
+//                let dialog = FBSDKShareDialog()
+//                dialog.fromViewController = self
+//                dialog.shareContent = content
+//                dialog.mode = .Native
+//                dialog.show()
+//                
+//                var shareToFacebook: SLComposeViewController = SLComposeViewController(forServiceType:  SLServiceTypeFacebook)
+//                shareToFacebook.setInitialText("Check out this beat! From the DropABeat App")
+//                self.presentViewController(shareToFacebook, animated: true, completion: nil)
+            })
         }
         
         let unfollowAction = UIAlertAction(title: "Unfollow", style: UIAlertActionStyle.Default) { (action) in
@@ -153,6 +186,7 @@ class FriendsController: UITableViewController {
         }
         
         myActionSheet.addAction(shareAction)
+        myActionSheet.addAction(shareFBAction)
         
         if userID != friend.uid{
             myActionSheet.addAction(unfollowAction)
@@ -165,6 +199,20 @@ class FriendsController: UITableViewController {
 //        myActionSheet.popoverPresentationController?.sourceRect = self.showActionSheetButton.bounds
         
         self.presentViewController(myActionSheet, animated: true, completion: nil)
+    }
+    
+    func sharer(sharer: FBSDKSharing!, didCompleteWithResults results: [NSObject: AnyObject]) {
+        print("sharer didCompleteWithResults")
+        print(results)
+    }
+    
+    func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
+        print("sharer didFailWithError")
+        print(error)
+    }
+    
+    func sharerDidCancel(sharer: FBSDKSharing!) {
+        print("sharerDidCancel")
     }
     
     func shareButton(friend: UserModel) {

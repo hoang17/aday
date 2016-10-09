@@ -12,8 +12,10 @@ import FirebaseStorage
 import FirebaseAuth
 import DigitsKit
 import DateTools
+import FBSDKShareKit
+import AssetsLibrary
 
-class CameraPlaybackController: UIViewController, UITextFieldDelegate {
+class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKSharingDelegate {
 
     let textField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
@@ -114,6 +116,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         let clip = clips[playIndex]
         
+        VideoHelper.sharedInstance.export(clip, friend: self.friend, profileImg: self.profileImg.image!)
+        
         let userID : String! = AppDelegate.currentUser.uid
         
         let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
@@ -141,8 +145,26 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         }
         
         let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
-            VideoHelper.sharedInstance.export(clip, friend: self.friend, profileImg: self.profileImg.image!)
             self.shareClip(clip)
+        }
+
+        let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) in
+
+            let filePath = NSTemporaryDirectory() + "exp_" + clip.fname
+            let inputURL = NSURL(fileURLWithPath: filePath)
+            
+            ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(inputURL, completionBlock: { (assetURL, error) in
+                if error != nil {
+                    print(error)
+                    return
+                }                
+                print(assetURL)
+                let video = FBSDKShareVideo(videoURL: assetURL)
+                let content = FBSDKShareVideoContent()
+                content.video = video
+                FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+            })
+            
         }
         
         let deleteAction = UIAlertAction(title: "Delete", style: .Destructive) { (action) in
@@ -170,6 +192,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         }
         
         myActionSheet.addAction(shareAction)
+        myActionSheet.addAction(shareFBAction)
         
         if userID == friend.uid {
             myActionSheet.addAction(deleteAction)
@@ -177,6 +200,23 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         myActionSheet.addAction(cancelAction)
         self.presentViewController(myActionSheet, animated: true, completion: nil)
+    }
+    
+    func sharer(sharer: FBSDKSharing!, didCompleteWithResults results: [NSObject: AnyObject]) {
+        print("sharer didCompleteWithResults")
+        print(results)
+        player.player.play()
+    }
+    
+    func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
+        print("sharer didFailWithError")
+        print(error)
+        player.player.play()
+    }
+    
+    func sharerDidCancel(sharer: FBSDKSharing!) {
+        print("sharerDidCancel")
+        player.player.play()
     }
     
     func shareClip(clip: ClipModel) {
