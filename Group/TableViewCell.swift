@@ -96,18 +96,9 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MiniViewCell", forIndexPath: indexPath) as! MiniViewCell
         cell.subviews.forEach({ $0.removeFromSuperview() })
         
-//        let moreLabel = UILabel()
-//        moreLabel.text = "..."
-//        moreLabel.origin = CGPoint(x: cell.width-30, y: cell.height-30)
-//        moreLabel.size = CGSize(width: 30, height: 20)
-//        moreLabel.textColor = UIColor.whiteColor()
-//        moreLabel.font = UIFont(name: "OpenSans", size: 16.0)
-//        moreLabel.userInteractionEnabled = true
-        
         let clip = clips![indexPath.row]
         let thumb = ClipThumbnail(clip: clip, frame: cell.bounds)
         cell.addSubview(thumb)
-        // cell.addSubview(moreLabel)
         return cell
     }
     

@@ -136,7 +136,7 @@ class FriendsController: UITableViewController {
         
         let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
             print("Share action button tapped")
-            self.shareButton()
+            self.shareButton(friend)
         }
         
         let unfollowAction = UIAlertAction(title: "Unfollow", style: UIAlertActionStyle.Default) { (action) in
@@ -166,21 +166,40 @@ class FriendsController: UITableViewController {
         self.presentViewController(myActionSheet, animated: true, completion: nil)
     }
     
-    func shareButton() {
+    func shareButton(friend: UserModel) {
         
-        // image to share
-        let image = UIImage(named: "Image")
+        let filePath = NSTemporaryDirectory() + friend.clips.first!.fname
+        let videoLink = NSURL(fileURLWithPath: filePath)
         
-        // set up activity view controller
-        let objectsToShare: [AnyObject] = [ image! ]
-        let activityViewController = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        let objectsToShare = [videoLink] //comment!, imageData!, myWebsite!]
+        let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
         
-        // exclude some activity types from the list (optional)
-        // activityViewController.excludedActivityTypes = [ UIActivityTypeAirDrop, UIActivityTypePostToFacebook ]
+        activityVC.setValue("Video", forKey: "subject")
         
-        // present the view controller
-        self.presentViewController(activityViewController, animated: true, completion: nil)
+        //New Excluded Activities Code
+        if #available(iOS 9.0, *) {
+            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList, UIActivityTypeCopyToPasteboard, UIActivityTypeOpenInIBooks,  UIActivityTypePrint]
+        } else {
+            // Fallback on earlier versions
+            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList, UIActivityTypeCopyToPasteboard, UIActivityTypePrint ]
+        }
+        
+        activityVC.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        
+        self.presentViewController(activityVC, animated: true, completion: nil)
+ 
+//        // image to share
+//        let image = UIImage(named: "Image")
+//        
+//        let objectsToShare: [AnyObject] = [ image! ]
+//        let activityViewController = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+//        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+//        
+//        // exclude some activity types from the list (optional)
+//        // activityViewController.excludedActivityTypes = [ UIActivityTypeAirDrop, UIActivityTypePostToFacebook ]
+//        
+//        // present the view controller
+//        self.presentViewController(activityViewController, animated: true, completion: nil)
     }
     
     func downloadClips(clips: [Clip]){

@@ -140,10 +140,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
             
         }
         
-//        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
-//            print("Share action button tapped")
-//            //            self.shareButton()
-//        }
+        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
+            self.shareClip(clip)
+        }
         
         let deleteAction = UIAlertAction(title: "Delete", style: .Destructive) { (action) in
             
@@ -169,7 +168,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
             myActionSheet.addAction(reportAction)
         }
         
-//        myActionSheet.addAction(shareAction)
+        myActionSheet.addAction(shareAction)
         
         if userID == uid {
             myActionSheet.addAction(deleteAction)
@@ -177,6 +176,29 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
         
         myActionSheet.addAction(cancelAction)
         self.presentViewController(myActionSheet, animated: true, completion: nil)
+    }
+    
+    func shareClip(clip: ClipModel) {
+        
+        let filePath = NSTemporaryDirectory() + clip.fname
+        let videoLink = NSURL(fileURLWithPath: filePath)
+        
+        let objectsToShare = [videoLink] //comment!, imageData!, myWebsite!]
+        let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+        
+        activityVC.setValue("Pin moment" , forKey: "subject") // email subject
+        
+        // Excluded Activities Code
+        if #available(iOS 9.0, *) {
+            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList, UIActivityTypeCopyToPasteboard, UIActivityTypeOpenInIBooks,  UIActivityTypePrint]
+        } else {
+            // Fallback on earlier versions
+            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList, UIActivityTypeCopyToPasteboard, UIActivityTypePrint ]
+        }
+        
+        activityVC.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        
+        self.presentViewController(activityVC, animated: true, completion: nil)
     }
     
     func tapGesture(sender:UITapGestureRecognizer){
