@@ -164,16 +164,16 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         exportSession.outputURL = savePathUrl
         exportSession.exportAsynchronouslyWithCompletionHandler {            
             switch exportSession.status {
-            case AVAssetExportSessionStatus.Completed:
+            case .Completed:
                 print("export completed")
                 dispatch_async(dispatch_get_main_queue(), {
                     let cameraPreview = CameraPreviewController()
                     cameraPreview.fileName = self.fileName
                     self.presentViewController(cameraPreview, animated: true, completion: nil)
                 })
-            case  AVAssetExportSessionStatus.Failed:
+            case  .Failed:
                 print("export failed \(exportSession.error)")
-            case AVAssetExportSessionStatus.Cancelled:
+            case .Cancelled:
                 print("export cancelled \(exportSession.error)")
             default:
                 print("default")
@@ -277,14 +277,14 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         print(captureOutput.recordedFileSize)
         print(outputFileURL)
 
-        let library = ALAssetsLibrary()
-        library.writeVideoAtPathToSavedPhotosAlbum(outputFileURL, completionBlock: { (assetURL:NSURL!, error:NSError?) -> Void in
-            if error != nil {
-                print(error)
-                return
-            }
-            print(assetURL)
-        })
+//        let library = ALAssetsLibrary()
+//        library.writeVideoAtPathToSavedPhotosAlbum(outputFileURL, completionBlock: { (assetURL:NSURL!, error:NSError?) -> Void in
+//            if error != nil {
+//                print(error)
+//                return
+//            }
+//            print(assetURL)
+//        })
         
         let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
         self.convertVideoWithMediumQuality(outputFileURL)
@@ -298,8 +298,4 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
-    
-    
 }
-
-    

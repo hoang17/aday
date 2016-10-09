@@ -180,10 +180,12 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate {
     
     func shareClip(clip: ClipModel) {
         
-        let filePath = NSTemporaryDirectory() + clip.fname
-        let videoLink = NSURL(fileURLWithPath: filePath)
+        VideoHelper.sharedInstance.export(clip)
         
-        let objectsToShare = [videoLink] //comment!, imageData!, myWebsite!]
+        let filePath = NSTemporaryDirectory() + "exp_" + clip.fname
+        let inputURL = NSURL(fileURLWithPath: filePath)
+        
+        let objectsToShare = [inputURL]
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
         
         activityVC.setValue("Pin moment" , forKey: "subject") // email subject

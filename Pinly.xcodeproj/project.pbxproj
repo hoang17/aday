@@ -47,6 +47,9 @@
 		3785F7751D861E0900F32915 /* ClipModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3785F7741D861E0900F32915 /* ClipModel.swift */; };
 		37AE2C511D9D280100A6C4A5 /* PlayerCalloutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AE2C501D9D280100A6C4A5 /* PlayerCalloutView.swift */; };
 		37C1FE881D9EBD6400A58235 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C1FE871D9EBD6400A58235 /* String+Extension.swift */; };
+		37C1FE8F1DAA104300A58235 /* WatermarkVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C1FE8E1DAA104300A58235 /* WatermarkVideo.swift */; };
+		37C1FE911DAA9B9400A58235 /* LCTextLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C1FE901DAA9B9400A58235 /* LCTextLayer.swift */; };
+		37C1FE931DAAA7BE00A58235 /* VideoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C1FE921DAAA7BE00A58235 /* VideoHelper.swift */; };
 		37C9C37C1D9A08510081F825 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37C9C37B1D9A08510081F825 /* MapKit.framework */; };
 		37C9C3851D9C1A2A0081F825 /* ClipCalloutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C9C3841D9C1A2A0081F825 /* ClipCalloutView.swift */; };
 		37C9C3871D9C230D0081F825 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C9C3861D9C230D0081F825 /* PlayerView.swift */; };
@@ -120,6 +123,9 @@
 		3785F7741D861E0900F32915 /* ClipModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipModel.swift; sourceTree = "<group>"; };
 		37AE2C501D9D280100A6C4A5 /* PlayerCalloutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCalloutView.swift; sourceTree = "<group>"; };
 		37C1FE871D9EBD6400A58235 /* String+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		37C1FE8E1DAA104300A58235 /* WatermarkVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatermarkVideo.swift; sourceTree = "<group>"; };
+		37C1FE901DAA9B9400A58235 /* LCTextLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LCTextLayer.swift; sourceTree = "<group>"; };
+		37C1FE921DAAA7BE00A58235 /* VideoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoHelper.swift; sourceTree = "<group>"; };
 		37C9C37B1D9A08510081F825 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		37C9C3841D9C1A2A0081F825 /* ClipCalloutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipCalloutView.swift; sourceTree = "<group>"; };
 		37C9C3861D9C230D0081F825 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
@@ -168,6 +174,9 @@
 				372D8DB81D1304E7008DBADA /* FriendsLoader.swift */,
 				37E00FBE1D14F33700B19492 /* UIView+Frame.swift */,
 				37C1FE871D9EBD6400A58235 /* String+Extension.swift */,
+				37C1FE8E1DAA104300A58235 /* WatermarkVideo.swift */,
+				37C1FE901DAA9B9400A58235 /* LCTextLayer.swift */,
+				37C1FE921DAAA7BE00A58235 /* VideoHelper.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -532,15 +541,18 @@
 				37C1FE881D9EBD6400A58235 /* String+Extension.swift in Sources */,
 				372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */,
 				371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */,
+				37C1FE8F1DAA104300A58235 /* WatermarkVideo.swift in Sources */,
 				372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */,
 				37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */,
 				37FEFEBC1D11D33600C078AC /* LoginController.swift in Sources */,
+				37C1FE911DAA9B9400A58235 /* LCTextLayer.swift in Sources */,
 				37F7DF921D916EEA0057F7E1 /* SearchController.swift in Sources */,
 				371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */,
 				3785F7751D861E0900F32915 /* ClipModel.swift in Sources */,
 				37EF00251D873D5E005D39A1 /* MiniViewCell.swift in Sources */,
 				37F7DF941D916F2B0057F7E1 /* MapController.swift in Sources */,
 				372D8DB91D1304E7008DBADA /* FriendsLoader.swift in Sources */,
+				37C1FE931DAAA7BE00A58235 /* VideoHelper.swift in Sources */,
 				37FEFEBA1D11D33600C078AC /* AppDelegate.swift in Sources */,
 				371068E01D80453200BDFC42 /* RecordButton.swift in Sources */,
 				37C9C3851D9C1A2A0081F825 /* ClipCalloutView.swift in Sources */,

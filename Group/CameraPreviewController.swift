@@ -14,6 +14,7 @@ import FirebaseAuth
 import DigitsKit
 import SnapKit
 import MapKit
+import AssetsLibrary
 
 class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLocationManagerDelegate {
 
@@ -74,7 +75,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         doneButton.tintColor = UIColor(white: 1, alpha: 1)
         doneButton.backgroundColor = UIColor.clearColor()
         doneButton.setImage(nextIcon, forState: .Normal)
-        doneButton.addTarget(self, action: #selector(upload), forControlEvents: .TouchUpInside)
+        doneButton.addTarget(self, action: #selector(doneRecording), forControlEvents: .TouchUpInside)
         self.view.addSubview(doneButton)
         self.view.bringSubviewToFront(doneButton)
         doneButton.snp_makeConstraints { (make) -> Void in
@@ -150,12 +151,14 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
                 }
                 
                 // Address dictionary
-                print(placeMark.addressDictionary)
                 let name = placeMark.addressDictionary!["Name"] as! String
                 let city = placeMark.addressDictionary!["City"] as! String
                 let country = placeMark.addressDictionary!["CountryCode"] as! String
                 let sublocal = placeMark.addressDictionary!["SubLocality"] as! String
                 let subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as! String
+                
+                print(name)
+                // print(placeMark.addressDictionary)
                 
                 self.lo.name = name
                 self.lo.city = city
@@ -171,13 +174,13 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         
     }
     
+    func doneRecording() {
+        self.back()
+        upload()
+    }
+    
     // Upload file
     func upload(){
-        
-        self.back()
-        
-//        var number = Digits.sharedInstance().session()!.phoneNumber
-//        number.removeAtIndex(number.startIndex)
         
         let uid : String = (FIRAuth.auth()?.currentUser?.uid)!
         let uploadFile = "\(uid)_\(arc4random()%1000000).mp4"
@@ -195,7 +198,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
             if (error != nil) {
                 print(error)
             } else {
-                print("CLip uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
+                print("Clip uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
                 
                 // Generate thumb image
                 do {
@@ -218,7 +221,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
                                 print(error)
                             } else {
                                 print("Thumb uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
-                               
+                                
                                 // Save clip to db
                                 let ref = FIRDatabase.database().reference()
                                 let id = ref.child("clips").childByAutoId().key
@@ -238,7 +241,6 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
                                 ref.child("clips").child(id).setValue(clip.toAnyObject())
                                 
                                 print("Clip is saved to db \(id)")
-                                
                             }
                         }
                     }
