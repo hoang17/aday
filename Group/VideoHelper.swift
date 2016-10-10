@@ -31,7 +31,7 @@ class VideoHelper {
             return
             // try! fileManager.removeItemAtPath(exfilePath)
         }
-                
+        
         let filePath = NSTemporaryDirectory() + clip.fname
         let inputURL = NSURL(fileURLWithPath: filePath)
         

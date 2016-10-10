@@ -128,7 +128,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         let friend = self.friends[indexPath.row]
         let friendName = friend.name
         let userID : String! = AppDelegate.currentUser.uid
-        var clip = Clip(data: friend.clips.first!)
+        let clip = Clip(data: friend.clips.first!)
 
         // Create the action sheet
         let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
@@ -159,11 +159,12 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
                     }
                     if assetURL != nil {
                         print(assetURL)
-                        let video = FBSDKShareVideo(videoURL: assetURL)
-                        let content = FBSDKShareVideoContent()
-                        content.video = video
-                        
-                        FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+                        dispatch_async(dispatch_get_main_queue(), {
+                            let video = FBSDKShareVideo(videoURL: assetURL)
+                            let content = FBSDKShareVideoContent()
+                            content.video = video
+                            FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+                        })
                     }
                 })
             }            
