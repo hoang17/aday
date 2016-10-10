@@ -102,13 +102,15 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let friend = friends[indexPath.row]
         let cell = TableViewCell()
         cell.controller = self
-        cell.nameLabel.text = friends[indexPath.row].name
-        cell.locationLabel.text = friends[indexPath.row].city + " · " + friends[indexPath.row].country
+        cell.nameLabel.text = friend.name
+        cell.locationLabel.text = friend.city + " · " + friend.country
         cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
-        cell.clips = Array(friends[indexPath.row].clips)
-        cell.friend = friends[indexPath.row]
+        cell.clips = Array(friend.clips)
+        cell.friendName = friend.name
+        cell.friendUid = friend.uid
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapMore))
         cell.moreButton.addGestureRecognizer(tap)
         return cell
@@ -124,10 +126,10 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         let indexPath : NSIndexPath = self.tableView.indexPathForRowAtPoint(tapLocation)!
         let cell = tableView.cellForRowAtIndexPath(indexPath) as! TableViewCell
         let friend = self.friends[indexPath.row]
+        let friendName = friend.name
         let userID : String! = AppDelegate.currentUser.uid
+        var clip = Clip(data: friend.clips.first!)
 
-        VideoHelper.sharedInstance.export(friend.clips.first!, friend: friend, profileImg: cell.profileImg.image!)
-        
         // Create the action sheet
         let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         
@@ -141,59 +143,50 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         }
         
         let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
-            self.shareButton(friend)
+            VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!) { (savePathUrl) in
+                self.shareButton(savePathUrl)
+            }
         }
         
         let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) in
-            
-            let filePath = NSTemporaryDirectory() + "exp_" + friend.clips.first!.fname
-            let inputURL = NSURL(fileURLWithPath: filePath)
-            
-            ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(inputURL, completionBlock: { (assetURL, error) in
-                if error != nil {
-                    print(error)
-                    return
-                }
-                if assetURL != nil {
-                    print(assetURL)
-                    let video = FBSDKShareVideo(videoURL: assetURL)
-                    let content = FBSDKShareVideoContent()
-                    content.video = video
-                    
-                    FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
-                    
-//                    let dialog = FBSDKShareDialog()
-//                    dialog.fromViewController = self
-//                    dialog.delegate = self
-//                    dialog.shareContent = content
-//                    dialog.mode = .ShareSheet
-//                    dialog.show()
-                    
-//                    var shareToFacebook: SLComposeViewController = SLComposeViewController(forServiceType:  SLServiceTypeFacebook)
-//                    shareToFacebook.setInitialText("Check out this beat! From the DropABeat App")
-//                    self.presentViewController(shareToFacebook, animated: true, completion: nil)
-                }
-            })
+
+            VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!){ (savePathUrl) in
+                
+                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
+                    if error != nil {
+                        print(error)
+                        return
+                    }
+                    if assetURL != nil {
+                        print(assetURL)
+                        let video = FBSDKShareVideo(videoURL: assetURL)
+                        let content = FBSDKShareVideoContent()
+                        content.video = video
+                        
+                        FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+                    }
+                })
+            }            
         }
         
         let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { (action) in
             
-            let filePath = NSTemporaryDirectory() + "exp_" + friend.clips.first!.fname
-            let inputURL = NSURL(fileURLWithPath: filePath)
-            
-            ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(inputURL, completionBlock: { (assetURL, error) in
-                if error != nil {
-                    print(error)
-                    return
-                }
-                if assetURL != nil {
-                    print(assetURL)
-                    let escapedString = assetURL.absoluteString!.urlencodedString()
-                    let escapedCaption = "Pinly".urlencodedString()
-                    let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
-                    UIApplication.sharedApplication().openURL(instagramURL)
-                }
-            })
+            VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!){ (savePathUrl) in
+                
+                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
+                    if error != nil {
+                        print(error)
+                        return
+                    }
+                    if assetURL != nil {
+                        print(assetURL)
+                        let escapedString = assetURL.absoluteString!.urlencodedString()
+                        let escapedCaption = "Pinly".urlencodedString()
+                        let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
+                        UIApplication.sharedApplication().openURL(instagramURL)
+                    }
+                })
+            }
         }
         
         let unfollowAction = UIAlertAction(title: "Unfollow", style: UIAlertActionStyle.Default) { (action) in
@@ -239,12 +232,9 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         print("sharerDidCancel")
     }
     
-    func shareButton(friend: UserModel) {
+    func shareButton(inputURl: NSURL) {
         
-        let filePath = NSTemporaryDirectory() + friend.clips.first!.fname
-        let videoLink = NSURL(fileURLWithPath: filePath)
-        
-        let objectsToShare = [videoLink] //comment!, imageData!, myWebsite!]
+        let objectsToShare = [inputURl]
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
         
         activityVC.setValue("Video", forKey: "subject")
@@ -261,18 +251,8 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
         self.presentViewController(activityVC, animated: true, completion: nil)
  
-//        // image to share
 //        let image = UIImage(named: "Image")
-//        
 //        let objectsToShare: [AnyObject] = [ image! ]
-//        let activityViewController = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-//        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
-//        
-//        // exclude some activity types from the list (optional)
-//        // activityViewController.excludedActivityTypes = [ UIActivityTypeAirDrop, UIActivityTypePostToFacebook ]
-//        
-//        // present the view controller
-//        self.presentViewController(activityViewController, animated: true, completion: nil)
     }
     
     func downloadClips(clips: [Clip]){

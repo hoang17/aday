@@ -35,7 +35,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     var dateLabel = UILabel()
     var moreLabel = UILabel()
     var collectionView: UICollectionView!
-    var friend: UserModel!
+    var friendName: String!
+    var friendUid: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -114,9 +115,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         player.player.pause()
         
-        let clip = clips[playIndex]
-        
-        VideoHelper.sharedInstance.export(clip, friend: self.friend, profileImg: self.profileImg.image!)
+        let clip = Clip(data: clips[playIndex])
         
         let userID : String! = AppDelegate.currentUser.uid
         
@@ -131,7 +130,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
                 let alert = UIAlertController(title: "This content has been reported\n", message: "Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) in
                     self.close()
-                    FriendsLoader.sharedInstance.reportClip(clip)
+                    FriendsLoader.sharedInstance.reportClip(self.clips[self.playIndex])
                 }))
                 self.presentViewController(alert, animated: true, completion: nil)
             }))
@@ -145,47 +144,51 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         }
         
         let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
-            self.shareClip(clip)
+            VideoHelper.sharedInstance.export(clip, friendName: self.friendName, profileImg: self.profileImg.image!) { (savePathUrl) in
+                self.shareClip(savePathUrl)
+            }
         }
 
         let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) in
 
-            let filePath = NSTemporaryDirectory() + "exp_" + clip.fname
-            let inputURL = NSURL(fileURLWithPath: filePath)
-            
-            ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(inputURL, completionBlock: { (assetURL, error) in
-                if error != nil {
-                    print(error)
-                    return
-                }
-                if assetURL != nil {
-                    print(assetURL)
-                    let video = FBSDKShareVideo(videoURL: assetURL)
-                    let content = FBSDKShareVideoContent()
-                    content.video = video
-                    FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
-                }
-            })
+            VideoHelper.sharedInstance.export(clip, friendName: self.friendName, profileImg: self.profileImg.image!) { (savePathUrl) in
+                
+                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
+                    if error != nil {
+                        print(error)
+                        return
+                    }
+                    if assetURL != nil {
+                        print(assetURL)
+                        dispatch_async(dispatch_get_main_queue(), {
+                            let video = FBSDKShareVideo(videoURL: assetURL)
+                            let content = FBSDKShareVideoContent()
+                            content.video = video
+                            FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+                        })
+                    }
+                })
+            }
         }
         
         let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { (action) in
             
-            let filePath = NSTemporaryDirectory() + "exp_" + clip.fname
-            let inputURL = NSURL(fileURLWithPath: filePath)
-            
-            ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(inputURL, completionBlock: { (assetURL, error) in
-                if error != nil {
-                    print(error)
-                    return
-                }
-                if assetURL != nil {
-                    print(assetURL)
-                    let escapedString = assetURL.absoluteString!.urlencodedString()
-                    let escapedCaption = "Pinly".urlencodedString()
-                    let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
-                    UIApplication.sharedApplication().openURL(instagramURL)
-                }
-            })
+            VideoHelper.sharedInstance.export(clip, friendName: self.friendName, profileImg: self.profileImg.image!) { (savePathUrl) in
+                
+                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
+                    if error != nil {
+                        print(error)
+                        return
+                    }
+                    if assetURL != nil {
+                        print(assetURL)
+                        let escapedString = assetURL.absoluteString!.urlencodedString()
+                        let escapedCaption = "Pinly".urlencodedString()
+                        let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
+                        UIApplication.sharedApplication().openURL(instagramURL)
+                    }
+                })
+            }
         }
         
         
@@ -195,7 +198,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
             
             confirmAlert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { (action) in
                 self.close()
-                FriendsLoader.sharedInstance.deleteClip(clip)
+                FriendsLoader.sharedInstance.deleteClip(self.clips[self.playIndex])
             }))
             
             confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) in
@@ -213,11 +216,11 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         myActionSheet.addAction(shareFBAction)
         myActionSheet.addAction(shareIGAction)
         
-        if userID != friend.uid {
+        if userID != friendUid {
             myActionSheet.addAction(reportAction)
         }
         
-        if userID == friend.uid {
+        if userID == friendUid {
             myActionSheet.addAction(deleteAction)
         }
         
@@ -242,10 +245,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         player.player.play()
     }
     
-    func shareClip(clip: ClipModel) {
-        
-        let filePath = NSTemporaryDirectory() + "exp_" + clip.fname
-        let inputURL = NSURL(fileURLWithPath: filePath)
+    func shareClip(inputURL: NSURL) {
         
         let objectsToShare = [inputURL]
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)

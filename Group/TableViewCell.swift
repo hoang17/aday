@@ -21,7 +21,8 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     let cellWidth = 150
     let cellHeight = 266
     var index: Int = 0
-    var friend: UserModel!
+    var friendName: String!
+    var friendUid: String!
     
     weak var controller: FriendsController?
 
@@ -121,7 +122,8 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
         cameraPlayback.profileImg.image = profileImg.image
         cameraPlayback.collectionView = self.collectionView
-        cameraPlayback.friend = self.friend
+        cameraPlayback.friendName = self.friendName
+        cameraPlayback.friendUid = self.friendUid
 
         self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
     }

@@ -14,10 +14,24 @@ class VideoHelper {
     
     static let sharedInstance = VideoHelper()
     
-    func export(clip: ClipModel, friend: UserModel, profileImg: UIImage) {
+    func export(clip: Clip, friendName: String, profileImg: UIImage, completion: (savePathUrl: NSURL) -> Void) {
         
         print("processing video...")
         
+        //  create new file to receive data
+        let savePath = NSURL(fileURLWithPath: NSTemporaryDirectory() + "exp_" + clip.fname).absoluteString
+        let savePathUrl = NSURL(string: savePath!)
+        
+        // Delete file if existed
+        let exfilePath = NSTemporaryDirectory() + "exp_" + clip.fname;
+        let fileManager = NSFileManager.defaultManager()
+        if fileManager.fileExistsAtPath(exfilePath) {
+            print("file existed")
+            completion(savePathUrl: savePathUrl!)
+            return
+            // try! fileManager.removeItemAtPath(exfilePath)
+        }
+                
         let filePath = NSTemporaryDirectory() + clip.fname
         let inputURL = NSURL(fileURLWithPath: filePath)
         
@@ -63,7 +77,7 @@ class VideoHelper {
         let nameLayer = LCTextLayer()
         nameLayer.foregroundColor = UIColor.whiteColor().CGColor
         nameLayer.font = UIFont(name: "OpenSans-Bold", size: 12.0)
-        nameLayer.string = friend.name
+        nameLayer.string = friendName
         nameLayer.fontSize = 12
         nameLayer.frame = CGRectMake(55, size.height-30, 300, 28)
 
@@ -108,20 +122,6 @@ class VideoHelper {
         layercomposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videolayer, inLayer: parentlayer)
         layercomposition.instructions = [instruction]
         
-        //  create new file to receive data
-        let savePath = NSURL(fileURLWithPath: NSTemporaryDirectory() + "exp_" + clip.fname).absoluteString
-        
-        // Delete file if existed
-        let exfilePath = NSTemporaryDirectory() + "exp_" + clip.fname;
-        let fileManager = NSFileManager.defaultManager()
-        if fileManager.fileExistsAtPath(exfilePath) {
-            print("file existed")
-            return
-//            try! fileManager.removeItemAtPath(exfilePath)
-        }
-        
-        let savePathUrl = NSURL(string: savePath!)
-        
         // use AVAssetExportSession to export video
         let exportSession = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)!
         exportSession.outputFileType = AVFileTypeMPEG4
@@ -132,18 +132,14 @@ class VideoHelper {
             switch exportSession.status{
             case  .Failed:
                 print("failed \(exportSession.error)")
+                completion(savePathUrl: savePathUrl!)
             case .Cancelled:
                 print("cancelled \(exportSession.error)")
-            case .Completed:
-                print("export completed")
-//                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
-//                    print(assetURL)
-//                    if error != nil {
-//                        print(error)
-//                    }
-//                })
+                completion(savePathUrl: savePathUrl!)
+            //case .Completed:
             default:
-                print("default")
+                print("export completed")
+                completion(savePathUrl: savePathUrl!)
             }
         })
         
