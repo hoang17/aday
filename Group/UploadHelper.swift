@@ -60,6 +60,15 @@ class UploadHelper {
     
     func enqueueUpload(clipUpload: ClipUpload) {
         
+        // rename file
+        do {
+            let uploadFilePath = NSTemporaryDirectory() + clipUpload.fname
+            let uploadFileUrl = NSURL(fileURLWithPath: uploadFilePath)
+            try NSFileManager.defaultManager().moveItemAtURL(fileUrl!, toURL: uploadFileUrl)
+        } catch {
+            print(error)
+        }
+        
         let realm = AppDelegate.realm
         try! realm.write {
             realm.add(clipUpload, update: true)
@@ -87,13 +96,6 @@ class UploadHelper {
         let uploadFile = clipUpload.fname
         let uploadFilePath = NSTemporaryDirectory() + uploadFile
         let uploadFileUrl = NSURL(fileURLWithPath: uploadFilePath)
-        
-        // rename file
-        do {
-            try NSFileManager.defaultManager().moveItemAtURL(fileUrl!, toURL: uploadFileUrl)
-        } catch {
-            print(error)
-        }
         
         print("Uploading \(uploadFile)...")
         
