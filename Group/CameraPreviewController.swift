@@ -108,8 +108,16 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         
         let clipUpload = ClipUpload(id: id, uid: uid, fname: uploadFile, txt: txt!, y: y, location: self.lo)
 
-        UploadHelper.sharedInstance.enqueueUpload(clipUpload)
-        
+        do {
+            // rename file
+            let uploadFileUrl = NSURL(fileURLWithPath: NSTemporaryDirectory() + uploadFile)
+            try NSFileManager.defaultManager().moveItemAtURL(UploadHelper.sharedInstance.fileUrl, toURL: uploadFileUrl)
+            
+            UploadHelper.sharedInstance.enqueueUpload(clipUpload)
+            
+        } catch {
+            print(error)
+        }
         self.back()
     }
     
