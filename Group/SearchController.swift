@@ -8,10 +8,10 @@
 
 import UIKit
 import FirebaseDatabase
+import FirebaseAuth
 import FBSDKCoreKit
 import APAddressBook
 import DigitsKit
-
 
 class SearchController: UITableViewController {
     
@@ -26,7 +26,9 @@ class SearchController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        ref.child("users").child(AppDelegate.currentUser.uid).observeEventType(.Value, withBlock: { snapshot in
+        let uid = FIRAuth.auth()?.currentUser?.uid
+        
+        ref.child("users").child(uid!).observeEventType(.Value, withBlock: { snapshot in
             self.tableView.reloadRowsAtIndexPaths(self.users.enumerate().map{ (index, element) in
                     return NSIndexPath(forRow:index, inSection: 0)
                 },
@@ -112,7 +114,7 @@ class SearchController: UITableViewController {
                             if let snap = snapshot.children.allObjects.first as? FIRDataSnapshot {
                                 let user = User(snapshot: snap)
                                 
-                                if user.uid != AppDelegate.currentUser.uid && self.userkeys[user.uid] == nil {
+                                if user.uid != uid && self.userkeys[user.uid] == nil {
                                     self.users.append(user)
                                     self.userkeys[user.uid] = user
                                     self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.users.count - 1, inSection: 0)],
@@ -190,7 +192,7 @@ class SearchController: UITableViewController {
         let realm = AppDelegate.realm
         
         let friendId : String = self.users[sender.tag].uid
-        let userID : String! = AppDelegate.currentUser.uid
+        let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
         if sender.titleLabel?.text == "follow" {
             

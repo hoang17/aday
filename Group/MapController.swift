@@ -94,6 +94,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         }
         self.mapView.addAnnotations(self.clipAnnotations)
         
+        
         notificationToken = clips.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             switch changes {
             case .Initial:
@@ -201,9 +202,12 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let coordinateRegion = MKCoordinateRegionMakeWithDistance(manager.location!.coordinate, regionRadius, regionRadius)
-        mapView.setRegion(coordinateRegion, animated: false)
+
         locationManager.stopUpdatingLocation()
+
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(manager.location!.coordinate, regionRadius, regionRadius)
+        
+        mapView.setRegion(coordinateRegion, animated: false)
         
         let geoCoder = CLGeocoder()
         

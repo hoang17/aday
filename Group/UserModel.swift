@@ -72,6 +72,10 @@ class Flag: Object {
         self.init()
         self.id = id
     }
+    
+    override static func primaryKey() -> String? {
+        return "id"
+    }
 }
 
 class Following: Object {
@@ -81,6 +85,10 @@ class Following: Object {
         self.init()
         self.uid = uid
     }
+    
+    override static func primaryKey() -> String? {
+        return "uid"
+    }
 }
 
 class Follower: Object {
@@ -89,5 +97,9 @@ class Follower: Object {
     convenience init(uid: String) {
         self.init()
         self.uid = uid
+    }
+    
+    override static func primaryKey() -> String? {
+        return "uid"
     }
 }

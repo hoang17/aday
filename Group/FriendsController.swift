@@ -127,7 +127,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         let cell = tableView.cellForRowAtIndexPath(indexPath) as! TableViewCell
         let friend = self.friends[indexPath.row]
         let friendName = friend.name
-        let userID : String! = AppDelegate.currentUser.uid
+        let userID : String! = FIRAuth.auth()?.currentUser?.uid
         let clip = Clip(data: friend.clips.first!)
 
         // Create the action sheet

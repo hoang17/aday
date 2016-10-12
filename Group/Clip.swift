@@ -22,7 +22,7 @@ class Clip: NSObject {
     var uid: String
     var fname: String // file name
     var txt: String
-    var y: CGFloat // text position
+    var y: Float // text position
     var flag = false
     var date: Double    
     var long: Double
@@ -35,19 +35,19 @@ class Clip: NSObject {
     var thumb: String = ""
     var trash = false
     
-    init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location: Location, thumb: String) {
-        self.id = id
-        self.uid = uid
-        self.fname =  fname
-        self.txt = txt
-        self.y = y
-        self.long = location.longitude ?? 0
-        self.lat = location.latitude ?? 0
-        self.lname = location.name ?? ""
-        self.city = location.city ?? ""
-        self.country = location.country ?? ""
-        self.sublocal = location.sublocal ?? ""
-        self.subarea = location.subarea ?? ""
+    init(clipUpload: ClipUpload, thumb: String) {
+        self.id = clipUpload.id
+        self.uid = clipUpload.uid
+        self.fname =  clipUpload.fname
+        self.txt = clipUpload.txt
+        self.y = clipUpload.y
+        self.long = clipUpload.long
+        self.lat = clipUpload.lat
+        self.lname = clipUpload.lname
+        self.city = clipUpload.city
+        self.country = clipUpload.country
+        self.sublocal = clipUpload.sublocal
+        self.subarea = clipUpload.subarea
         self.thumb = thumb
         self.date = NSDate().timeIntervalSince1970
     }
@@ -57,7 +57,7 @@ class Clip: NSObject {
         uid = snapshot.value!["uid"] as! String
         fname = snapshot.value!["fname"] as! String
         txt = snapshot.value!["txt"] as! String
-        y = snapshot.value!["y"] as! CGFloat
+        y = snapshot.value!["y"] as! Float
         date = snapshot.value!["date"] as! Double
         flag = snapshot.value!["flag"] as? Bool ?? false
         long = (snapshot.value!["long"] as? Double) ?? 0
@@ -76,7 +76,7 @@ class Clip: NSObject {
         self.uid = data.uid
         self.fname =  data.fname
         self.txt = data.txt
-        self.y = CGFloat(data.y)
+        self.y = data.y
         self.date = data.date
         self.long = data.long
         self.lat = data.lat

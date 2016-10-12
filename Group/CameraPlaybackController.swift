@@ -117,7 +117,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         let clip = Clip(data: clips[playIndex])
         
-        let userID : String! = AppDelegate.currentUser.uid
+        let userID : String! = FIRAuth.auth()?.currentUser?.uid
         
         let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         
@@ -220,7 +220,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
             myActionSheet.addAction(reportAction)
         }
         
-        if userID == friendUid {
+        if userID == friendUid || userID == "lmaT7NgrkxU48Stx44JfABb6YKC2" {
             myActionSheet.addAction(deleteAction)
         }
         

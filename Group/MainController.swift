@@ -37,6 +37,9 @@ class MainController: UIViewController {
             print("loaded currentUser from remote & save to local: " + AppDelegate.currentUser.name)
         })
         
+        // Init upload queue
+        
+        UploadHelper.sharedInstance.start()
         
         // Init tab bar
         
@@ -57,8 +60,10 @@ class MainController: UIViewController {
         tabBarController.setViewController(MapController(), atIndex: 3)
         tabBarController.setViewController(ProfileController(), atIndex: 4)
         
+        let cam = CameraViewController()
+        
         tabBarController.setAction({
-            self.presentViewController(CameraViewController(), animated: true, completion: nil)
+            self.presentViewController(cam, animated: true, completion: nil)
         }, atIndex: 2)
 
 //        tabBarController.highlightButtonAtIndex(1)

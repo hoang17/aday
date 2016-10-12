@@ -96,8 +96,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             // navigate to home
             let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
             appDelegate.showMain()
-            
-            syncContacts()
         }
     }
     
@@ -115,7 +113,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             print("login cancel")
         }
         else {
-            print("User Logged In")
+            print("User logged In")
             
             // Save Facebook login user
             let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
@@ -153,8 +151,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         
                         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                         appDelegate.showMain()
-                        
-                        self.syncContacts()
                     }
                 })
                 

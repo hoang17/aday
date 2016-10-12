@@ -9,43 +9,21 @@
 import AVKit
 import AVFoundation
 import FirebaseDatabase
-import FirebaseStorage
 import FirebaseAuth
-import DigitsKit
 import SnapKit
-import MapKit
-import AssetsLibrary
 
-class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLocationManagerDelegate {
+class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
 
     let textField = UITextField()
-    let locationField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
-    var outputFileURL:NSURL?
-    var fileName: String!
-    var gotLo = false
     var lo = Location()
-
-    let locationManager = CLLocationManager()
+    
+    // let locationField = UITextField()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Begin setting location
-        
-        self.locationManager.requestWhenInUseAuthorization()
-        
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locationManager.startUpdatingLocation()
-        }
-        /// End location
-
-        let outputPath = NSTemporaryDirectory() + fileName
-        outputFileURL = NSURL(fileURLWithPath: outputPath)
-        
-        let asset = AVAsset(URL: outputFileURL!)
+        let asset = AVAsset(URL: UploadHelper.sharedInstance.fileUrl)
         self.showsPlaybackControls = false
         self.player = AVPlayer(playerItem: AVPlayerItem(asset:asset))
         self.player!.actionAtItemEnd = .None
@@ -53,7 +31,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
                                                          name: AVPlayerItemDidPlayToEndTimeNotification,
                                                          object: player!.currentItem)
-        self.player?.play()
+        self.player!.play()
         
         let backIcon = UIImage(named: "ic_close") as UIImage?
         let backButton = UIButton(type: .System)
@@ -75,7 +53,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         doneButton.tintColor = UIColor(white: 1, alpha: 1)
         doneButton.backgroundColor = UIColor.clearColor()
         doneButton.setImage(nextIcon, forState: .Normal)
-        doneButton.addTarget(self, action: #selector(doneRecording), forControlEvents: .TouchUpInside)
+        doneButton.addTarget(self, action: #selector(submit), forControlEvents: .TouchUpInside)
         self.view.addSubview(doneButton)
         self.view.bringSubviewToFront(doneButton)
         doneButton.snp_makeConstraints { (make) -> Void in
@@ -101,157 +79,38 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
         view.addSubview(textField)
         view.bringSubviewToFront(textField)
         
-        locationField.origin = CGPoint(x: 0, y: 0)
-        locationField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-        locationField.textColor = UIColor(white: 1, alpha: 0.6)
-        locationField.font = UIFont.systemFontOfSize(12.0)
-        locationField.textAlignment = NSTextAlignment.Center
-        locationField.height = 20
-        locationField.width = UIScreen.mainScreen().bounds.width
-        locationField.hidden = true
-        locationField.returnKeyType = UIReturnKeyType.Done
-        locationField.delegate = self
-        
-        view.addSubview(locationField)
-        view.bringSubviewToFront(locationField)
- 
+//        locationField.origin = CGPoint(x: 0, y: 0)
+//        locationField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+//        locationField.textColor = UIColor(white: 1, alpha: 0.6)
+//        locationField.font = UIFont.systemFontOfSize(12.0)
+//        locationField.textAlignment = NSTextAlignment.Center
+//        locationField.height = 20
+//        locationField.width = UIScreen.mainScreen().bounds.width
+//        locationField.hidden = true
+//        locationField.returnKeyType = UIReturnKeyType.Done
+//        locationField.delegate = self
+//        view.addSubview(locationField)
+//        view.bringSubviewToFront(locationField)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
 
         let pan = UIPanGestureRecognizer(target:self, action:#selector(panGesture))
         textField.addGestureRecognizer(pan)
-        
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if self.gotLo {
-            return
-        }
+    func submit() {
         
-        self.gotLo = true
-        
-        let co = manager.location!.coordinate
-        
-        manager.stopUpdatingLocation()
-        
-        self.lo.latitude = co.latitude
-        self.lo.longitude = co.longitude
-        
-        print("locations = \(co.latitude) \(co.longitude)")
-        
-        let geoCoder = CLGeocoder()
-        
-        if let location = manager.location {
-            
-            geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
-                
-                let placeMark: CLPlacemark! = placemarks?[0]
-                if (placeMark == nil){
-                    return
-                }
-                
-                // Address dictionary
-                let name = placeMark.addressDictionary!["Name"] as! String
-                let city = placeMark.addressDictionary!["City"] as! String
-                let country = placeMark.addressDictionary!["CountryCode"] as! String
-                let sublocal = placeMark.addressDictionary!["SubLocality"] as! String
-                let subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as! String
-                
-                print(name)
-                // print(placeMark.addressDictionary)
-                
-                self.lo.name = name
-                self.lo.city = city
-                self.lo.country = country
-                self.lo.sublocal = sublocal
-                self.lo.subarea = subarea
-                self.locationField.text = name
-                self.locationField.hidden = true
-                
-            })
-        }
-        
-        
-    }
-    
-    func doneRecording() {
-        self.back()
-        upload()
-    }
-    
-    // Upload file
-    func upload(){
-        
+        let id = FIRDatabase.database().reference().child("clips").childByAutoId().key
         let uid : String = (FIRAuth.auth()?.currentUser?.uid)!
-        let uploadFile = "\(uid)_\(arc4random()%1000000).mp4"
+        let txt = self.textField.text
+        let y = self.textLocation.y/self.view.frame.height
+        let uploadFile = "\(id).mp4"
         
-        print("Uploading \(uploadFile)...")
-        
-        let storage = FIRStorage.storage()
-        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com")
-        
-        let metadata = FIRStorageMetadata()
-        metadata.contentType = "video/mp4"
-        
-        gs.child("clips/" + uploadFile).putFile(outputFileURL!, metadata: metadata) { metadata, error in
-            // upload done
-            if (error != nil) {
-                print(error)
-            } else {
-                print("Clip uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
-                
-                // Generate thumb image
-                do {
-                    let asset = AVURLAsset(URL: NSURL(fileURLWithPath: NSTemporaryDirectory() + self.fileName), options: nil)
-                    let imgGenerator = AVAssetImageGenerator(asset: asset)
-                    imgGenerator.appliesPreferredTrackTransform = true
-                    let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
-                    let uiimg = UIImage(CGImage: cgimg)
-                    let data = UIImageJPEGRepresentation(uiimg, 0.5)
-                    let filePath = NSTemporaryDirectory() + self.fileName + ".jpg"
-                    
-                    if data!.writeToFile(filePath, atomically: true) {
-                        // Upload thumb image
-                        let thumb = uploadFile + ".jpg"
-                        let fileUrl = NSURL(fileURLWithPath: filePath)
-                        metadata!.contentType = "image/jpg"
-                        gs.child("thumbs/" + thumb).putFile(fileUrl, metadata: metadata) { metadata, error in
-                            // upload done
-                            if (error != nil) {
-                                print(error)
-                            } else {
-                                print("Thumb uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
-                                
-                                // Save clip to db
-                                let ref = FIRDatabase.database().reference()
-                                let id = ref.child("clips").childByAutoId().key
-                                let uid : String = FIRAuth.auth()!.currentUser!.uid
-                                let fname = uploadFile
-                                let txt = self.textField.text
-                                let y = self.textLocation.y/self.view.frame.height
-                                let clip = Clip(id: id, uid: uid, fname: fname, txt: txt!, y: y, location: self.lo, thumb: (metadata!.downloadURL()?.absoluteString)!)
-                                
-                                // Create new clip at /users/$userid/clips/$clipid
-                                let update = [
-                                    "/users/\(uid)/clips/\(id)/": clip.toAnyObject(),
-                                    "/users/\(uid)/uploaded":clip.date]
-                                ref.updateChildValues(update)
+        let clipUpload = ClipUpload(id: id, uid: uid, fname: uploadFile, txt: txt!, y: y, location: self.lo)
 
-                                // Create new clip at /clips/$clipid
-                                ref.child("clips").child(id).setValue(clip.toAnyObject())
-                                
-                                print("Clip is saved to db \(id)")
-                            }
-                        }
-                    }
-                    
-                } catch {
-                    print(error)
-                }
-                
-            }
-        }
+        UploadHelper.sharedInstance.enqueueUpload(clipUpload)
         
+        self.back()
     }
     
     // Limit text length to textfield width
@@ -299,7 +158,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
     // Show textfield
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
-        locationField.resignFirstResponder()
+        // locationField.resignFirstResponder()
         
         if textField.hidden {
             if let touch = touches.first {
@@ -337,6 +196,4 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate, CLLo
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
-    
 }
-

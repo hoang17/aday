@@ -48,3 +48,48 @@ class ClipModel: Object {
     }
     
 }
+
+class ClipUpload: Object {
+    dynamic var id: String!
+    dynamic var uid: String!
+    dynamic var fname: String! // file name
+    dynamic var txt: String!
+    dynamic var y: Float = 0 // text position
+    dynamic var long: Double = 0
+    dynamic var lat: Double = 0
+    dynamic var lname: String = "" // location name
+    dynamic var city: String = ""
+    dynamic var country: String = ""
+    dynamic var sublocal: String = ""
+    dynamic var subarea: String = ""
+   
+    dynamic var uploading: Bool = false
+    dynamic var uploadingThumb: Bool = false
+    
+    dynamic var clipUploaded: Bool = false
+    dynamic var thumbUploaded: Bool = false
+    
+    convenience init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location: Location) {
+        self.init()
+        self.id = id
+        self.uid = uid
+        self.fname =  fname
+        self.txt = txt
+        self.y = Float(y)
+        self.long = location.longitude ?? 0
+        self.lat = location.latitude ?? 0
+        self.lname = location.name ?? ""
+        self.city = location.city ?? ""
+        self.country = location.country ?? ""
+        self.sublocal = location.sublocal ?? ""
+        self.subarea = location.subarea ?? ""
+    }
+    
+    override static func ignoredProperties() -> [String] {
+        return ["uploading", "uploadingThumb"]
+    }
+
+    override static func primaryKey() -> String? {
+        return "id"
+    }
+}

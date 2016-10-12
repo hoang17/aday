@@ -10,8 +10,9 @@ import UIKit
 import AVFoundation
 import AVKit
 import AssetsLibrary
+import MapKit
 
-class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
+class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelegate, CLLocationManagerDelegate {
     
     var recordButton:RecordButton!
     var progressTimer : NSTimer!
@@ -27,18 +28,35 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var videoFileOutput:AVCaptureMovieFileOutput?
     var cameraPreviewLayer:AVCaptureVideoPreviewLayer?
     let outputPath = NSTemporaryDirectory() + "output.mov"
-    let fileName = "output.mp4"
+    
+    var lo = Location()
+    let locationManager = CLLocationManager()
     
     var isRecording = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Begin setting location
+        
+        self.locationManager.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        }
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(didBecomeActive), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+        /// End location
+        
+        
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(AVAudioSessionCategoryRecord)
         }
         catch {
+            print(error)
         }
         
         do{
@@ -139,9 +157,60 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        print("viewWillAppear")
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    func didBecomeActive() {
+        print("didBecomeActive")
+        if view.window != nil && CLLocationManager.locationServicesEnabled() {
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        locationManager.stopUpdatingLocation()
+        
+        if let location = manager.location {
+            
+            lo = Location()
+            lo.latitude = location.coordinate.latitude
+            lo.longitude = location.coordinate.longitude
+            
+            print("locations = \(lo.latitude) \(lo.longitude)")
+            
+            CLGeocoder().reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+                if let placeMark = placemarks?.first {
+                    // Address dictionary
+                    let name = placeMark.addressDictionary!["Name"] as? String ?? ""
+                    let city = placeMark.addressDictionary!["City"] as? String ?? ""
+                    let country = placeMark.addressDictionary!["CountryCode"] as? String ?? ""
+                    let sublocal = placeMark.addressDictionary!["SubLocality"] as? String ?? ""
+                    let subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as? String ?? ""
+                    
+                    print(name)
+                    // print(placeMark.addressDictionary)
+                    
+                    self.lo.name = name
+                    self.lo.city = city
+                    self.lo.country = country
+                    self.lo.sublocal = sublocal
+                    self.lo.subarea = subarea
+                }
+            })
+        }
+    }
+    
     func convertVideoWithMediumQuality(inputURL : NSURL){
         
         print("Compressing...")
+        
+        let fileName = UploadHelper.sharedInstance.fileName
         
         let savePath = NSURL(fileURLWithPath: NSTemporaryDirectory() + fileName).absoluteString
         
@@ -167,9 +236,9 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             case .Completed:
                 print("export completed")
                 dispatch_async(dispatch_get_main_queue(), {
-                    let cameraPreview = CameraPreviewController()
-                    cameraPreview.fileName = self.fileName
-                    self.presentViewController(cameraPreview, animated: true, completion: nil)
+                    let preview = CameraPreviewController()
+                    preview.lo = self.lo
+                    self.presentViewController(preview, animated: true, completion: nil)
                 })
             case  .Failed:
                 print("export failed \(exportSession.error)")
@@ -182,9 +251,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     }
     
     func back(){
-        self.dismissViewControllerAnimated(true) {
-            //
-        }        
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func flipCamera(){
@@ -232,7 +299,9 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     }
     
     func record() {
+        
         if !isRecording {
+            // Start recording
             isRecording = true
             let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
             videoFileOutput?.startRecordingToOutputFileURL(outputFileURL, recordingDelegate: self)
@@ -277,22 +346,8 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         print(captureOutput.recordedFileSize)
         print(outputFileURL)
 
-//        let library = ALAssetsLibrary()
-//        library.writeVideoAtPathToSavedPhotosAlbum(outputFileURL, completionBlock: { (assetURL:NSURL!, error:NSError?) -> Void in
-//            if error != nil {
-//                print(error)
-//                return
-//            }
-//            print(assetURL)
-//        })
-        
         let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
         self.convertVideoWithMediumQuality(outputFileURL)
-
-//        let cameraPreview = CameraPreviewController()
-//        cameraPreview.fileName = "output.mov"
-//        self.presentViewController(cameraPreview, animated: true, completion: nil)
-        
     }
     
     override func prefersStatusBarHidden() -> Bool {

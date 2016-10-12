@@ -14,6 +14,7 @@
 		371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068E11D83003100BDFC42 /* CameraPlaybackController.swift */; };
 		3724B0791D9E65B300181071 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3724B0781D9E65B300181071 /* LaunchScreen.storyboard */; };
 		3724B07B1D9E76A200181071 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3724B07A1D9E76A200181071 /* WebViewController.swift */; };
+		372ADA8B1DADF18300EA6584 /* UploadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372ADA8A1DADF18300EA6584 /* UploadHelper.swift */; };
 		372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB41D12BF2B008DBADA /* FriendsController.swift */; };
 		372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB61D12C0F8008DBADA /* UserModel.swift */; };
 		372D8DB91D1304E7008DBADA /* FriendsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372D8DB81D1304E7008DBADA /* FriendsLoader.swift */; };
@@ -89,6 +90,7 @@
 		371068E11D83003100BDFC42 /* CameraPlaybackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPlaybackController.swift; sourceTree = "<group>"; };
 		3724B0781D9E65B300181071 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3724B07A1D9E76A200181071 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		372ADA8A1DADF18300EA6584 /* UploadHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadHelper.swift; sourceTree = "<group>"; };
 		372D8DB41D12BF2B008DBADA /* FriendsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsController.swift; sourceTree = "<group>"; };
 		372D8DB61D12C0F8008DBADA /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		372D8DB81D1304E7008DBADA /* FriendsLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsLoader.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				37C1FE871D9EBD6400A58235 /* String+Extension.swift */,
 				37C1FE901DAA9B9400A58235 /* LCTextLayer.swift */,
 				37C1FE921DAAA7BE00A58235 /* VideoHelper.swift */,
+				372ADA8A1DADF18300EA6584 /* UploadHelper.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -538,6 +541,7 @@
 				37C9C3871D9C230D0081F825 /* PlayerView.swift in Sources */,
 				3785F6711D85636B00F32915 /* MainController.swift in Sources */,
 				3724B07B1D9E76A200181071 /* WebViewController.swift in Sources */,
+				372ADA8B1DADF18300EA6584 /* UploadHelper.swift in Sources */,
 				37C1FE881D9EBD6400A58235 /* String+Extension.swift in Sources */,
 				372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */,
 				371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */,
