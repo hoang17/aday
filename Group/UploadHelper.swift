@@ -25,6 +25,7 @@ class UploadHelper {
     let fileName = "output.mp4"
     let filePath: String!
     let fileUrl: NSURL!
+    var connected = false
     
     init() {
         filePath = NSTemporaryDirectory() + fileName
@@ -35,24 +36,44 @@ class UploadHelper {
         
         do {
             reachability = try Reachability.reachabilityForInternetConnection()
+            
+            reachability!.whenReachable = { reachability in
+                dispatch_async(dispatch_get_main_queue()) {
+                    if reachability.isReachableViaWiFi() {
+                        print("Reachable via WiFi")
+                    } else {
+                        print("Reachable via Cellular")
+                    }
+                }
+            }
+            
+            reachability!.whenUnreachable = { reachability in
+                dispatch_async(dispatch_get_main_queue()) {
+                    print("Not reachable")
+                }
+            }
+            
+            try reachability!.startNotifier()
+            
         } catch {
             print(error)
         }
         
         clipUploads = AppDelegate.realm.objects(ClipUpload.self).filter("clipUploaded = false AND thumbUploaded = false")
         
-        let connectedRef = FIRDatabase.database().referenceWithPath(".info/connected")
-        connectedRef.observeEventType(.Value, withBlock: { snapshot in
-            if let connected = snapshot.value as? Bool where connected {
+        FIRDatabase.database().referenceWithPath(".info/connected").observeEventType(.Value, withBlock: { snapshot in
+            self.connected = snapshot.value as? Bool ?? false
+            if self.connected {
                 print("Connected")
                 self.runUploadQueue()
             } else {
-                print("Not connected")
+                print("Disconnected")
             }
         })
     }
     
     func runUploadQueue() {
+        print("Check upload queue")
         for clipUpload in clipUploads {
             beginUpload(clipUpload)
         }
@@ -60,16 +81,41 @@ class UploadHelper {
     
     func enqueueUpload(clipUpload: ClipUpload) {
         
-        let realm = AppDelegate.realm
-        try! realm.write {
-            realm.add(clipUpload, update: true)
+        do {
+            // rename video file
+            let uploadFilePath = NSTemporaryDirectory() + clipUpload.fname
+            let uploadFileUrl = NSURL(fileURLWithPath: uploadFilePath)
+            try NSFileManager.defaultManager().moveItemAtURL(UploadHelper.sharedInstance.fileUrl, toURL: uploadFileUrl)
+            
+            // extract thumb image
+            self.extractThumbImage(uploadFilePath)
+            
+            try AppDelegate.realm.write {
+                AppDelegate.realm.add(clipUpload, update: true)
+            }
+            if reachability == nil || reachability!.isReachable() {
+                beginUpload(clipUpload)
+            }
+            
+        } catch {
+            print(error)
         }
-        if reachability == nil || reachability!.isReachable() {
-            beginUpload(clipUpload)
-        }
+
     }
     
     func beginUpload(clipUpload: ClipUpload) {
+        
+        print("Begin upload")
+        
+        let uploadFilePath = NSTemporaryDirectory() + clipUpload.fname
+        
+        if (!NSFileManager.defaultManager().fileExistsAtPath(uploadFilePath)) {
+            print("Can not upload: File not found \(uploadFilePath)")
+            try! AppDelegate.realm.write {
+                AppDelegate.realm.delete(clipUpload)
+            }
+            return
+        }
         
         if clipUpload.uploading == false {
             upload(clipUpload)
@@ -121,15 +167,13 @@ class UploadHelper {
         let uploadFile = clipUpload.fname
         let uploadFilePath = NSTemporaryDirectory() + uploadFile
         
-        let thumbFilePath = NSTemporaryDirectory() + uploadFile + ".jpg"
+        let thumb = uploadFile + ".jpg"
+        let thumbFilePath = uploadFilePath + ".jpg"
+        let thumbFileUrl = NSURL(fileURLWithPath: thumbFilePath)
         
         if !NSFileManager.defaultManager().fileExistsAtPath(thumbFilePath) {
-            self.extractThumbImage(uploadFilePath, thumbFilePath: thumbFilePath)
+            self.extractThumbImage(uploadFilePath)
         }
-        
-        // Upload thumb image
-        let thumb = uploadFile + ".jpg"
-        let thumbFileUrl = NSURL(fileURLWithPath: thumbFilePath)
         
         let metadata = FIRStorageMetadata()
         metadata.contentType = "image/jpg"
@@ -173,8 +217,9 @@ class UploadHelper {
     }
     
     // Extract thumb image from video
-    func extractThumbImage(clipFilePath: String, thumbFilePath: String){
+    func extractThumbImage(clipFilePath: String) {
         do{
+            let thumbFilePath = clipFilePath + ".jpg"
             let asset = AVURLAsset(URL: NSURL(fileURLWithPath: clipFilePath), options: nil)
             let imgGenerator = AVAssetImageGenerator(asset: asset)
             imgGenerator.appliesPreferredTrackTransform = true
@@ -183,6 +228,7 @@ class UploadHelper {
             let data = UIImageJPEGRepresentation(uiimg, 0.5)
             data!.writeToFile(thumbFilePath, atomically: true)
         } catch {
+            print("extract thumb error")
             print(error)
         }
     }

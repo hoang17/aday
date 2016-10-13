@@ -107,18 +107,10 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         let uploadFile = "\(id).mp4"
         
         let clipUpload = ClipUpload(id: id, uid: uid, fname: uploadFile, txt: txt!, y: y, location: self.lo)
-
-        do {
-            // rename file
-            let uploadFileUrl = NSURL(fileURLWithPath: NSTemporaryDirectory() + uploadFile)
-            try NSFileManager.defaultManager().moveItemAtURL(UploadHelper.sharedInstance.fileUrl, toURL: uploadFileUrl)
-            
-            UploadHelper.sharedInstance.enqueueUpload(clipUpload)
-            
-        } catch {
-            print(error)
-        }
-        self.back()
+        
+        UploadHelper.sharedInstance.enqueueUpload(clipUpload)
+        
+   self.back()
     }
     
     // Limit text length to textfield width
