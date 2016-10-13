@@ -10,7 +10,6 @@ import FirebaseDatabase
 import FirebaseStorage
 import FirebaseAuth
 import AssetsLibrary
-import ReachabilitySwift
 import RealmSwift
 import AVFoundation
 
@@ -46,9 +45,16 @@ class UploadHelper {
     }
     
     func runUploadQueue() {
-        print("Check upload queue")
-        for clipUpload in clipUploads {
-            beginUpload(clipUpload)
+        
+        if clipUploads.count > 0 {
+            
+            print("\(clipUploads.count) items in upload queue")
+            
+            for clipUpload in clipUploads {
+                beginUpload(clipUpload)
+            }
+        } else {
+            print("nothing in upload queue")
         }
     }
     
