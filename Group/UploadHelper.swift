@@ -53,8 +53,6 @@ class UploadHelper {
             for clipUpload in clipUploads {
                 beginUpload(clipUpload)
             }
-        } else {
-            print("nothing in upload queue")
         }
     }
     
