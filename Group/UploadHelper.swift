@@ -19,7 +19,6 @@ class UploadHelper {
     
     static let sharedInstance = UploadHelper()
     
-    var reachability: Reachability?
     var notificationToken: NotificationToken?
     var clipUploads: Results<ClipUpload>!
     let fileName = "output.mp4"
@@ -33,32 +32,6 @@ class UploadHelper {
     }
     
     func start() {
-        
-        do {
-            reachability = try Reachability.reachabilityForInternetConnection()
-            
-            reachability!.whenReachable = { reachability in
-                dispatch_async(dispatch_get_main_queue()) {
-                    if reachability.isReachableViaWiFi() {
-                        print("Reachable via WiFi")
-                    } else {
-                        print("Reachable via Cellular")
-                    }
-                }
-            }
-            
-            reachability!.whenUnreachable = { reachability in
-                dispatch_async(dispatch_get_main_queue()) {
-                    print("Not reachable")
-                }
-            }
-            
-            try reachability!.startNotifier()
-            
-        } catch {
-            print(error)
-        }
-        
         clipUploads = AppDelegate.realm.objects(ClipUpload.self).filter("clipUploaded = false AND thumbUploaded = false")
         
         FIRDatabase.database().referenceWithPath(".info/connected").observeEventType(.Value, withBlock: { snapshot in
@@ -93,7 +66,7 @@ class UploadHelper {
             try AppDelegate.realm.write {
                 AppDelegate.realm.add(clipUpload, update: true)
             }
-            if reachability == nil || reachability!.isReachable() {
+            if connected {
                 beginUpload(clipUpload)
             }
             

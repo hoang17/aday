@@ -21,5 +21,4 @@ target 'Pinly' do
     pod 'Eureka',  :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'swift2.3'
     pod 'ActiveLabel',  :git => 'https://github.com/optonaut/ActiveLabel.swift.git', :branch => 'swift-2.3'
     pod 'YYText'
-    pod 'ReachabilitySwift', '2.4'
 end
