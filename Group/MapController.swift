@@ -65,7 +65,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         let dayago = NSCalendar.currentCalendar()
             .dateByAddingUnit(
                 .Day,
-                value: -30,
+                value: -7,
                 toDate: today,
                 options: []
         )
@@ -221,7 +221,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                 }
                 let city = (placeMark.addressDictionary!["City"] as? String) ?? ""
                 let country = (placeMark.addressDictionary!["CountryCode"] as? String) ?? ""
-                let uid : String! = FIRAuth.auth()?.currentUser?.uid
+                let uid : String! = AppDelegate.uid
                 let update = ["city": city, "country": country]
                 let ref = FIRDatabase.database().reference().child("users").child(uid)
                 ref.updateChildValues(update)

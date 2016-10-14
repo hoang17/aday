@@ -12,18 +12,19 @@ import FirebaseAuth
 import AssetsLibrary
 import RealmSwift
 import AVFoundation
-
+import Kingfisher
 
 class UploadHelper {
     
     static let sharedInstance = UploadHelper()
     
     var notificationToken: NotificationToken?
-    var clipUploads: Results<ClipUpload>!
+    var clipUploads: Results<ClipModel>!
     let fileName = "output.mp4"
     let filePath: String!
     let fileUrl: NSURL!
     var connected = false
+    var uploading = [String:Bool]()
     
     init() {
         filePath = NSTemporaryDirectory() + fileName
@@ -31,7 +32,8 @@ class UploadHelper {
     }
     
     func start() {
-        clipUploads = AppDelegate.realm.objects(ClipUpload.self).filter("clipUploaded = false AND thumbUploaded = false")
+        let predicate = NSPredicate(format: "uid = %@ AND (clipUploaded = false OR thumbUploaded = false)", AppDelegate.uid)
+        clipUploads = AppDelegate.realm.objects(ClipModel.self).filter(predicate)
         
         FIRDatabase.database().referenceWithPath(".info/connected").observeEventType(.Value, withBlock: { snapshot in
             self.connected = snapshot.value as? Bool ?? false
@@ -50,28 +52,32 @@ class UploadHelper {
             
             print("\(clipUploads.count) items in upload queue")
             
-            for clipUpload in clipUploads {
-                beginUpload(clipUpload)
+            for clip in clipUploads {
+                beginUpload(clip)
             }
         }
     }
     
-    func enqueueUpload(clipUpload: ClipUpload) {
+    func enqueueUpload(clip: ClipModel) {
         
         do {
             // rename video file
-            let uploadFilePath = NSTemporaryDirectory() + clipUpload.fname
+            let uploadFilePath = NSTemporaryDirectory() + clip.fname
             let uploadFileUrl = NSURL(fileURLWithPath: uploadFilePath)
             try NSFileManager.defaultManager().moveItemAtURL(UploadHelper.sharedInstance.fileUrl, toURL: uploadFileUrl)
             
             // extract thumb image
-            self.extractThumbImage(uploadFilePath)
+            self.extractThumbImage(clip)
+            
+            clip.thumb = NSURL(fileURLWithPath: uploadFilePath + ".jpg").absoluteString!
             
             try AppDelegate.realm.write {
-                AppDelegate.realm.add(clipUpload, update: true)
+                AppDelegate.currentUser.clips.insert(clip, atIndex: 0)
+                AppDelegate.currentUser.uploaded = clip.date
+                AppDelegate.realm.add(AppDelegate.currentUser, update: true)
             }
             if connected {
-                beginUpload(clipUpload)
+                beginUpload(clip)
             }
             
         } catch {
@@ -80,34 +86,119 @@ class UploadHelper {
 
     }
     
-    func beginUpload(clipUpload: ClipUpload) {
+    func beginUpload(clip: ClipModel) {
         
-        print("Begin upload")
+        let uploadFilePath = NSTemporaryDirectory() + clip.fname
         
-        let uploadFilePath = NSTemporaryDirectory() + clipUpload.fname
-        
+        // delete realm object if file not found
         if (!NSFileManager.defaultManager().fileExistsAtPath(uploadFilePath)) {
-            print("Can not upload: File not found \(uploadFilePath)")
+            print("Pin not uploaded, file not found \(uploadFilePath)")
             try! AppDelegate.realm.write {
-                AppDelegate.realm.delete(clipUpload)
+                AppDelegate.realm.delete(clip)
             }
             return
         }
         
-        if clipUpload.uploading == false {
-            upload(clipUpload)
+        if uploading[clip.id] == true {
+            print("Pin is uploading on another thread \(clip.id)")
+            return
         }
-        if clipUpload.uploadingThumb == false {
-            uploadThumb(clipUpload)
+        
+        if clip.clipUploaded && clip.thumbUploaded {
+            print("Pin is uploaded on another thread \(clip.id)")
+        }
+        
+        print("Begin uploading pin \(clip.id)...")
+        
+        let group = dispatch_group_create()
+        
+        uploading[clip.id] = true
+        
+        if !clip.clipUploaded {
+            
+            // enter upload clip
+            dispatch_group_enter(group);
+            
+            upload(clip) { metadata, error in
+                // upload done
+                if (error != nil) {
+                    print("upload clip error")
+                    print(error)
+                } else {
+                    print("Clip uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
+                    
+                    try! AppDelegate.realm.write {
+                        clip.clipUploaded = true
+                    }
+                }
+                // leave upload clip
+                dispatch_group_leave(group)
+            }
+        }
+        
+        if !clip.thumbUploaded {
+            
+            // enter upload thumb
+            dispatch_group_enter(group);
+            
+            uploadThumb(clip) { metadata, error in
+                // upload done
+                if (error != nil) {
+                    print("upload thumb error")
+                    print(error)
+                } else {
+                    
+                    let thumb = (metadata!.downloadURL()?.absoluteString)!
+                    
+                    print("Thumb uploaded to " + thumb)
+                    
+                    try! AppDelegate.realm.write {
+                        clip.thumb = thumb
+                        clip.thumbUploaded = true
+                    }
+                }
+                // leave upload thumb
+                dispatch_group_leave(group)
+            }
+        }
+        
+        dispatch_group_notify(group, dispatch_get_main_queue()) {
+            
+            if !clip.clipUploaded || !clip.thumbUploaded {
+                clip.uploadRetry += 1
+                if (clip.uploadRetry > 3){
+                    print("Can not upload pin after \(clip.uploadRetry) retry")
+                    try! AppDelegate.realm.write {
+                        AppDelegate.realm.delete(clip)
+                    }
+                }
+                return
+            }
+            
+            let ref = FIRDatabase.database().reference()
+            
+            let data = Clip(data: clip)
+            
+            // Create new clip at /users/$userid/clips/$clipid
+            let update = [
+                "/users/\(clip.uid)/clips/\(clip.id)/": data.toAnyObject(),
+                "/users/\(clip.uid)/uploaded":clip.date]
+            
+            ref.updateChildValues(update)
+            
+            // Create new clip at /clips/$clipid
+            ref.child("clips").child(clip.id).setValue(data.toAnyObject())
+            
+            print("Clip is saved to db \(clip.id)")
+            
+            self.uploading[clip.id] = false
         }
     }
     
     // Upload clip & thumb then save clip to db
-    func upload(clipUpload: ClipUpload){
+    func upload(clip: ClipModel, completion: ((FIRStorageMetadata?, NSError?) -> Void)?){
         
-        clipUpload.uploading = true
-        
-        let uploadFile = clipUpload.fname
+        let uploadFile = clip.fname
         let uploadFilePath = NSTemporaryDirectory() + uploadFile
         let uploadFileUrl = NSURL(fileURLWithPath: uploadFilePath)
         
@@ -119,38 +210,12 @@ class UploadHelper {
         let metadata = FIRStorageMetadata()
         metadata.contentType = "video/mp4"
         
-        gs.child("clips/" + uploadFile).putFile(uploadFileUrl, metadata: metadata) { metadata, error in
-            
-            // upload done
-            if (error != nil) {
-                print("upload clip error")
-                print(error)
-            } else {
-                print("Clip uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
-                
-                try! AppDelegate.realm.write {
-                    clipUpload.clipUploaded = true
-                }
-            }
-            
-            clipUpload.uploading = false
-        }
+        gs.child("clips/" + uploadFile).putFile(uploadFileUrl, metadata: metadata, completion: completion)
     }
     
-    func uploadThumb(clipUpload: ClipUpload){
+    func uploadThumb(clip: ClipModel, completion: ((FIRStorageMetadata?, NSError?) -> Void)?){
         
-        clipUpload.uploadingThumb = true
-        
-        let uploadFile = clipUpload.fname
-        let uploadFilePath = NSTemporaryDirectory() + uploadFile
-        
-        let thumb = uploadFile + ".jpg"
-        let thumbFilePath = uploadFilePath + ".jpg"
-        let thumbFileUrl = NSURL(fileURLWithPath: thumbFilePath)
-        
-        if !NSFileManager.defaultManager().fileExistsAtPath(thumbFilePath) {
-            self.extractThumbImage(uploadFilePath)
-        }
+        self.extractThumbImage(clip)
         
         let metadata = FIRStorageMetadata()
         metadata.contentType = "image/jpg"
@@ -158,51 +223,32 @@ class UploadHelper {
         let storage = FIRStorage.storage()
         let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com")
         
-        gs.child("thumbs/" + thumb).putFile(thumbFileUrl, metadata: metadata) { metadata, error in
-            
-            // upload done
-            if (error != nil) {
-                print("upload thumb error")
-                print(error)
-            } else {
-                print("Thumb uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
-                
-                // Save clip to db
-                
-                let clip = Clip(clipUpload: clipUpload, thumb: (metadata!.downloadURL()?.absoluteString)!)
-
-                // Create new clip at /users/$userid/clips/$clipid
-                let update = [
-                    "/users/\(clip.uid)/clips/\(clip.id)/": clip.toAnyObject(),
-                    "/users/\(clip.uid)/uploaded":clip.date]
-                
-                let ref = FIRDatabase.database().reference()
-                ref.updateChildValues(update)
-                
-                // Create new clip at /clips/$clipid
-                ref.child("clips").child(clip.id).setValue(clip.toAnyObject())
-                
-                print("Clip is saved to db \(clip.id)")
-                
-                try! AppDelegate.realm.write {
-                    clipUpload.thumbUploaded = true
-                }
-            }
-            
-            clipUpload.uploadingThumb = false
-        }
+        let thumb = clip.fname + ".jpg"
+        let thumbFileUrl = NSURL(fileURLWithPath: NSTemporaryDirectory() + thumb)
+        
+        gs.child("thumbs/" + thumb).putFile(thumbFileUrl, metadata: metadata, completion: completion)
     }
     
     // Extract thumb image from video
-    func extractThumbImage(clipFilePath: String) {
+    func extractThumbImage(clip: ClipModel) {
+        
+        let clipFilePath = NSTemporaryDirectory() + clip.fname
+        let thumbFilePath = clipFilePath + ".jpg"
+        
+        if NSFileManager.defaultManager().fileExistsAtPath(thumbFilePath) {
+            return
+        }
+        
         do{
-            let thumbFilePath = clipFilePath + ".jpg"
             let asset = AVURLAsset(URL: NSURL(fileURLWithPath: clipFilePath), options: nil)
             let imgGenerator = AVAssetImageGenerator(asset: asset)
             imgGenerator.appliesPreferredTrackTransform = true
             let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
             let uiimg = UIImage(CGImage: cgimg)
             let data = UIImageJPEGRepresentation(uiimg, 0.5)
+            
+            KingfisherManager.sharedManager.cache.storeImage(uiimg, originalData: data, forKey: clip.id)
+            
             data!.writeToFile(thumbFilePath, atomically: true)
         } catch {
             print("extract thumb error")

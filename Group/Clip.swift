@@ -35,23 +35,6 @@ class Clip: NSObject {
     var thumb: String = ""
     var trash = false
     
-    init(clipUpload: ClipUpload, thumb: String) {
-        self.id = clipUpload.id
-        self.uid = clipUpload.uid
-        self.fname =  clipUpload.fname
-        self.txt = clipUpload.txt
-        self.y = clipUpload.y
-        self.long = clipUpload.long
-        self.lat = clipUpload.lat
-        self.lname = clipUpload.lname
-        self.city = clipUpload.city
-        self.country = clipUpload.country
-        self.sublocal = clipUpload.sublocal
-        self.subarea = clipUpload.subarea
-        self.thumb = thumb
-        self.date = NSDate().timeIntervalSince1970
-    }
-    
     init(snapshot: FIRDataSnapshot) {
         id = snapshot.key
         uid = snapshot.value!["uid"] as! String
@@ -60,14 +43,14 @@ class Clip: NSObject {
         y = snapshot.value!["y"] as! Float
         date = snapshot.value!["date"] as! Double
         flag = snapshot.value!["flag"] as? Bool ?? false
-        long = (snapshot.value!["long"] as? Double) ?? 0
-        lat = (snapshot.value!["lat"] as? Double) ?? 0
-        lname = (snapshot.value!["lname"] as? String) ?? ""
-        city = (snapshot.value!["city"] as? String) ?? ""
-        country = (snapshot.value!["country"] as? String) ?? ""
-        sublocal = (snapshot.value!["sublocal"] as? String) ?? ""
-        subarea = (snapshot.value!["subarea"] as? String) ?? ""
-        thumb = (snapshot.value!["thumb"] as? String) ?? ""
+        long = snapshot.value!["long"] as? Double ?? 0
+        lat = snapshot.value!["lat"] as? Double ?? 0
+        lname = snapshot.value!["lname"] as? String ?? ""
+        city = snapshot.value!["city"] as? String ?? ""
+        country = snapshot.value!["country"] as? String ?? ""
+        sublocal = snapshot.value!["sublocal"] as? String ?? ""
+        subarea = snapshot.value!["subarea"] as? String ?? ""
+        thumb = snapshot.value!["thumb"] as? String ?? ""
         trash = snapshot.value!["trash"] as? Bool ?? false
     }
     

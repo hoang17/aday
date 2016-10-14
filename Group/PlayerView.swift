@@ -81,7 +81,9 @@ class ClipThumbnail: UIView {
     init(clip: ClipModel, frame: CGRect) {
         super.init(frame: frame)
         img = UIImageView(frame:frame)
-        img.kf_setImageWithURL(NSURL(string: clip.thumb))
+        
+        let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
+        img.kf_setImageWithResource(resource)
         
         if clip.txt == "" {
             textField.hidden = true

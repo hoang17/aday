@@ -45,7 +45,7 @@ class ProfileController: FormViewController {
             <<< NameRow(){ row in
                 row.title = "Name"
                 row.placeholder = "Enter your name"
-                row.value = FIRAuth.auth()!.currentUser?.displayName
+                row.value = AppDelegate.currentUser.name
                 row.disabled = true
             }
 //            <<< AccountRow(){
@@ -54,7 +54,7 @@ class ProfileController: FormViewController {
 //                $0.placeholder = "Enter your username"
 //            }
 //                .onChange({ row in
-//                    let uid : String! = FIRAuth.auth()?.currentUser?.uid
+//                    let uid : String! = AppDelegate.uid
 //                    let update = ["username": row.value ?? ""]
 //                    let ref = FIRDatabase.database().reference().child("users").child(uid)
 //                    ref.updateChildValues(update)
@@ -68,7 +68,7 @@ class ProfileController: FormViewController {
             <<< EmailRow(){
                 $0.title = "Email"
                 $0.placeholder = "Enter your email address"
-                $0.value = FIRAuth.auth()!.currentUser?.email
+                $0.value = AppDelegate.currentUser.email
                 $0.disabled = true
             }
 //            <<< PasswordRow(){
@@ -81,7 +81,7 @@ class ProfileController: FormViewController {
 ////                    let email = values["email"] as! String
 //                    let password = row.value ?? ""
 //                    
-//                    let uid : String! = FIRAuth.auth()?.currentUser?.uid
+//                    let uid : String! = AppDelegate.uid
 //                    let update = ["password": password]
 //                    let ref = FIRDatabase.database().reference().child("users").child(uid)
 //                    ref.updateChildValues(update)
@@ -227,13 +227,34 @@ class ProfileController: FormViewController {
     
     func fixClips() {
         let ref = FIRDatabase.database().reference()
+        var i = 0
         ref.child("users").observeSingleEventOfType(.Value, withBlock: { snapshot in
             
             for item in snapshot.children {
                 
                 let user = User(snapshot: item as! FIRDataSnapshot)
                 for clip in user.clips {
-                    ref.child("clips").child(clip.id).setValue(clip.toAnyObject())
+                    
+                    // ref.child("clips").child(clip.id).setValue(clip.toAnyObject())
+                    
+                    // RESTORE FUCKING THUMB
+                    
+                    let storage = FIRStorage.storage()
+                    let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/thumbs")
+                    let filename = clip.fname + ".jpg"
+                    
+                    gs.child(filename).metadataWithCompletion { (metadata, error) -> Void in
+                        if (error != nil) {
+                            print(error)
+                        } else {
+                            i+=1
+                            print("update thumb \(i)")
+                            let thumb = (metadata!.downloadURL()?.absoluteString)!
+                            let childUpdates = ["/clips/\(clip.id)/thumb": thumb,
+                                "/users/\(user.uid)/clips/\(clip.id)/thumb": thumb]
+                            ref.updateChildValues(childUpdates)
+                        }
+                    }
                 }
             }
         })

@@ -32,13 +32,13 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
         let ref = FIRDatabase.database().reference()
         
-        let userID : String! = FIRAuth.auth()?.currentUser?.uid
+        let userID = AppDelegate.uid
         
         let today = NSDate()
         let dayago = NSCalendar.currentCalendar()
             .dateByAddingUnit(
                 .Day,
-                value: -30,
+                value: -7,
                 toDate: today,
                 options: []
         )
@@ -127,7 +127,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         let cell = tableView.cellForRowAtIndexPath(indexPath) as! TableViewCell
         let friend = self.friends[indexPath.row]
         let friendName = friend.name
-        let userID : String! = FIRAuth.auth()?.currentUser?.uid
+        let userID : String! = AppDelegate.uid
         let clip = Clip(data: friend.clips.first!)
 
         // Create the action sheet

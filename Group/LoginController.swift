@@ -120,27 +120,46 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             
             FIRAuth.auth()?.signInWithCredential(credential) { (currentUser, error) in
                 
-                let ref = FIRDatabase.database().reference()
-                
                 let uid = currentUser!.uid
                 
-                // Associate the session userID with user model
-                let user = ["uid": uid,
-                            "name": currentUser!.displayName!,
-                            "email": currentUser!.email!,
-                            "fb": FBSDKAccessToken.currentAccessToken().userID,
-                            "fb_token": FBSDKAccessToken.currentAccessToken().tokenString]
-                ref.child("users").child(uid).updateChildValues(user)
+                let ref = FIRDatabase.database().reference()
                 
-                let update = ["/users/\(uid)/friends/\(uid)/": true]
-                ref.updateChildValues(update)
+                print("load user")
                 
                 ref.child("users").child(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
                     
-                    AppDelegate.currentUser = User(snapshot: snapshot)
-                    let data = UserModel(user: AppDelegate.currentUser)
+                    print("loaded snapshot")
+                    
+                    if snapshot.value is NSNull {
+                        
+                        let name = currentUser!.displayName!
+                        let fb = FBSDKAccessToken.currentAccessToken().userID
+                        let fbtoken = FBSDKAccessToken.currentAccessToken().tokenString
+                        let email = currentUser!.email!
+                        
+                        let u = User(uid: uid, name: name, email: email, fb: fb, fbtoken: fbtoken)
+                        AppDelegate.currentUser = UserModel(user: u)
+                        try! AppDelegate.realm.write {
+                            AppDelegate.realm.add(AppDelegate.currentUser, update: true)
+                        }
+                        
+                        self.showDigitsLogin()
+                        
+                        let user = ["uid": uid,
+                            "name": name,
+                            "email": email,
+                            "fb": fb,
+                            "fbtoken": fbtoken]
+                        ref.child("users").child(uid).updateChildValues(user)
+                        let update = ["/users/\(uid)/friends/\(uid)/": true]
+                        ref.updateChildValues(update)
+                        return
+                    }
+                    
+                    let user = User(snapshot: snapshot)
+                    AppDelegate.currentUser = UserModel(user: user)
                     try! AppDelegate.realm.write {
-                        AppDelegate.realm.add(data, update: true)
+                        AppDelegate.realm.add(AppDelegate.currentUser, update: true)
                     }
                     
                     if (AppDelegate.currentUser.phone == "") {
@@ -192,11 +211,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         } catch {
             print(error)
         }
-    }
-    
-    func syncContacts() {
-        FriendsLoader.sharedInstance.loadFacebookFriends()
-        FriendsLoader.sharedInstance.loadAddressBook()
     }
     
     override func didReceiveMemoryWarning() {

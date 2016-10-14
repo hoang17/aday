@@ -26,7 +26,7 @@ class SearchController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let uid = FIRAuth.auth()?.currentUser?.uid
+        let uid = AppDelegate.uid
         
         ref.child("users").child(uid!).observeEventType(.Value, withBlock: { snapshot in
             self.tableView.reloadRowsAtIndexPaths(self.users.enumerate().map{ (index, element) in
@@ -192,7 +192,7 @@ class SearchController: UITableViewController {
         let realm = AppDelegate.realm
         
         let friendId : String = self.users[sender.tag].uid
-        let userID : String! = FIRAuth.auth()?.currentUser?.uid
+        let userID : String! = AppDelegate.uid
         
         if sender.titleLabel?.text == "follow" {
             

@@ -9,7 +9,7 @@ class UserModel: Object {
     dynamic var name: String!
     dynamic var email: String!
     dynamic var fb: String!
-    dynamic var fb_token: String = ""
+    dynamic var fbtoken: String = ""
     dynamic var phone: String!
     dynamic var fabric: String!
     dynamic var city: String!
@@ -21,17 +21,22 @@ class UserModel: Object {
     dynamic var flag: Bool = false
     dynamic var trash: Bool = false
     let clips = List<ClipModel>()
-    let following = List<Following>()
-    let friends = List<Follower>()
-    let flags = List<Flag>()
-        
+    
+    var friends = [String:Bool]()
+    var following = [String:Bool]()
+    var flags = [String:Bool]()
+    
+//    let following = List<Following>()
+//    let followers = List<Follower>()
+//    let flags = List<Flag>()
+    
     convenience init(user: User){
         self.init()
         uid = user.uid
         name = user.name
         email = user.email
         fb = user.fb
-        fb_token = user.fb_token
+        fbtoken = user.fbtoken
         phone = user.phone
         fabric = user.fabric
         city = user.city
@@ -46,60 +51,67 @@ class UserModel: Object {
             clips.append(data)
         }
         
-        for uid in user.following.keys {
-            following.append(Following(uid: uid))
-        }
+        following = user.following
+        friends = user.friends
+        flags = user.flags
         
-        for uid in user.following.keys {
-            friends.append(Follower(uid: uid))
-        }
-
-        for id in user.flags.keys {
-            flags.append(Flag(id: id))
-        }
+//        for uid in user.following.keys {
+//            following.append(Following(uid: uid))
+//        }
+//        
+//        for uid in user.following.keys {
+//            followers.append(Follower(uid: uid))
+//        }
+//
+//        for id in user.flags.keys {
+//            flags.append(Flag(id: id))
+//        }
     }
     
     override static func primaryKey() -> String? {
         return "uid"
     }
 
-}
-
-class Flag: Object {
-    dynamic var id: String!
-    
-    convenience init(id: String) {
-        self.init()
-        self.id = id
-    }
-    
-    override static func primaryKey() -> String? {
-        return "id"
+    override static func ignoredProperties() -> [String] {
+        return ["following", "friends", "flags"]
     }
 }
 
-class Following: Object {
-    dynamic var uid: String!
-
-    convenience init(uid: String) {
-        self.init()
-        self.uid = uid
-    }
-    
-    override static func primaryKey() -> String? {
-        return "uid"
-    }
-}
-
-class Follower: Object {
-    dynamic var uid: String!
-    
-    convenience init(uid: String) {
-        self.init()
-        self.uid = uid
-    }
-    
-    override static func primaryKey() -> String? {
-        return "uid"
-    }
-}
+//class Flag: Object {
+//    dynamic var id: String!
+//    
+//    convenience init(id: String) {
+//        self.init()
+//        self.id = id
+//    }
+//    
+//    override static func primaryKey() -> String? {
+//        return "id"
+//    }
+//}
+//
+//class Following: Object {
+//    dynamic var uid: String!
+//
+//    convenience init(uid: String) {
+//        self.init()
+//        self.uid = uid
+//    }
+//    
+//    override static func primaryKey() -> String? {
+//        return "uid"
+//    }
+//}
+//
+//class Follower: Object {
+//    dynamic var uid: String!
+//    
+//    convenience init(uid: String) {
+//        self.init()
+//        self.uid = uid
+//    }
+//    
+//    override static func primaryKey() -> String? {
+//        return "uid"
+//    }
+//}

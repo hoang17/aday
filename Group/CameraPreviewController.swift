@@ -101,12 +101,12 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
     func submit() {
         
         let id = FIRDatabase.database().reference().child("clips").childByAutoId().key
-        let uid : String = (FIRAuth.auth()?.currentUser?.uid)!
+        let uid = AppDelegate.uid
         let txt = self.textField.text
         let y = self.textLocation.y/self.view.frame.height
         let uploadFile = "\(id).mp4"
         
-        let clipUpload = ClipUpload(id: id, uid: uid, fname: uploadFile, txt: txt!, y: y, location: self.lo)
+        let clipUpload = ClipModel(id: id, uid: uid, fname: uploadFile, txt: txt!, y: y, location: self.lo)
         
         UploadHelper.sharedInstance.enqueueUpload(clipUpload)
         

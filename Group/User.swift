@@ -10,12 +10,12 @@ class User: NSObject {
     var uid: String
     var name: String
     var email: String
-    var fabric: String
-    var phone: String
     var fb: String
-    var fb_token: String = ""
-    var city: String
-    var country: String
+    var fabric: String = ""
+    var phone: String = ""
+    var fbtoken: String = ""
+    var city: String = ""
+    var country: String = ""
     var username: String = ""
     var password: String = ""
     var uploaded: Double = 0.0 // last uploaded time
@@ -26,16 +26,12 @@ class User: NSObject {
     var flag: Bool = false
     var trash: Bool = false
     
-    init(uid: String, name:String, email: String, fabric: String, phone: String, fb:String, fb_token:String, city: String, country: String) {
+    init(uid: String, name:String, email: String, fb:String, fbtoken:String) {
         self.uid = uid
         self.name = name
         self.email = email
-        self.fabric = fabric
-        self.phone = phone
         self.fb = fb
-        self.fb_token = fb_token
-        self.city = city
-        self.country = country
+        self.fbtoken = fbtoken
     }
     
     init(snapshot: FIRDataSnapshot) {
@@ -45,7 +41,7 @@ class User: NSObject {
         self.phone = (snapshot.value!["phone"] as? String) ?? ""
         self.fabric = (snapshot.value!["fabric"] as? String) ?? ""
         self.fb = snapshot.value!["fb"] as! String
-        self.fb_token = (snapshot.value!["fb_token"] as? String) ?? ""
+        self.fbtoken = (snapshot.value!["fbtoken"] as? String) ?? ""
         self.city = (snapshot.value!["city"] as? String) ?? ""
         self.country = (snapshot.value!["country"] as? String) ?? ""
         self.username = (snapshot.value!["username"] as? String) ?? ""
@@ -71,7 +67,7 @@ class User: NSObject {
             let dayago = NSCalendar.currentCalendar()
                 .dateByAddingUnit(
                     .Day,
-                    value: -30,
+                    value: -7,
                     toDate: today, 
                     options: []
             )
@@ -89,7 +85,7 @@ class User: NSObject {
         self.fabric = data.fabric
         self.phone = data.phone
         self.fb = data.fb
-        self.fb_token = data.fb_token
+        self.fbtoken = data.fbtoken
         self.city = data.city
         self.country = data.country
         self.uploaded = data.uploaded
@@ -103,12 +99,16 @@ class User: NSObject {
             clips.append(clip)
         }
         
-        for friend in data.friends {
-            friends[friend.uid] = true
-        }
+        self.following = data.following
+        self.friends = data.friends
+        self.flags = data.flags
         
-        for friend in data.following {
-            following[friend.uid] = true
-        }
+//        for friend in data.friends {
+//            friends[friend.uid] = true
+//        }
+//        
+//        for friend in data.following {
+//            following[friend.uid] = true
+//        }
     }
 }

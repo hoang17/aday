@@ -23,6 +23,10 @@ class ClipModel: Object {
     dynamic var follow: Bool = true
     dynamic var trash = false
     
+    dynamic var clipUploaded: Bool = false
+    dynamic var thumbUploaded: Bool = false
+    dynamic var uploadRetry: Int = 0
+    
     convenience init(clip: Clip){
         self.init()
         id = clip.id
@@ -41,33 +45,9 @@ class ClipModel: Object {
         subarea = clip.subarea
         thumb = clip.thumb
         trash = clip.trash
+        clipUploaded = true
+        thumbUploaded = true
     }
-    
-    override static func primaryKey() -> String? {
-        return "id"
-    }
-    
-}
-
-class ClipUpload: Object {
-    dynamic var id: String!
-    dynamic var uid: String!
-    dynamic var fname: String! // file name
-    dynamic var txt: String!
-    dynamic var y: Float = 0 // text position
-    dynamic var long: Double = 0
-    dynamic var lat: Double = 0
-    dynamic var lname: String = "" // location name
-    dynamic var city: String = ""
-    dynamic var country: String = ""
-    dynamic var sublocal: String = ""
-    dynamic var subarea: String = ""
-   
-    dynamic var uploading: Bool = false
-    dynamic var uploadingThumb: Bool = false
-    
-    dynamic var clipUploaded: Bool = false
-    dynamic var thumbUploaded: Bool = false
     
     convenience init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location: Location) {
         self.init()
@@ -83,12 +63,9 @@ class ClipUpload: Object {
         self.country = location.country ?? ""
         self.sublocal = location.sublocal ?? ""
         self.subarea = location.subarea ?? ""
+        self.date = NSDate().timeIntervalSince1970
     }
     
-    override static func ignoredProperties() -> [String] {
-        return ["uploading", "uploadingThumb"]
-    }
-
     override static func primaryKey() -> String? {
         return "id"
     }

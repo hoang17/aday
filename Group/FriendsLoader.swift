@@ -63,7 +63,7 @@ class FriendsLoader: NSObject {
 
             let friendId : String = (snapshot.value as! NSDictionary).allKeys.first as! String
             // Create new friend at /users/$userid/friends/$friendid
-            let userID : String! = FIRAuth.auth()?.currentUser?.uid
+            let userID : String! = AppDelegate.uid
             
             let update = ["/users/\(userID)/friends/\(friendId)/": true,
                           "/users/\(friendId)/friends/\(userID)/": true,
@@ -108,7 +108,7 @@ class FriendsLoader: NSObject {
                                 let friend = User(snapshot: snap)
                                 
                                 // Create new friend at /users/$userid/friends/$friendid
-                                let userID : String! = FIRAuth.auth()?.currentUser?.uid
+                                let userID : String! = AppDelegate.uid
                                 
                                 let update = ["/users/\(userID)/friends/\(friend.uid)/": true,
                                     "/users/\(friend.uid)/friends/\(userID)/": true,
@@ -136,7 +136,7 @@ class FriendsLoader: NSObject {
     
     func follow(friendId: String) {
         let ref = FIRDatabase.database().reference()
-        let userID : String! = FIRAuth.auth()?.currentUser?.uid
+        let userID : String! = AppDelegate.uid
         
         let update = ["/users/\(userID)/following/\(friendId)/": true,
                       "/users/\(friendId)/friends/\(userID)/": true]
@@ -146,7 +146,7 @@ class FriendsLoader: NSObject {
     func unfollow(friendId: String) {
         let ref = FIRDatabase.database().reference()
         let realm = AppDelegate.realm
-        let userID : String! = FIRAuth.auth()?.currentUser?.uid
+        let userID : String! = AppDelegate.uid
         
         let update = ["/users/\(userID)/following/\(friendId)/": false,
                       "/users/\(friendId)/friends/\(userID)/": false]
@@ -167,7 +167,7 @@ class FriendsLoader: NSObject {
     
     func reportClip(clip: ClipModel) {
         let ref = FIRDatabase.database().reference()
-        let userID : String! = FIRAuth.auth()?.currentUser?.uid
+        let userID : String! = AppDelegate.uid
         let update = [
             "/users/\(clip.uid)/clips/\(clip.id)/flag": true,
             "/users/\(userID)/flags/\(clip.id)": true]
@@ -183,7 +183,8 @@ class FriendsLoader: NSObject {
     func deleteClip(clip: ClipModel) {
         let ref = FIRDatabase.database().reference()
         
-        let update = ["/users/\(clip.uid)/clips/\(clip.id)/trash": true]
+        let update = ["/users/\(clip.uid)/clips/\(clip.id)/trash": true,
+                    "/clips/\(clip.id)/trash": true]
         ref.updateChildValues(update)
         
         let realm = AppDelegate.realm
