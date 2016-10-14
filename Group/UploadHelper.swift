@@ -71,10 +71,11 @@ class UploadHelper {
             
             clip.thumb = NSURL(fileURLWithPath: uploadFilePath + ".jpg").absoluteString!
             
+            let user = AppDelegate.currentUser
+            
             try AppDelegate.realm.write {
-                AppDelegate.currentUser.clips.insert(clip, atIndex: 0)
-                AppDelegate.currentUser.uploaded = clip.date
-                AppDelegate.realm.add(AppDelegate.currentUser, update: true)
+                user.clips.insert(clip, atIndex: 0)
+                user.uploaded = clip.date
             }
             if connected {
                 beginUpload(clip)
@@ -181,13 +182,11 @@ class UploadHelper {
             
             // Create new clip at /users/$userid/clips/$clipid
             let update = [
-                "/users/\(clip.uid)/clips/\(clip.id)/": data.toAnyObject(),
-                "/users/\(clip.uid)/uploaded":clip.date]
+                "/users/\(clip.uid)/clips/\(clip.id)": data.toAnyObject(),
+                "/users/\(clip.uid)/uploaded": clip.date,
+                "/clips/\(clip.id)": data.toAnyObject()]
             
             ref.updateChildValues(update)
-            
-            // Create new clip at /clips/$clipid
-            ref.child("clips").child(clip.id).setValue(data.toAnyObject())
             
             print("Clip is saved to db \(clip.id)")
             

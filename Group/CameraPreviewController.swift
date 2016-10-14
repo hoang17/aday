@@ -106,9 +106,9 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         let y = self.textLocation.y/self.view.frame.height
         let uploadFile = "\(id).mp4"
         
-        let clipUpload = ClipModel(id: id, uid: uid, fname: uploadFile, txt: txt!, y: y, location: self.lo)
+        let clip = ClipModel(id: id, uid: uid, fname: uploadFile, txt: txt!, y: y, location: self.lo)
         
-        UploadHelper.sharedInstance.enqueueUpload(clipUpload)
+        UploadHelper.sharedInstance.enqueueUpload(clip)
         
    self.back()
     }

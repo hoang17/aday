@@ -26,22 +26,24 @@ class MainController: UIViewController {
             // AppDelegate.currentUser = User(data: user)
             
             AppDelegate.currentUser = user
-            print("loaded currentUser from local: " + AppDelegate.currentUser.name)
+            print("loaded currentUser from local " + AppDelegate.currentUser.name)
+            
+        } else {
+            let ref = FIRDatabase.database().reference()
+            ref.child("users").child(AppDelegate.uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                //            AppDelegate.currentUser = User(snapshot: snapshot)
+                //            let data = UserModel(user: AppDelegate.currentUser)
+                
+                let user = User(snapshot: snapshot)
+                AppDelegate.currentUser = UserModel(user: user)
+                
+                try! AppDelegate.realm.write {
+                    AppDelegate.realm.add(AppDelegate.currentUser, update: true)
+                }
+                print("loaded current user from remote " + AppDelegate.currentUser.name)
+            })
         }
         
-        let ref = FIRDatabase.database().reference()
-        ref.child("users").child(AppDelegate.uid).observeEventType(.Value, withBlock: { snapshot in
-//            AppDelegate.currentUser = User(snapshot: snapshot)
-//            let data = UserModel(user: AppDelegate.currentUser)
-            
-            let user = User(snapshot: snapshot)
-            AppDelegate.currentUser = UserModel(user: user)
-            
-            try! AppDelegate.realm.write {
-                AppDelegate.realm.add(AppDelegate.currentUser, update: true)
-            }
-            print("loaded current user from remote & saved to local: " + AppDelegate.currentUser.name)
-        })
         
         // Init upload queue
         

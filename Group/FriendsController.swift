@@ -53,6 +53,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
                 // tableView.reloadData()
                 break
             case .Update(_, let deletions, let insertions, let modifications):
+                print("reload friends tableview")
                 self!.tableView.beginUpdates()
                 self!.tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) },
                     withRowAnimation: .Automatic)
@@ -79,8 +80,6 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         tableView.separatorInset = UIEdgeInsetsZero
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         tableView.separatorStyle = .None
-        
-        print("loading friends for \(userID)...")
         
         ref.child("users").queryOrderedByChild("friends/\(userID)").queryEqualToValue(true).observeEventType(.Value, withBlock: { snapshot in
             
