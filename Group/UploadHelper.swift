@@ -80,7 +80,6 @@ class UploadHelper {
                 realm.add(clip, update: true)
                 realm.add(clipUpload, update: true)
                 user.uploaded = clip.date
-                // user.clips.insert(clip, atIndex: 0)
             }
             if connected {
                 beginUpload(clipUpload)

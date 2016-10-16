@@ -24,8 +24,6 @@ class UserModel: Object {
     dynamic var updated: Double = 0
     dynamic var created: Double = 0
     
-    // let clips = List<ClipModel>()
-    
     var friends = [String:Bool]()
     var following = [String:Bool]()
     var flags = [String:Bool]()
@@ -53,11 +51,6 @@ class UserModel: Object {
         uploaded = user.uploaded
         updated = user.updated
         created = user.created
-        
-//        for clip in user.clips{
-//            let data = ClipModel(clip: clip)
-//            clips.append(data)
-//        }
         
         following = user.following
         friends = user.friends

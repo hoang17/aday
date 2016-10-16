@@ -24,8 +24,6 @@ class User: NSObject {
     var flag: Bool = false
     var trash: Bool = false
     
-    // var clips = [Clip]()
-
     var created: Double = 0
     var updated: Double = 0
     var uploaded: Double = 0 // last uploaded time
@@ -60,11 +58,6 @@ class User: NSObject {
         self.friends = snapshot.value!["friends"] as? [String : Bool] ?? [String:Bool]()
         self.following = snapshot.value!["following"] as? [String : Bool] ?? [String:Bool]()
         self.flags = snapshot.value!["flags"] as? [String : Bool] ?? [String:Bool]()
-        
-//        for clipSnapshot in snapshot.childSnapshotForPath("clips").children {
-//            let clip = Clip(snapshot: clipSnapshot as! FIRDataSnapshot)
-//            self.clips.insert(clip, atIndex: 0)            
-//        }
     }
     
     init(data: UserModel) {
@@ -82,12 +75,6 @@ class User: NSObject {
         self.flag = data.flag
         self.trash = data.trash
         self.uploaded = data.uploaded
-        
-//        self.clips = [Clip]()
-//        for c in data.clips{
-//            let clip = Clip(data: c)
-//            clips.append(clip)
-//        }
         
         self.following = data.following
         self.friends = data.friends
