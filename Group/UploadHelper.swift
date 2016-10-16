@@ -193,7 +193,7 @@ class UploadHelper {
                 "/pins/\(uid)/\(clip.id)": data.toAnyObject(),
                 "/users/\(uid)/clips/\(clip.id)": data.toAnyObject(),
                 "/users/\(uid)/uploaded": clip.date,
-                "/users/\(uid)/updated": FIRServerValue.timestamp(),
+                "/users/\(uid)/updated": clip.date,
                 "/clips/\(clip.id)": data.toAnyObject()]
             
             ref.updateChildValues(update)

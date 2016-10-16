@@ -23,7 +23,6 @@ class ClipModel: Object {
     dynamic var trash = false
     dynamic var date: Double = 0.0
     dynamic var updated: Double = 0.0
-    dynamic var created: Double = 0.0
     
     convenience init(clip: Clip){
         self.init()
@@ -44,7 +43,6 @@ class ClipModel: Object {
         trash = clip.trash
         date = clip.date
         updated = clip.updated
-        created = clip.created
     }
 
     convenience init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location: Location) {
@@ -62,6 +60,7 @@ class ClipModel: Object {
         self.sublocal = location.sublocal ?? ""
         self.subarea = location.subarea ?? ""
         self.date = NSDate().timeIntervalSince1970
+        self.updated = self.date
     }
     
     override static func primaryKey() -> String? {

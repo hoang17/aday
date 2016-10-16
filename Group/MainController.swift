@@ -79,7 +79,6 @@ class MainController: UIViewController {
                     print("updated \(friend!.name)")
                 }
                 
-                // let startdate = uploaded > dayago ? uploaded + 0.000001 : dayago
                 let startdate = dayago
                 
                 ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(startdate).observeEventType(.ChildAdded, withBlock: { snapshot in
@@ -88,7 +87,7 @@ class MainController: UIViewController {
                     
                     // Initial load - Check if pin has been modified
                     if let clip = realm.objectForPrimaryKey(ClipModel.self, key: data.id) {
-                        if clip.date == data.date {
+                        if clip.updated == data.updated {
                             return
                         }
                     }
@@ -100,8 +99,28 @@ class MainController: UIViewController {
                         realm.add(clip, update: true)
                         friend!.uploaded = clip.date
                     }
+                    print("added pin \(user.name) \(clip.id)")
+                })
+                
+                ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(startdate).observeEventType(.ChildChanged, withBlock: { snapshot in
+                    
+                    let data = Clip(snapshot: snapshot)
+                    
+                    // Initial load - Check if pin has been modified
+                    if let clip = realm.objectForPrimaryKey(ClipModel.self, key: data.id) {
+                        if clip.updated == data.updated {
+                            return
+                        }
+                    }
+                    
+                    let clip = ClipModel(clip: data)
+                    try! realm.write {
+                        realm.add(clip, update: true)
+                        friend!.updated = clip.updated
+                    }
                     print("updated pin \(user.name) \(clip.id)")
                 })
+                
             }
             
         })

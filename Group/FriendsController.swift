@@ -109,9 +109,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         cell.locationLabel.text = friend.city + " · " + friend.country
         cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
         
-        let clips = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friend.uid)' AND trash = false AND date > \(d)").sorted("date", ascending: false)
-        // let clips = AppDelegate.realm.objects(ClipModel.self).filter("")
-        cell.clips = Array(clips)
+        cell.clips = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friend.uid)' AND trash = false AND date > \(d)").sorted("date", ascending: false)
         
         // cell.clips = Array(friend.clips)
         

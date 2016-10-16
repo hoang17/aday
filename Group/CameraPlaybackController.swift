@@ -14,12 +14,13 @@ import DigitsKit
 import DateTools
 import FBSDKShareKit
 import AssetsLibrary
+import RealmSwift
 
 class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKSharingDelegate {
 
     let textField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
-    var clips = [ClipModel]()
+    var clips: Results<ClipModel>!
     var playIndex = 0
     var player: ClipPlayer!
     

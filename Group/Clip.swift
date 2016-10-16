@@ -33,9 +33,7 @@ class Clip: NSObject {
     var subarea: String
     var thumb: String = ""
     var trash = false
-    var date: Double
-    
-    var created: Double = 0
+    var date: Double = 0
     var updated: Double = 0
     
     init(snapshot: FIRDataSnapshot) {
@@ -55,7 +53,6 @@ class Clip: NSObject {
         thumb = snapshot.value!["thumb"] as? String ?? ""
         trash = snapshot.value!["trash"] as? Bool ?? false
         date = snapshot.value!["date"] as? Double ?? 0
-        created = snapshot.value!["created"] as? Double ?? 0
         updated = snapshot.value!["updated"] as? Double ?? 0
     }
     
@@ -65,7 +62,6 @@ class Clip: NSObject {
         self.fname =  data.fname
         self.txt = data.txt
         self.y = data.y
-        self.date = data.date
         self.long = data.long
         self.lat = data.lat
         self.lname = data.lname
@@ -76,6 +72,8 @@ class Clip: NSObject {
         self.thumb = data.thumb
         self.flag = data.flag
         self.trash = data.trash
+        self.date = data.date
+        self.updated = data.updated
     }
     
     func toAnyObject() -> AnyObject {
@@ -96,8 +94,7 @@ class Clip: NSObject {
             "subarea": subarea,
             "thumb": thumb,
             "date": date,
-            "created": FIRServerValue.timestamp(),
-            "updated": FIRServerValue.timestamp()
+            "updated": updated
         ]
     }
 

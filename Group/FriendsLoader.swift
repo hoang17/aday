@@ -182,14 +182,18 @@ class FriendsLoader: NSObject {
     
     func deleteClip(clip: ClipModel) {
         let ref = FIRDatabase.database().reference()
-        
-        let update = ["/users/\(clip.uid)/clips/\(clip.id)/trash": true,
-                    "/clips/\(clip.id)/trash": true]
+        let updated = NSDate().timeIntervalSince1970
+        let update : [String: AnyObject] = ["/pins/\(clip.uid)/\(clip.id)/updated": updated,
+                                            "/pins/\(clip.uid)/\(clip.id)/trash": true,
+                                            "/users/\(clip.uid)/clips/\(clip.id)/trash": true,
+                                            "/users/\(clip.uid)/updated": updated,
+                                            "/clips/\(clip.id)/trash": true]
         ref.updateChildValues(update)
         
         let realm = AppDelegate.realm
         try! realm.write {
             clip.trash = true
+            clip.updated = updated
         }
     }
 }

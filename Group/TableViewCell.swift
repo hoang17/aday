@@ -9,6 +9,7 @@
 import UIKit
 import AVKit
 import AVFoundation
+import RealmSwift
 
 class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
     
@@ -17,7 +18,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     var locationLabel = UILabel()
     var profileImg = UIImageView()
     var moreButton = UILabel()
-    var clips: [ClipModel]!
+    var clips: Results<ClipModel>!
     let cellWidth = 150
     let cellHeight = 266
     var index: Int = 0
