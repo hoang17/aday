@@ -118,6 +118,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         let clip = Clip(data: clips[playIndex])
         
+        print(clip.id)
+        
         let userID : String! = AppDelegate.uid
         
         let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)

@@ -102,7 +102,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         
         let id = FIRDatabase.database().reference().child("clips").childByAutoId().key
         let uid = AppDelegate.uid
-        let txt = self.textField.text
+        let txt = self.textField.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         let y = self.textLocation.y/self.view.frame.height
         let uploadFile = "\(id).mp4"
         
