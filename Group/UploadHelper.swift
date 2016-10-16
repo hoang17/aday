@@ -74,10 +74,13 @@ class UploadHelper {
             
             let clipUpload = ClipUpload(id: clip.id)
             
-            try AppDelegate.realm.write {
-                AppDelegate.realm.add(clipUpload, update: true)
+            let realm = AppDelegate.realm
+            
+            try realm.write {
+                realm.add(clip, update: true)
+                realm.add(clipUpload, update: true)
                 user.uploaded = clip.date
-                user.clips.insert(clip, atIndex: 0)
+                // user.clips.insert(clip, atIndex: 0)
             }
             if connected {
                 beginUpload(clipUpload)
@@ -91,116 +94,121 @@ class UploadHelper {
     
     func beginUpload(clipUpload: ClipUpload) {
         
-        let clip = AppDelegate.realm.objectForPrimaryKey(ClipModel.self, key: clipUpload.id)!
-        
-        let uploadFilePath = NSTemporaryDirectory() + clip.fname
-        
-        // delete realm object if file not found
-        if (!NSFileManager.defaultManager().fileExistsAtPath(uploadFilePath)) {
-            print("Pin not uploaded, file not found \(uploadFilePath)")
-            try! AppDelegate.realm.write {
-                AppDelegate.realm.delete(clip)
-            }
-            return
-        }
-        
-        if uploading[clip.id] == true {
-            print("Pin is uploading on another thread \(clip.id)")
-            return
-        }
-        
-        if clipUpload.clipUploaded && clipUpload.thumbUploaded {
-            print("Pin is uploaded on another thread \(clip.id)")
-        }
-        
-        print("Begin uploading pin \(clip.id)...")
-        
-        let group = dispatch_group_create()
-        
-        uploading[clip.id] = true
-        
-        if !clipUpload.clipUploaded {
+        if let clip = AppDelegate.realm.objectForPrimaryKey(ClipModel.self, key: clipUpload.id) {
+         
+            let uploadFilePath = NSTemporaryDirectory() + clip.fname
             
-            // enter upload clip
-            dispatch_group_enter(group);
-            
-            upload(clip) { metadata, error in
-                // upload done
-                if (error != nil) {
-                    print("upload clip error")
-                    print(error)
-                } else {
-                    print("Clip uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
-                    
-                    try! AppDelegate.realm.write {
-                        clipUpload.clipUploaded = true
-                    }
-                }
-                // leave upload clip
-                dispatch_group_leave(group)
-            }
-        }
-        
-        if !clipUpload.thumbUploaded {
-            
-            // enter upload thumb
-            dispatch_group_enter(group);
-            
-            uploadThumb(clip) { metadata, error in
-                // upload done
-                if (error != nil) {
-                    print("upload thumb error")
-                    print(error)
-                } else {
-                    
-                    let thumb = (metadata!.downloadURL()?.absoluteString)!
-                    
-                    print("Thumb uploaded to " + thumb)
-                    
-                    try! AppDelegate.realm.write {
-                        clipUpload.thumb = thumb
-                        clipUpload.thumbUploaded = true
-                    }
-                }
-                // leave upload thumb
-                dispatch_group_leave(group)
-            }
-        }
-        
-        dispatch_group_notify(group, dispatch_get_main_queue()) {
-            
-            if !clipUpload.clipUploaded || !clipUpload.thumbUploaded {
-                
-                clipUpload.uploadRetry += 1
-                
-                if (clipUpload.uploadRetry > 3){
-                    print("Can not upload pin after \(clipUpload.uploadRetry) retry")
-                    try! AppDelegate.realm.write {
-                        AppDelegate.realm.delete(clip)
-                    }
+            // delete realm object if file not found
+            if (!NSFileManager.defaultManager().fileExistsAtPath(uploadFilePath)) {
+                print("Pin not uploaded, file not found \(uploadFilePath)")
+                try! AppDelegate.realm.write {
+                    AppDelegate.realm.delete(clip)
                 }
                 return
             }
             
-            let ref = FIRDatabase.database().reference()
+            if uploading[clip.id] == true {
+                print("Pin is uploading on another thread \(clip.id)")
+                return
+            }
             
-            let data = Clip(data: clip)
-            data.thumb = clipUpload.thumb
-            let uid = clip.uid
+            if clipUpload.clipUploaded && clipUpload.thumbUploaded {
+                print("Pin is uploaded on another thread \(clip.id)")
+            }
             
-            // Create new clip at /users/$userid/clips/$clipid
-            let update = [
-                "/pins/\(uid)/\(clip.id)": data.toAnyObject(),
-                "/users/\(uid)/clips/\(clip.id)": data.toAnyObject(),
-                "/users/\(uid)/uploaded": clip.date,
-                "/users/\(uid)/updated": clip.date,
-                "/clips/\(clip.id)": data.toAnyObject()]
+            print("Begin uploading pin \(clip.id)...")
             
-            ref.updateChildValues(update)
+            let group = dispatch_group_create()
             
-            print("Clip is saved to db \(clip.id)")
+            uploading[clip.id] = true
             
-            self.uploading[clip.id] = false
+            if !clipUpload.clipUploaded {
+                
+                // enter upload clip
+                dispatch_group_enter(group);
+                
+                upload(clip) { metadata, error in
+                    // upload done
+                    if (error != nil) {
+                        print("upload clip error")
+                        print(error)
+                    } else {
+                        print("Clip uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
+                        
+                        try! AppDelegate.realm.write {
+                            clipUpload.clipUploaded = true
+                        }
+                    }
+                    // leave upload clip
+                    dispatch_group_leave(group)
+                }
+            }
+            
+            if !clipUpload.thumbUploaded {
+                
+                // enter upload thumb
+                dispatch_group_enter(group);
+                
+                uploadThumb(clip) { metadata, error in
+                    // upload done
+                    if (error != nil) {
+                        print("upload thumb error")
+                        print(error)
+                    } else {
+                        
+                        let thumb = (metadata!.downloadURL()?.absoluteString)!
+                        
+                        print("Thumb uploaded to " + thumb)
+                        
+                        try! AppDelegate.realm.write {
+                            clipUpload.thumb = thumb
+                            clipUpload.thumbUploaded = true
+                        }
+                    }
+                    // leave upload thumb
+                    dispatch_group_leave(group)
+                }
+            }
+            
+            dispatch_group_notify(group, dispatch_get_main_queue()) {
+                
+                if !clipUpload.clipUploaded || !clipUpload.thumbUploaded {
+                    
+                    clipUpload.uploadRetry += 1
+                    
+                    if (clipUpload.uploadRetry > 3){
+                        print("Can not upload pin after \(clipUpload.uploadRetry) retry")
+                        try! AppDelegate.realm.write {
+                            AppDelegate.realm.delete(clip)
+                        }
+                    }
+                    return
+                }
+                
+                let ref = FIRDatabase.database().reference()
+                
+                let data = Clip(data: clip)
+                data.thumb = clipUpload.thumb
+                let uid = clip.uid
+                
+                // Create new clip at /users/$userid/clips/$clipid
+                let update = [
+                    "/pins/\(uid)/\(clip.id)": data.toAnyObject(),
+                    "/users/\(uid)/clips/\(clip.id)": data.toAnyObject(),
+                    "/users/\(uid)/uploaded": clip.date,
+                    "/users/\(uid)/updated": clip.date,
+                    "/clips/\(clip.id)": data.toAnyObject()]
+                
+                ref.updateChildValues(update)
+                
+                print("Clip is saved to db \(clip.id)")
+                
+                self.uploading[clip.id] = false
+            }
+        } else {
+            try! AppDelegate.realm.write {
+                AppDelegate.realm.delete(clipUpload)
+            }
         }
     }
     

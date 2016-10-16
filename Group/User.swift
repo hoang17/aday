@@ -18,12 +18,13 @@ class User: NSObject {
     var country: String = ""
     var username: String = ""
     var password: String = ""
-    var clips = [Clip]()
     var friends = [String:Bool]()
     var following = [String:Bool]()
     var flags = [String:Bool]()
     var flag: Bool = false
     var trash: Bool = false
+    
+    // var clips = [Clip]()
 
     var created: Double = 0
     var updated: Double = 0
@@ -82,11 +83,11 @@ class User: NSObject {
         self.trash = data.trash
         self.uploaded = data.uploaded
         
-        self.clips = [Clip]()
-        for c in data.clips{
-            let clip = Clip(data: c)
-            clips.append(clip)
-        }
+//        self.clips = [Clip]()
+//        for c in data.clips{
+//            let clip = Clip(data: c)
+//            clips.append(clip)
+//        }
         
         self.following = data.following
         self.friends = data.friends

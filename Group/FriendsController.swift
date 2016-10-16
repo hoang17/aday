@@ -25,24 +25,12 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
     
     var notificationToken: NotificationToken? = nil
     
-    var d : Double = 0
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let realm = AppDelegate.realm
-        
-        let today = NSDate()
-        let dayago = NSCalendar.currentCalendar()
-            .dateByAddingUnit(
-                .Day,
-                value: -7,
-                toDate: today,
-                options: []
-        )
-        d = dayago!.timeIntervalSince1970
-        
-        friends = realm.objects(UserModel.self).filter("follow = true AND uploaded > \(d)").sorted("uploaded", ascending: false)
+                
+        friends = realm.objects(UserModel.self).filter("follow = true").sorted("uploaded", ascending: false)
         
         notificationToken = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             guard (self?.tableView) != nil else { return }
@@ -103,18 +91,16 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let friend = friends[indexPath.row]
-        let cell = TableViewCell()
+        let cell = TableViewCell(friendUid: friend.uid)
         cell.controller = self
         cell.nameLabel.text = friend.name
         cell.locationLabel.text = friend.city + " · " + friend.country
         cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
+        cell.friendName = friend.name
         
-        cell.clips = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friend.uid)' AND trash = false AND date > \(d)").sorted("date", ascending: false)
-        
+        // cell.friendUid = friend.uid
         // cell.clips = Array(friend.clips)
         
-        cell.friendName = friend.name
-        cell.friendUid = friend.uid
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapMore))
         cell.moreButton.addGestureRecognizer(tap)
         return cell
@@ -132,7 +118,10 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         let friend = self.friends[indexPath.row]
         let friendName = friend.name
         let userID : String! = AppDelegate.uid
-        let clip = Clip(data: friend.clips.first!)
+        
+        let c = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(userID)'").first!
+        let clip = Clip(data: c)
+        // let clip = Clip(data: friend.clips.first!)
 
         // Create the action sheet
         let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)

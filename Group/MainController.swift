@@ -116,7 +116,6 @@ class MainController: UIViewController {
                     let clip = ClipModel(clip: data)
                     try! realm.write {
                         realm.add(clip, update: true)
-                        friend!.updated = clip.updated
                     }
                     print("updated pin \(user.name) \(clip.id)")
                 })

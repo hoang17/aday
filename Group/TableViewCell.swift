@@ -25,14 +25,43 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     var friendName: String!
     var friendUid: String!
     
+    var notificationToken: NotificationToken? = nil
+    
     weak var controller: FriendsController?
 
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)!
-    }
-    
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    convenience init(friendUid: String) {
+        self.init()
+        
+        self.friendUid = friendUid
+        
+        let today = NSDate()
+        let dayago = NSCalendar.currentCalendar()
+            .dateByAddingUnit(
+                .Day,
+                value: -7,
+                toDate: today,
+                options: []
+        )
+        let d = dayago!.timeIntervalSince1970
+        
+        clips = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friendUid)' AND trash = false AND date > \(d)").sorted("date", ascending: false)
+        
+        self.notificationToken = clips.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
+            guard (self?.collectionView) != nil else { return }
+            switch changes {
+            case .Initial:
+                // self?.collectionView.reloadData()
+                break
+            case .Update(_, let deletions, let insertions, let modifications):
+                self?.collectionView.performBatchUpdates({
+                    self?.collectionView.insertItemsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) })
+                    self?.collectionView.deleteItemsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) })
+                    self?.collectionView.reloadItemsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) })
+                }, completion: nil)
+            case .Error(let error):
+                print(error)
+            }
+        }
         
         self.selectionStyle = .None;
         
