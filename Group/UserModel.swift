@@ -14,12 +14,16 @@ class UserModel: Object {
     dynamic var fabric: String!
     dynamic var city: String!
     dynamic var country: String!
-    dynamic var uploaded: Double = 0.0
     dynamic var username: String = ""
     dynamic var password: String = ""
     dynamic var follow: Bool = true
     dynamic var flag: Bool = false
     dynamic var trash: Bool = false
+    
+    dynamic var uploaded: Double = 0
+    dynamic var updated: Double = 0
+    dynamic var created: Double = 0
+    
     let clips = List<ClipModel>()
     
     var friends = [String:Bool]()
@@ -41,15 +45,19 @@ class UserModel: Object {
         fabric = user.fabric
         city = user.city
         country = user.country
-        uploaded = user.uploaded
         username = user.username
         password = user.password
         flag = user.flag
         trash = user.trash
-        for clip in user.clips{
-            let data = ClipModel(clip: clip)
-            clips.append(data)
-        }
+        
+        uploaded = user.uploaded
+        updated = user.updated
+        created = user.created
+        
+//        for clip in user.clips{
+//            let data = ClipModel(clip: clip)
+//            clips.append(data)
+//        }
         
         following = user.following
         friends = user.friends
@@ -67,7 +75,7 @@ class UserModel: Object {
 //            flags.append(Flag(id: id))
 //        }
     }
-    
+        
     override static func primaryKey() -> String? {
         return "uid"
     }

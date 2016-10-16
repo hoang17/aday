@@ -221,13 +221,16 @@ class ProfileController: FormViewController {
     }
 
     func syncContacts() {
-        FriendsLoader.sharedInstance.loadFacebookFriends()
-        FriendsLoader.sharedInstance.loadAddressBook()
+        fixClips()
+//        FriendsLoader.sharedInstance.loadFacebookFriends()
+//        FriendsLoader.sharedInstance.loadAddressBook()
     }
     
     func fixClips() {
         let ref = FIRDatabase.database().reference()
+        
         var i = 0
+        
         ref.child("users").observeSingleEventOfType(.Value, withBlock: { snapshot in
             
             for item in snapshot.children {
@@ -235,26 +238,29 @@ class ProfileController: FormViewController {
                 let user = User(snapshot: item as! FIRDataSnapshot)
                 for clip in user.clips {
                     
-                    // ref.child("clips").child(clip.id).setValue(clip.toAnyObject())
+                    ref.child("pins/\(user.uid)/\(clip.id)").setValue(clip.toAnyObject())
                     
-                    // RESTORE FUCKING THUMB
+                    i+=1
+                    print(i)
                     
-                    let storage = FIRStorage.storage()
-                    let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/thumbs")
-                    let filename = clip.fname + ".jpg"
-                    
-                    gs.child(filename).metadataWithCompletion { (metadata, error) -> Void in
-                        if (error != nil) {
-                            print(error)
-                        } else {
-                            i+=1
-                            print("update thumb \(i)")
-                            let thumb = (metadata!.downloadURL()?.absoluteString)!
-                            let childUpdates = ["/clips/\(clip.id)/thumb": thumb,
-                                "/users/\(user.uid)/clips/\(clip.id)/thumb": thumb]
-                            ref.updateChildValues(childUpdates)
-                        }
-                    }
+//                    // RESTORE FUCKING THUMB
+//                    
+//                    let storage = FIRStorage.storage()
+//                    let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/thumbs")
+//                    let filename = clip.fname + ".jpg"
+//                    
+//                    gs.child(filename).metadataWithCompletion { (metadata, error) -> Void in
+//                        if (error != nil) {
+//                            print(error)
+//                        } else {
+//                            i+=1
+//                            print("update thumb \(i)")
+//                            let thumb = (metadata!.downloadURL()?.absoluteString)!
+//                            let childUpdates = ["/clips/\(clip.id)/thumb": thumb,
+//                                "/users/\(user.uid)/clips/\(clip.id)/thumb": thumb]
+//                            ref.updateChildValues(childUpdates)
+//                        }
+//                    }
                 }
             }
         })

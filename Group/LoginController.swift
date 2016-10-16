@@ -137,6 +137,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         let fbtoken = FBSDKAccessToken.currentAccessToken().tokenString
                         let email = currentUser!.email!
                         
+                        // let created = NSDate().timeIntervalSince1970
+                        
                         let u = User(uid: uid, name: name, email: email, fb: fb, fbtoken: fbtoken)
                         AppDelegate.currentUser = UserModel(user: u)
                         try! AppDelegate.realm.write {
@@ -149,9 +151,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                             "name": name,
                             "email": email,
                             "fb": fb,
-                            "fbtoken": fbtoken]
-                        ref.child("users").child(uid).updateChildValues(user)
-                        let update = ["/users/\(uid)/friends/\(uid)/": true]
+                            "fbtoken": fbtoken,
+                            "friends/\(uid)": true,
+                            "created": FIRServerValue.timestamp()]
+                        
+                        let update = ["/users/\(uid)": user]
+                        
                         ref.updateChildValues(update)
                         return
                     }

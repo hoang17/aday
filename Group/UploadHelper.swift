@@ -19,7 +19,7 @@ class UploadHelper {
     static let sharedInstance = UploadHelper()
     
     var notificationToken: NotificationToken?
-    var clipUploads: Results<ClipModel>!
+    var clipUploads: Results<ClipUpload>!
     let fileName = "output.mp4"
     let filePath: String!
     let fileUrl: NSURL!
@@ -32,8 +32,7 @@ class UploadHelper {
     }
     
     func start() {
-        let predicate = NSPredicate(format: "uid = %@ AND (clipUploaded = false OR thumbUploaded = false)", AppDelegate.uid)
-        clipUploads = AppDelegate.realm.objects(ClipModel.self).filter(predicate)
+        clipUploads = AppDelegate.realm.objects(ClipUpload.self).filter("clipUploaded = false OR thumbUploaded = false")
         
         FIRDatabase.database().referenceWithPath(".info/connected").observeEventType(.Value, withBlock: { snapshot in
             self.connected = snapshot.value as? Bool ?? false
@@ -73,12 +72,15 @@ class UploadHelper {
             
             let user = AppDelegate.currentUser
             
+            let clipUpload = ClipUpload(id: clip.id)
+            
             try AppDelegate.realm.write {
-                user.clips.insert(clip, atIndex: 0)
+                AppDelegate.realm.add(clipUpload, update: true)
                 user.uploaded = clip.date
+                user.clips.insert(clip, atIndex: 0)
             }
             if connected {
-                beginUpload(clip)
+                beginUpload(clipUpload)
             }
             
         } catch {
@@ -87,7 +89,9 @@ class UploadHelper {
 
     }
     
-    func beginUpload(clip: ClipModel) {
+    func beginUpload(clipUpload: ClipUpload) {
+        
+        let clip = AppDelegate.realm.objectForPrimaryKey(ClipModel.self, key: clipUpload.id)!
         
         let uploadFilePath = NSTemporaryDirectory() + clip.fname
         
@@ -105,7 +109,7 @@ class UploadHelper {
             return
         }
         
-        if clip.clipUploaded && clip.thumbUploaded {
+        if clipUpload.clipUploaded && clipUpload.thumbUploaded {
             print("Pin is uploaded on another thread \(clip.id)")
         }
         
@@ -115,7 +119,7 @@ class UploadHelper {
         
         uploading[clip.id] = true
         
-        if !clip.clipUploaded {
+        if !clipUpload.clipUploaded {
             
             // enter upload clip
             dispatch_group_enter(group);
@@ -129,7 +133,7 @@ class UploadHelper {
                     print("Clip uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
                     
                     try! AppDelegate.realm.write {
-                        clip.clipUploaded = true
+                        clipUpload.clipUploaded = true
                     }
                 }
                 // leave upload clip
@@ -137,7 +141,7 @@ class UploadHelper {
             }
         }
         
-        if !clip.thumbUploaded {
+        if !clipUpload.thumbUploaded {
             
             // enter upload thumb
             dispatch_group_enter(group);
@@ -154,8 +158,8 @@ class UploadHelper {
                     print("Thumb uploaded to " + thumb)
                     
                     try! AppDelegate.realm.write {
-                        clip.thumb = thumb
-                        clip.thumbUploaded = true
+                        clipUpload.thumb = thumb
+                        clipUpload.thumbUploaded = true
                     }
                 }
                 // leave upload thumb
@@ -165,10 +169,12 @@ class UploadHelper {
         
         dispatch_group_notify(group, dispatch_get_main_queue()) {
             
-            if !clip.clipUploaded || !clip.thumbUploaded {
-                clip.uploadRetry += 1
-                if (clip.uploadRetry > 3){
-                    print("Can not upload pin after \(clip.uploadRetry) retry")
+            if !clipUpload.clipUploaded || !clipUpload.thumbUploaded {
+                
+                clipUpload.uploadRetry += 1
+                
+                if (clipUpload.uploadRetry > 3){
+                    print("Can not upload pin after \(clipUpload.uploadRetry) retry")
                     try! AppDelegate.realm.write {
                         AppDelegate.realm.delete(clip)
                     }
@@ -179,11 +185,15 @@ class UploadHelper {
             let ref = FIRDatabase.database().reference()
             
             let data = Clip(data: clip)
+            data.thumb = clipUpload.thumb
+            let uid = clip.uid
             
             // Create new clip at /users/$userid/clips/$clipid
             let update = [
-                "/users/\(clip.uid)/clips/\(clip.id)": data.toAnyObject(),
-                "/users/\(clip.uid)/uploaded": clip.date,
+                "/pins/\(uid)/\(clip.id)": data.toAnyObject(),
+                "/users/\(uid)/clips/\(clip.id)": data.toAnyObject(),
+                "/users/\(uid)/uploaded": clip.date,
+                "/users/\(uid)/updated": FIRServerValue.timestamp(),
                 "/clips/\(clip.id)": data.toAnyObject()]
             
             ref.updateChildValues(update)

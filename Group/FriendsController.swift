@@ -24,15 +24,13 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
     var myGroup = dispatch_group_create()
     
     var notificationToken: NotificationToken? = nil
+    
+    var d : Double = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let realm = AppDelegate.realm
-        
-        let ref = FIRDatabase.database().reference()
-        
-        let userID = AppDelegate.uid
         
         let today = NSDate()
         let dayago = NSCalendar.currentCalendar()
@@ -42,7 +40,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
                 toDate: today,
                 options: []
         )
-        let d : Double = (dayago?.timeIntervalSince1970)!
+        d = dayago!.timeIntervalSince1970
         
         friends = realm.objects(UserModel.self).filter("follow = true AND uploaded > \(d)").sorted("uploaded", ascending: false)
         
@@ -53,7 +51,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
                 // tableView.reloadData()
                 break
             case .Update(_, let deletions, let insertions, let modifications):
-                print("reload friends tableview")
+                print("update friends tableview")
                 self!.tableView.beginUpdates()
                 self!.tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) },
                     withRowAnimation: .Automatic)
@@ -81,23 +79,26 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         tableView.separatorStyle = .None
         
-        ref.child("users").queryOrderedByChild("friends/\(userID)").queryEqualToValue(true).observeEventType(.Value, withBlock: { snapshot in
-            
-            for item in snapshot.children {
-                
-                let friend = User(snapshot: item as! FIRDataSnapshot)
-                self.downloadClips(friend.clips)
-                
-                let data = UserModel(user: friend)
-                try! realm.write {
-                    realm.add(data, update: true)
-                }
-            }
-            
-            print("loaded \(snapshot.children.allObjects.count) friends")
-            
-        })
-        
+//        for friend in friends {
+//            
+//            ref.child("users").child(friend.uid).observeEventType(.Value, withBlock: { snapshot in
+//                
+//                let data = User(snapshot: snapshot)
+//                
+//                if data.updated == friend.updated {
+//                    continue
+//                }
+//                
+//                self.downloadClips(data.clips)
+//                
+//                let user = UserModel(user: data)
+//                try! realm.write {
+//                    realm.add(user, update: true)
+//                }
+//                
+//                print("loaded friend \(friend.name)")
+//            })
+//        }                
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -107,7 +108,13 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         cell.nameLabel.text = friend.name
         cell.locationLabel.text = friend.city + " · " + friend.country
         cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
-        cell.clips = Array(friend.clips)
+        
+        let clips = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friend.uid)' AND trash = false AND date > \(d)").sorted("date", ascending: false)
+        // let clips = AppDelegate.realm.objects(ClipModel.self).filter("")
+        cell.clips = Array(clips)
+        
+        // cell.clips = Array(friend.clips)
+        
         cell.friendName = friend.name
         cell.friendUid = friend.uid
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapMore))
@@ -253,33 +260,6 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
  
 //        let image = UIImage(named: "Image")
 //        let objectsToShare: [AnyObject] = [ image! ]
-    }
-    
-    func downloadClips(clips: [Clip]){
-        
-        let storage = FIRStorage.storage()
-        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
-        
-        for clip in clips {
-            
-            let fileName = clip.fname
-            
-            // Check if file not existed then download
-            let filePath = NSTemporaryDirectory() + fileName;
-            if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-                
-                print("Downloading file \(fileName)...")
-                // File not existed then download
-                let localURL = NSURL(fileURLWithPath: filePath)
-                gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
-                    if error != nil {
-                        print(error)
-                    } else {
-                        print("File downloaded " + fileName)
-                    }
-                }
-            }
-        }
     }
     
     override func didReceiveMemoryWarning() {

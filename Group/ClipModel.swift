@@ -10,7 +10,6 @@ class ClipModel: Object {
     dynamic var fname: String!
     dynamic var txt: String!
     dynamic var y: Float = 0.0
-    dynamic var date: Double = 0.0
     dynamic var flag = false
     dynamic var long: Double = 0
     dynamic var lat: Double = 0
@@ -22,10 +21,9 @@ class ClipModel: Object {
     dynamic var thumb: String = ""
     dynamic var follow: Bool = true
     dynamic var trash = false
-    
-    dynamic var clipUploaded: Bool = false
-    dynamic var thumbUploaded: Bool = false
-    dynamic var uploadRetry: Int = 0
+    dynamic var date: Double = 0.0
+    dynamic var updated: Double = 0.0
+    dynamic var created: Double = 0.0
     
     convenience init(clip: Clip){
         self.init()
@@ -35,7 +33,6 @@ class ClipModel: Object {
         txt = clip.txt
         y = Float(clip.y)
         flag = clip.flag
-        date = clip.date
         long = clip.long
         lat = clip.lat
         lname = clip.lname
@@ -45,10 +42,11 @@ class ClipModel: Object {
         subarea = clip.subarea
         thumb = clip.thumb
         trash = clip.trash
-        clipUploaded = true
-        thumbUploaded = true
+        date = clip.date
+        updated = clip.updated
+        created = clip.created
     }
-    
+
     convenience init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location: Location) {
         self.init()
         self.id = id
@@ -64,6 +62,23 @@ class ClipModel: Object {
         self.sublocal = location.sublocal ?? ""
         self.subarea = location.subarea ?? ""
         self.date = NSDate().timeIntervalSince1970
+    }
+    
+    override static func primaryKey() -> String? {
+        return "id"
+    }
+}
+
+class ClipUpload: Object {
+    dynamic var id: String!
+    dynamic var clipUploaded: Bool = false
+    dynamic var thumbUploaded: Bool = false
+    dynamic var uploadRetry: Int = 0
+    dynamic var thumb: String = ""
+    
+    convenience init(id: String) {
+        self.init()
+        self.id = id
     }
     
     override static func primaryKey() -> String? {

@@ -24,7 +24,6 @@ class Clip: NSObject {
     var txt: String
     var y: Float // text position
     var flag = false
-    var date: Double    
     var long: Double
     var lat: Double
     var lname: String // location name
@@ -34,14 +33,17 @@ class Clip: NSObject {
     var subarea: String
     var thumb: String = ""
     var trash = false
+    var date: Double
+    
+    var created: Double = 0
+    var updated: Double = 0
     
     init(snapshot: FIRDataSnapshot) {
         id = snapshot.key
-        uid = snapshot.value!["uid"] as! String
-        fname = snapshot.value!["fname"] as! String
-        txt = snapshot.value!["txt"] as! String
-        y = snapshot.value!["y"] as! Float
-        date = snapshot.value!["date"] as! Double
+        uid = snapshot.value!["uid"] as? String ?? ""
+        fname = snapshot.value!["fname"] as? String ?? ""
+        txt = snapshot.value!["txt"] as? String ?? ""
+        y = snapshot.value!["y"] as? Float ?? 0
         flag = snapshot.value!["flag"] as? Bool ?? false
         long = snapshot.value!["long"] as? Double ?? 0
         lat = snapshot.value!["lat"] as? Double ?? 0
@@ -52,6 +54,9 @@ class Clip: NSObject {
         subarea = snapshot.value!["subarea"] as? String ?? ""
         thumb = snapshot.value!["thumb"] as? String ?? ""
         trash = snapshot.value!["trash"] as? Bool ?? false
+        date = snapshot.value!["date"] as? Double ?? 0
+        created = snapshot.value!["created"] as? Double ?? 0
+        updated = snapshot.value!["updated"] as? Double ?? 0
     }
     
     init(data: ClipModel){
@@ -90,7 +95,9 @@ class Clip: NSObject {
             "sublocal": sublocal,
             "subarea": subarea,
             "thumb": thumb,
-            "date": date
+            "date": date,
+            "created": FIRServerValue.timestamp(),
+            "updated": FIRServerValue.timestamp()
         ]
     }
 

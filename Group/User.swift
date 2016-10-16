@@ -18,13 +18,16 @@ class User: NSObject {
     var country: String = ""
     var username: String = ""
     var password: String = ""
-    var uploaded: Double = 0.0 // last uploaded time
     var clips = [Clip]()
     var friends = [String:Bool]()
     var following = [String:Bool]()
     var flags = [String:Bool]()
     var flag: Bool = false
     var trash: Bool = false
+
+    var created: Double = 0
+    var updated: Double = 0
+    var uploaded: Double = 0 // last uploaded time
     
     init(uid: String, name:String, email: String, fb:String, fbtoken:String) {
         self.uid = uid
@@ -36,46 +39,31 @@ class User: NSObject {
     
     init(snapshot: FIRDataSnapshot) {
         self.uid = snapshot.key
-        self.name = snapshot.value!["name"] as! String
-        self.email = snapshot.value!["email"] as! String
-        self.phone = (snapshot.value!["phone"] as? String) ?? ""
-        self.fabric = (snapshot.value!["fabric"] as? String) ?? ""
-        self.fb = snapshot.value!["fb"] as! String
-        self.fbtoken = (snapshot.value!["fbtoken"] as? String) ?? ""
-        self.city = (snapshot.value!["city"] as? String) ?? ""
-        self.country = (snapshot.value!["country"] as? String) ?? ""
-        self.username = (snapshot.value!["username"] as? String) ?? ""
-        self.password = (snapshot.value!["password"] as? String) ?? ""
-        self.uploaded = (snapshot.value!["uploaded"] as? Double) ?? 0
-        self.flag = (snapshot.value!["flag"] as? Bool) ?? false
-        self.trash = (snapshot.value!["trash"] as? Bool) ?? false
+        self.name = snapshot.value!["name"] as? String ?? ""
+        self.email = snapshot.value!["email"] as? String ?? ""
+        self.phone = snapshot.value!["phone"] as? String ?? ""
+        self.fabric = snapshot.value!["fabric"] as? String ?? ""
+        self.fb = snapshot.value!["fb"] as? String ?? ""
+        self.fbtoken = snapshot.value!["fbtoken"] as? String ?? ""
+        self.city = snapshot.value!["city"] as? String ?? ""
+        self.country = snapshot.value!["country"] as? String ?? ""
+        self.username = snapshot.value!["username"] as? String ?? ""
+        self.password = snapshot.value!["password"] as? String ?? ""
+        self.flag = snapshot.value!["flag"] as? Bool ?? false
+        self.trash = snapshot.value!["trash"] as? Bool ?? false
+        
+        self.uploaded = snapshot.value!["uploaded"] as? Double ?? 0
+        self.created = snapshot.value!["created"] as? Double ?? 0
+        self.updated = snapshot.value!["updated"] as? Double ?? 0
         
         self.friends = snapshot.value!["friends"] as? [String : Bool] ?? [String:Bool]()
         self.following = snapshot.value!["following"] as? [String : Bool] ?? [String:Bool]()
         self.flags = snapshot.value!["flags"] as? [String : Bool] ?? [String:Bool]()
         
-        for clipSnapshot in snapshot.childSnapshotForPath("clips").children {
-            let clip = Clip(snapshot: clipSnapshot as! FIRDataSnapshot)
-            
-            if clip.trash || (AppDelegate.currentUser != nil &&  AppDelegate.currentUser.flags[clip.id] != nil) {
-                continue
-            }
-            
-            // check clip date
-            let date = NSDate(timeIntervalSince1970: clip.date)
-            let today = NSDate()
-            let dayago = NSCalendar.currentCalendar()
-                .dateByAddingUnit(
-                    .Day,
-                    value: -7,
-                    toDate: today, 
-                    options: []
-            )
-            // if dayago?.timeIntervalSince1970 > clip.date {
-            if date.compare(dayago!) == .OrderedDescending {
-                self.clips.insert(clip, atIndex: 0)
-            }
-        }
+//        for clipSnapshot in snapshot.childSnapshotForPath("clips").children {
+//            let clip = Clip(snapshot: clipSnapshot as! FIRDataSnapshot)
+//            self.clips.insert(clip, atIndex: 0)            
+//        }
     }
     
     init(data: UserModel) {
@@ -88,11 +76,12 @@ class User: NSObject {
         self.fbtoken = data.fbtoken
         self.city = data.city
         self.country = data.country
-        self.uploaded = data.uploaded
         self.username = data.username
         self.password = data.password
         self.flag = data.flag
         self.trash = data.trash
+        self.uploaded = data.uploaded
+        
         self.clips = [Clip]()
         for c in data.clips{
             let clip = Clip(data: c)
