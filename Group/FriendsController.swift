@@ -119,7 +119,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         let friendName = friend.name
         let userID : String! = AppDelegate.uid
         
-        let c = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(userID)'").first!
+        let c = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friend.uid)' AND trash = false").sorted("date", ascending: false).first!
         let clip = Clip(data: c)
         // let clip = Clip(data: friend.clips.first!)
 
@@ -135,65 +135,65 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
             self.presentViewController(alert, animated: true, completion: nil)
         }
         
-        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
-            let text = "Exporting pin..."
-            self.showWaitOverlayWithText(text)
-            
-            VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!) { (savePathUrl) in
-                self.removeAllOverlays()
-                self.shareButton(savePathUrl)
-            }
-        }
-        
-        let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) in
-
-            let text = "Exporting pin..."
-            self.showWaitOverlayWithText(text)
-
-            VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!){ (savePathUrl) in
-                
-                self.removeAllOverlays()
-                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
-                    if error != nil {
-                        print(error)
-                        return
-                    }
-                    if assetURL != nil {
-                        print(assetURL)
-                        dispatch_async(dispatch_get_main_queue(), {
-                            let video = FBSDKShareVideo(videoURL: assetURL)
-                            let content = FBSDKShareVideoContent()
-                            content.video = video
-                            FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
-                        })
-                    }
-                })
-            }            
-        }
-        
-        let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { (action) in
-            
-            let text = "Exporting pin..."
-            self.showWaitOverlayWithText(text)
-            
-            VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!){ (savePathUrl) in
-                
-                self.removeAllOverlays()
-                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
-                    if error != nil {
-                        print(error)
-                        return
-                    }
-                    if assetURL != nil {
-                        print(assetURL)
-                        let escapedString = assetURL.absoluteString!.urlencodedString()
-                        let escapedCaption = "Pinly".urlencodedString()
-                        let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
-                        UIApplication.sharedApplication().openURL(instagramURL)
-                    }
-                })
-            }
-        }
+//        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
+//            let text = "Exporting pin..."
+//            self.showWaitOverlayWithText(text)
+//            
+//            VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!) { (savePathUrl) in
+//                self.removeAllOverlays()
+//                self.shareButton(savePathUrl)
+//            }
+//        }
+//        
+//        let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) in
+//
+//            let text = "Exporting pin..."
+//            self.showWaitOverlayWithText(text)
+//
+//            VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!){ (savePathUrl) in
+//                
+//                self.removeAllOverlays()
+//                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
+//                    if error != nil {
+//                        print(error)
+//                        return
+//                    }
+//                    if assetURL != nil {
+//                        print(assetURL)
+//                        dispatch_async(dispatch_get_main_queue(), {
+//                            let video = FBSDKShareVideo(videoURL: assetURL)
+//                            let content = FBSDKShareVideoContent()
+//                            content.video = video
+//                            FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+//                        })
+//                    }
+//                })
+//            }            
+//        }
+//        
+//        let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { (action) in
+//            
+//            let text = "Exporting pin..."
+//            self.showWaitOverlayWithText(text)
+//            
+//            VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!){ (savePathUrl) in
+//                
+//                self.removeAllOverlays()
+//                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
+//                    if error != nil {
+//                        print(error)
+//                        return
+//                    }
+//                    if assetURL != nil {
+//                        print(assetURL)
+//                        let escapedString = assetURL.absoluteString!.urlencodedString()
+//                        let escapedCaption = "Pinly".urlencodedString()
+//                        let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
+//                        UIApplication.sharedApplication().openURL(instagramURL)
+//                    }
+//                })
+//            }
+//        }
         
         let unfollowAction = UIAlertAction(title: "Unfollow", style: UIAlertActionStyle.Default) { (action) in
             FriendsLoader.sharedInstance.unfollow(friend.uid)
@@ -207,9 +207,9 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
             myActionSheet.addAction(reportAction)
         }
         
-        myActionSheet.addAction(shareAction)
-        myActionSheet.addAction(shareFBAction)
-        myActionSheet.addAction(shareIGAction)
+//        myActionSheet.addAction(shareAction)
+//        myActionSheet.addAction(shareFBAction)
+//        myActionSheet.addAction(shareIGAction)
         
         if userID != friend.uid{
             myActionSheet.addAction(unfollowAction)
@@ -252,13 +252,10 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
             // Fallback on earlier versions
             activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList, UIActivityTypeCopyToPasteboard, UIActivityTypePrint ]
         }
-        
+
         activityVC.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
         
         self.presentViewController(activityVC, animated: true, completion: nil)
- 
-//        let image = UIImage(named: "Image")
-//        let objectsToShare: [AnyObject] = [ image! ]
     }
     
     override func didReceiveMemoryWarning() {
