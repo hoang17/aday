@@ -40,9 +40,9 @@ class UploadHelper {
             if self.connected {
                 print("Connected")
                 self.runUploadQueue()
-//                let notification = CWStatusBarNotification()
-//                notification.notificationLabelBackgroundColor = UIColor(red: 0.0, green: 122.0 / 255.0, blue: 1.0, alpha: 1.0)
-//                notification.displayNotificationWithMessage("Connected to server", forDuration: 1.0)
+                let notification = CWStatusBarNotification()
+                notification.notificationLabelBackgroundColor = UIColor(red: 0.0, green: 122.0 / 255.0, blue: 1.0, alpha: 1.0)
+                notification.displayNotificationWithMessage("Connected to server", forDuration: 1.0)
             } else {
                 print("Disconnected")
 //                let notification = CWStatusBarNotification()
@@ -90,6 +90,10 @@ class UploadHelper {
             }
             if connected {
                 beginUpload(clipUpload)
+            } else {
+                let notification = CWStatusBarNotification()
+                notification.notificationLabelBackgroundColor = UIColor.redColor()
+                notification.displayNotificationWithMessage("No network connection", forDuration: 2.0)
             }
             
         } catch {
@@ -210,6 +214,10 @@ class UploadHelper {
                 print("Clip is saved to db \(clip.id)")
                 
                 self.uploading[clip.id] = false
+                
+                let notification = CWStatusBarNotification()
+                notification.notificationLabelBackgroundColor = UIColor(red: 0.0, green: 122.0 / 255.0, blue: 1.0, alpha: 1.0)
+                notification.displayNotificationWithMessage("Pin uploaded", forDuration: 1.0)
             }
         } else {
             try! AppDelegate.realm.write {
