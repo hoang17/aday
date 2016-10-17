@@ -17,6 +17,7 @@ import AssetsLibrary
 import RealmSwift
 import Kingfisher
 import DGActivityIndicatorView
+import SwiftOverlays
 
 class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKSharingDelegate {
 
@@ -147,15 +148,24 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         }
         
         let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
+            
+            let text = "Exporting pin..."
+            self.showWaitOverlayWithText(text)
+            
             VideoHelper.sharedInstance.export(clip, friendName: self.friendName, profileImg: self.profileImg.image!) { (savePathUrl) in
+                self.removeAllOverlays()
                 self.shareClip(savePathUrl)
             }
         }
 
         let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) in
-
+            
+            let text = "Exporting pin..."
+            self.showWaitOverlayWithText(text)
+            
             VideoHelper.sharedInstance.export(clip, friendName: self.friendName, profileImg: self.profileImg.image!) { (savePathUrl) in
                 
+                self.removeAllOverlays()
                 ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
                     if error != nil {
                         print(error)
@@ -176,8 +186,12 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { (action) in
             
+            let text = "Exporting pin..."
+            self.showWaitOverlayWithText(text)
+            
             VideoHelper.sharedInstance.export(clip, friendName: self.friendName, profileImg: self.profileImg.image!) { (savePathUrl) in
                 
+                self.removeAllOverlays()
                 ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
                     if error != nil {
                         print(error)
@@ -232,19 +246,19 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     }
     
     func sharer(sharer: FBSDKSharing!, didCompleteWithResults results: [NSObject: AnyObject]) {
-        print("sharer didCompleteWithResults")
         print(results)
+        self.removeAllOverlays()
         player.player.play()
     }
     
     func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
-        print("sharer didFailWithError")
         print(error)
+        self.removeAllOverlays()
         player.player.play()
     }
     
     func sharerDidCancel(sharer: FBSDKSharing!) {
-        print("sharerDidCancel")
+        self.removeAllOverlays()
         player.player.play()
     }
     
@@ -252,7 +266,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         let objectsToShare = [inputURL]
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-        
+
         activityVC.setValue("Pin moment" , forKey: "subject") // email subject
         
         // Excluded Activities Code
@@ -264,6 +278,11 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         }
         
         activityVC.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        
+        activityVC.completionWithItemsHandler = { (activity, completed, items, error) in
+            self.removeAllOverlays()
+            self.player.player.play()
+        }
         
         self.presentViewController(activityVC, animated: true, completion: nil)
     }

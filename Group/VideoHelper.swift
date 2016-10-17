@@ -135,11 +135,15 @@ class VideoHelper {
                 completion(savePathUrl: savePathUrl!)
             case .Cancelled:
                 print("cancelled \(exportSession.error)")
-                completion(savePathUrl: savePathUrl!)
+                dispatch_async(dispatch_get_main_queue()) {
+                    completion(savePathUrl: savePathUrl!)
+                }
             //case .Completed:
             default:
                 print("export completed")
-                completion(savePathUrl: savePathUrl!)
+                dispatch_async(dispatch_get_main_queue()) {
+                    completion(savePathUrl: savePathUrl!)
+                }
             }
         })
         

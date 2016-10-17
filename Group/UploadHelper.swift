@@ -13,6 +13,7 @@ import AssetsLibrary
 import RealmSwift
 import AVFoundation
 import Kingfisher
+import CWStatusBarNotification
 
 class UploadHelper {
     
@@ -39,8 +40,14 @@ class UploadHelper {
             if self.connected {
                 print("Connected")
                 self.runUploadQueue()
+//                let notification = CWStatusBarNotification()
+//                notification.notificationLabelBackgroundColor = UIColor(red: 0.0, green: 122.0 / 255.0, blue: 1.0, alpha: 1.0)
+//                notification.displayNotificationWithMessage("Connected to server", forDuration: 1.0)
             } else {
                 print("Disconnected")
+//                let notification = CWStatusBarNotification()
+//                notification.notificationLabelBackgroundColor = UIColor.redColor()
+//                notification.displayNotificationWithMessage("Can not connect to server", forDuration: 1.0)
             }
         })
     }
