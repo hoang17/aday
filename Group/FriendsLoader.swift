@@ -169,6 +169,7 @@ class FriendsLoader: NSObject {
         let ref = FIRDatabase.database().reference()
         let userID : String! = AppDelegate.uid
         let update = [
+            "/pins/\(clip.uid)/\(clip.id)/flag": true,
             "/users/\(clip.uid)/clips/\(clip.id)/flag": true,
             "/users/\(userID)/flags/\(clip.id)": true]
         ref.updateChildValues(update)
