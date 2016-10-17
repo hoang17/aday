@@ -66,7 +66,7 @@ class FriendsLoader: NSObject {
             let friend = Friend(uid: userID, fuid: friendId)
             
             // Create new friend at /friends/$userid/$friendid
-            let update = ["/friends/\(userID)/\(friendId)": friend]
+            let update = ["/friends/\(userID)/\(friendId)": friend.toAnyObject()]
             ref.updateChildValues(update)
             
         }) { (error) in
@@ -109,7 +109,7 @@ class FriendsLoader: NSObject {
                                 let friend = Friend(uid: userID, fuid: friendId)
                                 
                                 // Create new friend at /friends/$userid/$friendid
-                                let update = ["/friends/\(userID)/\(friendId)": friend]
+                                let update = ["/friends/\(userID)/\(friendId)": friend.toAnyObject()]
                                 ref.updateChildValues(update)
                             }
                             
