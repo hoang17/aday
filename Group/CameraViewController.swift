@@ -159,14 +159,12 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        print("viewWillAppear")
         if CLLocationManager.locationServicesEnabled() {
             locationManager.startUpdatingLocation()
         }
     }
     
     func didBecomeActive() {
-        print("didBecomeActive")
         if view.window != nil && CLLocationManager.locationServicesEnabled() {
             locationManager.startUpdatingLocation()
         }
@@ -177,14 +175,20 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         locationManager.stopUpdatingLocation()
         
         if let location = manager.location {
-            
-            lo = Location()
-            lo.latitude = location.coordinate.latitude
-            lo.longitude = location.coordinate.longitude
-            
-            print("locations = \(lo.latitude) \(lo.longitude)")
-            
-            CLGeocoder().reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+
+            CLGeocoder().reverseGeocodeLocation(location, completionHandler: { (placemarks, error) in
+                
+                if error != nil {
+                    print(error)
+                    return
+                }
+                
+                self.lo = Location()
+                self.lo.latitude = location.coordinate.latitude
+                self.lo.longitude = location.coordinate.longitude
+                
+                // print("locations = \(lo.latitude) \(lo.longitude)")
+                
                 if let placeMark = placemarks?.first {
                     // Address dictionary
                     let name = placeMark.addressDictionary!["Name"] as? String ?? ""
@@ -193,7 +197,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                     let sublocal = placeMark.addressDictionary!["SubLocality"] as? String ?? ""
                     let subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as? String ?? ""
                     
-                    print(name)
+                    // print(name)
                     // print(placeMark.addressDictionary)
                     
                     self.lo.name = name
@@ -305,6 +309,10 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             isRecording = true
             let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
             videoFileOutput?.startRecordingToOutputFileURL(outputFileURL, recordingDelegate: self)
+            
+            if view.window != nil && CLLocationManager.locationServicesEnabled() {
+                locationManager.startUpdatingLocation()
+            }
         }
         self.progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
     }
