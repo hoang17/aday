@@ -295,13 +295,17 @@ class ProfileController: FormViewController {
         
         alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (action: UIAlertAction!) in
             do{
-                FBSDKLoginManager().logOut()
-                Digits.sharedInstance().logOut()
                 try FIRAuth.auth()?.signOut()
+                Digits.sharedInstance().logOut()
+                FBSDKLoginManager().logOut()
                 print("user logged out")
                 
                 let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                 appDelegate.showLogin()
+                
+                try AppDelegate.realm.write {
+                    AppDelegate.realm.deleteAll()
+                }
                 
             } catch {
                 print(error)

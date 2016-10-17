@@ -135,7 +135,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         let name = currentUser!.displayName!
                         let fb = FBSDKAccessToken.currentAccessToken().userID
                         let fbtoken = FBSDKAccessToken.currentAccessToken().tokenString
-                        let email = currentUser!.email!
+                        let email = currentUser!.email ?? ""
                         
                         // let created = NSDate().timeIntervalSince1970
                         
@@ -152,8 +152,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                             "email": email,
                             "fb": fb,
                             "fbtoken": fbtoken,
-                            "friends/\(uid)": true,
-                            "created": FIRServerValue.timestamp()]
+                            "created": NSDate().timeIntervalSince1970]
                         
                         let update = ["/users/\(uid)": user]
                         
