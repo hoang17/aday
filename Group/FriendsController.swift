@@ -136,15 +136,23 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         }
         
         let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
+            let text = "Exporting pin..."
+            self.showWaitOverlayWithText(text)
+            
             VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!) { (savePathUrl) in
+                self.removeAllOverlays()
                 self.shareButton(savePathUrl)
             }
         }
         
         let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) in
 
+            let text = "Exporting pin..."
+            self.showWaitOverlayWithText(text)
+
             VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!){ (savePathUrl) in
                 
+                self.removeAllOverlays()
                 ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
                     if error != nil {
                         print(error)
@@ -165,8 +173,12 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
         let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { (action) in
             
+            let text = "Exporting pin..."
+            self.showWaitOverlayWithText(text)
+            
             VideoHelper.sharedInstance.export(clip, friendName: friendName, profileImg: cell.profileImg.image!){ (savePathUrl) in
                 
+                self.removeAllOverlays()
                 ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
                     if error != nil {
                         print(error)
