@@ -35,7 +35,7 @@ class MainController: UIViewController {
             
             let user = User(snapshot: snapshot)
             
-            if (user.updated == AppDelegate.currentUser.updated) {
+            if (user.updated == AppDelegate.currentUser?.updated) {
                 return
             }
             
