@@ -24,10 +24,6 @@ class UserModel: Object {
     dynamic var updated: Double = 0
     dynamic var created: Double = 0
     
-//    var following = [String:Bool]()
-//    var followers = [String:Bool]()
-//    var flags = [String:Bool]()
-    
     convenience init(user: User){
         self.init()
         uid = user.uid
