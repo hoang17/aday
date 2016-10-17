@@ -56,72 +56,70 @@ class MainController: UIViewController {
         )
         let dayago : Double = date!.timeIntervalSince1970
         
-        ref.child("users").queryOrderedByChild("friends/\(AppDelegate.uid)").queryEqualToValue(true).observeSingleEventOfType(.Value, withBlock: { snapshot in
+        ref.child("users").queryOrderedByChild("friends/\(AppDelegate.uid)").queryEqualToValue(true).observeEventType(.ChildAdded, withBlock: { snapshot in
             
-            for item in snapshot.children {
-                
-                let user = User(snapshot: item as! FIRDataSnapshot)
-                
-                var uploaded: Double = 0
-                
-                var friend = realm.objectForPrimaryKey(UserModel.self, key: user.uid)
-                
-                if friend != nil {
-                    uploaded = friend!.uploaded
-                }
-                
-                // Update friend
-                
-                if user.uploaded != uploaded {
-                    
-                    friend = UserModel(user: user)
-                    
-                    try! realm.write {
-                        realm.add(friend!, update: true)
-                    }
-                    print("updated \(friend!.name)")
-                }
-                
-                let startdate = dayago
-                
-                ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(startdate).observeEventType(.ChildAdded, withBlock: { snapshot in
-                    
-                    let data = Clip(snapshot: snapshot)
-                    
-                    // Initial load - Check if pin has been modified
-                    if let clip = realm.objectForPrimaryKey(ClipModel.self, key: data.id) {
-                        if clip.updated == data.updated {
-                            return
-                        }
-                    }
-                    
-                    UploadHelper.sharedInstance.downloadClip(data.fname, completion: nil)
-                    
-                    let clip = ClipModel(clip: data)
-                    try! realm.write {
-                        realm.add(clip, update: true)
-                        friend!.uploaded = clip.date
-                    }
-                })
-                
-                ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(startdate).observeEventType(.ChildChanged, withBlock: { snapshot in
-                    
-                    let data = Clip(snapshot: snapshot)
-                    
-                    // Initial load - Check if pin has been modified
-                    if let clip = realm.objectForPrimaryKey(ClipModel.self, key: data.id) {
-                        if clip.updated == data.updated {
-                            return
-                        }
-                    }
-                    
-                    let clip = ClipModel(clip: data)
-                    try! realm.write {
-                        realm.add(clip, update: true)
-                    }
-                })
-                
+            let user = User(snapshot: snapshot)
+            
+            print(user.name)
+            
+            var uploaded: Double = 0
+            
+            var friend = realm.objectForPrimaryKey(UserModel.self, key: user.uid)
+            
+            if friend != nil {
+                uploaded = friend!.uploaded
             }
+            
+            // Update friend
+            
+            if user.uploaded != uploaded {
+                
+                friend = UserModel(user: user)
+                
+                try! realm.write {
+                    realm.add(friend!, update: true)
+                }
+                print("updated \(friend!.name)")
+            }
+            
+            let startdate = dayago
+            
+            ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(startdate).observeEventType(.ChildAdded, withBlock: { snapshot in
+                
+                let data = Clip(snapshot: snapshot)
+                
+                // Initial load - Check if pin has been modified
+                if let clip = realm.objectForPrimaryKey(ClipModel.self, key: data.id) {
+                    if clip.updated == data.updated {
+                        return
+                    }
+                }
+                
+                UploadHelper.sharedInstance.downloadClip(data.fname, completion: nil)
+                
+                let clip = ClipModel(clip: data)
+                try! realm.write {
+                    realm.add(clip, update: true)
+                    friend!.uploaded = clip.date
+                }
+            })
+            
+            ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(startdate).observeEventType(.ChildChanged, withBlock: { snapshot in
+                
+                let data = Clip(snapshot: snapshot)
+                
+                // Initial load - Check if pin has been modified
+                if let clip = realm.objectForPrimaryKey(ClipModel.self, key: data.id) {
+                    if clip.updated == data.updated {
+                        return
+                    }
+                }
+                
+                let clip = ClipModel(clip: data)
+                try! realm.write {
+                    realm.add(clip, update: true)
+                }
+            })
             
         })
         

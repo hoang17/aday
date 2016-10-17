@@ -93,13 +93,13 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
         let tapLocation = sender.locationInView(self.tableView)
         let indexPath : NSIndexPath = self.tableView.indexPathForRowAtPoint(tapLocation)!
-        let cell = tableView.cellForRowAtIndexPath(indexPath) as! TableViewCell
         let friend = self.friends[indexPath.row]
-        let friendName = friend.name
         let userID : String! = AppDelegate.uid
         
-        let c = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friend.uid)' AND trash = false").sorted("date", ascending: false).first!
-        let clip = Clip(data: c)
+//        let cell = tableView.cellForRowAtIndexPath(indexPath) as! TableViewCell
+//        let friendName = friend.name
+//        let c = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friend.uid)' AND trash = false").sorted("date", ascending: false).first!
+//        let clip = Clip(data: c)
         // let clip = Clip(data: friend.clips.first!)
 
         // Create the action sheet
