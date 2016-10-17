@@ -65,28 +65,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         tableView.layoutMargins = UIEdgeInsetsZero
         tableView.separatorInset = UIEdgeInsetsZero
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
-        tableView.separatorStyle = .None
-        
-//        for friend in friends {
-//            
-//            ref.child("users").child(friend.uid).observeEventType(.Value, withBlock: { snapshot in
-//                
-//                let data = User(snapshot: snapshot)
-//                
-//                if data.updated == friend.updated {
-//                    continue
-//                }
-//                
-//                self.downloadClips(data.clips)
-//                
-//                let user = UserModel(user: data)
-//                try! realm.write {
-//                    realm.add(user, update: true)
-//                }
-//                
-//                print("loaded friend \(friend.name)")
-//            })
-//        }                
+        tableView.separatorStyle = .None        
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

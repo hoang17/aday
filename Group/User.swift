@@ -77,7 +77,7 @@ class User: NSObject {
         self.uploaded = data.uploaded
         
         self.following = data.following
-        self.friends = data.friends
+        self.friends = data.followers
         self.flags = data.flags
         
 //        for friend in data.friends {

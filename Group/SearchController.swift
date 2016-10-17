@@ -15,29 +15,27 @@ import DigitsKit
 
 class SearchController: UITableViewController {
     
-    // MARK: - Properties
     var users = [User]()
     var filteredUsers = [User]()
-    var userkeys = [String:User]()
     let searchController = UISearchController(searchResultsController: nil)
     let ref = FIRDatabase.database().reference()
     
-    // MARK: - View Setup
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let uid = AppDelegate.uid
+        let following = AppDelegate.currentUser.following
         
-        ref.child("users").child(uid!).observeEventType(.Value, withBlock: { snapshot in
-            self.tableView.reloadRowsAtIndexPaths(self.users.enumerate().map{ (index, element) in
-                    return NSIndexPath(forRow:index, inSection: 0)
-                },
-                withRowAnimation: .Automatic)
-        })
+        for uid in following.keys {
+            
+            self.ref.child("users").child(uid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                let user = User(snapshot: snapshot)
+                self.users.append(user)
+                self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.users.indexOf(user)!, inSection: 0)], withRowAnimation: .Automatic)
+            })
+        }
         
         self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         
-        // Setup the Search Controller
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         definesPresentationContext = true
@@ -47,101 +45,6 @@ class SearchController: UITableViewController {
         searchController.searchBar.placeholder = "Search for friends"
         self.tableView.tableHeaderView = searchController.searchBar
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-        
-        
-        // Load facebook friends
-        
-        let request = FBSDKGraphRequest(graphPath:"me/friends", parameters: ["fields": "name", "limit":"200"] );
-        request.startWithCompletionHandler { (connection, result, error) -> Void in
-            
-            if error == nil {
-                
-                let resultdict = result as! NSDictionary
-                let data : NSArray = resultdict.objectForKey("data") as! NSArray
-                for i in 0 ..< data.count
-                {
-                    let valueDict : NSDictionary = data[i] as! NSDictionary
-                    let fb = valueDict.valueForKey("id") as! String
-                    
-                    self.ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                        
-                        let user = User(snapshot: snapshot.children.allObjects.first as! FIRDataSnapshot)
-                        
-                        if self.userkeys[user.uid] == nil{
-                            self.users.append(user)
-                            self.userkeys[user.uid] = user
-                            self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.users.count - 1, inSection: 0)],
-                                withRowAnimation: .Automatic)
-                            
-                            print("Found fb \(user.name)")
-                        }
-                        
-                    }) { (error) in
-                        print(error)
-                    }
-                    
-                }
-            } else {
-                print(error);
-            }
-        }
-        
-        
-        // Load contacts friends
-        let addressBook = APAddressBook()
-        addressBook.loadContacts({(contacts, error) in
-            
-            if error != nil {
-                print(error)
-                return
-            }
-            
-            for contact in contacts! {
-                
-                if let phones = contact.phones {
-                    for phone in phones {
-                        var number = phone.number!.removeWhitespace()
-                        if number.hasPrefix("0"){
-                            number = "+84" + String(number.characters.dropFirst())
-                        }
-                        
-                        if AppDelegate.currentUser != nil && number == AppDelegate.currentUser.phone {
-                            continue
-                        }
-                        
-                        self.ref.child("users").queryOrderedByChild("phone").queryEqualToValue(number).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                            
-                            if let snap = snapshot.children.allObjects.first as? FIRDataSnapshot {
-                                let user = User(snapshot: snap)
-                                
-                                if user.uid != uid && self.userkeys[user.uid] == nil {
-                                    self.users.append(user)
-                                    self.userkeys[user.uid] = user
-                                    self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.users.count - 1, inSection: 0)],
-                                        withRowAnimation: .Automatic)
-                                    
-                                    print("Found contact \(user.name)")
-                                }
-                                
-                            }
-                            
-                        }) { (error) in
-                            print(error)
-                        }
-                        
-                    }
-                }
-                
-            }
-        })
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
     }
     
     // MARK: - Table View
@@ -171,7 +74,8 @@ class SearchController: UITableViewController {
         let imgUrl = NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1")
         cell.profileImg.kf_setImageWithURL(imgUrl)
         
-        if AppDelegate.currentUser.following[user.uid] != nil && AppDelegate.currentUser.following[user.uid] == true {
+        let following = AppDelegate.currentUser.following
+        if following[user.uid] != nil && following[user.uid] == true {
             cell.followButton.setTitle("unfollow", forState: .Normal)
             cell.followButton.setTitleColor(UIColor.redColor(), forState: .Normal)
         } else {
@@ -185,47 +89,50 @@ class SearchController: UITableViewController {
         return cell
     }
     
-    
-    
     func followButtonHandler(sender:UIButton!) {
     
-        let realm = AppDelegate.realm
-        
         let friendId : String = self.users[sender.tag].uid
         let userID : String! = AppDelegate.uid
         
+        let realm = AppDelegate.realm
+        
         if sender.titleLabel?.text == "follow" {
             
-            let update = ["/users/\(userID)/following/\(friendId)/": true,
-                          "/users/\(friendId)/friends/\(userID)/": true]
+            let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
+            let clips = realm.objects(ClipModel.self).filter("uid = '\(friendId)'")
+            
+            try! realm.write {
+                AppDelegate.currentUser.following[friendId] = true
+                user.follow = true
+                clips.setValue(true, forKeyPath: "follow")
+            }
+            
+            let update:[String:AnyObject] = ["/users/\(userID)/following/\(friendId)/": true,
+                                             "/users/\(friendId)/friends/\(userID)/": true]
             ref.updateChildValues(update)
             
             print("followed " + self.users[sender.tag].name)
             
         } else {
             
-            let update = ["/users/\(userID)/following/\(friendId)/": false,
-                          "/users/\(friendId)/friends/\(userID)/": false]
-            ref.updateChildValues(update)
+            let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
+            let clips = realm.objects(ClipModel.self).filter("uid = '\(friendId)'")
             
-            // Update realm: follow = false
-            
-            let user = UserModel(user: self.users[sender.tag])
-            
-            let predicate = NSPredicate(format: "uid = %@", friendId)
-            let clips = realm.objects(ClipModel.self).filter(predicate)
-
             try! realm.write {
+                AppDelegate.currentUser.following[friendId] = false
                 user.follow = false
                 clips.setValue(false, forKeyPath: "follow")
-                // realm.add(user, update: true)
             }
-
-            print("unfollowed " + user.name)
             
+            let update:[String:AnyObject] = ["/users/\(userID)/following/\(friendId)/": false,
+                                             "/users/\(friendId)/friends/\(userID)/": false]
+            ref.updateChildValues(update)
+            
+            print("unfollowed " + self.users[sender.tag].name)
         }
+        
+        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: sender.tag, inSection: 0)], withRowAnimation: .Automatic)
     }
-    
     
     func filterContentForSearchText(searchText: String, scope: String = "All") {
         filteredUsers = users.filter({( user : User) -> Bool in
@@ -235,17 +142,20 @@ class SearchController: UITableViewController {
         tableView.reloadData()
     }
     
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
 }
 
 extension SearchController: UISearchBarDelegate {
-    // MARK: - UISearchBar Delegate
+
     func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
     }
 }
 
 extension SearchController: UISearchResultsUpdating {
-    // MARK: - UISearchResultsUpdating Delegate
+
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         filterContentForSearchText(searchController.searchBar.text!)
     }

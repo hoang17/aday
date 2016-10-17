@@ -29,18 +29,23 @@ class MainController: UIViewController {
         
         if let user = realm.objectForPrimaryKey(UserModel.self, key: AppDelegate.uid) {
             AppDelegate.currentUser = user
-        } else {
-            ref.child("users").child(AppDelegate.uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                
-                let user = User(snapshot: snapshot)
-                AppDelegate.currentUser = UserModel(user: user)
-                
-                try! AppDelegate.realm.write {
-                    AppDelegate.realm.add(AppDelegate.currentUser, update: true)
-                }
-            })
         }
-
+        
+        ref.child("users").child(AppDelegate.uid).observeEventType(.Value, withBlock: { snapshot in
+            
+            let user = User(snapshot: snapshot)
+            
+            if (user.updated == AppDelegate.currentUser.updated) {
+                return
+            }
+            
+            AppDelegate.currentUser = UserModel(user: user)
+            
+            try! AppDelegate.realm.write {
+                AppDelegate.realm.add(AppDelegate.currentUser, update: true)
+            }
+        })
+        
         let today = NSDate()
         let date = NSCalendar.currentCalendar()
             .dateByAddingUnit(
@@ -97,7 +102,6 @@ class MainController: UIViewController {
                         realm.add(clip, update: true)
                         friend!.uploaded = clip.date
                     }
-                    print("added pin \(user.name) \(clip.id)")
                 })
                 
                 ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(startdate).observeEventType(.ChildChanged, withBlock: { snapshot in
@@ -115,7 +119,6 @@ class MainController: UIViewController {
                     try! realm.write {
                         realm.add(clip, update: true)
                     }
-                    print("updated pin \(user.name) \(clip.id)")
                 })
                 
             }

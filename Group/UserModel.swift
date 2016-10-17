@@ -24,13 +24,9 @@ class UserModel: Object {
     dynamic var updated: Double = 0
     dynamic var created: Double = 0
     
-    var friends = [String:Bool]()
-    var following = [String:Bool]()
-    var flags = [String:Bool]()
-    
-//    let following = List<Following>()
-//    let followers = List<Follower>()
-//    let flags = List<Flag>()
+//    var following = [String:Bool]()
+//    var followers = [String:Bool]()
+//    var flags = [String:Bool]()
     
     convenience init(user: User){
         self.init()
@@ -53,66 +49,88 @@ class UserModel: Object {
         created = user.created
         
         following = user.following
-        friends = user.friends
+        followers = user.friends
         flags = user.flags
-        
-//        for uid in user.following.keys {
-//            following.append(Following(uid: uid))
-//        }
-//        
-//        for uid in user.following.keys {
-//            followers.append(Follower(uid: uid))
-//        }
-//
-//        for id in user.flags.keys {
-//            flags.append(Flag(id: id))
-//        }
     }
+    
+    private dynamic var followingData: NSData?
+    private dynamic var followersData: NSData?
+    private dynamic var flagsData: NSData?
+    
+    var following: [String: Bool] {
+        get {
+            guard let followingData = followingData else {
+                return [String: Bool]()
+            }
+            do {
+                let dict = try NSJSONSerialization.JSONObjectWithData(followingData, options: []) as? [String: Bool]
+                return dict!
+            } catch {
+                return [String: Bool]()
+            }
+        }
         
+        set {
+            do {
+                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
+                followingData = data
+            } catch {
+                followingData = nil
+            }
+        }
+    }
+    
+    var followers: [String: Bool] {
+        get {
+            guard let followersData = followersData else {
+                return [String: Bool]()
+            }
+            do {
+                let dict = try NSJSONSerialization.JSONObjectWithData(followersData, options: []) as? [String: Bool]
+                return dict!
+            } catch {
+                return [String: Bool]()
+            }
+        }
+        
+        set {
+            do {
+                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
+                followersData = data
+            } catch {
+                followersData = nil
+            }
+        }
+    }
+
+    var flags: [String: Bool] {
+        get {
+            guard let flagsData = flagsData else {
+                return [String: Bool]()
+            }
+            do {
+                let dict = try NSJSONSerialization.JSONObjectWithData(flagsData, options: []) as? [String: Bool]
+                return dict!
+            } catch {
+                return [String: Bool]()
+            }
+        }
+        
+        set {
+            do {
+                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
+                flagsData = data
+            } catch {
+                flagsData = nil
+            }
+        }
+    }
+    
     override static func primaryKey() -> String? {
         return "uid"
     }
 
     override static func ignoredProperties() -> [String] {
-        return ["following", "friends", "flags"]
+        return ["following", "followers", "flags"]
     }
 }
-
-//class Flag: Object {
-//    dynamic var id: String!
-//    
-//    convenience init(id: String) {
-//        self.init()
-//        self.id = id
-//    }
-//    
-//    override static func primaryKey() -> String? {
-//        return "id"
-//    }
-//}
-//
-//class Following: Object {
-//    dynamic var uid: String!
-//
-//    convenience init(uid: String) {
-//        self.init()
-//        self.uid = uid
-//    }
-//    
-//    override static func primaryKey() -> String? {
-//        return "uid"
-//    }
-//}
-//
-//class Follower: Object {
-//    dynamic var uid: String!
-//    
-//    convenience init(uid: String) {
-//        self.init()
-//        self.uid = uid
-//    }
-//    
-//    override static func primaryKey() -> String? {
-//        return "uid"
-//    }
-//}
