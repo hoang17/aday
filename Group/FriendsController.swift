@@ -30,7 +30,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
 
         let realm = AppDelegate.realm
                 
-        friends = realm.objects(UserModel.self).filter("follow = true").sorted("uploaded", ascending: false)
+        friends = realm.objects(UserModel.self).filter("following = true").sorted("uploaded", ascending: false)
         
         notificationToken = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             guard (self?.tableView) != nil else { return }

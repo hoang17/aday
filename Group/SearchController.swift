@@ -12,45 +12,79 @@ import FirebaseAuth
 import FBSDKCoreKit
 import APAddressBook
 import DigitsKit
+import RealmSwift
 
 class SearchController: UITableViewController {
     
-    var friends = [Friend]()
-    var friendKeys = [String:Friend]()
-    var filteredFriends = [Friend]()
+    var friends: Results<UserModel>!
+    var filteredFriends = [UserModel]()
     let searchController = UISearchController(searchResultsController: nil)
     let ref = FIRDatabase.database().reference()
+    
+    var notificationToken: NotificationToken? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let realm = AppDelegate.realm
+        
+        friends = realm.objects(UserModel.self)
+        
+        notificationToken = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
+            guard (self?.tableView) != nil else { return }
+            switch changes {
+            case .Initial:
+                // tableView.reloadData()
+                break
+            case .Update(_, let deletions, let insertions, let modifications):
+                print("update friends tableview")
+                self!.tableView.beginUpdates()
+                self!.tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) },
+                    withRowAnimation: .Automatic)
+                self!.tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) },
+                    withRowAnimation: .Automatic)
+                self!.tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) },
+                    withRowAnimation: .Automatic)
+                self!.tableView.endUpdates()
+                break
+            case .Error(let error):
+                print(error)
+                break
+            }
+        }
         
         ref.child("friends/\(AppDelegate.uid)").observeEventType(.ChildAdded, withBlock: { snapshot in
             
             let friend = Friend(snapshot: snapshot)
             
             self.ref.child("users").child(friend.fuid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                let user = User(snapshot: snapshot)
-                friend.load(user)
-                self.friends.append(friend)
-                self.friendKeys[friend.fuid] = friend
-                self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.friends.indexOf(friend)!, inSection: 0)], withRowAnimation: .Automatic)
+                let data = User(snapshot: snapshot)
+                
+                let user = UserModel(user: data)
+                user.following = friend.following
+                
+                try! realm.write {
+                    realm.add(user, update: true)
+                }
+                print("friend added \(user.name)")
             })
         })
 
         ref.child("friends/\(AppDelegate.uid)").observeEventType(.ChildChanged, withBlock: { snapshot in
-            let friend = Friend(snapshot: snapshot)
-            let t = self.friendKeys[friend.fuid]
-            friend.fb = t!.fb
-            friend.name = t!.name
-            friend.city = t!.city
-            friend.country = t!.country
-            friend.uploaded = t!.uploaded
             
-            let index = self.friends.indexOf(self.friendKeys[friend.fuid]!)
-            self.friendKeys[friend.fuid] = friend
-            self.friends[index!] = friend
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index!, inSection: 0)], withRowAnimation: .Automatic)
+            let friend = Friend(snapshot: snapshot)
+            
+            self.ref.child("users").child(friend.fuid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                let data = User(snapshot: snapshot)
+                
+                let user = UserModel(user: data)
+                user.following = friend.following
+                
+                try! realm.write {
+                    realm.add(user, update: true)
+                }
+                print("friend updated \(user.name)")
+            })            
         })
         
         self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
@@ -80,7 +114,7 @@ class SearchController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = SearchItemCell()
-        var friend: Friend
+        var friend: UserModel
         if searchController.active && searchController.searchBar.text != "" {
             friend = filteredFriends[indexPath.row]
         } else {
@@ -109,34 +143,30 @@ class SearchController: UITableViewController {
     func followButtonHandler(sender:UIButton!) {
     
         let friend = self.friends[sender.tag]
-        let friendId = friend.fuid
+        let friendId = friend.uid
         let userID : String! = AppDelegate.uid
         
         let realm = AppDelegate.realm
         
-        if sender.titleLabel?.text == "follow" {
-            friend.following = true
-            print("followed " + self.friends[sender.tag].name)
-            
-        } else {
-            friend.following = false
-            print("unfollowed " + self.friends[sender.tag].name)
-        }
-
-        let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
         let clips = realm.objects(ClipModel.self).filter("uid = '\(friendId)'")
         
         try! realm.write {
-            user.follow = friend.following
+            friend.following = sender.titleLabel?.text == "follow"
             clips.setValue(friend.following, forKeyPath: "follow")
         }
         
         let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": friend.following]
         ref.updateChildValues(update)
+        
+        if friend.following {
+            print("followed " + self.friends[sender.tag].name)
+        } else {
+            print("unfollowed " + self.friends[sender.tag].name)
+        }
     }
     
     func filterContentForSearchText(searchText: String, scope: String = "All") {
-        filteredFriends = friends.filter({( friend : Friend) -> Bool in
+        filteredFriends = friends.filter({( friend : UserModel) -> Bool in
             let categoryMatch = scope == "All"
             return categoryMatch && friend.name.lowercaseString.containsString(searchText.lowercaseString)
         })

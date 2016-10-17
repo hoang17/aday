@@ -16,7 +16,7 @@ class UserModel: Object {
     dynamic var country: String!
     dynamic var username: String = ""
     dynamic var password: String = ""
-    dynamic var follow: Bool = true
+    dynamic var following: Bool = true
     dynamic var flag: Bool = false
     dynamic var trash: Bool = false
     

@@ -12,6 +12,7 @@
 		371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */; };
 		371068E01D80453200BDFC42 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DF1D80453200BDFC42 /* RecordButton.swift */; };
 		371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068E11D83003100BDFC42 /* CameraPlaybackController.swift */; };
+		371A4C751DB52E08001D0938 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A4C741DB52E08001D0938 /* Friend.swift */; };
 		3724B0791D9E65B300181071 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3724B0781D9E65B300181071 /* LaunchScreen.storyboard */; };
 		3724B07B1D9E76A200181071 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3724B07A1D9E76A200181071 /* WebViewController.swift */; };
 		372ADA8B1DADF18300EA6584 /* UploadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372ADA8A1DADF18300EA6584 /* UploadHelper.swift */; };
@@ -88,6 +89,7 @@
 		371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPreviewController.swift; sourceTree = "<group>"; };
 		371068DF1D80453200BDFC42 /* RecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
 		371068E11D83003100BDFC42 /* CameraPlaybackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPlaybackController.swift; sourceTree = "<group>"; };
+		371A4C741DB52E08001D0938 /* Friend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		3724B0781D9E65B300181071 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3724B07A1D9E76A200181071 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		372ADA8A1DADF18300EA6584 /* UploadHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadHelper.swift; sourceTree = "<group>"; };
@@ -341,6 +343,7 @@
 			children = (
 				37FEFED61D123A3700C078AC /* User.swift */,
 				372D8DBC1D1310D3008DBADA /* Clip.swift */,
+				371A4C741DB52E08001D0938 /* Friend.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -559,6 +562,7 @@
 				37FEFEBA1D11D33600C078AC /* AppDelegate.swift in Sources */,
 				37C1FE951DAAC1D500A58235 /* ImageHelper.swift in Sources */,
 				371068E01D80453200BDFC42 /* RecordButton.swift in Sources */,
+				371A4C751DB52E08001D0938 /* Friend.swift in Sources */,
 				37C9C3851D9C1A2A0081F825 /* ClipCalloutView.swift in Sources */,
 				372D8DBD1D1310D3008DBADA /* Clip.swift in Sources */,
 			);

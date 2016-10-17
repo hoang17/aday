@@ -139,7 +139,7 @@ class FriendsLoader: NSObject {
         let clips = realm.objects(ClipModel.self).filter("uid = '\(friendId)'")
         
         try! realm.write {
-            user.follow = false
+            user.following = false
             clips.setValue(false, forKeyPath: "follow")
         }
         
