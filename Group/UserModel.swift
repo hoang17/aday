@@ -45,61 +45,10 @@ class UserModel: Object {
         created = user.created
 
         flags = user.flags
-        
-//        following = user.following
-//        followers = user.friends
     }
     
-    private dynamic var followingData: NSData?
-    private dynamic var followersData: NSData?
     private dynamic var flagsData: NSData?
     
-//    var following: [String: Bool] {
-//        get {
-//            guard let followingData = followingData else {
-//                return [String: Bool]()
-//            }
-//            do {
-//                let dict = try NSJSONSerialization.JSONObjectWithData(followingData, options: []) as? [String: Bool]
-//                return dict!
-//            } catch {
-//                return [String: Bool]()
-//            }
-//        }
-//        
-//        set {
-//            do {
-//                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
-//                followingData = data
-//            } catch {
-//                followingData = nil
-//            }
-//        }
-//    }
-//    
-//    var followers: [String: Bool] {
-//        get {
-//            guard let followersData = followersData else {
-//                return [String: Bool]()
-//            }
-//            do {
-//                let dict = try NSJSONSerialization.JSONObjectWithData(followersData, options: []) as? [String: Bool]
-//                return dict!
-//            } catch {
-//                return [String: Bool]()
-//            }
-//        }
-//        
-//        set {
-//            do {
-//                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
-//                followersData = data
-//            } catch {
-//                followersData = nil
-//            }
-//        }
-//    }
-
     var flags: [String: Bool] {
         get {
             guard let flagsData = flagsData else {

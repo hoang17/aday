@@ -23,9 +23,6 @@ class User: NSObject {
 
     var flags = [String:Bool]()
     
-//    var friends = [String:Bool]()
-//    var following = [String:Bool]()
-    
     var created: Double = 0
     var updated: Double = 0
     var uploaded: Double = 0 // last uploaded time
@@ -58,9 +55,6 @@ class User: NSObject {
         self.updated = snapshot.value!["updated"] as? Double ?? 0
         
         self.flags = snapshot.value!["flags"] as? [String : Bool] ?? [String:Bool]()
-        
-//        self.friends = snapshot.value!["friends"] as? [String : Bool] ?? [String:Bool]()
-//        self.following = snapshot.value!["following"] as? [String : Bool] ?? [String:Bool]()
     }
     
     init(data: UserModel) {
@@ -80,9 +74,6 @@ class User: NSObject {
         self.uploaded = data.uploaded
         
         self.flags = data.flags
-        
-//        self.following = data.following
-//        self.friends = data.followers
     }
 }
 
