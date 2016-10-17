@@ -97,5 +97,4 @@ class Clip: NSObject {
             "updated": updated
         ]
     }
-
 }

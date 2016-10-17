@@ -15,24 +15,43 @@ import DigitsKit
 
 class SearchController: UITableViewController {
     
-    var users = [User]()
-    var filteredUsers = [User]()
+    var friends = [Friend]()
+    var friendKeys = [String:Friend]()
+    var filteredFriends = [Friend]()
     let searchController = UISearchController(searchResultsController: nil)
     let ref = FIRDatabase.database().reference()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let following = AppDelegate.currentUser.following
         
-        for uid in following.keys {
+        ref.child("friends/\(AppDelegate.uid)").observeEventType(.ChildAdded, withBlock: { snapshot in
             
-            self.ref.child("users").child(uid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            let friend = Friend(snapshot: snapshot)
+            
+            self.ref.child("users").child(friend.fuid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 let user = User(snapshot: snapshot)
-                self.users.append(user)
-                self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.users.indexOf(user)!, inSection: 0)], withRowAnimation: .Automatic)
+                friend.load(user)
+                self.friends.append(friend)
+                self.friendKeys[friend.fuid] = friend
+                self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: self.friends.indexOf(friend)!, inSection: 0)], withRowAnimation: .Automatic)
             })
-        }
+        })
+
+        ref.child("friends/\(AppDelegate.uid)").observeEventType(.ChildChanged, withBlock: { snapshot in
+            let friend = Friend(snapshot: snapshot)
+            let t = self.friendKeys[friend.fuid]
+            friend.fb = t!.fb
+            friend.name = t!.name
+            friend.city = t!.city
+            friend.country = t!.country
+            friend.uploaded = t!.uploaded
+            
+            let index = self.friends.indexOf(self.friendKeys[friend.fuid]!)
+            self.friendKeys[friend.fuid] = friend
+            self.friends[index!] = friend
+            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index!, inSection: 0)], withRowAnimation: .Automatic)
+        })
         
         self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         
@@ -54,34 +73,32 @@ class SearchController: UITableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searchController.active && searchController.searchBar.text != "" {
-            return filteredUsers.count
+            return filteredFriends.count
         }
-        return users.count
+        return friends.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = SearchItemCell()
-        var user: User
+        var friend: Friend
         if searchController.active && searchController.searchBar.text != "" {
-            user = filteredUsers[indexPath.row]
+            friend = filteredFriends[indexPath.row]
         } else {
-            user = users[indexPath.row]
+            friend = friends[indexPath.row]
         }
         
         // Set cell data
-        cell.nameLabel.text = user.name
+        cell.nameLabel.text = friend.name
         
-        let imgUrl = NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1")
+        let imgUrl = NSURL(string: "https://graph.facebook.com/\(friend.fb)/picture?type=large&return_ssl_resources=1")
         cell.profileImg.kf_setImageWithURL(imgUrl)
         
-        let following = AppDelegate.currentUser.following
-        if following[user.uid] != nil && following[user.uid] == true {
+        if friend.following {
             cell.followButton.setTitle("unfollow", forState: .Normal)
             cell.followButton.setTitleColor(UIColor.redColor(), forState: .Normal)
         } else {
             cell.followButton.setTitle("follow", forState: .Normal)
             cell.followButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
-            
         }
         cell.followButton.tag = indexPath.row
         cell.followButton.addTarget(self, action: #selector(SearchController.followButtonHandler),
@@ -91,53 +108,37 @@ class SearchController: UITableViewController {
     
     func followButtonHandler(sender:UIButton!) {
     
-        let friendId : String = self.users[sender.tag].uid
+        let friend = self.friends[sender.tag]
+        let friendId = friend.fuid
         let userID : String! = AppDelegate.uid
         
         let realm = AppDelegate.realm
         
         if sender.titleLabel?.text == "follow" {
-            
-            let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
-            let clips = realm.objects(ClipModel.self).filter("uid = '\(friendId)'")
-            
-            try! realm.write {
-                AppDelegate.currentUser.following[friendId] = true
-                user.follow = true
-                clips.setValue(true, forKeyPath: "follow")
-            }
-            
-            let update:[String:AnyObject] = ["/users/\(userID)/following/\(friendId)/": true,
-                                             "/users/\(friendId)/friends/\(userID)/": true]
-            ref.updateChildValues(update)
-            
-            print("followed " + self.users[sender.tag].name)
+            friend.following = true
+            print("followed " + self.friends[sender.tag].name)
             
         } else {
-            
-            let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
-            let clips = realm.objects(ClipModel.self).filter("uid = '\(friendId)'")
-            
-            try! realm.write {
-                AppDelegate.currentUser.following[friendId] = false
-                user.follow = false
-                clips.setValue(false, forKeyPath: "follow")
-            }
-            
-            let update:[String:AnyObject] = ["/users/\(userID)/following/\(friendId)/": false,
-                                             "/users/\(friendId)/friends/\(userID)/": false]
-            ref.updateChildValues(update)
-            
-            print("unfollowed " + self.users[sender.tag].name)
+            friend.following = false
+            print("unfollowed " + self.friends[sender.tag].name)
+        }
+
+        let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
+        let clips = realm.objects(ClipModel.self).filter("uid = '\(friendId)'")
+        
+        try! realm.write {
+            user.follow = friend.following
+            clips.setValue(friend.following, forKeyPath: "follow")
         }
         
-        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: sender.tag, inSection: 0)], withRowAnimation: .Automatic)
+        let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": friend.following]
+        ref.updateChildValues(update)
     }
     
     func filterContentForSearchText(searchText: String, scope: String = "All") {
-        filteredUsers = users.filter({( user : User) -> Bool in
+        filteredFriends = friends.filter({( friend : Friend) -> Bool in
             let categoryMatch = scope == "All"
-            return categoryMatch && user.name.lowercaseString.containsString(searchText.lowercaseString)
+            return categoryMatch && friend.name.lowercaseString.containsString(searchText.lowercaseString)
         })
         tableView.reloadData()
     }

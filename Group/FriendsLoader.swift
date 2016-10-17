@@ -62,13 +62,11 @@ class FriendsLoader: NSObject {
         ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
 
             let friendId : String = (snapshot.value as! NSDictionary).allKeys.first as! String
-            // Create new friend at /users/$userid/friends/$friendid
             let userID : String! = AppDelegate.uid
+            let friend = Friend(uid: userID, fuid: friendId)
             
-            let update = ["/users/\(userID)/friends/\(friendId)/": true,
-                          "/users/\(friendId)/friends/\(userID)/": true,
-                          "/users/\(friendId)/following/\(userID)/": true,
-                          "/users/\(userID)/following/\(friendId)/": true]
+            // Create new friend at /friends/$userid/$friendid
+            let update = ["/friends/\(userID)/\(friendId)": friend]
             ref.updateChildValues(update)
             
         }) { (error) in
@@ -105,17 +103,14 @@ class FriendsLoader: NSObject {
                         ref.child("users").queryOrderedByChild("phone").queryEqualToValue(number).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                             
                             if let snap = snapshot.children.allObjects.first as? FIRDataSnapshot {
-                                let friend = User(snapshot: snap)
-                                
-                                // Create new friend at /users/$userid/friends/$friendid
+                                let user = User(snapshot: snap)
+                                let friendId = user.uid
                                 let userID : String! = AppDelegate.uid
+                                let friend = Friend(uid: userID, fuid: friendId)
                                 
-                                let update = ["/users/\(userID)/friends/\(friend.uid)/": true,
-                                    "/users/\(friend.uid)/friends/\(userID)/": true,
-                                    "/users/\(friend.uid)/following/\(userID)/": true,
-                                    "/users/\(userID)/following/\(friend.uid)/": true]
+                                // Create new friend at /friends/$userid/$friendid
+                                let update = ["/friends/\(userID)/\(friendId)": friend]
                                 ref.updateChildValues(update)
-                                
                             }
                             
                         }) { (error) in
@@ -134,34 +129,25 @@ class FriendsLoader: NSObject {
         self.unfollow(uid)
     }
     
-    func follow(friendId: String) {
-        let ref = FIRDatabase.database().reference()
-        let userID : String! = AppDelegate.uid
-        
-        let update = ["/users/\(userID)/following/\(friendId)/": true,
-                      "/users/\(friendId)/friends/\(userID)/": true]
-        ref.updateChildValues(update)
-    }
-    
     func unfollow(friendId: String) {
-        let ref = FIRDatabase.database().reference()
-        let realm = AppDelegate.realm
+        
         let userID : String! = AppDelegate.uid
         
-        let update = ["/users/\(userID)/following/\(friendId)/": false,
-                      "/users/\(friendId)/friends/\(userID)/": false]
-        ref.updateChildValues(update)
+        let realm = AppDelegate.realm
         
-        // Update realm: follow = false
-        
-        let predicate = NSPredicate(format: "uid = %@", friendId)
-        let clips = realm.objects(ClipModel.self).filter(predicate)
+        let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
+        let clips = realm.objects(ClipModel.self).filter("uid = '\(friendId)'")
         
         try! realm.write {
-            realm.create(UserModel.self, value: ["uid": friendId, "follow": false], update: true)
+            user.follow = false
             clips.setValue(false, forKeyPath: "follow")
         }
         
+        let ref = FIRDatabase.database().reference()
+        
+        let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": false]
+        ref.updateChildValues(update)
+
         print("unfollowed " + friendId)
     }
     

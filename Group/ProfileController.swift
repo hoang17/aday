@@ -225,13 +225,37 @@ class ProfileController: FormViewController {
         FriendsLoader.sharedInstance.loadAddressBook()
     }
     
-//    func fixClips() {
+//    func fixFriends(){
 //        let ref = FIRDatabase.database().reference()
-//        
-//        var i = 0
 //        
 //        ref.child("users").observeSingleEventOfType(.Value, withBlock: { snapshot in
 //            
+//            for item in snapshot.children {
+//                
+//                let user = User(snapshot: item as! FIRDataSnapshot)
+//                for fuid in user.following.keys {
+//                    
+//                    let friend = Friend(uid: user.uid, fuid: fuid)
+//                    ref.child("friends/\(user.uid)/\(fuid)").setValue(friend.toAnyObject())
+//                }
+//                
+//                for fuid in user.friends.keys {
+//                    
+//                    let friend = Friend(uid: user.uid, fuid: fuid)
+//                    ref.child("friends/\(user.uid)/\(fuid)").setValue(friend.toAnyObject())
+//                }
+//                
+//            }
+//        })
+//    }
+    
+//    func fixClips() {
+//        let ref = FIRDatabase.database().reference()
+//
+//        var i = 0
+//
+//        ref.child("users").observeSingleEventOfType(.Value, withBlock: { snapshot in
+//
 //            for item in snapshot.children {
 //                
 //                let user = User(snapshot: item as! FIRDataSnapshot)

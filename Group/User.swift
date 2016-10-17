@@ -18,11 +18,13 @@ class User: NSObject {
     var country: String = ""
     var username: String = ""
     var password: String = ""
-    var friends = [String:Bool]()
-    var following = [String:Bool]()
-    var flags = [String:Bool]()
     var flag: Bool = false
     var trash: Bool = false
+
+    var flags = [String:Bool]()
+    
+//    var friends = [String:Bool]()
+//    var following = [String:Bool]()
     
     var created: Double = 0
     var updated: Double = 0
@@ -55,9 +57,10 @@ class User: NSObject {
         self.created = snapshot.value!["created"] as? Double ?? 0
         self.updated = snapshot.value!["updated"] as? Double ?? 0
         
-        self.friends = snapshot.value!["friends"] as? [String : Bool] ?? [String:Bool]()
-        self.following = snapshot.value!["following"] as? [String : Bool] ?? [String:Bool]()
         self.flags = snapshot.value!["flags"] as? [String : Bool] ?? [String:Bool]()
+        
+//        self.friends = snapshot.value!["friends"] as? [String : Bool] ?? [String:Bool]()
+//        self.following = snapshot.value!["following"] as? [String : Bool] ?? [String:Bool]()
     }
     
     init(data: UserModel) {
@@ -76,16 +79,65 @@ class User: NSObject {
         self.trash = data.trash
         self.uploaded = data.uploaded
         
-        self.following = data.following
-        self.friends = data.followers
         self.flags = data.flags
         
-//        for friend in data.friends {
-//            friends[friend.uid] = true
-//        }
-//        
-//        for friend in data.following {
-//            following[friend.uid] = true
-//        }
+//        self.following = data.following
+//        self.friends = data.followers
+    }
+}
+
+class Friend: NSObject {
+    var uid: String
+    var fuid: String
+    var following: Bool = false
+    var follower: Bool = false
+    var flag: Bool = false
+    var created: Double = 0
+    var updated: Double = 0
+    
+    var name: String = ""
+    var fb: String = ""
+    var city: String = ""
+    var country: String = ""
+    var uploaded: Double = 0
+    
+    init(uid: String, fuid: String) {
+        self.uid = uid
+        self.fuid = fuid
+        self.following = true
+        self.follower = true
+        self.flag = false
+        self.created = NSDate().timeIntervalSince1970
+        self.updated = self.created
+    }
+    
+    init(snapshot: FIRDataSnapshot) {
+        self.uid = snapshot.value!["uid"] as? String ?? ""
+        self.fuid = snapshot.value!["fuid"] as? String ?? ""
+        self.following = snapshot.value!["following"] as? Bool ?? false
+        self.follower = snapshot.value!["follower"] as? Bool ?? false
+        self.flag = snapshot.value!["flag"] as? Bool ?? false
+        self.created = snapshot.value!["created"] as? Double ?? 0
+        self.updated = snapshot.value!["updated"] as? Double ?? 0
+    }
+    
+    func load(user: User){
+        name = user.name
+        fb = user.fb
+        city = user.city
+        country = user.country
+        uploaded = user.uploaded
+    }
+    
+    func toAnyObject() -> AnyObject {
+        return [
+            "uid": uid,
+            "fuid": fuid,
+            "following": following,
+            "follower": follower,
+            "flag": flag,
+            "created": created,
+            "updated": updated
+        ]
     }
 }
