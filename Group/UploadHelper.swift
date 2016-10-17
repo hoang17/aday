@@ -201,12 +201,11 @@ class UploadHelper {
                 data.thumb = clipUpload.thumb
                 let uid = clip.uid
                 
-                // Create new clip at /users/$userid/clips/$clipid
+                // Create new pin at /pins/$userid/$pinid
                 let update = [
                     "/pins/\(uid)/\(clip.id)": data.toAnyObject(),
-                    "/users/\(uid)/clips/\(clip.id)": data.toAnyObject(),
                     "/users/\(uid)/uploaded": clip.date,
-                    "/users/\(uid)/updated": clip.date,
+                    // "/users/\(uid)/updated": clip.date,
                     "/clips/\(clip.id)": data.toAnyObject()]
                 
                 ref.updateChildValues(update)

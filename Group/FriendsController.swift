@@ -77,9 +77,6 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
         cell.friendName = friend.name
         
-        // cell.friendUid = friend.uid
-        // cell.clips = Array(friend.clips)
-        
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapMore))
         cell.moreButton.addGestureRecognizer(tap)
         return cell
@@ -100,7 +97,6 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
 //        let friendName = friend.name
 //        let c = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friend.uid)' AND trash = false").sorted("date", ascending: false).first!
 //        let clip = Clip(data: c)
-        // let clip = Clip(data: friend.clips.first!)
 
         // Create the action sheet
         let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)

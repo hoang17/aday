@@ -154,10 +154,8 @@ class FriendsLoader: NSObject {
     func reportClip(clip: ClipModel) {
         let ref = FIRDatabase.database().reference()
         let userID : String! = AppDelegate.uid
-        let update = [
-            "/pins/\(clip.uid)/\(clip.id)/flag": true,
-            "/users/\(clip.uid)/clips/\(clip.id)/flag": true,
-            "/users/\(userID)/flags/\(clip.id)": true]
+        let update = ["/pins/\(clip.uid)/\(clip.id)/flag": true,
+                      "/users/\(userID)/flags/\(clip.id)": true]
         ref.updateChildValues(update)
         
         let realm = AppDelegate.realm
@@ -172,8 +170,6 @@ class FriendsLoader: NSObject {
         let updated = NSDate().timeIntervalSince1970
         let update : [String: AnyObject] = ["/pins/\(clip.uid)/\(clip.id)/trash": true,
                                             "/pins/\(clip.uid)/\(clip.id)/updated": updated,
-                                            "/users/\(clip.uid)/clips/\(clip.id)/trash": true,
-                                            "/users/\(clip.uid)/updated": updated,
                                             "/clips/\(clip.id)/trash": true]
         ref.updateChildValues(update)
         
