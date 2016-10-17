@@ -51,43 +51,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let clip = clips[playIndex]
-//        let filePath = NSTemporaryDirectory() + clip.fname
-//        if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-//            let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
-//            let thumbImg = UIImageView(frame: view.frame)
-//            thumbImg.kf_setImageWithResource(resource)
-//            thumbImg.hidden = false
-//            view.addSubview(thumbImg)
-//            
-//            let indicator = DGActivityIndicatorView(type: DGActivityIndicatorAnimationType.BallClipRotate, tintColor: UIColor.whiteColor(), size: 30.0)
-//            indicator.size = CGSize(width: 50.0, height: 50.0)
-//            indicator.center = view.center
-//            view.addSubview(indicator)
-//            indicator.startAnimating()
-//            
-//            UploadHelper.sharedInstance.downloadClip(clip.fname) { (URL, error) in
-//                if error != nil {
-//                    print(error)
-//                } else {
-//                    print("File downloaded \(clip.fname)")
-//                    indicator.removeFromSuperview()
-//                    self.player.removeFromSuperview()
-//                    // thumbImg.removeFromSuperview()
-//                    self.player = self.playerAtIndex(self.playIndex)
-//                    self.doplay()
-//                }
-//            }
-//        }
-//        
-//        view.addSubview(player)
-//        
-//        player.play()
-//        
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-//                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                         object:player.player.currentItem)
-        
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         textField.textColor = UIColor.whiteColor()
         textField.font = UIFont.systemFontOfSize(16.0)
@@ -95,7 +58,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         textField.height = 34
         textField.width = UIScreen.mainScreen().bounds.width
         textField.userInteractionEnabled = false
-        // textField.text = clips[playIndex].txt
         textField.center.y = self.view.height * CGFloat(clips[playIndex].y)
         
         if textField.text == "" {
@@ -117,10 +79,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         locationLabel.size = CGSize(width: self.view.width, height: 14)
         locationLabel.textColor = UIColor(white: 1, alpha: 0.6)
         locationLabel.font = UIFont(name: "OpenSans", size: 10.0)
-        // locationLabel.text = locationText()
         
         dateLabel.origin.y = nameLabel.y
-        // dateLabel.text = NSDate(timeIntervalSince1970: clips[playIndex].date).shortTimeAgoSinceNow()
         dateLabel.size = CGSize(width: 50, height: nameLabel.height)
         dateLabel.textColor = UIColor(white: 1, alpha: 0.6)
         dateLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
