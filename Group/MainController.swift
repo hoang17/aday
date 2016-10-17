@@ -69,8 +69,6 @@ class MainController: UIViewController {
                 
                 if user.uploaded != uploaded {
                     
-                    // self.downloadClips(user.clips)
-                    
                     friend = UserModel(user: user)
                     
                     try! realm.write {
@@ -92,7 +90,7 @@ class MainController: UIViewController {
                         }
                     }
                     
-                    self.downloadClip(data)
+                    UploadHelper.sharedInstance.downloadClip(data.fname, completion: nil)
                     
                     let clip = ClipModel(clip: data)
                     try! realm.write {
@@ -153,53 +151,7 @@ class MainController: UIViewController {
 
         // tabBarController.highlightButtonAtIndex(1)
     }
-    
-    func downloadClips(clips: [Clip]){
         
-        let storage = FIRStorage.storage()
-        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
-        
-        for clip in clips {
-            
-            let fileName = clip.fname
-            
-            // Check if file not existed then download
-            let filePath = NSTemporaryDirectory() + fileName;
-            if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-                
-                print("Downloading file \(fileName)...")
-                // File not existed then download
-                let localURL = NSURL(fileURLWithPath: filePath)
-                gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
-                    if error != nil {
-                        print(error)
-                    } else {
-                        print("File downloaded " + fileName)
-                    }
-                }
-            }
-        }
-    }
-    
-    func downloadClip(clip: Clip) {
-        let fileName = clip.fname
-        // Check if file not existed then download
-        let filePath = NSTemporaryDirectory() + fileName;
-        if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-            print("Downloading file \(fileName)...")
-            let storage = FIRStorage.storage()
-            let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
-            let localURL = NSURL(fileURLWithPath: filePath)
-            gs.child(fileName).writeToFile(localURL) { (URL, error) -> Void in
-                if error != nil {
-                    print(error)
-                } else {
-                    print("File downloaded " + fileName)
-                }
-            }
-        }
-    }
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

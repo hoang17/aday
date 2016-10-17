@@ -139,13 +139,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     
     func play(playIndex: Int) {
         
-        let cameraPlayback = CameraPlaybackController()
-        
-        cameraPlayback.clips = self.clips
-        
-        cameraPlayback.player = cameraPlayback.playerAtIndex(playIndex)
-        
-        cameraPlayback.playIndex = playIndex
+        let cameraPlayback = CameraPlaybackController(playIndex: playIndex, clips: clips)
         cameraPlayback.nameLabel.text = nameLabel.text
         let atxt = cameraPlayback.nameLabel.attributedText!.mutableCopy() as! NSMutableAttributedString
         cameraPlayback.nameLabel.width = atxt.size().width

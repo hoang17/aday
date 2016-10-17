@@ -271,4 +271,16 @@ class UploadHelper {
             print(error)
         }
     }
+    
+    func downloadClip(fileName: String, completion: ((NSURL?, NSError?) -> Void)?) {
+        // Check if file not existed then download
+        let filePath = NSTemporaryDirectory() + fileName;
+        if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+            print("Downloading file \(fileName)...")
+            let storage = FIRStorage.storage()
+            let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
+            let localURL = NSURL(fileURLWithPath: filePath)
+            gs.child(fileName).writeToFile(localURL, completion: completion)
+        }
+    }
 }
