@@ -81,7 +81,8 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if friends.count == 0 {
-            presentViewController(SyncContactController(), animated: true, completion: nil)
+            let navigationController = UINavigationController(rootViewController: SyncContactController())
+            presentViewController(navigationController, animated: true, completion: nil)
         }        
     }
     

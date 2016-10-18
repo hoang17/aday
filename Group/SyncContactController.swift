@@ -21,6 +21,10 @@ class SyncContactController: UIViewController {
     
     override func viewDidLoad() {
         
+        super.viewDidLoad()
+        
+        self.title = "Sync Contacts"
+        
         let hey = NSMutableAttributedString(string: "Hey \(AppDelegate.currentUser.name)!")
         hey.yy_font = UIFont.boldSystemFontOfSize(30)
         hey.yy_color = UIColor(red: 1.0, green: 0.029, blue: 0.651, alpha: 1.0)
@@ -99,7 +103,10 @@ class SyncContactController: UIViewController {
             notification.displayNotificationWithMessage("Found \(count) friends", forDuration: 3.0)
         }
         
-        FriendsLoader.sharedInstance.loadAddressBook()
+        FriendsLoader.sharedInstance.loadAddressBook {
+            self.navigationController?.pushViewController(SuggestFriendController(), animated: true)
+            // self.presentViewController(SearchController(), animated: true, completion: nil)
+        }
     }
     
     func padding() -> NSAttributedString {

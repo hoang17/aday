@@ -222,7 +222,7 @@ class ProfileController: FormViewController {
 
     func syncContacts() {
         FriendsLoader.sharedInstance.loadFacebookFriends(nil)
-        FriendsLoader.sharedInstance.loadAddressBook()
+        FriendsLoader.sharedInstance.loadAddressBook(nil)
     }
     
 //    func fixFriends(){

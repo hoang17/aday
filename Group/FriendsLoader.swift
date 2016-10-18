@@ -76,7 +76,7 @@ class FriendsLoader: NSObject {
         }
     }
     
-    func loadAddressBook(){
+    func loadAddressBook(completion: (()->Void)?){
         let permission: Permission
         
         if #available(iOS 9.0, *) {
@@ -92,9 +92,13 @@ class FriendsLoader: NSObject {
             case .Authorized:
                 print("authorized")
                 self.loadAB()
+                completion!()
             case .Denied:        print("denied")
+                completion!()
             case .Disabled:      print("disabled")
+                completion!()
             case .NotDetermined: print("not determined")
+                completion!()
             }
         }
         
@@ -142,7 +146,6 @@ class FriendsLoader: NSObject {
                         }) { (error) in
                             print(error)
                         }
-                        
                     }
                 }
                 
