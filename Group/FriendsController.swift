@@ -80,10 +80,10 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        if friends.count == 0 {
+        if friends.count == 0 || (friends.count == 1 && friends[0].uid == AppDelegate.uid) {
             let navigationController = UINavigationController(rootViewController: SyncContactController())
             presentViewController(navigationController, animated: true, completion: nil)
-        }        
+        }
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
