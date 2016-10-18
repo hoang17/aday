@@ -89,7 +89,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         let uids = friends.map{ "'\($0.uid)'" }.joinWithSeparator(",")
 
-        print(uids)
+        // print(uids)
 
         let clips = realm.objects(ClipModel.self).filter("uid IN {\(uids)} AND trash = false AND date > \(d)").sorted("date", ascending: false)
         
