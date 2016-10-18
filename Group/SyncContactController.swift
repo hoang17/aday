@@ -25,53 +25,53 @@ class SyncContactController: UIViewController {
         text.yy_setColor(UIColor.redColor(), range: NSMakeRange(0, 4))
         text.yy_lineSpacing = 10
         
-        let one = NSMutableAttributedString(string: "Shadow")
+//        let shadow = YYTextShadow()
+//        shadow.color = UIColor(white: 0.000, alpha: 0.490)
+//        shadow.offset = CGSizeMake(0, 1)
+//        shadow.radius = 5
+//        one.yy_textShadow = shadow
+        
+//        let border = YYTextBorder()
+//        border.strokeColor = UIColor(red: 1.000, green: 0.029, blue: 0.651, alpha: 1.000)
+//        border.strokeWidth = 3
+//        border.lineStyle = .PatternCircleDot
+//        border.cornerRadius = 3
+//        border.insets = UIEdgeInsetsMake(0, -4, 0, -4)
+        
+        let one = NSMutableAttributedString(string: "Sync Contacts")
+        
         one.yy_font = UIFont.boldSystemFontOfSize(30)
-        one.yy_color = UIColor.whiteColor()
-        let shadow = YYTextShadow()
-        shadow.color = UIColor(white: 0.000, alpha: 0.490)
-        shadow.offset = CGSizeMake(0, 1)
-        shadow.radius = 5
-        one.yy_textShadow = shadow
+        one.yy_color = UIColor(red: 1.000, green: 0.029, blue: 0.651, alpha: 1.000)
+        // one.yy_color = UIColor(red: 0.093, green: 0.492, blue: 1.000, alpha: 1.000)
+        
+        let border = YYTextBorder()
+        border.cornerRadius = 10
+        border.insets = UIEdgeInsetsMake(-10, -10, -10, -10)
+        border.strokeWidth = 3
+        border.strokeColor = one.yy_color
+        border.lineStyle = .PatternCircleDot
+        
+        let highlightBorder = border.copy() as! YYTextBorder
+        highlightBorder.strokeWidth = 0
+        highlightBorder.strokeColor = one.yy_color
+        highlightBorder.fillColor = one.yy_color
+        
+        let highlight = YYTextHighlight()
+        highlight.setColor(UIColor.whiteColor())
+        highlight.setBackgroundBorder(highlightBorder)
+        highlight.tapAction = {(containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> Void in
+            self.showMessage("Tap: message")
+        }
+        
+        one.yy_textBackgroundBorder = border
+        one.yy_setTextHighlight(highlight, range: one.yy_rangeOfAll())
+        
+        text.appendAttributedString(self.padding())
+        text.appendAttributedString(self.padding())
         text.appendAttributedString(self.padding())
         text.appendAttributedString(self.padding())
         text.appendAttributedString(one)
-        text.appendAttributedString(self.padding())
-
-        let one1 = NSMutableAttributedString(string: "Border")
-        one1.yy_font = UIFont.boldSystemFontOfSize(30)
-        one1.yy_color = UIColor(red: 1.000, green: 0.029, blue: 0.651, alpha: 1.000)
-        let border = YYTextBorder()
-        border.strokeColor = UIColor(red: 1.000, green: 0.029, blue: 0.651, alpha: 1.000)
-        border.strokeWidth = 3
-        border.lineStyle = YYTextLineStyle.PatternCircleDot
-        border.cornerRadius = 3
-        border.insets = UIEdgeInsetsMake(0, -4, 0, -4)
-        one1.yy_textBackgroundBorder = border
-        text.appendAttributedString(self.padding())
-        text.appendAttributedString(one1)
-        text.appendAttributedString(self.padding())
-        text.appendAttributedString(self.padding())
-        text.appendAttributedString(self.padding())
-        text.appendAttributedString(self.padding())
         
-        let one2 = NSMutableAttributedString(string: "Sync Contacts")
-        one2.yy_font = UIFont.boldSystemFontOfSize(30)
-        one2.yy_underlineStyle = NSUnderlineStyle.StyleSingle
-        one2.yy_setTextHighlightRange(one2.yy_rangeOfAll(),
-                                     color: UIColor(red: 0.093, green: 0.492, blue: 1.000, alpha: 1.000),
-                                     backgroundColor: UIColor(white: 0.000, alpha: 0.220),
-                                     tapAction: { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) in
-                                        
-                                        self.showMessage("Tap: message")
-        })
-        text.appendAttributedString(one2)
-        text.appendAttributedString(self.padding())
-        
-//        text.yy_alignment = .Center        
-//        let container = YYTextContainer(size: CGSizeMake(self.view.width, self.view.height -  64))
-//        container.insets = UIEdgeInsetsMake(10, 10, 10, 10)
-//        let layout = YYTextLayout(container: container, text: text)
         
         let label = YYLabel()
         label.attributedText = text
@@ -83,8 +83,6 @@ class SyncContactController: UIViewController {
         label.numberOfLines = 0
         label.backgroundColor = UIColor(white: 0.933, alpha: 1.000)
         label.textContainerInset = UIEdgeInsetsMake(10, 10, 10, 10)
-        
-        // label.textLayout = layout;
         
         self.view.addSubview(label)
     }
