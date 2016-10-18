@@ -17,7 +17,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "Image")!)
         let background = UIImage(named: "Image")
         var imageView : UIImageView!
         imageView = UIImageView(frame: view.bounds)
@@ -154,7 +153,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                             "fbtoken": fbtoken,
                             "created": NSDate().timeIntervalSince1970]
                         
-                        let friend = Friend(uid: uid, fuid: uid)
+                        let friend = Friend(uid: uid, fuid: uid, following: false, follower: false)
                         
                         let update = ["/users/\(uid)": user,
                                       "/friends/\(uid)/\(uid)": friend.toAnyObject()]
@@ -170,11 +169,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                     }
                     
                     if (AppDelegate.currentUser.phone == "") {
-                        
                         self.showDigitsLogin()
-                        
                     } else {
-                        
                         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                         appDelegate.showMain()
                     }

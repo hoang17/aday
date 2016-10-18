@@ -29,8 +29,18 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         super.viewDidLoad()
 
         let realm = AppDelegate.realm
-                
-        friends = realm.objects(UserModel.self).filter("following = true").sorted("uploaded", ascending: false)
+
+        let today = NSDate()
+        let dayago = NSCalendar.currentCalendar()
+            .dateByAddingUnit(
+                .Day,
+                value: -7,
+                toDate: today,
+                options: []
+        )
+        let d : Double = (dayago?.timeIntervalSince1970)!
+        
+        friends = realm.objects(UserModel.self).filter("following = true AND uploaded > \(d)").sorted("uploaded", ascending: false)
         
         notificationToken = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             guard (self?.tableView) != nil else { return }
@@ -66,6 +76,13 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         tableView.separatorInset = UIEdgeInsetsZero
         tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         tableView.separatorStyle = .None        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if friends.count == 0 {
+            presentViewController(SyncContactController(), animated: true, completion: nil)
+        }        
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

@@ -18,11 +18,11 @@ class Friend: NSObject {
     var created: Double = 0
     var updated: Double = 0
     
-    init(uid: String, fuid: String) {
+    init(uid: String, fuid: String, following: Bool = true, follower: Bool = true) {
         self.uid = uid
         self.fuid = fuid
-        self.following = true
-        self.follower = true
+        self.following = following
+        self.follower = follower
         self.flag = false
         self.created = NSDate().timeIntervalSince1970
         self.updated = self.created

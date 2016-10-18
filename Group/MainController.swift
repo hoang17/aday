@@ -54,7 +54,7 @@ class MainController: UIViewController {
                 toDate: today,
                 options: []
         )
-        let dayago : Double = date!.timeIntervalSince1970
+        let startdate : Double = date!.timeIntervalSince1970
         
         ref.child("friends/\(AppDelegate.uid)").queryOrderedByChild("following").queryEqualToValue(true).observeEventType(.ChildAdded, withBlock: { snapshot in
         
@@ -85,8 +85,6 @@ class MainController: UIViewController {
                     }
                     print("updated \(friend!.name)")
                 }
-                
-                let startdate = dayago
                 
                 ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(startdate).observeEventType(.ChildAdded, withBlock: { snapshot in
                     
