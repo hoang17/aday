@@ -26,6 +26,10 @@ class SearchController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "Explore"
+
+        //navigationController?.hidesBarsOnSwipe = true
+        
         let realm = AppDelegate.realm
         
         friends = realm.objects(UserModel.self)
@@ -87,7 +91,7 @@ class SearchController: UITableViewController {
             })            
         })
         
-        self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
+        // 2self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self

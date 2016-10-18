@@ -19,6 +19,8 @@ class ProfileController: FormViewController {
         
         super.viewDidLoad()
         
+        self.title = FIRAuth.auth()?.currentUser?.displayName
+        
         form +++ Section() { section in
             section.header = {
                 let header = HeaderFooterView<UIView>(.Callback({

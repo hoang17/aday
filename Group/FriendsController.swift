@@ -17,8 +17,6 @@ import AssetsLibrary
 
 class FriendsController: UITableViewController, FBSDKSharingDelegate {
     
-//    var friends = [User]()
-    
     var friends: Results<UserModel>!
     
     var myGroup = dispatch_group_create()
@@ -28,6 +26,10 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.title = "Pinly"
+        
+        navigationController?.hidesBarsOnSwipe = true
+        
         let realm = AppDelegate.realm
 
         let today = NSDate()
@@ -74,7 +76,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         tableView.dataSource = self
         tableView.layoutMargins = UIEdgeInsetsZero
         tableView.separatorInset = UIEdgeInsetsZero
-        tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
+        //tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         tableView.separatorStyle = .None        
     }
     

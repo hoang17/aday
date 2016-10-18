@@ -36,7 +36,9 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Begin setting location
+        self.title = "Map"
+        
+        navigationController?.navigationBarHidden = true
         
         self.locationManager.requestWhenInUseAuthorization()
         
@@ -45,8 +47,6 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
         }
-        
-        /// End location
         
         mapView.frame = view.bounds
         mapView.mapType = .Standard
@@ -357,6 +357,9 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         notificationToken?.stop()
     }
     
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
 }
 
 class ClipAnnotation: NSObject, MKAnnotation {

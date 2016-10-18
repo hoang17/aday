@@ -131,7 +131,7 @@ class MainController: UIViewController {
         
         // Init tab bar
         let tabBarController = ESTabBarController(tabIconNames: ["clock", "globe", "record", "map", "archive"])
-        
+
         self.addChildViewController(tabBarController)
         self.view.addSubview(tabBarController.view)
         tabBarController.view.frame = self.view.bounds
@@ -142,10 +142,10 @@ class MainController: UIViewController {
         // tabBarController.buttonsBackgroundColor = UIColor(hexString: "#FFF")
         
         // View controllers.
-        tabBarController.setViewController(FriendsController(), atIndex: 0)
-        tabBarController.setViewController(SearchController(), atIndex: 1)
-        tabBarController.setViewController(MapController(), atIndex: 3)
-        tabBarController.setViewController(ProfileController(), atIndex: 4)
+        tabBarController.setViewController(UINavigationController(rootViewController: FriendsController()), atIndex: 0)
+        tabBarController.setViewController(UINavigationController(rootViewController: SearchController()), atIndex: 1)
+        tabBarController.setViewController(UINavigationController(rootViewController: MapController()), atIndex: 3)
+        tabBarController.setViewController(UINavigationController(rootViewController: ProfileController()), atIndex: 4)
         
         let cam = CameraViewController()
         
