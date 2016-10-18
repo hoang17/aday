@@ -24,6 +24,7 @@ class ProfileController: FormViewController {
                 let header = HeaderFooterView<UIView>(.Callback({
                 
                     let img = UIImageView(frame: CGRect(x: 0, y: 0, width: 90, height: 90))
+                    img.backgroundColor = UIColor.whiteColor()
                     img.layer.cornerRadius = img.frame.height/2
                     img.layer.masksToBounds = false
                     img.clipsToBounds = true

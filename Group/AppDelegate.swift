@@ -72,7 +72,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window!.backgroundColor = UIColor.whiteColor()
         
-        if FIRAuth.auth()?.currentUser != nil {
+        if FIRAuth.auth()?.currentUser != nil && FBSDKAccessToken.currentAccessToken() != nil {
             self.logUser()
             self.window!.rootViewController = MainController()
         } else {

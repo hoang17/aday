@@ -15,7 +15,6 @@ import DigitsKit
 import RealmSwift
 import YYText
 import CWStatusBarNotification
-import Permission
 
 class SyncContactController: UIViewController {
     
