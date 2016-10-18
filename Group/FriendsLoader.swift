@@ -92,13 +92,13 @@ class FriendsLoader: NSObject {
 //            case .Authorized:
 //                print("authorized")
 //                self.loadAB()
-//                completion!()
+//                completion?()
 //            case .Denied:        print("denied")
-//                completion!()
+//                completion?()
 //            case .Disabled:      print("disabled")
-//                completion!()
+//                completion?()
 //            case .NotDetermined: print("not determined")
-//                completion!()
+//                completion?()
 //            }
 //        }
 //        
@@ -151,7 +151,7 @@ class FriendsLoader: NSObject {
                     }
                 }
             })
-            completion!()
+            completion?()
         }
         
     }
@@ -198,8 +198,7 @@ class FriendsLoader: NSObject {
         let ref = FIRDatabase.database().reference()
         let updated = NSDate().timeIntervalSince1970
         let update : [String: AnyObject] = ["/pins/\(clip.uid)/\(clip.id)/trash": true,
-                                            "/pins/\(clip.uid)/\(clip.id)/updated": updated,
-                                            "/clips/\(clip.id)/trash": true]
+                                            "/pins/\(clip.uid)/\(clip.id)/updated": updated]
         ref.updateChildValues(update)
         
         let realm = AppDelegate.realm
