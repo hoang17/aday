@@ -8,6 +8,7 @@ import FBSDKCoreKit
 import FirebaseAuth
 import FirebaseDatabase
 import APAddressBook
+import Permission
 
 class FacebookFriend: NSObject {
     
@@ -25,7 +26,7 @@ class FriendsLoader: NSObject {
     
     static let sharedInstance = FriendsLoader()
     
-    func loadFacebookFriends() {
+    func loadFacebookFriends(completion: ((count: Int)->Void)?) {
         
         var friends = [FacebookFriend]()
         
@@ -48,6 +49,7 @@ class FriendsLoader: NSObject {
                     self.updateFriends(fb, name: name)
                 }
                 print("Found \(friends.count) friends")
+                completion?(count: friends.count)
             } else {
                 print("Error Getting Friends \(error)");
             }
@@ -74,7 +76,31 @@ class FriendsLoader: NSObject {
         }
     }
     
-    func loadAddressBook() {
+    func loadAddressBook(){
+        let permission: Permission
+        
+        if #available(iOS 9.0, *) {
+            permission = .Contacts
+        } else {
+            permission = .AddressBook
+        }
+        
+        print(permission.status)
+        
+        permission.request { status in
+            switch status {
+            case .Authorized:
+                print("authorized")
+                self.loadAB()
+            case .Denied:        print("denied")
+            case .Disabled:      print("disabled")
+            case .NotDetermined: print("not determined")
+            }
+        }
+        
+    }
+    
+    func loadAB() {
         
         let ref = FIRDatabase.database().reference()
         
