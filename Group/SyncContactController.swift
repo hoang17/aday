@@ -25,10 +25,12 @@ class SyncContactController: UIViewController {
         
         self.title = "Sync Contacts"
         
-        let hey = NSMutableAttributedString(string: "Hey \(AppDelegate.currentUser.name)!")
+        let name = FIRAuth.auth()?.currentUser?.displayName ?? ""
+        
+        let hey = NSMutableAttributedString(string: "Hey \(name)!")
         hey.yy_font = UIFont.boldSystemFontOfSize(30)
         hey.yy_color = UIColor(red: 1.0, green: 0.029, blue: 0.651, alpha: 1.0)
-        hey.yy_setColor(UIColor(red: 0.093, green: 0.492, blue: 1.0, alpha: 1.0), range: NSMakeRange(4, AppDelegate.currentUser.name.characters.count))
+        hey.yy_setColor(UIColor(red: 0.093, green: 0.492, blue: 1.0, alpha: 1.0), range: NSMakeRange(4, name.characters.count))
         hey.yy_lineSpacing = 10
         
         let text = NSMutableAttributedString(string: "Seem like you dont have any friends yet! Let's add some friends to start using Pinly")

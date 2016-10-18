@@ -148,11 +148,8 @@ class SearchController: UITableViewController {
         
         let realm = AppDelegate.realm
         
-        let clips = realm.objects(ClipModel.self).filter("uid = '\(friendId)'")
-        
         try! realm.write {
             friend.following = sender.titleLabel?.text == "follow"
-            clips.setValue(friend.following, forKeyPath: "follow")
         }
         
         let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": friend.following]

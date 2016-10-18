@@ -165,11 +165,9 @@ class FriendsLoader: NSObject {
         let realm = AppDelegate.realm
         
         let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
-        let clips = realm.objects(ClipModel.self).filter("uid = '\(friendId)'")
         
         try! realm.write {
             user.following = false
-            clips.setValue(false, forKeyPath: "follow")
         }
         
         let ref = FIRDatabase.database().reference()
@@ -190,7 +188,7 @@ class FriendsLoader: NSObject {
         let realm = AppDelegate.realm
         try! realm.write {
             clip.flag = true
-            clip.follow = false
+            clip.trash = true
         }
     }
     

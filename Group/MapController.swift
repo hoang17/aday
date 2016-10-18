@@ -31,6 +31,8 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
     
     var notificationToken: NotificationToken? = nil
     
+    var token : NotificationToken? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -71,7 +73,25 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         )
         let d : Double = (dayago?.timeIntervalSince1970)!
         
-        let clips = realm.objects(ClipModel.self).filter("follow = true AND trash = false AND date > \(d)").sorted("date", ascending: false)
+        let friends = realm.objects(UserModel.self).filter("following = true AND uploaded > \(d)").sorted("uploaded", ascending: false)
+        
+        token = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
+            self!.addPins(friends, d: d)
+        }
+    }
+    
+    func addPins(friends: Results<UserModel>, d: Double){
+        
+        self.mapView.removeAnnotations(self.clipAnnotations)
+        self.clipAnnotations = [ClipAnnotation]()
+        
+        let realm = AppDelegate.realm
+        
+        let uids = friends.map{ "'\($0.uid)'" }.joinWithSeparator(",")
+
+        print(uids)
+
+        let clips = realm.objects(ClipModel.self).filter("uid IN {\(uids)} AND trash = false AND date > \(d)").sorted("date", ascending: false)
         
         for clip in clips {
             
@@ -94,17 +114,9 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         }
         self.mapView.addAnnotations(self.clipAnnotations)
         
-        
         notificationToken = clips.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             switch changes {
-            case .Initial:
-                // Results are now populated and can be accessed without blocking the UI
-                break
             case .Update(_, let deletions, let insertions, let modifications):
-                
-//                print(insertions)
-//                print(modifications)
-//                print(deletions)
                 
                 if insertions.count > 0 {
                     
@@ -135,7 +147,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                     }
                     
                 } else if modifications.count > 0 || deletions.count > 0 {
-                
+                    
                     self?.mapView.removeAnnotations((self?.clipAnnotations)!)
                     self?.clipAnnotations = [ClipAnnotation]()
                     for clip in clips {
@@ -163,12 +175,15 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                 }
                 
                 break
+            case .Initial:
+                // Results are now populated and can be 
+                // accessed without blocking the UI
+                break
             case .Error(let error):
                 print(error)
                 break
             }
         }
-        
     }
     
     func addCircle(coordinate: CLLocationCoordinate2D, radius: CLLocationDistance) {
