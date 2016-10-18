@@ -198,7 +198,8 @@ class FriendsLoader: NSObject {
         let ref = FIRDatabase.database().reference()
         let updated = NSDate().timeIntervalSince1970
         let update : [String: AnyObject] = ["/pins/\(clip.uid)/\(clip.id)/trash": true,
-                                            "/pins/\(clip.uid)/\(clip.id)/updated": updated]
+                                            "/pins/\(clip.uid)/\(clip.id)/updated": updated,
+                                            "/clips/\(clip.id)/trash": true]
         ref.updateChildValues(update)
         
         let realm = AppDelegate.realm
