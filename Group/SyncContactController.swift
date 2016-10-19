@@ -18,6 +18,13 @@ import CWStatusBarNotification
 
 class SyncContactController: UIViewController {
     
+    var count: Int = 0
+    
+    convenience init(count: Int){
+        self.init()
+        self.count = count
+    }
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -32,7 +39,8 @@ class SyncContactController: UIViewController {
         hey.yy_setColor(UIColor(red: 0.093, green: 0.492, blue: 1.0, alpha: 1.0), range: NSMakeRange(4, name.characters.count))
         hey.yy_lineSpacing = 10
         
-        let text = NSMutableAttributedString(string: "Seem like you dont have any friends yet! Let's add some friends to start using Pinly")
+        let s = count > 1 ? "Let's find your friends using Pinly" : "Seem like you dont have any friends yet! Let's add some friends to start using Pinly"
+        let text = NSMutableAttributedString(string: s)
         text.yy_font = UIFont.boldSystemFontOfSize(24)
         text.yy_color = UIColor(red: 0.093, green: 0.492, blue: 1.0, alpha: 1.0)
         text.yy_lineSpacing = 10
@@ -86,10 +94,20 @@ class SyncContactController: UIViewController {
         label.textAlignment = .Center
         label.textVerticalAlignment = .Center
         label.numberOfLines = 0
-        label.backgroundColor = UIColor(white: 0.933, alpha: 1.0)
+        label.backgroundColor = UIColor(white: 0.933, alpha: 0.5)
         label.textContainerInset = UIEdgeInsetsMake(10, 10, 10, 10)
         
+        let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
+        visualEffectView.frame = view.bounds
+        view.insertSubview(visualEffectView, atIndex: 0)
+        
         self.view.addSubview(label)
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(dismiss))
+    }
+    
+    func dismiss(){
+        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func syncContacts() {

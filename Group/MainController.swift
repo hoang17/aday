@@ -19,6 +19,9 @@ class MainController: UIViewController {
         
         super.viewDidLoad()
         
+        let statusBar = UIApplication.sharedApplication().valueForKey("statusBarWindow")?.valueForKey("statusBar") as? UIView
+        statusBar?.backgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)
+        
         // Init current user
         
         let realm = AppDelegate.realm
@@ -138,7 +141,7 @@ class MainController: UIViewController {
         tabBarController.didMoveToParentViewController(self)
         tabBarController.selectionIndicatorHeight = 3;
         tabBarController.selectedColor = UIColor(hexString: "#CD5B45")
-        tabBarController.buttonsBackgroundColor = UIColor(hexString: "#F6EBE0")
+        tabBarController.buttonsBackgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)//UIColor(hexString: "#F6EBE0")
         // tabBarController.buttonsBackgroundColor = UIColor(hexString: "#FFF")
         
         // View controllers.

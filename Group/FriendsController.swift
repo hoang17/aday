@@ -30,6 +30,8 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
         navigationController?.hidesBarsOnSwipe = true
         
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(findFriends))
+        
         let realm = AppDelegate.realm
 
         let today = NSDate()
@@ -80,11 +82,17 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         tableView.separatorStyle = .None        
     }
     
+    func findFriends() {
+        let navigationController = UINavigationController(rootViewController: SyncContactController(count: friends.count))
+        navigationController.view.backgroundColor = UIColor.clearColor()
+        navigationController.modalPresentationStyle = .OverFullScreen
+        presentViewController(navigationController, animated: true, completion: nil)
+    }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if friends.count == 0 || (friends.count == 1 && friends[0].uid == AppDelegate.uid) {
-            let navigationController = UINavigationController(rootViewController: SyncContactController())
-            presentViewController(navigationController, animated: true, completion: nil)
+            findFriends()
         }
     }
     

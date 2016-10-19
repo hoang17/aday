@@ -60,9 +60,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             AppDelegate.realm = try! Realm()
         }
         
-        let statusBar = UIApplication.sharedApplication().valueForKey("statusBarWindow")?.valueForKey("statusBar") as? UIView
-        statusBar?.backgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)
-        
         UINavigationBar.appearance().titleTextAttributes = [
             //NSForegroundColorAttributeName : UIColor.darkGrayColor(),
             NSFontAttributeName : UIFont(name: "OpenSans", size: 20.0)!

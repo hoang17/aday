@@ -30,6 +30,8 @@ class SearchController: UITableViewController {
 
         //navigationController?.hidesBarsOnSwipe = true
         
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(findFriends))
+        
         let realm = AppDelegate.realm
         
         friends = realm.objects(UserModel.self)
@@ -91,7 +93,7 @@ class SearchController: UITableViewController {
             })            
         })
         
-        // 2self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
+        //self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
         
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
@@ -104,7 +106,13 @@ class SearchController: UITableViewController {
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
     
-    // MARK: - Table View
+    func findFriends() {
+        let navigationController = UINavigationController(rootViewController: SyncContactController(count: friends.count))
+        navigationController.view.backgroundColor = UIColor.clearColor()
+        navigationController.modalPresentationStyle = .OverFullScreen
+        presentViewController(navigationController, animated: true, completion: nil)
+    }
+
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
