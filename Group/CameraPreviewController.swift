@@ -26,6 +26,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         let asset = AVAsset(URL: UploadHelper.sharedInstance.fileUrl)
         self.showsPlaybackControls = false
         self.player = AVPlayer(playerItem: AVPlayerItem(asset:asset))
+        self.videoGravity = AVLayerVideoGravityResizeAspectFill
         self.player!.actionAtItemEnd = .None
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
