@@ -382,7 +382,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
             doplay()
         }
-        else {
+        else if UploadHelper.sharedInstance.downloadCallbacks[clip.fname] == nil {
             let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
             let thumbImg = UIImageView(frame: view.frame)
             thumbImg.contentMode = .ScaleAspectFill

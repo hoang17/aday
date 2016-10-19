@@ -26,8 +26,11 @@ class UploadHelper {
     let fileUrl: NSURL!
     var connected = false
     var uploading = [String:Bool]()
+    var downloading = [String:Bool]()
+    var downloadCallbacks: [String:(NSURL?, NSError?) -> Void]
     
     init() {
+        downloadCallbacks = [:]
         filePath = NSTemporaryDirectory() + fileName
         fileUrl = NSURL(fileURLWithPath: filePath)
     }
@@ -286,6 +289,18 @@ class UploadHelper {
     }
     
     func downloadClip(fileName: String, completion: ((NSURL?, NSError?) -> Void)?) {
+        
+        if completion != nil {
+            downloadCallbacks[fileName] = completion
+        }
+        
+        if isDownloading(fileName) {
+            print("File is downloading already \(fileName)")
+            return
+        }
+        
+        downloading[fileName] = true
+        
         // Check if file not existed then download
         let filePath = NSTemporaryDirectory() + fileName;
         if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
@@ -293,7 +308,16 @@ class UploadHelper {
             let storage = FIRStorage.storage()
             let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
             let localURL = NSURL(fileURLWithPath: filePath)
-            gs.child(fileName).writeToFile(localURL, completion: completion)
+            gs.child(fileName).writeToFile(localURL) { (URL, error) in
+                if self.downloadCallbacks[fileName] != nil {
+                    let callback = self.downloadCallbacks[fileName]
+                    callback?(URL, error)
+                }
+            }
         }
+    }
+    
+    func isDownloading(fileName: String) -> Bool {
+        return downloading[fileName] ?? false
     }
 }
