@@ -45,8 +45,8 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         backButton.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(self.view).offset(15)
             make.left.equalTo(self.view).offset(18)
-            make.width.equalTo(26)
-            make.height.equalTo(26)
+            make.width.equalTo(30)
+            make.height.equalTo(30)
         }
         
         let nextIcon = UIImage(named: "ic_blue_arrow") as UIImage?
