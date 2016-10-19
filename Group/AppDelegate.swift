@@ -60,6 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             AppDelegate.realm = try! Realm()
         }
         
+        UINavigationBar.appearance().tintColor = UIColor.blackColor()
         UINavigationBar.appearance().titleTextAttributes = [
             //NSForegroundColorAttributeName : UIColor.darkGrayColor(),
             NSFontAttributeName : UIFont(name: "OpenSans", size: 20.0)!
