@@ -63,24 +63,14 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         let realm = AppDelegate.realm
         
-        let today = NSDate()
-        let dayago = NSCalendar.currentCalendar()
-            .dateByAddingUnit(
-                .Day,
-                value: -7,
-                toDate: today,
-                options: []
-        )
-        let d : Double = (dayago?.timeIntervalSince1970)!
-        
-        let friends = realm.objects(UserModel.self).filter("following = true AND uploaded > \(d)").sorted("uploaded", ascending: false)
+        let friends = realm.objects(UserModel.self).filter("following = true AND uploaded > \(AppDelegate.startdate)").sorted("uploaded", ascending: false)
         
         token = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
-            self!.addPins(friends, d: d)
+            self!.addPins(friends)
         }
     }
     
-    func addPins(friends: Results<UserModel>, d: Double){
+    func addPins(friends: Results<UserModel>){
         
         self.mapView.removeAnnotations(self.clipAnnotations)
         self.clipAnnotations = [ClipAnnotation]()
@@ -91,7 +81,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
 
         // print(uids)
 
-        let clips = realm.objects(ClipModel.self).filter("uid IN {\(uids)} AND trash = false AND date > \(d)").sorted("date", ascending: false)
+        let clips = realm.objects(ClipModel.self).filter("uid IN {\(uids)} AND trash = false AND date > \(AppDelegate.startdate)").sorted("date", ascending: false)
         
         for clip in clips {
             

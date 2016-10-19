@@ -36,17 +36,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
         let realm = AppDelegate.realm
 
-        let today = NSDate()
-        let dayago = NSCalendar.currentCalendar()
-            .dateByAddingUnit(
-                .Day,
-                value: -7,
-                toDate: today,
-                options: []
-        )
-        let d : Double = (dayago?.timeIntervalSince1970)!
-        
-        friends = realm.objects(UserModel.self).filter("following = true AND uploaded > \(d)").sorted("uploaded", ascending: false)
+        friends = realm.objects(UserModel.self).filter("following = true AND uploaded > \(AppDelegate.startdate)").sorted("uploaded", ascending: false)
         
         notificationToken = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             guard (self?.tableView) != nil else { return }

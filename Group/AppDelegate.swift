@@ -23,6 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static var uid: String!
     static var currentUser: UserModel!
     static var realm: Realm!
+    static var dayago = -14
+    static var startdate: Double = 0
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -59,6 +61,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             AppDelegate.realm = try! Realm()
         }
+        
+        let today = NSDate()
+        let dayago = NSCalendar.currentCalendar()
+            .dateByAddingUnit(
+                .Day,
+                value: AppDelegate.dayago,
+                toDate: today,
+                options: []
+        )
+        AppDelegate.startdate = dayago?.timeIntervalSince1970 ?? 0
         
         UINavigationBar.appearance().tintColor = UIColor.blackColor()
         UINavigationBar.appearance().titleTextAttributes = [

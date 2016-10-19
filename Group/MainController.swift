@@ -49,16 +49,6 @@ class MainController: UIViewController {
             }
         })
         
-        let today = NSDate()
-        let date = NSCalendar.currentCalendar()
-            .dateByAddingUnit(
-                .Day,
-                value: -7,
-                toDate: today,
-                options: []
-        )
-        let startdate : Double = date!.timeIntervalSince1970
-        
         ref.child("friends/\(AppDelegate.uid)").queryOrderedByChild("following").queryEqualToValue(true).observeEventType(.ChildAdded, withBlock: { snapshot in
         
             let friend = Friend(snapshot: snapshot)
@@ -89,7 +79,7 @@ class MainController: UIViewController {
                     print("updated \(friend!.name)")
                 }
                 
-                ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(startdate).observeEventType(.ChildAdded, withBlock: { snapshot in
+                ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(AppDelegate.startdate).observeEventType(.ChildAdded, withBlock: { snapshot in
                     
                     let data = Clip(snapshot: snapshot)
                     
@@ -109,7 +99,7 @@ class MainController: UIViewController {
                     }
                 })
                 
-                ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(startdate).observeEventType(.ChildChanged, withBlock: { snapshot in
+                ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(AppDelegate.startdate).observeEventType(.ChildChanged, withBlock: { snapshot in
                     
                     let data = Clip(snapshot: snapshot)
                     

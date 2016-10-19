@@ -103,7 +103,9 @@ class SyncContactController: UIViewController {
         
         self.view.addSubview(label)
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(dismiss))
+        if count > 1 {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(dismiss))
+        }
     }
     
     func dismiss(){

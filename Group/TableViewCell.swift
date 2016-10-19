@@ -34,17 +34,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         
         self.friendUid = friendUid
         
-        let today = NSDate()
-        let dayago = NSCalendar.currentCalendar()
-            .dateByAddingUnit(
-                .Day,
-                value: -7,
-                toDate: today,
-                options: []
-        )
-        let d = dayago!.timeIntervalSince1970
-        
-        clips = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friendUid)' AND trash = false AND date > \(d)").sorted("date", ascending: false)
+        clips = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friendUid)' AND trash = false AND date > \(AppDelegate.startdate)").sorted("date", ascending: false)
         
         self.notificationToken = clips.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             guard (self?.collectionView) != nil else { return }
