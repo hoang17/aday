@@ -23,6 +23,8 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
     
     var notificationToken: NotificationToken? = nil
     
+    var alerted = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -91,8 +93,11 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        if friends.count == 0 || (friends.count == 1 && friends[0].uid == AppDelegate.uid) {
-            findFriends()
+        if !alerted {
+            if friends.count == 0 || (friends.count == 1 && friends[0].uid == AppDelegate.uid) {
+                alerted = true
+                findFriends()
+            }
         }
     }
     
