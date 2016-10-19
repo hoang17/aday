@@ -327,6 +327,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                 profileImg.clipsToBounds = true
                 profileImg.layer.borderWidth = 0.5
                 profileImg.layer.borderColor = UIColor.lightGrayColor().CGColor
+                profileImg.contentMode = .ScaleAspectFit                
                 profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1"))
                 container.addSubview(profileImg)
                 i += cellwidth

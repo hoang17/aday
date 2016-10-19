@@ -138,7 +138,7 @@ class SearchController: UITableViewController {
         
         let imgUrl = NSURL(string: "https://graph.facebook.com/\(friend.fb)/picture?type=large&return_ssl_resources=1")
         cell.profileImg.kf_setImageWithURL(imgUrl)
-        
+        cell.profileImg.contentMode = .ScaleAspectFit
         if friend.following {
             cell.followButton.setTitle("unfollow", forState: .Normal)
             cell.followButton.setTitleColor(UIColor.redColor(), forState: .Normal)

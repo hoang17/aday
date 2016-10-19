@@ -97,6 +97,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         cell.controller = self
         cell.nameLabel.text = friend.name
         cell.locationLabel.text = friend.city + " · " + friend.country
+        cell.profileImg.contentMode = .ScaleAspectFit
         cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
         cell.friendName = friend.name
         

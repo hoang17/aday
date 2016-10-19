@@ -70,6 +70,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         profileImg.layer.cornerRadius = profileImg.height/2
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
+        profileImg.contentMode = .ScaleAspectFit
+        profileImg.backgroundColor = UIColor.whiteColor()
         
         nameLabel.origin = CGPoint(x: 55, y: 9)
         nameLabel.height = 28
@@ -383,6 +385,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         else {
             let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
             let thumbImg = UIImageView(frame: view.frame)
+            thumbImg.contentMode = .ScaleAspectFill
             thumbImg.kf_setImageWithResource(resource)
             thumbImg.hidden = false
             view.addSubview(thumbImg)
