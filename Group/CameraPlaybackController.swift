@@ -89,10 +89,10 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         dateLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
         
         moreLabel.text = "..."
-        moreLabel.origin = CGPoint(x: view.width-30, y: view.height-40)
-        moreLabel.size = CGSize(width: 30, height: 20)
+        moreLabel.origin = CGPoint(x: view.width-35, y: view.height-50)
+        moreLabel.size = CGSize(width: 50, height: 50)
         moreLabel.textColor = UIColor.whiteColor()
-        moreLabel.font = UIFont(name: "OpenSans", size: 18.0)
+        moreLabel.font = UIFont(name: "OpenSans-Bold", size: 20.0)
         moreLabel.userInteractionEnabled = true
 
         view.addSubview(textField);
