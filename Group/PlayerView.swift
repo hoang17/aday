@@ -22,6 +22,7 @@ class PlayerView: UIView {
         
         player = AVPlayer(playerItem: playerItem)
         playerLayer = AVPlayerLayer(player: player)
+        playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
         playerLayer.frame = frame
         layer.addSublayer(playerLayer)
     }
@@ -32,11 +33,9 @@ class PlayerView: UIView {
         let fileUrl = NSURL(fileURLWithPath: filePath)
         player = AVPlayer(URL: fileUrl)
         playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = CGRect(x: 0, y: 0, width: frame.width+1, height: frame.height+1) // fix one pixel
+        playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        playerLayer.frame = frame
         layer.addSublayer(playerLayer)
-
-//        self.playerLayer.backgroundColor = UIColor.yellowColor().CGColor
-//        self.backgroundColor = UIColor.greenColor()
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -81,7 +80,7 @@ class ClipThumbnail: UIView {
     init(clip: ClipModel, frame: CGRect) {
         super.init(frame: frame)
         img = UIImageView(frame:frame)
-        
+        img.contentMode = .ScaleAspectFill
         let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
         img.kf_setImageWithResource(resource)
         
