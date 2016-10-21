@@ -10,6 +10,7 @@ import UIKit
 import FirebaseDatabase
 import FirebaseAuth
 import FBSDKCoreKit
+import FBSDKShareKit
 import APAddressBook
 import DigitsKit
 import RealmSwift
@@ -85,6 +86,25 @@ class SyncContactController: UIViewController {
         hey.appendAttributedString(self.padding())
         hey.appendAttributedString(one)
         
+
+        let two = NSMutableAttributedString(string: "Invite Friends")
+        two.yy_font = UIFont.boldSystemFontOfSize(30)
+        two.yy_color = UIColor(red: 0.093, green: 0.492, blue: 1.0, alpha: 1.0)
+        
+        let hl = YYTextHighlight()
+        hl.setColor(UIColor.whiteColor())
+        hl.setBackgroundBorder(highlightBorder)
+        hl.tapAction = {(containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> Void in
+            self.invite()
+        }
+        
+        two.yy_setTextHighlight(hl, range: two.yy_rangeOfAll())
+        
+        hey.appendAttributedString(self.padding())
+        hey.appendAttributedString(self.padding())
+        hey.appendAttributedString(self.padding())
+        hey.appendAttributedString(self.padding())
+        hey.appendAttributedString(two)
         
         let label = YYLabel()
         label.attributedText = hey
@@ -106,6 +126,13 @@ class SyncContactController: UIViewController {
         if count > 1 {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(dismiss))
         }
+    }
+    
+    func invite() {
+        let content = FBSDKAppInviteContent()
+        content.appLinkURL = NSURL(string: "https://fb.me/1643201215973365")
+        content.appInvitePreviewImageURL = NSURL(string: "http://a1.mzstatic.com/us/r30/Purple71/v4/92/37/4a/92374a35-ac4d-8cf9-1326-57090b8a8c83/icon175x175.png")
+        FBSDKAppInviteDialog.showFromViewController(self, withContent: content, delegate: self)
     }
     
     func dismiss(){
@@ -138,5 +165,14 @@ class SyncContactController: UIViewController {
         let pad = NSMutableAttributedString(string: "\n\n")
         pad.yy_font = UIFont.systemFontOfSize(4)
         return pad
+    }
+}
+
+extension SyncContactController: FBSDKAppInviteDialogDelegate{
+    func appInviteDialog(appInviteDialog: FBSDKAppInviteDialog!, didCompleteWithResults results: [NSObject : AnyObject]?) {
+        print(results)
+    }
+    func appInviteDialog(appInviteDialog: FBSDKAppInviteDialog!, didFailWithError error: NSError!) {
+        print(error)
     }
 }

@@ -26,11 +26,14 @@ class UploadHelper {
     let fileUrl: NSURL!
     var connected = false
     var uploading = [String:Bool]()
-    var downloading = [String:Bool]()
-    var downloadCallbacks: [String:(NSURL?, NSError?) -> Void]
+    var downloadTasks = [String: FIRStorageDownloadTask]()
+    var downloadCallbacks = [String:Bool]()
+    
+//    var downloading = [String:Bool]()
+//    var downloadCallbacks: [String:(NSURL?, NSError?) -> Void]
     
     init() {
-        downloadCallbacks = [:]
+        // downloadCallbacks = [:]
         filePath = NSTemporaryDirectory() + fileName
         fileUrl = NSURL(fileURLWithPath: filePath)
     }
@@ -288,36 +291,27 @@ class UploadHelper {
         }
     }
     
-    func downloadClip(fileName: String, completion: ((NSURL?, NSError?) -> Void)?) {
+    func downloadClip(fileName: String, callback: Bool = false) -> FIRStorageDownloadTask? {
         
-        if completion != nil {
-            downloadCallbacks[fileName] = completion
-        }
-        
-        if isDownloading(fileName) {
-            print("File is downloading already \(fileName)")
-            return
-        }
-        
-        downloading[fileName] = true
+        downloadCallbacks[fileName] = callback
         
         // Check if file not existed then download
         let filePath = NSTemporaryDirectory() + fileName;
         if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-            print("Downloading file \(fileName)...")
-            let storage = FIRStorage.storage()
-            let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
-            let localURL = NSURL(fileURLWithPath: filePath)
-            gs.child(fileName).writeToFile(localURL) { (URL, error) in
-                if self.downloadCallbacks[fileName] != nil {
-                    let callback = self.downloadCallbacks[fileName]
-                    callback?(URL, error)
-                }
+            if downloadTasks[fileName] != nil {
+                return downloadTasks[fileName]
+            } else {
+                print("Downloading file \(fileName)...")
+                let storage = FIRStorage.storage()
+                let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
+                let localURL = NSURL(fileURLWithPath: filePath)
+                return gs.child(fileName).writeToFile(localURL)
             }
         }
+        return nil
     }
     
-    func isDownloading(fileName: String) -> Bool {
-        return downloading[fileName] ?? false
-    }
+//    func isDownloading(fileName: String) -> Bool {
+//        return downloading[fileName] ?? false
+//    }
 }

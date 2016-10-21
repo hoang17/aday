@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // FIRDatabase.database().persistenceEnabled = true
 
         // Setup Fabric
-        Fabric.with([Crashlytics.self, Answers.self, Digits.self])
+        Fabric.with([Crashlytics.self, Digits.self])
         
         // Facebook setup
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -94,6 +94,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.logUser()
             self.window!.rootViewController = MainController()
         } else {
+            do {
+                try FIRAuth.auth()?.signOut()
+            } catch {
+                print(error)
+            }
+            FBSDKLoginManager().logOut()
             window!.rootViewController = LoginController()
         }
         

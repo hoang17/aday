@@ -18,6 +18,7 @@ import RealmSwift
 import Kingfisher
 import DGActivityIndicatorView
 import SwiftOverlays
+//import MRProgress
 
 class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKSharingDelegate {
 
@@ -382,7 +383,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
             doplay()
         }
-        else if UploadHelper.sharedInstance.downloadCallbacks[clip.fname] == nil {
+        else if UploadHelper.sharedInstance.downloadCallbacks[clip.fname] ?? false == false {
             let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
             let thumbImg = UIImageView(frame: view.frame)
             thumbImg.contentMode = .ScaleAspectFill
@@ -390,24 +391,42 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
             thumbImg.hidden = false
             view.addSubview(thumbImg)
             
-            let indicator = DGActivityIndicatorView(type: DGActivityIndicatorAnimationType.BallClipRotate, tintColor: UIColor.whiteColor(), size: 30.0)
+            let indicator = DGActivityIndicatorView(type: .BallClipRotate, tintColor: UIColor.whiteColor(), size: 30.0)
             indicator.size = CGSize(width: 50.0, height: 50.0)
             indicator.center = view.center
             view.addSubview(indicator)
             indicator.startAnimating()
             
-            UploadHelper.sharedInstance.downloadClip(clip.fname) { (URL, error) in
-                if error != nil {
-                    print(error)
-                } else {
-                    print("File downloaded \(clip.fname)")
-                    indicator.removeFromSuperview()
-                    self.player.removeFromSuperview()
-                    // thumbImg.removeFromSuperview()
-                    self.player = self.playerAtIndex(self.playIndex)
-                    self.doplay()
-                }
+//            let ai = MRCircularProgressView()
+//            ai.size = CGSize(width: 90.0, height: 90.0)
+//            ai.tintColor = UIColor(white: 1, alpha: 0.8)
+//            ai.center = view.center
+//            ai.lineWidth = 5
+//            ai.borderWidth = 1
+//            view.addSubview(ai)
+            
+            let task = UploadHelper.sharedInstance.downloadClip(clip.fname, callback: true)
+            task?.observeStatus(.Success){ (snapshot) in
+                print("File downloaded \(clip.fname)")
+                indicator.removeFromSuperview()
+                //ai.removeFromSuperview()
+                self.player.removeFromSuperview()
+                // thumbImg.removeFromSuperview()
+                self.player = self.playerAtIndex(self.playIndex)
+                self.doplay()
             }
+            task?.observeStatus(.Failure) { (snapshot) in
+                guard let storageError = snapshot.error else { return }
+                print(storageError)
+            }
+//            task?.observeStatus(.Progress) { (snapshot) in
+//                if let completed = snapshot.progress?.completedUnitCount {
+//                    let total = snapshot.progress!.totalUnitCount
+//                    let percentComplete : Float = total == 0 ? 0 : Float(completed)/Float(total)
+//                    print(percentComplete)
+//                    ai.setProgress(percentComplete, animated: true)
+//                }
+//            }
         }
     }
     
@@ -446,7 +465,11 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     
     func close(){
         self.dismissViewControllerAnimated(true, completion: nil)
-        collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: playIndex, inSection: 0) , atScrollPosition: .CenteredHorizontally, animated: false)
+
+        if (playIndex >= 0) && playIndex < clips.count {
+            let indexPath = NSIndexPath(forRow: playIndex, inSection: 0)
+            collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .CenteredHorizontally, animated: false)
+        }
     }
     
     override func prefersStatusBarHidden() -> Bool {

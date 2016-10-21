@@ -22,7 +22,7 @@ class VideoHelper {
         let savePath = NSURL(fileURLWithPath: NSTemporaryDirectory() + "exp_" + clip.fname).absoluteString
         let savePathUrl = NSURL(string: savePath!)
         
-        // Delete file if existed
+        // Return if file existed
         let exfilePath = NSTemporaryDirectory() + "exp_" + clip.fname;
         let fileManager = NSFileManager.defaultManager()
         if fileManager.fileExistsAtPath(exfilePath) {
@@ -55,38 +55,43 @@ class VideoHelper {
         compositionAudioTrack.preferredTransform = audioTrack.preferredTransform
         
         // video size
-        let size = CGSizeMake(videoTrack.naturalSize.height, videoTrack.naturalSize.width)
+        let size = CGSizeMake(videoTrack.naturalSize.width, videoTrack.naturalSize.width)
         
         let imglogo = UIImage(named: "pin")
         let logolayer = CALayer()
         logolayer.contents = imglogo?.CGImage
-        logolayer.frame = CGRectMake(size.width - 65, 5, 27, 32)
+        logolayer.frame = CGRectMake(size.width - 105, 20, 45, 53)
         logolayer.opacity = 0.6
 
         let logotxtLayer = LCTextLayer()
         logotxtLayer.foregroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.6).CGColor
         logotxtLayer.font = UIFont(name: "OpenSans-Bold", size: 14.0)
         logotxtLayer.string = "Pinly"
-        logotxtLayer.fontSize = 14
-        logotxtLayer.frame = CGRectMake(size.width-50, 3, 100, 28)
+        logotxtLayer.fontSize = 22
+        logotxtLayer.frame = CGRectMake(size.width-82, 12, 200, 56)
         
+//        let url = NSURL(string: "https://graph.facebook.com/10154325476678184/picture?type=large&return_ssl_resources=1")
+//        let data = NSData(contentsOfURL: url!)
+//        let avaimg = UIImage(data: data!)
+        //imglayer.contents = avaimg?.circle.CGImage
+
         let imglayer = CALayer()
         imglayer.contents = profileImg.circle.CGImage
-        imglayer.frame = CGRectMake(15, size.height-40, 30, 30)
+        imglayer.frame = CGRectMake(15, size.height-60, 50, 50)
         
         let nameLayer = LCTextLayer()
         nameLayer.foregroundColor = UIColor.whiteColor().CGColor
         nameLayer.font = UIFont(name: "OpenSans-Bold", size: 12.0)
         nameLayer.string = friendName
-        nameLayer.fontSize = 12
-        nameLayer.frame = CGRectMake(55, size.height-30, 300, 28)
+        nameLayer.fontSize = 22
+        nameLayer.frame = CGRectMake(75, size.height-30, 300, 24)
 
         let locationLayer = LCTextLayer()
         locationLayer.foregroundColor = UIColor.whiteColor().CGColor
         locationLayer.font = UIFont(name: "OpenSans", size: 12.0)
         locationLayer.string = clip.subarea != "" ? clip.subarea + " · " + clip.city : clip.city + " · " + clip.country
-        locationLayer.fontSize = 12
-        locationLayer.frame = CGRectMake(55, size.height-45, 300, 28)
+        locationLayer.fontSize = 22
+        locationLayer.frame = CGRectMake(75, size.height-55, 300, 24)
         
         let titleLayer = LCTextLayer()
         titleLayer.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
@@ -98,11 +103,13 @@ class VideoHelper {
         let videolayer = CALayer()
         let parentlayer = CALayer()
         
-        videolayer.frame = CGRectMake(0, 0, size.width, size.height)
+        videolayer.frame = CGRectMake((size.width-videoTrack.naturalSize.height)/2, 0, size.width, size.height)
         parentlayer.frame = CGRectMake(0, 0, size.width, size.height)
         
         parentlayer.addSublayer(videolayer)
-        parentlayer.addSublayer(titleLayer)
+        if clip.txt != "" {
+            parentlayer.addSublayer(titleLayer)
+        }
         parentlayer.addSublayer(imglayer)
         parentlayer.addSublayer(nameLayer)
         parentlayer.addSublayer(locationLayer)

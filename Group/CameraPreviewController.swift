@@ -34,6 +34,22 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
                                                          object: player!.currentItem)
         self.player!.play()
         
+        textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+        textField.textColor = UIColor.whiteColor()
+        textField.font = UIFont.systemFontOfSize(16.0)
+        textField.textAlignment = NSTextAlignment.Center
+        textField.text = ""
+        textField.hidden = true
+        textField.height = 34
+        textField.width = UIScreen.mainScreen().bounds.width
+        textField.delegate = self
+        textField.returnKeyType = UIReturnKeyType.Done
+        textField.userInteractionEnabled = true
+        
+        view.addSubview(textField)
+        view.bringSubviewToFront(textField)
+        
+        
         let backIcon = UIImage(named: "ic_close") as UIImage?
         let backButton = UIButton(type: .System)
         backButton.tintColor = UIColor(white: 1, alpha: 0.5)
@@ -64,21 +80,6 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
             make.height.equalTo(36)
         }
         
-        
-        textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-        textField.textColor = UIColor.whiteColor()
-        textField.font = UIFont.systemFontOfSize(16.0)
-        textField.textAlignment = NSTextAlignment.Center
-        textField.text = ""
-        textField.hidden = true
-        textField.height = 34
-        textField.width = UIScreen.mainScreen().bounds.width
-        textField.delegate = self
-        textField.returnKeyType = UIReturnKeyType.Done
-        textField.userInteractionEnabled = true
-        
-        view.addSubview(textField)
-        view.bringSubviewToFront(textField)
         
 //        locationField.origin = CGPoint(x: 0, y: 0)
 //        locationField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)

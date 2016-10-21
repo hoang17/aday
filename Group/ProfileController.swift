@@ -252,45 +252,21 @@ class ProfileController: FormViewController {
 //        })
 //    }
     
-//    func fixClips() {
-//        let ref = FIRDatabase.database().reference()
-//
-//        var i = 0
-//
-//        ref.child("users").observeSingleEventOfType(.Value, withBlock: { snapshot in
-//
-//            for item in snapshot.children {
-//                
-//                let user = User(snapshot: item as! FIRDataSnapshot)
-//                for clip in user.clips {
-//                    
-//                    ref.child("pins/\(user.uid)/\(clip.id)").setValue(clip.toAnyObject())
-//                    
-//                    i+=1
-//                    print(i)
-//                    
-////                    // RESTORE FUCKING THUMB
-////                    
-////                    let storage = FIRStorage.storage()
-////                    let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/thumbs")
-////                    let filename = clip.fname + ".jpg"
-////                    
-////                    gs.child(filename).metadataWithCompletion { (metadata, error) -> Void in
-////                        if (error != nil) {
-////                            print(error)
-////                        } else {
-////                            i+=1
-////                            print("update thumb \(i)")
-////                            let thumb = (metadata!.downloadURL()?.absoluteString)!
-////                            let childUpdates = ["/clips/\(clip.id)/thumb": thumb,
-////                                "/users/\(user.uid)/clips/\(clip.id)/thumb": thumb]
-////                            ref.updateChildValues(childUpdates)
-////                        }
-////                    }
-//                }
-//            }
-//        })
-//    }
+    func fixClips() {
+        let ref = FIRDatabase.database().reference()
+
+        var i = 0
+
+        ref.child("users/wm0dlW1fwtULkzpYAkvsBFpLk1w2").observeSingleEventOfType(.Value, withBlock: { snapshot in
+            let user = User(snapshot: snapshot)
+            for clipSnapshot in snapshot.childSnapshotForPath("clips").children {
+                let clip = Clip(snapshot: clipSnapshot as! FIRDataSnapshot)
+                ref.child("pins/\(user.uid)/\(clip.id)").setValue(clip.toAnyObject())
+                i+=1
+            }
+            print(i)
+        })
+    }
     
     func logOut() {
         

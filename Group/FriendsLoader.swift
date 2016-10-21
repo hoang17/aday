@@ -115,7 +115,7 @@ class FriendsLoader: NSObject {
             addressBook.loadContacts({(contacts, error) in
                 if error != nil {
                     print(error)
-                } else {
+                } else if contacts != nil {
                     for contact in contacts! {
                         
                         if let phones = contact.phones {
