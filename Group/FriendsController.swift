@@ -210,10 +210,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
 //        myActionSheet.addAction(shareFBAction)
 //        myActionSheet.addAction(shareIGAction)
         
-        if userID != friend.uid{
-            myActionSheet.addAction(unfollowAction)
-        }
-        
+        myActionSheet.addAction(unfollowAction)
         myActionSheet.addAction(cancelAction)
         
 //        // support iPads (popover view)

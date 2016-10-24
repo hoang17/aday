@@ -27,9 +27,9 @@ class VideoHelper {
         let fileManager = NSFileManager.defaultManager()
         if fileManager.fileExistsAtPath(exfilePath) {
             print("file existed")
-            completion(savePathUrl: savePathUrl!)
-            return
-            // try! fileManager.removeItemAtPath(exfilePath)
+//            completion(savePathUrl: savePathUrl!)
+//            return
+             try! fileManager.removeItemAtPath(exfilePath)
         }
         
         let filePath = NSTemporaryDirectory() + clip.fname
@@ -77,33 +77,80 @@ class VideoHelper {
 
         let imglayer = CALayer()
         imglayer.contents = profileImg.circle.CGImage
-        imglayer.frame = CGRectMake(15, size.height-60, 50, 50)
+        imglayer.frame = CGRectMake(videoTrack.naturalSize.height - 65, size.height-60, 50, 50)
+        
+        let rwidth = size.width - videoTrack.naturalSize.height - 15
         
         let nameLayer = LCTextLayer()
         nameLayer.foregroundColor = UIColor.whiteColor().CGColor
         nameLayer.font = UIFont(name: "OpenSans-Bold", size: 12.0)
         nameLayer.string = friendName
         nameLayer.fontSize = 22
-        nameLayer.frame = CGRectMake(75, size.height-30, 300, 24)
+        nameLayer.frame = CGRectMake(videoTrack.naturalSize.height + 15, size.height-35, rwidth, 26)
+        nameLayer.wrapped = true
 
-        let locationLayer = LCTextLayer()
-        locationLayer.foregroundColor = UIColor.whiteColor().CGColor
-        locationLayer.font = UIFont(name: "OpenSans", size: 12.0)
-        locationLayer.string = clip.subarea != "" ? clip.subarea + " · " + clip.city : clip.city + " · " + clip.country
-        locationLayer.fontSize = 22
-        locationLayer.frame = CGRectMake(75, size.height-55, 300, 24)
+        let date = NSDate(timeIntervalSince1970: clip.date)
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "E, d MMM, yyyy"
+        let dateString = formatter.stringFromDate(date)
+
+        let timeformatter = NSDateFormatter()
+        timeformatter.timeStyle = .ShortStyle
+        var timeString = timeformatter.stringFromDate(date)
+        
+        let dateLayer = LCTextLayer()
+        dateLayer.foregroundColor = UIColor.whiteColor().CGColor
+        dateLayer.font = UIFont(name: "OpenSans", size: 12.0)
+        dateLayer.string = dateString
+        dateLayer.fontSize = 20
+        dateLayer.frame = CGRectMake(videoTrack.naturalSize.height + 15, size.height-75, rwidth, 30)
+
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "HH.mm"
+        let time = Float(dateFormatter.stringFromDate(date))
+        print("Check float value: \(time)")
+        if time >= 18.00 || time <= 6.00 {
+            timeString = "🌜 " + timeString
+        }
+        else {
+            timeString = "🌞 " + timeString
+        }
+        
+        let timeLayer = LCTextLayer()
+        timeLayer.foregroundColor = UIColor.whiteColor().CGColor
+        timeLayer.font = UIFont(name: "OpenSans-Bold", size: 12.0)
+        timeLayer.string = timeString
+        timeLayer.fontSize = 30
+        timeLayer.frame = CGRectMake(videoTrack.naturalSize.height + 15, size.height-125, rwidth, 34)
+        
+        let locLayer1 = LCTextLayer()
+        locLayer1.foregroundColor = UIColor.whiteColor().CGColor
+        locLayer1.font = UIFont(name: "OpenSans", size: 12.0)
+        locLayer1.string = "📍" + clip.lname
+        locLayer1.fontSize = 22
+        locLayer1.frame = CGRectMake(videoTrack.naturalSize.height + 15, size.height-200, rwidth, 80)
+        locLayer1.wrapped = true
+
+        let locLayer2 = LCTextLayer()
+        locLayer2.foregroundColor = UIColor.whiteColor().CGColor
+        locLayer2.font = UIFont(name: "OpenSans", size: 12.0)
+        locLayer2.string = clip.subarea + "\n" + clip.city + "\n" + clip.country
+        locLayer2.fontSize = 20
+        locLayer2.frame = CGRectMake(videoTrack.naturalSize.height + 15, size.height-355, rwidth-15, 200)
+        locLayer2.wrapped = true
+        locLayer2.alignmentMode = "right"
         
         let titleLayer = LCTextLayer()
         titleLayer.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
         titleLayer.string = clip.txt
         titleLayer.alignmentMode = kCAAlignmentCenter
-        titleLayer.frame = CGRectMake(0, size.height*(1-CGFloat(clip.y)), size.width, size.height/16.7)
+        titleLayer.frame = CGRectMake(0, size.height*(1-CGFloat(clip.y)), videoTrack.naturalSize.height, size.height/16.7)
         titleLayer.fontSize = size.height/35.5
         
         let videolayer = CALayer()
         let parentlayer = CALayer()
         
-        videolayer.frame = CGRectMake((size.width-videoTrack.naturalSize.height)/2, 0, size.width, size.height)
+        videolayer.frame = CGRectMake(0, 0, size.width, size.height)
         parentlayer.frame = CGRectMake(0, 0, size.width, size.height)
         
         parentlayer.addSublayer(videolayer)
@@ -112,7 +159,10 @@ class VideoHelper {
         }
         parentlayer.addSublayer(imglayer)
         parentlayer.addSublayer(nameLayer)
-        parentlayer.addSublayer(locationLayer)
+        parentlayer.addSublayer(dateLayer)
+        parentlayer.addSublayer(timeLayer)
+        parentlayer.addSublayer(locLayer1)
+        parentlayer.addSublayer(locLayer2)
         parentlayer.addSublayer(logolayer)
         parentlayer.addSublayer(logotxtLayer)
         
