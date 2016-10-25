@@ -53,7 +53,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
             }
         }
         
-        self.selectionStyle = .None;
+        self.selectionStyle = .None
         
         moreButton.text = "..."
         moreButton.origin = CGPoint(x: UIScreen.mainScreen().bounds.width-40, y: 10)
@@ -139,7 +139,9 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         cameraPlayback.friendName = self.friendName
         cameraPlayback.friendUid = self.friendUid
 
-        self.controller!.presentViewController(cameraPlayback, animated: true, completion: nil)
+        let navigationController = UINavigationController(rootViewController: cameraPlayback)
+        
+        self.controller!.presentViewController(navigationController, animated: true, completion: nil)
     }
     
 }

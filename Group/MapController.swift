@@ -313,7 +313,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             container.layer.cornerRadius = container.height/2
             container.layer.masksToBounds = true
             container.clipsToBounds = true
-            container.layer.borderColor = UIColor.lightGrayColor().CGColor;
+            container.layer.borderColor = UIColor.lightGrayColor().CGColor
             container.layer.borderWidth = 0.5
             annotationView?.addSubview(container)
             

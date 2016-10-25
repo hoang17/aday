@@ -32,7 +32,7 @@ class PlayerCalloutView: UIView {
         locationName.layer.cornerRadius = 5
         locationName.layer.masksToBounds = true
         locationName.clipsToBounds = true
-        locationName.layer.borderColor = UIColor.lightGrayColor().CGColor;
+        locationName.layer.borderColor = UIColor.lightGrayColor().CGColor
         locationName.layer.borderWidth = 0.5
         locationName.text = clips[playIndex].lname
         

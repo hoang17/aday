@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 @objc public enum RecordButtonState : Int {
-    case Recording, Idle, Hidden;
+    case Recording, Idle, Hidden
 }
 
 @objc public class RecordButton : UIButton {

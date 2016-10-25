@@ -141,7 +141,7 @@ class UploadHelper {
             if !clipUpload.clipUploaded {
                 
                 // enter upload clip
-                dispatch_group_enter(group);
+                dispatch_group_enter(group)
                 
                 upload(clip) { metadata, error in
                     // upload done
@@ -163,7 +163,7 @@ class UploadHelper {
             if !clipUpload.thumbUploaded {
                 
                 // enter upload thumb
-                dispatch_group_enter(group);
+                dispatch_group_enter(group)
                 
                 uploadThumb(clip) { metadata, error in
                     // upload done

@@ -19,7 +19,6 @@ class SearchController: UITableViewController {
     var friends: Results<UserModel>!
     var filteredFriends = [UserModel]()
     let searchController = UISearchController(searchResultsController: nil)
-    let ref = FIRDatabase.database().reference()
     
     var notificationToken: NotificationToken? = nil
     
@@ -59,11 +58,13 @@ class SearchController: UITableViewController {
             }
         }
         
+        let ref = FIRDatabase.database().reference()
+        
         ref.child("friends/\(AppDelegate.uid)").observeEventType(.ChildAdded, withBlock: { snapshot in
             
             let friend = Friend(snapshot: snapshot)
             
-            self.ref.child("users").child(friend.fuid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            ref.child("users").child(friend.fuid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 let data = User(snapshot: snapshot)
                 
                 let user = UserModel(user: data)
@@ -80,7 +81,7 @@ class SearchController: UITableViewController {
             
             let friend = Friend(snapshot: snapshot)
             
-            self.ref.child("users").child(friend.fuid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            ref.child("users").child(friend.fuid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 let data = User(snapshot: snapshot)
                 
                 let user = UserModel(user: data)
@@ -93,7 +94,7 @@ class SearchController: UITableViewController {
             })            
         })
         
-        //self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
+        //self.tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
         
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
@@ -125,7 +126,6 @@ class SearchController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = SearchItemCell()
         var friend: UserModel
         if searchController.active && searchController.searchBar.text != "" {
             friend = filteredFriends[indexPath.row]
@@ -134,11 +134,7 @@ class SearchController: UITableViewController {
         }
         
         // Set cell data
-        cell.nameLabel.text = friend.name
-        
-        let imgUrl = NSURL(string: "https://graph.facebook.com/\(friend.fb)/picture?type=large&return_ssl_resources=1")
-        cell.profileImg.kf_setImageWithURL(imgUrl)
-        cell.profileImg.contentMode = .ScaleAspectFit
+        let cell = SearchItemCell(user: friend)
         if friend.following {
             cell.followButton.setTitle("unfollow", forState: .Normal)
             cell.followButton.setTitleColor(UIColor.redColor(), forState: .Normal)
@@ -164,6 +160,7 @@ class SearchController: UITableViewController {
             friend.following = sender.titleLabel?.text == "follow"
         }
         
+        let ref = FIRDatabase.database().reference()
         let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": friend.following]
         ref.updateChildValues(update)
         

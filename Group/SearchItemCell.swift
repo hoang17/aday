@@ -17,14 +17,10 @@ class SearchItemCell: UITableViewCell{
     var followButton = UIButton()
     var profileImg = UIImageView()
     
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)!
-    }
-    
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    convenience init(user: UserModel) {
+        self.init()
         
-        self.selectionStyle = .None;
+        self.selectionStyle = .None
         
         // Set cell profile img
         profileImg.origin = CGPoint(x: 10, y: 4)
@@ -32,12 +28,16 @@ class SearchItemCell: UITableViewCell{
         profileImg.layer.cornerRadius = profileImg.frame.height/2
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
+        profileImg.contentMode = .ScaleAspectFit
+        let imgUrl = NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1")
+        profileImg.kf_setImageWithURL(imgUrl)
         self.addSubview(profileImg)
         
         // Set cell name label
         nameLabel.origin = CGPoint(x: 60, y: 4)
         nameLabel.size = CGSize(width: self.width, height: 35)
         nameLabel.textColor = UIColor.blackColor()
+        nameLabel.text = user.name
         self.addSubview(nameLabel)
         
         // Set cell follow button

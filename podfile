@@ -24,4 +24,5 @@ target 'Pinly' do
     pod 'SwiftOverlays'
     pod 'DGActivityIndicatorView'
     pod 'CWStatusBarNotification'
+    pod 'SlackTextViewController'
 end

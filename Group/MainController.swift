@@ -129,7 +129,7 @@ class MainController: UIViewController {
         self.view.addSubview(tabBarController.view)
         tabBarController.view.frame = self.view.bounds
         tabBarController.didMoveToParentViewController(self)
-        tabBarController.selectionIndicatorHeight = 3;
+        tabBarController.selectionIndicatorHeight = 3
         tabBarController.selectedColor = UIColor(hexString: "#CD5B45")
         tabBarController.buttonsBackgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)//UIColor(hexString: "#F6EBE0")
         // tabBarController.buttonsBackgroundColor = UIColor(hexString: "#FFF")

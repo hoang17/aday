@@ -23,7 +23,7 @@ class VideoHelper {
         let savePathUrl = NSURL(string: savePath!)
         
         // Return if file existed
-        let exfilePath = NSTemporaryDirectory() + "exp_" + clip.fname;
+        let exfilePath = NSTemporaryDirectory() + "exp_" + clip.fname
         let fileManager = NSFileManager.defaultManager()
         if fileManager.fileExistsAtPath(exfilePath) {
             print("file existed")

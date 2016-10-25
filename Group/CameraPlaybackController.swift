@@ -34,6 +34,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     var nextplayer: ClipPlayer! // cache for smooth
     var prevplayer: ClipPlayer! // cache for smooth
     
+    var commentsButton = UIButton()
+    let commentField = UITextField()
     var profileImg = UIImageView()
     var nameLabel = UILabel()
     var locationLabel = UILabel()
@@ -52,6 +54,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationController?.navigationBarHidden = true
         
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         textField.textColor = UIColor.whiteColor()
@@ -96,12 +100,38 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         moreLabel.font = UIFont(name: "OpenSans-Bold", size: 20.0)
         moreLabel.userInteractionEnabled = true
 
-        view.addSubview(textField);
+        commentField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+        commentField.textColor = UIColor.whiteColor()
+        commentField.font = UIFont.systemFontOfSize(16.0)
+        commentField.textAlignment = NSTextAlignment.Left
+        commentField.attributedPlaceholder = NSAttributedString(string:"Write a comment...", attributes:[
+                                                                    NSForegroundColorAttributeName: UIColor(white: 1, alpha: 0.6),
+                                                                    NSFontAttributeName:UIFont.systemFontOfSize(16.0)])
+        commentField.text = ""
+        commentField.hidden = true
+        commentField.height = 34
+        commentField.width = UIScreen.mainScreen().bounds.width
+        commentField.delegate = self
+        commentField.returnKeyType = UIReturnKeyType.Send
+        commentField.userInteractionEnabled = true
+        
+        let commentsIcon = UIImage(named: "ic_comment") as UIImage?
+        commentsButton = UIButton(type: .System)
+        commentsButton.tintColor = UIColor(white: 1, alpha: 0.5)
+        commentsButton.backgroundColor = UIColor.clearColor()
+        commentsButton.setImage(commentsIcon, forState: .Normal)
+        commentsButton.addTarget(self, action: #selector(showComments), forControlEvents: .TouchUpInside)
+        commentsButton.origin = CGPoint(x: 15, y: view.height-35)
+        commentsButton.size = CGSize(width: 30, height: 23)
+        
+        view.addSubview(textField)
         view.addSubview(profileImg)
         view.addSubview(nameLabel)
         view.addSubview(locationLabel)
         view.addSubview(dateLabel)
         view.addSubview(moreLabel)
+        view.addSubview(commentField)
+        view.addSubview(commentsButton)
         
         let tapmore = UITapGestureRecognizer(target: self, action: #selector(tapMore))
         moreLabel.addGestureRecognizer(tapmore)
@@ -113,7 +143,18 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         swipeDown.direction = UISwipeGestureRecognizerDirection.Down
         view.addGestureRecognizer(swipeDown)
         
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(swipeUpGesture))
+        swipeUp.direction = UISwipeGestureRecognizerDirection.Up
+        view.addGestureRecognizer(swipeUp)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        
         play()
+    }
+    
+    func showComments() {
+        player.pause()
+        self.navigationController?.pushViewController(CommentsController(pid: clips[playIndex].id), animated: true)
     }
     
     func tapMore(sender: UITapGestureRecognizer) {
@@ -147,7 +188,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
             }))
             
             self.presentViewController(confirmAlert, animated: true, completion: nil)
-            
         }
         
         let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
@@ -292,6 +332,13 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     
     func tapGesture(sender:UITapGestureRecognizer){
         
+        if commentField.hidden == false {
+            commentField.resignFirstResponder()
+            commentField.hidden = true
+            player.play()
+            return
+        }
+        
         player.pause()
         NSNotificationCenter.defaultCenter().removeObserver(self,
                                                             name: AVPlayerItemDidPlayToEndTimeNotification,
@@ -312,6 +359,39 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
                 close()
             }
         }
+    }
+
+    // Move textfield ontop of keyboard
+    func keyboardNotification(notification: NSNotification) {
+        
+        if let userInfo = notification.userInfo {
+            let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
+            let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
+            UIView.animateWithDuration(duration, animations: {
+                self.commentField.origin.y = self.view.height - keyboardSize.height - self.commentField.height
+            })
+            
+        }
+    }
+    
+    // On return done editing
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        commentField.resignFirstResponder()
+        commentField.hidden = true
+        player.play()
+        if commentField.text != "" {
+            FriendsLoader.sharedInstance.comment(clips[playIndex], text: commentField.text!)
+            commentField.text = ""
+        }
+        return true
+    }
+    
+    func swipeUpGesture(){
+        player.pause()
+        commentField.hidden = false
+        commentField.y = view.height - 34
+        commentField.becomeFirstResponder()
+        view.bringSubviewToFront(commentField)
     }
     
     func swipeDownGesture(){
@@ -446,6 +526,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         view.bringSubviewToFront(dateLabel)
         view.bringSubviewToFront(moreLabel)
         view.bringSubviewToFront(locationLabel)
+        view.bringSubviewToFront(commentsButton)
         
         player.play()
         

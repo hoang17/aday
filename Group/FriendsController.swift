@@ -70,7 +70,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         tableView.dataSource = self
         tableView.layoutMargins = UIEdgeInsetsZero
         tableView.separatorInset = UIEdgeInsetsZero
-        //tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0);
+        //tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
         tableView.separatorStyle = .None        
     }
     

@@ -30,7 +30,7 @@ class FriendsLoader: NSObject {
         
         var friends = [FacebookFriend]()
         
-        let request = FBSDKGraphRequest(graphPath:"me/friends", parameters: ["fields": "name", "limit":"200"] );
+        let request = FBSDKGraphRequest(graphPath:"me/friends", parameters: ["fields": "name", "limit":"200"] )
         request.startWithCompletionHandler { (connection, result, error) -> Void in
             
             if error == nil {
@@ -51,7 +51,7 @@ class FriendsLoader: NSObject {
                 print("Found \(friends.count) friends")
                 completion?(count: friends.count)
             } else {
-                print("Error Getting Friends \(error)");
+                print("Error Getting Friends \(error)")
             }
         }
     }
@@ -207,5 +207,20 @@ class FriendsLoader: NSObject {
             clip.trash = true
             clip.updated = updated
         }
+    }
+    
+    func comment(clip: ClipModel, text: String) {
+        let ref = FIRDatabase.database().reference()
+        let id = ref.child("comments").childByAutoId().key
+        let userID : String! = AppDelegate.uid
+        let cmt = Comment(id: id, uid: userID, pid: clip.id, text: text)
+        let update = ["/comments/\(clip.id)/\(cmt.id)": cmt.toAnyObject()]
+        ref.updateChildValues(update)
+        
+//        let realm = AppDelegate.realm
+//        try! realm.write {
+//            clip.flag = true
+//            clip.trash = true
+//        }
     }
 }

@@ -112,7 +112,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         
         UploadHelper.sharedInstance.enqueueUpload(clip)
         
-   self.back()
+        self.back()
     }
     
     // Limit text length to textfield width
