@@ -33,7 +33,6 @@ class CommentCell: UITableViewCell{
         let fb: String = comment.user?.fb ?? ""
         let imgUrl = NSURL(string: "https://graph.facebook.com/\(fb)/picture?type=large&return_ssl_resources=1")
         profileImg.kf_setImageWithURL(imgUrl)
-        profileImg.backgroundColor = UIColor.brownColor()
         
         nameLabel.origin = CGPoint(x: 55, y: 2)
         nameLabel.size = CGSize(width: width, height: 24)
