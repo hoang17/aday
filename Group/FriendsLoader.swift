@@ -209,12 +209,12 @@ class FriendsLoader: NSObject {
         }
     }
     
-    func comment(clip: ClipModel, text: String) {
+    func comment(pid: String, text: String) {
         let ref = FIRDatabase.database().reference()
         let id = ref.child("comments").childByAutoId().key
         let userID : String! = AppDelegate.uid
-        let cmt = Comment(id: id, uid: userID, pid: clip.id, text: text)
-        let update = ["/comments/\(clip.id)/\(cmt.id)": cmt.toAnyObject()]
+        let cmt = Comment(id: id, uid: userID, pid: pid, text: text)
+        let update = ["/comments/\(pid)/\(cmt.id)": cmt.toAnyObject()]
         ref.updateChildValues(update)
         
 //        let realm = AppDelegate.realm

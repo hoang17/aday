@@ -16,9 +16,8 @@ class CommentCell: UITableViewCell{
     
     var nameLabel = UILabel()
     var profileImg = UIImageView()
+    var dateLabel = UILabel()
     var txtLabel = UILabel()
-    //var txtLabel = YYLabel()
-    //var followButton = UIButton()
     
     convenience init(comment: Comment) {
         self.init()
@@ -37,10 +36,17 @@ class CommentCell: UITableViewCell{
         profileImg.backgroundColor = UIColor.brownColor()
         
         nameLabel.origin = CGPoint(x: 55, y: 2)
-        nameLabel.size = CGSize(width: self.width, height: 24)
+        nameLabel.size = CGSize(width: width, height: 24)
         nameLabel.textColor = UIColor.blackColor()
         nameLabel.text = comment.user?.name
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
+        
+        dateLabel.origin = CGPoint(x: width-40, y: 2)
+        dateLabel.size = CGSize(width: 32, height: 24)
+        dateLabel.textColor = UIColor(white: 0.3, alpha: 0.5)
+        dateLabel.font = UIFont(name: "OpenSans-Bold", size: 10.0)
+        dateLabel.text = NSDate(timeIntervalSince1970: comment.created).shortTimeAgoSinceNow()
+        dateLabel.textAlignment = .Right
         
         txtLabel.origin = CGPoint(x: 55, y: 26)
         txtLabel.size = CGSize(width: self.width-60, height: 24)
@@ -52,17 +58,9 @@ class CommentCell: UITableViewCell{
         txtLabel.sizeToFit()
         
         self.addSubview(nameLabel)
+        self.addSubview(dateLabel)
         self.addSubview(profileImg)
         self.addSubview(txtLabel)
-        
-//        followButton.size = CGSize(width: 80, height: 35)
-//        followButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
-//        self.addSubview(followButton)
-//        followButton.snp_makeConstraints { (make) -> Void in
-//            make.top.equalTo(self.top).offset(4)
-//            make.right.equalTo(self.right).offset(-10)
-//            
-//        }
     }
 }
 

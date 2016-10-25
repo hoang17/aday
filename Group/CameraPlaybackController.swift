@@ -380,7 +380,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         commentField.hidden = true
         player.play()
         if commentField.text != "" {
-            FriendsLoader.sharedInstance.comment(clips[playIndex], text: commentField.text!)
+            FriendsLoader.sharedInstance.comment(clips[playIndex].id, text: commentField.text!)
             commentField.text = ""
         }
         return true

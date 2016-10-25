@@ -8,24 +8,35 @@
 
 import UIKit
 import FirebaseDatabase
+import SlackTextViewController
 
-class CommentsController: UITableViewController, UITextFieldDelegate {
+class CommentsController: SLKTextViewController, UITextFieldDelegate {
     
     var pid: String!
     
     var comments = [Comment]()
     
+    override var tableView: UITableView {
+        get {
+            return super.tableView!
+        }
+    }
+    
     convenience init(pid: String){
         self.init()
         self.pid = pid
+        self.inverted = false
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationController?.navigationBarHidden = false
+        navigationController?.hidesBarsOnSwipe = true
         
         title = "Comments"
+        
+        textView.placeholder = "Write a comment..."
         
         let ref = FIRDatabase.database().reference()
         
@@ -58,6 +69,38 @@ class CommentsController: UITableViewController, UITextFieldDelegate {
         
     }
     
+    // Notifies the view controller when the right button's action has been triggered, manually or by using the keyboard return key.
+    override func didPressRightButton(sender: AnyObject?) {
+        
+        // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
+        self.textView.refreshFirstResponder()
+        
+//        let message = Message()
+//        message.username = LoremIpsum.name()
+//        message.text = self.textView.text
+//        
+//        let indexPath = IndexPath(row: 0, section: 0)
+//        let rowAnimation: UITableViewRowAnimation = self.isInverted ? .bottom : .top
+//        let scrollPosition: UITableViewScrollPosition = self.isInverted ? .bottom : .top
+//        
+//        self.tableView.beginUpdates()
+//        self.messages.insert(message, at: 0)
+//        self.tableView.insertRows(at: [indexPath], with: rowAnimation)
+//        self.tableView.endUpdates()
+//        
+//        self.tableView.scrollToRow(at: indexPath, at: scrollPosition, animated: true)
+//        
+//        // Fixes the cell from blinking (because of the transform, when using translucent cells)
+//        // See https://github.com/slackhq/SlackTextViewController/issues/94#issuecomment-69929927
+//        self.tableView.reloadRows(at: [indexPath], with: .automatic)
+        
+        if textView.text != "" {
+            FriendsLoader.sharedInstance.comment(pid, text: textView.text!)
+        }
+        
+        super.didPressRightButton(sender)
+    }
+    
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
         let comment = comments[indexPath.row]
@@ -83,6 +126,7 @@ class CommentsController: UITableViewController, UITextFieldDelegate {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let comment = comments[indexPath.row]
         let cell = CommentCell(comment: comment)
+        //cell.transform = tableView.transform
         
 //        let tap = UITapGestureRecognizer(target: self, action: #selector(tapMore))
 //        cell.moreButton.addGestureRecognizer(tap)
