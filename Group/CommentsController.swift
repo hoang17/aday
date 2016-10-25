@@ -121,6 +121,7 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.navigationBarHidden = true
+        navigationController?.hidesBarsOnSwipe = false
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
