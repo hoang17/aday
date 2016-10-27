@@ -217,24 +217,16 @@ class FriendsLoader: NSObject {
         let uid : String! = AppDelegate.uid
         let name = AppDelegate.currentUser.name
         let cm = Comment(id: id, uid: uid, pid: clip.id, name: name, text: text)
-        cm.follows = clip.follows
         
         var update = [String:AnyObject]()
         
-        if cm.follows[clip.uid] == nil {
-            cm.follows[clip.uid] = true
-            update["/pins/\(clip.uid)/\(clip.id)/follows/\(clip.uid)"] = true
-            update["/pins/\(clip.uid)/\(clip.id)/updated"] = NSDate().timeIntervalSince1970
-        }
+        update = ["/threads/\(clip.id)/follows/\(cm.uid)": true,
+                  "/threads/\(clip.id)/comments/\(cm.id)": cm.toAnyObject(),
+                  "/comments/\(cm.id)": cm.toAnyObject()]
         
-        if cm.follows[cm.uid] == nil {
-            cm.follows[cm.uid] = true
-            update["/pins/\(clip.uid)/\(clip.id)/follows/\(cm.uid)"] = true
-            update["/pins/\(clip.uid)/\(clip.id)/updated"] = NSDate().timeIntervalSince1970
+        if clip.uid != cm.uid {
+            update["/threads/\(clip.id)/follows/\(clip.uid)"] = true
         }
-
-        update["/threads/\(clip.id)/\(cm.id)"] = cm.toAnyObject()
-        update["/comments/\(cm.id)"] = cm.toAnyObject()
         
         ref.updateChildValues(update)
         

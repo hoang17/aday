@@ -36,8 +36,6 @@ class Clip: NSObject {
     var date: Double = 0
     var updated: Double = 0
     
-    var follows = [String:Bool]()
-    
     init(snapshot: FIRDataSnapshot) {
         id = snapshot.key
         uid = snapshot.value!["uid"] as? String ?? ""
@@ -56,8 +54,6 @@ class Clip: NSObject {
         trash = snapshot.value!["trash"] as? Bool ?? false
         date = snapshot.value!["date"] as? Double ?? 0
         updated = snapshot.value!["updated"] as? Double ?? 0
-        
-        self.follows = snapshot.value!["follows"] as? [String : Bool] ?? [String:Bool]()
     }
     
     init(data: ClipModel){
@@ -78,8 +74,6 @@ class Clip: NSObject {
         self.trash = data.trash
         self.date = data.date
         self.updated = data.updated
-        
-        self.follows = data.follows
     }
     
     func toAnyObject() -> AnyObject {
@@ -100,8 +94,7 @@ class Clip: NSObject {
             "subarea": subarea,
             "thumb": thumb,
             "date": date,
-            "updated": updated,
-            "follows": follows
+            "updated": updated
         ]
     }
 }

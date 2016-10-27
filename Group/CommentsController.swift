@@ -27,7 +27,6 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         self.init()
         self.clip = clip
         self.pid = clip.id
-        self.inverted = false
     }
     
     override func viewDidLoad() {
@@ -39,10 +38,18 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         title = "Comments"
         
         textView.placeholder = "Write a comment..."
+
+        self.inverted = false
+        self.shouldScrollToBottomAfterKeyboardShows = false
+        self.textInputbar.autoHideRightButton = false
+        self.registerPrefixesForAutoCompletion(["@",  "#", ":", "+:", "/"])
+        
+        // Todo: ob users typing in this thread
+        //self.typingIndicatorView?.insertUsername("John")
         
         let ref = FIRDatabase.database().reference()
         
-        ref.child("threads/\(pid)").observeEventType(.ChildAdded, withBlock: { snapshot in
+        ref.child("threads/\(pid)/comments").observeEventType(.ChildAdded, withBlock: { snapshot in
             
             let comment = Comment(snapshot: snapshot)
             self.comments.append(comment)
@@ -63,6 +70,29 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         //tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
         //tableView.separatorStyle = .None
     }
+    
+//    override func didChangeAutoCompletionPrefix(prefix: String, andWord word: String) {
+//        
+//        let array: NSArray = self.channels
+//        
+//        if prefix == "#" && word.characters.count > 0 {
+//            self.searchResult = array.filteredArrayUsingPredicate(NSPredicate(format: "self BEGINSWITH[c] %@", word))
+//        }
+//        
+//        let show = (self.searchResult.count > 0)
+//        
+//        self.showAutoCompletionView(show)
+//    }
+//    
+//    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+//        
+//        if tableView.isEqual(tableView) {
+//            var item = self.searchResult[indexPath.row]
+//            item += " "  // Adding a space helps dismissing the auto-completion view
+//            
+//            self.acceptAutoCompletionWithString(item)
+//        }
+//    }
     
     // Notifies the view controller when the right button's action has been triggered, manually or by using the keyboard return key.
     override func didPressRightButton(sender: AnyObject?) {

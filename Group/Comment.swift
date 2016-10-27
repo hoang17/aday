@@ -21,8 +21,6 @@ class Comment: NSObject {
     var created: Double = 0
     var updated: Double = 0
     
-    var follows = [String:Bool]()
-    
     var user: UserModel?
     
     init(id: String, uid: String, pid: String, name: String, text: String) {
@@ -66,8 +64,7 @@ class Comment: NSObject {
             "txt": txt,
             "trash": trash,
             "created": created,
-            "updated": updated,
-            "follows": follows
+            "updated": updated
         ]
     }
 }

@@ -42,8 +42,6 @@ class ClipModel: Object {
         trash = clip.trash
         date = clip.date
         updated = clip.updated
-        
-        follows = clip.follows
     }
 
     convenience init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location: Location) {
@@ -63,36 +61,7 @@ class ClipModel: Object {
         self.date = NSDate().timeIntervalSince1970
         self.updated = self.date
     }
-    
-    private dynamic var followsData: NSData?
-    
-    var follows: [String: Bool] {
-        get {
-            guard let followsData = followsData else {
-                return [String: Bool]()
-            }
-            do {
-                let dict = try NSJSONSerialization.JSONObjectWithData(followsData, options: []) as? [String: Bool]
-                return dict!
-            } catch {
-                return [String: Bool]()
-            }
-        }
         
-        set {
-            do {
-                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
-                followsData = data
-            } catch {
-                followsData = nil
-            }
-        }
-    }
-    
-    override static func ignoredProperties() -> [String] {
-        return ["follows"]
-    }
-    
     override static func primaryKey() -> String? {
         return "id"
     }
