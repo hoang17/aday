@@ -211,35 +211,39 @@ class FriendsLoader: NSObject {
     }
     
     func comment(clip: ClipModel, text: String) {
+        
         let ref = FIRDatabase.database().reference()
         let id = ref.child("comments").childByAutoId().key
         let uid : String! = AppDelegate.uid
         let name = AppDelegate.currentUser.name
         let cm = Comment(id: id, uid: uid, pid: clip.id, name: name, text: text)
         cm.follows = clip.follows
+        
+        var update = [String:AnyObject]()
+        
+        if cm.follows[clip.uid] == nil {
+            cm.follows[clip.uid] = true
+            update["/pins/\(clip.uid)/\(clip.id)/follows/\(clip.uid)"] = true
+            update["/pins/\(clip.uid)/\(clip.id)/updated"] = NSDate().timeIntervalSince1970
+        }
+        
         if cm.follows[cm.uid] == nil {
             cm.follows[cm.uid] = true
-            let update = ["/threads/\(clip.id)/\(cm.id)": cm.toAnyObject(),
-                          "/pins/\(clip.uid)/\(clip.id)/follows/\(cm.uid)": true,
-                          "/pins/\(clip.uid)/\(clip.id)/updated": NSDate().timeIntervalSince1970,
-                          "/comments/\(cm.id)": cm.toAnyObject()]
-            ref.updateChildValues(update)
-        } else {
-            
-            let update = ["/threads/\(clip.id)/\(cm.id)": cm.toAnyObject(),
-                          "/comments/\(cm.id)": cm.toAnyObject()]
-            ref.updateChildValues(update)
+            update["/pins/\(clip.uid)/\(clip.id)/follows/\(cm.uid)"] = true
+            update["/pins/\(clip.uid)/\(clip.id)/updated"] = NSDate().timeIntervalSince1970
         }
+
+        update["/threads/\(clip.id)/\(cm.id)"] = cm.toAnyObject()
+        update["/comments/\(cm.id)"] = cm.toAnyObject()
+        
+        ref.updateChildValues(update)
         
 //        let data = ["pid": clip.id,
 //                    "uid": userID,
 //                    "name": AppDelegate.currentUser.name,
 //                    "txt": cmt.txt]
         
-//        let api = "http://192.168.100.8:5005"
-//        let api = "http://api.pin.youcall.io"
-        
-//        Just.post(api + "/pins/comment", json: data) { r in
+//        Just.post("http://192.168.100.8:5005/pins/comment", json: data) { r in
 //            print(r)
 //        }
         
