@@ -20,6 +20,7 @@ target 'Pinly' do
     pod 'APAddressBook'
     pod 'Eureka',  :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'swift2.3'
     pod 'ActiveLabel',  :git => 'https://github.com/optonaut/ActiveLabel.swift.git', :branch => 'swift-2.3'
+    pod 'Just', :git => 'https://github.com/JustHTTP/Just.git', :branch => 'swift-2.3'
     pod 'YYText'
     pod 'SwiftOverlays'
     pod 'DGActivityIndicatorView'

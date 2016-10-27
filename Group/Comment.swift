@@ -15,17 +15,21 @@ class Comment: NSObject {
     var id: String
     var uid: String
     var pid: String
+    var name: String
     var txt: String
     var trash = false
     var created: Double = 0
     var updated: Double = 0
     
+    var follows = [String:Bool]()
+    
     var user: UserModel?
     
-    init(id: String, uid: String, pid: String, text: String) {
+    init(id: String, uid: String, pid: String, name: String, text: String) {
         self.id = id
         self.uid = uid
         self.pid = pid
+        self.name = name
         self.txt = text
         created = NSDate().timeIntervalSince1970
         updated = created
@@ -35,6 +39,7 @@ class Comment: NSObject {
         id = snapshot.key
         uid = snapshot.value!["uid"] as? String ?? ""
         pid = snapshot.value!["pid"] as? String ?? ""
+        name = snapshot.value!["name"] as? String ?? ""
         txt = snapshot.value!["txt"] as? String ?? ""
         trash = snapshot.value!["trash"] as? Bool ?? false
         created = snapshot.value!["created"] as? Double ?? 0
@@ -44,6 +49,8 @@ class Comment: NSObject {
 //    init(data: CommentModel){
 //        self.id = data.id
 //        self.uid = data.uid
+//        self.pid = data.pid
+//        self.name = data.name
 //        self.txt = data.txt
 //        self.trash = data.trash
 //        self.created = data.created
@@ -55,10 +62,12 @@ class Comment: NSObject {
             "id": id,
             "uid": uid,
             "pid": pid,
+            "name": name,
             "txt": txt,
             "trash": trash,
             "created": created,
-            "updated": updated
+            "updated": updated,
+            "follows": follows
         ]
     }
 }

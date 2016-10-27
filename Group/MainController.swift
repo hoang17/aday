@@ -34,6 +34,11 @@ class MainController: UIViewController {
             AppDelegate.currentUser = user
         }
         
+        let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
+        let application = UIApplication.sharedApplication()
+        application.registerUserNotificationSettings(notificationSettings)
+        application.registerForRemoteNotifications()
+        
         ref.child("users").child(AppDelegate.uid).observeEventType(.Value, withBlock: { snapshot in
             
             let user = User(snapshot: snapshot)

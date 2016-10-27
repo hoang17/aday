@@ -8,6 +8,7 @@ import FBSDKCoreKit
 import FirebaseAuth
 import FirebaseDatabase
 import APAddressBook
+import Just
 //import Permission
 
 class FacebookFriend: NSObject {
@@ -209,18 +210,50 @@ class FriendsLoader: NSObject {
         }
     }
     
-    func comment(pid: String, text: String) {
+    func comment(clip: ClipModel, text: String) {
         let ref = FIRDatabase.database().reference()
         let id = ref.child("comments").childByAutoId().key
-        let userID : String! = AppDelegate.uid
-        let cmt = Comment(id: id, uid: userID, pid: pid, text: text)
-        let update = ["/comments/\(pid)/\(cmt.id)": cmt.toAnyObject()]
-        ref.updateChildValues(update)
+        let uid : String! = AppDelegate.uid
+        let name = AppDelegate.currentUser.name
+        let cm = Comment(id: id, uid: uid, pid: clip.id, name: name, text: text)
+        cm.follows = clip.follows
+        if cm.follows[cm.uid] == nil {
+            cm.follows[cm.uid] = true
+            let update = ["/threads/\(clip.id)/\(cm.id)": cm.toAnyObject(),
+                          "/pins/\(clip.uid)/\(clip.id)/follows/\(cm.uid)": true,
+                          "/pins/\(clip.uid)/\(clip.id)/updated": NSDate().timeIntervalSince1970,
+                          "/comments/\(cm.id)": cm.toAnyObject()]
+            ref.updateChildValues(update)
+        } else {
+            
+            let update = ["/threads/\(clip.id)/\(cm.id)": cm.toAnyObject(),
+                          "/comments/\(cm.id)": cm.toAnyObject()]
+            ref.updateChildValues(update)
+        }
+        
+//        let data = ["pid": clip.id,
+//                    "uid": userID,
+//                    "name": AppDelegate.currentUser.name,
+//                    "txt": cmt.txt]
+        
+//        let api = "http://192.168.100.8:5005"
+//        let api = "http://api.pin.youcall.io"
+        
+//        Just.post(api + "/pins/comment", json: data) { r in
+//            print(r)
+//        }
         
 //        let realm = AppDelegate.realm
 //        try! realm.write {
-//            clip.flag = true
-//            clip.trash = true
+//            // add comment
 //        }
+    }
+    
+    func saveDevice(id: String) {
+        let uid : String! = AppDelegate.uid
+        let device = Device(id: id, uid: uid, device: UIDevice.currentDevice())
+        let ref = FIRDatabase.database().reference()
+        let update = ["/devices/\(id)": device.toAnyObject()]
+        ref.updateChildValues(update)
     }
 }

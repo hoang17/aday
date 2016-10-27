@@ -12,6 +12,7 @@ import SlackTextViewController
 
 class CommentsController: SLKTextViewController, UITextFieldDelegate {
     
+    var clip: ClipModel!
     var pid: String!
     
     var comments = [Comment]()
@@ -22,9 +23,10 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         }
     }
     
-    convenience init(pid: String){
+    convenience init(clip: ClipModel){
         self.init()
-        self.pid = pid
+        self.clip = clip
+        self.pid = clip.id
         self.inverted = false
     }
     
@@ -40,7 +42,7 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         
         let ref = FIRDatabase.database().reference()
         
-        ref.child("comments/\(pid)").observeEventType(.ChildAdded, withBlock: { snapshot in
+        ref.child("threads/\(pid)").observeEventType(.ChildAdded, withBlock: { snapshot in
             
             let comment = Comment(snapshot: snapshot)
             self.comments.append(comment)
@@ -51,22 +53,15 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
             
             self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             self.tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
-            
-//            ref.child("users").child(comment.uid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-//                comment.user = User(snapshot: snapshot)
-//                
-//                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: self.comments.indexOf(comment)!, inSection: 0)], withRowAnimation: .Automatic)
-//                //let user = UserModel(user: data)
-//            })
         })
         
         tableView.delegate = self
         tableView.dataSource = self
+        
         //tableView.layoutMargins = UIEdgeInsetsZero
         //tableView.separatorInset = UIEdgeInsetsZero
         //tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
         //tableView.separatorStyle = .None
-        
     }
     
     // Notifies the view controller when the right button's action has been triggered, manually or by using the keyboard return key.
@@ -75,27 +70,8 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
         self.textView.refreshFirstResponder()
         
-//        let message = Message()
-//        message.username = LoremIpsum.name()
-//        message.text = self.textView.text
-//        
-//        let indexPath = IndexPath(row: 0, section: 0)
-//        let rowAnimation: UITableViewRowAnimation = self.isInverted ? .bottom : .top
-//        let scrollPosition: UITableViewScrollPosition = self.isInverted ? .bottom : .top
-//        
-//        self.tableView.beginUpdates()
-//        self.messages.insert(message, at: 0)
-//        self.tableView.insertRows(at: [indexPath], with: rowAnimation)
-//        self.tableView.endUpdates()
-//        
-//        self.tableView.scrollToRow(at: indexPath, at: scrollPosition, animated: true)
-//        
-//        // Fixes the cell from blinking (because of the transform, when using translucent cells)
-//        // See https://github.com/slackhq/SlackTextViewController/issues/94#issuecomment-69929927
-//        self.tableView.reloadRows(at: [indexPath], with: .automatic)
-        
         if textView.text != "" {
-            FriendsLoader.sharedInstance.comment(pid, text: textView.text!)
+            FriendsLoader.sharedInstance.comment(clip, text: textView.text!)
         }
         
         super.didPressRightButton(sender)

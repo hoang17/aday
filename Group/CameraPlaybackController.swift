@@ -154,7 +154,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     
     func showComments() {
         player.pause()
-        self.navigationController?.pushViewController(CommentsController(pid: clips[playIndex].id), animated: true)
+        self.navigationController?.pushViewController(CommentsController(clip: clips[playIndex]), animated: true)
     }
     
     func tapMore(sender: UITapGestureRecognizer) {
@@ -380,7 +380,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         commentField.hidden = true
         player.play()
         if commentField.text != "" {
-            FriendsLoader.sharedInstance.comment(clips[playIndex].id, text: commentField.text!)
+            FriendsLoader.sharedInstance.comment(clips[playIndex], text: commentField.text!)
             commentField.text = ""
         }
         return true

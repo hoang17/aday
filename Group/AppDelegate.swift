@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Facebook setup
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-
+        
         do {
             AppDelegate.realm = try Realm()
         } catch {
@@ -86,13 +86,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        UITextField.appearance().font = UIFont(name: "OpenSans", size: 13.0)
 //        UITextView.appearance().font = UIFont(name: "OpenSans", size: 13.0)
 //        UILabel.appearance().font = UIFont(name: "OpenSans", size: 13.0)
+
+        // Register push notification
+//        let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
+//        application.registerUserNotificationSettings(notificationSettings)
+//        application.registerForRemoteNotifications()
         
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window!.backgroundColor = UIColor.whiteColor()
         
         if FIRAuth.auth()?.currentUser != nil && FBSDKAccessToken.currentAccessToken() != nil {
-            self.logUser()
             self.window!.rootViewController = MainController()
+            self.logUser()
         } else {
             do {
                 try FIRAuth.auth()?.signOut()
@@ -108,6 +113,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        
+        if AppDelegate.uid != nil {
+            
+            //let tokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+            
+            let tokenChars = UnsafePointer<CChar>(deviceToken.bytes)
+            var tokenString = ""
+            for i in 0..<deviceToken.length {
+                tokenString += String(format: "%02.2hhx", arguments: [tokenChars[i]])
+            }
+            print("Device Token:", tokenString)
+
+            FriendsLoader.sharedInstance.saveDevice(tokenString)
+        }
+    }
+
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        print("Failed to register push notification: ", error)
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        print(userInfo)
+    }
+    
+    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+//        if notificationSettings.types != .None {
+//            application.registerForRemoteNotifications()
+//        }
+    }
+    
     func showLogin() {
         UIView.transitionWithView(self.window!, duration: 0.5, options: .TransitionFlipFromLeft, animations: {
             self.window!.rootViewController = LoginController()
@@ -120,13 +156,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }, completion: nil)
     }
 
-    // Handling open login url
+    // Handling open fb login url
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        return FBSDKApplicationDelegate.sharedInstance().application(
-            application,
-            openURL: url,
-            sourceApplication: sourceApplication,
-            annotation: annotation)
+        return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -148,7 +180,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Facebook setup
         FBSDKAppEvents.activateApp()
-        
     }
 
     func applicationWillTerminate(application: UIApplication) {
