@@ -153,7 +153,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                             "fbtoken": fbtoken,
                             "created": NSDate().timeIntervalSince1970]
                         
-                        let friend = Friend(uid: uid, fuid: uid, following: false, follower: false)
+                        let friend = Friend(uid: uid, fuid: uid)
                         
                         let update = ["/users/\(uid)": user,
                                       "/friends/\(uid)/\(uid)": friend.toAnyObject()]

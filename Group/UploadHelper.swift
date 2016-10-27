@@ -29,11 +29,9 @@ class UploadHelper {
     var downloadTasks = [String: FIRStorageDownloadTask]()
     var downloadCallbacks = [String:Bool]()
     
-//    var downloading = [String:Bool]()
-//    var downloadCallbacks: [String:(NSURL?, NSError?) -> Void]
+    let ref = FIRDatabase.database().reference()
     
     init() {
-        // downloadCallbacks = [:]
         filePath = NSTemporaryDirectory() + fileName
         fileUrl = NSURL(fileURLWithPath: filePath)
     }
@@ -41,19 +39,24 @@ class UploadHelper {
     func start() {
         clipUploads = AppDelegate.realm.objects(ClipUpload.self).filter("clipUploaded = false OR thumbUploaded = false")
         
-        FIRDatabase.database().referenceWithPath(".info/connected").observeEventType(.Value, withBlock: { snapshot in
+        let online = ref.child("online/\(AppDelegate.uid)")
+        let lastseen = ref.child("lastseen/\(AppDelegate.uid)")
+        
+        ref.child(".info/connected").observeEventType(.Value, withBlock: { snapshot in
             self.connected = snapshot.value as? Bool ?? false
             if self.connected {
                 print("Connected")
+                
                 self.runUploadQueue()
-//                let notification = CWStatusBarNotification()
-//                notification.notificationLabelBackgroundColor = UIColor(red: 0.0, green: 122.0 / 255.0, blue: 1.0, alpha: 1.0)
-//                notification.displayNotificationWithMessage("Connected to server", forDuration: 1.0)
+                
+                lastseen.onDisconnectSetValue(FIRServerValue.timestamp())
+                lastseen.setValue(true)
+                
+                online.onDisconnectRemoveValue()
+                online.setValue(["online": true, "name": AppDelegate.currentUser.name])
+                
             } else {
                 print("Disconnected")
-//                let notification = CWStatusBarNotification()
-//                notification.notificationLabelBackgroundColor = UIColor.redColor()
-//                notification.displayNotificationWithMessage("Can not connect to server", forDuration: 1.0)
             }
         })
     }
@@ -201,8 +204,6 @@ class UploadHelper {
                     return
                 }
                 
-                let ref = FIRDatabase.database().reference()
-                
                 let data = Clip(data: clip)
                 data.thumb = clipUpload.thumb
                 let uid = clip.uid
@@ -213,7 +214,7 @@ class UploadHelper {
                     "/users/\(uid)/uploaded": clip.date,
                     "/clips/\(clip.id)": data.toAnyObject()]
                 
-                ref.updateChildValues(update)
+                self.ref.updateChildValues(update)
                 
                 print("Clip is saved to db \(clip.id)")
                 
@@ -310,8 +311,4 @@ class UploadHelper {
         }
         return nil
     }
-    
-//    func isDownloading(fileName: String) -> Bool {
-//        return downloading[fileName] ?? false
-//    }
 }

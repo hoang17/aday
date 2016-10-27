@@ -38,7 +38,7 @@ class Friend: NSObject {
         self.updated = snapshot.value!["updated"] as? Double ?? 0
     }
     
-    func toAnyObject() -> AnyObject {
+    func toAnyObject() -> [String:AnyObject] {
         return [
             "uid": uid,
             "fuid": fuid,

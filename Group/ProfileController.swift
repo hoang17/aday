@@ -216,7 +216,6 @@ class ProfileController: FormViewController {
                 .onCellSelection({ (cell, row) in
                     self.logOut()
                 })
-        
     }
     
     func clearCache(){

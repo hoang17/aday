@@ -27,6 +27,8 @@ class FriendsLoader: NSObject {
     
     static let sharedInstance = FriendsLoader()
     
+    let ref = FIRDatabase.database().reference()
+    
     func loadFacebookFriends(completion: ((count: Int)->Void)?) {
         
         var friends = [FacebookFriend]()
@@ -59,27 +61,17 @@ class FriendsLoader: NSObject {
     
     func updateFriends(fb: String, name: String) {
         
-        // Save friend
-        let ref = FIRDatabase.database().reference()
-        
         ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-
+            
             let friendId : String = (snapshot.value as! NSDictionary).allKeys.first as! String
-            let userID : String! = AppDelegate.uid
-            let friend = Friend(uid: userID, fuid: friendId)
             
-            // Create new friend at /friends/$userid/$friendid
-            let update = ["/friends/\(userID)/\(friendId)": friend.toAnyObject()]
-            ref.updateChildValues(update)
-            
-        }) { (error) in
-            print(error.localizedDescription)
-        }
+            self.addFriend(friendId)
+        })
     }
     
 //    func loadAddressBook(completion: (()->Void)?){
 //        let permission: Permission
-//        
+//
 //        if #available(iOS 9.0, *) {
 //            permission = .Contacts
 //        } else {
@@ -107,8 +99,6 @@ class FriendsLoader: NSObject {
     
     func loadAddressBook(completion: (()->Void)?){
         
-        let ref = FIRDatabase.database().reference()
-        
         // Load contacts friends
         let addressBook = APAddressBook()
         
@@ -130,22 +120,13 @@ class FriendsLoader: NSObject {
                                     continue
                                 }
                                 
-                                ref.child("users").queryOrderedByChild("phone").queryEqualToValue(number).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                                self.ref.child("users").queryOrderedByChild("phone").queryEqualToValue(number).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                                     
                                     if let snap = snapshot.children.allObjects.first as? FIRDataSnapshot {
                                         let user = User(snapshot: snap)
-                                        let friendId = user.uid
-                                        let userID : String! = AppDelegate.uid
-                                        let friend = Friend(uid: userID, fuid: friendId)
-                                        
-                                        // Create new friend at /friends/$userid/$friendid
-                                        let update = ["/friends/\(userID)/\(friendId)": friend.toAnyObject()]
-                                        ref.updateChildValues(update)
+                                        self.addFriend(user.uid)
                                     }
-                                    
-                                }) { (error) in
-                                    print(error)
-                                }
+                                })
                             }
                         }
                         
@@ -156,24 +137,35 @@ class FriendsLoader: NSObject {
         }
         
     }
-    
+   
+    func addFriend(friendId: String) {
+
+        let userID : String! = AppDelegate.uid
+        let friend = Friend(uid: userID, fuid: friendId)
+        let refriend = Friend(uid: friendId, fuid: userID, following: false, follower: true)
+        let key = ref.child("followers").childByAutoId().key
+        
+        var follow = friend.toAnyObject()
+        follow["name"] = AppDelegate.currentUser.name
+        
+        let update = ["/friends/\(userID)/\(friendId)": friend.toAnyObject(),
+                      "/friends/\(friendId)/\(userID)": refriend.toAnyObject(),
+                      "/follows/\(key)": follow]
+        ref.updateChildValues(update)
+    }
+        
     func report(uid: String) {
         self.unfollow(uid)
     }
     
     func unfollow(friendId: String) {
-        
         let userID : String! = AppDelegate.uid
-        
         let realm = AppDelegate.realm
-        
         let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
         
         try! realm.write {
             user.following = false
         }
-        
-        let ref = FIRDatabase.database().reference()
         
         let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": false]
         ref.updateChildValues(update)
@@ -182,7 +174,6 @@ class FriendsLoader: NSObject {
     }
     
     func reportClip(clip: ClipModel) {
-        let ref = FIRDatabase.database().reference()
         let userID : String! = AppDelegate.uid
         let update = ["/pins/\(clip.uid)/\(clip.id)/flag": true,
                       "/users/\(userID)/flags/\(clip.id)": true]
@@ -196,7 +187,6 @@ class FriendsLoader: NSObject {
     }
     
     func deleteClip(clip: ClipModel) {
-        let ref = FIRDatabase.database().reference()
         let updated = NSDate().timeIntervalSince1970
         let update : [String: AnyObject] = ["/pins/\(clip.uid)/\(clip.id)/trash": true,
                                             "/pins/\(clip.uid)/\(clip.id)/updated": updated,
@@ -211,8 +201,6 @@ class FriendsLoader: NSObject {
     }
     
     func comment(clip: ClipModel, text: String) {
-        
-        let ref = FIRDatabase.database().reference()
         let id = ref.child("comments").childByAutoId().key
         let uid : String! = AppDelegate.uid
         let name = AppDelegate.currentUser.name
@@ -248,7 +236,6 @@ class FriendsLoader: NSObject {
     func saveDevice(id: String) {
         let uid : String! = AppDelegate.uid
         let device = Device(id: id, uid: uid, device: UIDevice.currentDevice())
-        let ref = FIRDatabase.database().reference()
         let update = ["/devices/\(id)": device.toAnyObject()]
         ref.updateChildValues(update)
     }
