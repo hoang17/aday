@@ -22,6 +22,12 @@ class MainController: UIViewController {
         let statusBar = UIApplication.sharedApplication().valueForKey("statusBarWindow")?.valueForKey("statusBar") as? UIView
         statusBar?.backgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)
         
+        // Register for push notificaiton
+        let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
+        let application = UIApplication.sharedApplication()
+        application.registerUserNotificationSettings(notificationSettings)
+        application.registerForRemoteNotifications()
+        
         // Init current user
         
         let realm = AppDelegate.realm
@@ -29,16 +35,17 @@ class MainController: UIViewController {
         let ref = FIRDatabase.database().reference()
         
         AppDelegate.uid = FIRAuth.auth()?.currentUser?.uid
+        AppDelegate.name = FIRAuth.auth()?.currentUser?.displayName
         
+        // Init upload queue
+        UploadHelper.sharedInstance.start()
+        
+        // Load current user from disk
         if let user = realm.objectForPrimaryKey(UserModel.self, key: AppDelegate.uid) {
             AppDelegate.currentUser = user
         }
         
-        let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
-        let application = UIApplication.sharedApplication()
-        application.registerUserNotificationSettings(notificationSettings)
-        application.registerForRemoteNotifications()
-        
+        // Update current user from cloud
         ref.child("users").child(AppDelegate.uid).observeEventType(.Value, withBlock: { snapshot in
             
             let user = User(snapshot: snapshot)
@@ -123,9 +130,6 @@ class MainController: UIViewController {
                 
             })
         })
-        
-        // Init upload queue
-         UploadHelper.sharedInstance.start()
         
         // Init tab bar
         let tabBarController = ESTabBarController(tabIconNames: ["clock", "globe", "record", "map", "archive"])

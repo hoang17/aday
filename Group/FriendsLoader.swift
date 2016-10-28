@@ -146,7 +146,7 @@ class FriendsLoader: NSObject {
         let key = ref.child("followers").childByAutoId().key
         
         var follow = friend.toAnyObject()
-        follow["name"] = AppDelegate.currentUser.name
+        follow["name"] = AppDelegate.name
         
         let update = ["/friends/\(userID)/\(friendId)": friend.toAnyObject(),
                       "/friends/\(friendId)/\(userID)": refriend.toAnyObject(),
@@ -203,7 +203,7 @@ class FriendsLoader: NSObject {
     func comment(clip: ClipModel, text: String) {
         let id = ref.child("comments").childByAutoId().key
         let uid : String! = AppDelegate.uid
-        let name = AppDelegate.currentUser.name
+        let name = AppDelegate.name
         let cm = Comment(id: id, uid: uid, pid: clip.id, name: name, text: text)
         
         var update = [String:AnyObject]()

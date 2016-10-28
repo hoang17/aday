@@ -20,6 +20,7 @@ class Clip: NSObject {
     
     var id: String
     var uid: String
+    var uname: String // user name
     var fname: String // file name
     var txt: String
     var y: Float // text position
@@ -39,6 +40,7 @@ class Clip: NSObject {
     init(snapshot: FIRDataSnapshot) {
         id = snapshot.key
         uid = snapshot.value!["uid"] as? String ?? ""
+        uname = snapshot.value!["uname"] as? String ?? ""
         fname = snapshot.value!["fname"] as? String ?? ""
         txt = snapshot.value!["txt"] as? String ?? ""
         y = snapshot.value!["y"] as? Float ?? 0
@@ -59,6 +61,7 @@ class Clip: NSObject {
     init(data: ClipModel){
         self.id = data.id
         self.uid = data.uid
+        self.uname =  data.uname
         self.fname =  data.fname
         self.txt = data.txt
         self.y = data.y
@@ -80,6 +83,7 @@ class Clip: NSObject {
         return [
             "id": id,
             "uid": uid,
+            "uname": uname,
             "fname": fname,
             "txt": txt,
             "y": y,

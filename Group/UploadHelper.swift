@@ -53,7 +53,7 @@ class UploadHelper {
                 lastseen.setValue(true)
                 
                 online.onDisconnectRemoveValue()
-                online.setValue(["online": true, "name": AppDelegate.currentUser.name])
+                online.setValue(["online": true, "name": AppDelegate.name])
                 
             } else {
                 print("Disconnected")
@@ -216,7 +216,7 @@ class UploadHelper {
                 
                 self.ref.updateChildValues(update)
                 
-                print("Clip is saved to db \(clip.id)")
+                print("Pin is saved to db \(clip.id)")
                 
                 self.uploading[clip.id] = false
                 

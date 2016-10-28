@@ -25,9 +25,9 @@ class Comment: NSObject {
     
     init(id: String, uid: String, pid: String, name: String, text: String) {
         self.id = id
-        self.uid = uid
-        self.pid = pid
-        self.name = name
+        self.uid = uid      // user id
+        self.pid = pid      // pin id
+        self.name = name    // user name
         self.txt = text
         created = NSDate().timeIntervalSince1970
         updated = created

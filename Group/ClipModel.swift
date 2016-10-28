@@ -7,6 +7,7 @@ import RealmSwift
 class ClipModel: Object {
     dynamic var id: String!
     dynamic var uid: String!
+    dynamic var uname: String!
     dynamic var fname: String!
     dynamic var txt: String!
     dynamic var y: Float = 0.0
@@ -27,6 +28,7 @@ class ClipModel: Object {
         self.init()
         id = clip.id
         uid = clip.uid
+        uname = clip.uname
         fname = clip.fname
         txt = clip.txt
         y = Float(clip.y)
@@ -44,11 +46,12 @@ class ClipModel: Object {
         updated = clip.updated
     }
 
-    convenience init(id: String, uid: String, fname: String, txt: String, y: CGFloat, location: Location) {
+    convenience init(id: String, uid: String, uname: String, fname: String, txt: String, y: CGFloat, location: Location) {
         self.init()
         self.id = id
         self.uid = uid
-        self.fname =  fname
+        self.uname = uname
+        self.fname = fname
         self.txt = txt
         self.y = Float(y)
         self.long = location.longitude ?? 0
@@ -61,7 +64,7 @@ class ClipModel: Object {
         self.date = NSDate().timeIntervalSince1970
         self.updated = self.date
     }
-        
+
     override static func primaryKey() -> String? {
         return "id"
     }

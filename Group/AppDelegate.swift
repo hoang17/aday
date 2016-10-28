@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     static var uid: String!
+    static var name: String!
     static var currentUser: UserModel!
     static var realm: Realm!
     static var dayago = -14
