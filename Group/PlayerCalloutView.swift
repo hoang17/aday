@@ -71,11 +71,11 @@ class PlayerCalloutView: UIView {
         }
         
         clipCallout?.removeFromSuperview()
-        clipCallout = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192))
+        clipCallout = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192), selector: playerDidFinishPlaying)
         self.addSubview(clipCallout!)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object:clipCallout!.miniPlayer.player.currentItem)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
+//                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
+//                                                         object:clipCallout!.miniPlayer.player.currentItem)
         
         clipCallout!.miniPlayer.play()
     }
@@ -85,15 +85,19 @@ class PlayerCalloutView: UIView {
             playNextClip()
         } else {
             playIndex = 0
-            clipCallout?.miniPlayer.pause()
+            pause()
         }
     }
     
     func pause() {
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                            object:clipCallout!.miniPlayer.player.currentItem)
+//        NSNotificationCenter.defaultCenter().removeObserver(self,
+//                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
+//                                                            object:clipCallout!.miniPlayer.player.currentItem)
         clipCallout?.miniPlayer.pause()
+    }
+    
+    func close(){
+        clipCallout?.miniPlayer.close()
     }
     
     required init(coder aDecoder: NSCoder) {

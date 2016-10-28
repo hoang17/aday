@@ -276,7 +276,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
     
     func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
         if calloutView != nil {
-            calloutView.pause()
+            calloutView.close()
             calloutView.removeFromSuperview()
         }
         

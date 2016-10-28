@@ -19,12 +19,12 @@ class ClipCalloutView: UIView {
     var dateLabel = UILabel()
     var profileImg = UIImageView()
     
-    init(clip: ClipModel, frame: CGRect) {
+    init(clip: ClipModel, frame: CGRect, selector: (NSNotification) -> ()) {
         super.init(frame: frame)
         
         let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
         
-        miniPlayer = MiniPlayer(clip: clip, frame: frame)
+        miniPlayer = MiniPlayer(clip: clip, frame: frame, selector: selector)
         miniPlayer.layer.cornerRadius = 5
         miniPlayer.layer.masksToBounds = false
         miniPlayer.clipsToBounds = true
