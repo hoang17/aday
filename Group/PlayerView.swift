@@ -74,7 +74,6 @@ class MiniPlayer : PlayerView {
         let thumbImg = UIImageView(frame: frame)
         thumbImg.contentMode = .ScaleAspectFill
         thumbImg.kf_setImageWithResource(resource)
-        thumbImg.hidden = false
         addSubview(thumbImg)
         
         if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
