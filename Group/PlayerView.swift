@@ -81,13 +81,11 @@ class MiniPlayer : PlayerView {
         thumbImg.kf_setImageWithResource(resource)
         addSubview(thumbImg)
 
-        download()
-        
-//        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-//            loadPlayer()
-//        } else {
-//            download()
-//        }
+        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+            loadPlayer()
+        } else {
+            download()
+        }
     }
     
     func download() {
@@ -106,29 +104,33 @@ class MiniPlayer : PlayerView {
         //ai.borderWidth = 1
         //view.addSubview(ai)
         
-        task = UploadHelper.sharedInstance.downloadClip(fileName)
-        task?.observeStatus(.Success){ snapshot in
-            
-            //print("File downloaded \(self.fileName)")
-            
+        if let task = UploadHelper.sharedInstance.downloadClip(fileName) {
+            task.observeStatus(.Success){ snapshot in
+                
+                //print("File downloaded \(self.fileName)")
+                indicator.removeFromSuperview()
+                //ai.removeFromSuperview()
+                self.loadPlayer()
+                self.playcallback?()
+            }
+            task.observeStatus(.Failure) { snapshot in
+                guard let storageError = snapshot.error else { return }
+                print(storageError)
+            }
+            //task?.observeStatus(.Progress) { snapshot in
+            //    if let completed = snapshot.progress?.completedUnitCount {
+            //        let total = snapshot.progress!.totalUnitCount
+            //        let percentComplete : Float = total == 0 ? 0 : Float(completed)/Float(total)
+            //        print(percentComplete)
+            //        ai.setProgress(percentComplete, animated: true)
+            //    }
+            //}
+        } else {
             indicator.removeFromSuperview()
             //ai.removeFromSuperview()
-            
             self.loadPlayer()
             self.playcallback?()
         }
-        task?.observeStatus(.Failure) { snapshot in
-            guard let storageError = snapshot.error else { return }
-            print(storageError)
-        }
-        //task?.observeStatus(.Progress) { snapshot in
-        //    if let completed = snapshot.progress?.completedUnitCount {
-        //        let total = snapshot.progress!.totalUnitCount
-        //        let percentComplete : Float = total == 0 ? 0 : Float(completed)/Float(total)
-        //        print(percentComplete)
-        //        ai.setProgress(percentComplete, animated: true)
-        //    }
-        //}
     }
 
     func loadPlayer() {
@@ -151,13 +153,15 @@ class MiniPlayer : PlayerView {
     }
     
     override func pause() {
-        print("pause: " + fileName)
+        //print("pause: " + fileName)
         task?.removeAllObservers()
+        task = nil
+        playcallback = nil
         super.pause()
     }
     
     override func stop() {
-        print("stop: " + fileName)
+        //print("stop: " + fileName)
         task?.removeAllObservers()
         super.stop()
         player = nil
@@ -166,7 +170,7 @@ class MiniPlayer : PlayerView {
     }
     
     deinit {
-        print("deinit: " + fileName)
+        //print("deinit: " + fileName)
         task?.removeAllObservers()
         player?.replaceCurrentItemWithPlayerItem(nil)
         player = nil

@@ -292,20 +292,18 @@ class UploadHelper {
     }
     
     func downloadClip(fileName: String) -> FIRStorageDownloadTask? {
-        // Check if file not existed then download
         let filePath = NSTemporaryDirectory() + fileName;
-        
-        //if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-            
+        // Only download if file not existed
+        if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
             if downloadTasks[fileName] == nil {
-                print("Downloading file \(fileName)...")
+                //print("Downloading file \(fileName)...")
                 let storage = FIRStorage.storage()
                 let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
                 let localURL = NSURL(fileURLWithPath: filePath)
                 downloadTasks[fileName] = gs.child(fileName).writeToFile(localURL)
             }
             return downloadTasks[fileName]
-        //}
-        //return nil
+        }
+        return nil
     }
 }

@@ -475,7 +475,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         player.play() { item in
             
             if (item == nil){
-                print("item nil")
                 return
             }
             
@@ -502,11 +501,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     }
     
     func close(){
-        player?.stop()
-        player1?.stop()
-        player2?.stop()
-        nextplayer?.stop()
-        prevplayer?.stop()
         
         NSNotificationCenter.defaultCenter().removeObserver(self,
             name: AVPlayerItemDidPlayToEndTimeNotification,
@@ -520,15 +514,19 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         self.dismissViewControllerAnimated(true, completion: nil)
 
-        if (playIndex >= 0) && playIndex < clips.count {
-            
-            let indexPath = NSIndexPath(forRow: playIndex, inSection: 0)
-            
-            collectionView.scrollToItemAtIndexPath(indexPath,
-               atScrollPosition: .CenteredHorizontally,
-               animated: false)
-            
-            clips = nil
+        do {
+            if (playIndex >= 0) && playIndex < clips.count {
+                
+                let indexPath = NSIndexPath(forRow: playIndex, inSection: 0)
+                
+                collectionView.scrollToItemAtIndexPath(indexPath,
+                   atScrollPosition: .CenteredHorizontally,
+                   animated: false)
+                
+                clips = nil
+            }
+        } catch {
+            print(error)
         }
     }
     

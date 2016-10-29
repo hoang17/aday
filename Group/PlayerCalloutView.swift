@@ -20,8 +20,8 @@ class PlayerCalloutView: UIView {
     var playIndex = 0
     var clipCallout: ClipCalloutView?
     
-    init(clips: [ClipModel], frame: CGRect) {
-        super.init(frame: frame)
+    convenience init(clips: [ClipModel], frame: CGRect) {
+        self.init(frame: frame)
         
         locationName.font = UIFont.systemFontOfSize(12)
         locationName.textAlignment = NSTextAlignment.Center
@@ -103,9 +103,7 @@ class PlayerCalloutView: UIView {
     
     func close(){
         clipCallout?.miniPlayer.stop()
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)!
+        clipCallout?.miniPlayer = nil
+        clipCallout = nil
     }
 }

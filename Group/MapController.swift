@@ -278,6 +278,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         if calloutView != nil {
             calloutView.close()
             calloutView.removeFromSuperview()
+            calloutView = nil
         }
         
         view.subviews.forEach({ $0.hidden = false })

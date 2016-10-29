@@ -19,8 +19,8 @@ class ClipCalloutView: UIView {
     var dateLabel = UILabel()
     var profileImg = UIImageView()
     
-    init(clip: ClipModel, frame: CGRect) {
-        super.init(frame: frame)
+    convenience init(clip: ClipModel, frame: CGRect) {
+        self.init(frame: frame)
         
         let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
         
@@ -65,7 +65,7 @@ class ClipCalloutView: UIView {
         addSubview(dateLabel)
     }
     
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)!
+    deinit {
+        miniPlayer = nil
     }
 }
