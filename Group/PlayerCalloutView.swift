@@ -71,13 +71,15 @@ class PlayerCalloutView: UIView {
         }
         
         clipCallout?.removeFromSuperview()
-        clipCallout = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192), selector: playerDidFinishPlaying)
+        clipCallout = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192))
         self.addSubview(clipCallout!)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-//                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                         object:clipCallout!.miniPlayer.player.currentItem)
         
-        clipCallout!.miniPlayer.play()
+        NSNotificationCenter.defaultCenter().addObserver(
+            self, selector: #selector(playerDidFinishPlaying),
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object:clipCallout?.miniPlayer.player?.currentItem)
+        
+        clipCallout?.miniPlayer.play()
     }
     
     func playerDidFinishPlaying(notification: NSNotification) {
@@ -90,9 +92,12 @@ class PlayerCalloutView: UIView {
     }
     
     func pause() {
-//        NSNotificationCenter.defaultCenter().removeObserver(self,
-//                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                            object:clipCallout!.miniPlayer.player.currentItem)
+        
+        NSNotificationCenter.defaultCenter().removeObserver(
+            self,
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object:clipCallout?.miniPlayer.player?.currentItem)
+        
         clipCallout?.miniPlayer.pause()
     }
     

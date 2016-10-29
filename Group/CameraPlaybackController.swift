@@ -159,7 +159,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     
     func tapMore(sender: UITapGestureRecognizer) {
         
-        player.player.pause()
+        player.player?.pause()
         
         let clip = Clip(data: clips[playIndex])
         
@@ -184,7 +184,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
             }))
             
             confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) in
-                self.player.player.play()
+                self.player.player?.play()
             }))
             
             self.presentViewController(confirmAlert, animated: true, completion: nil)
@@ -262,14 +262,14 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
             }))
             
             confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) in
-                self.player.player.play()
+                self.player.player?.play()
             }))
             
             self.presentViewController(confirmAlert, animated: true, completion: nil)
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { (action) in
-            self.player.player.play()
+            self.player.player?.play()
         }
         
         myActionSheet.addAction(shareAction)
@@ -291,18 +291,18 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     func sharer(sharer: FBSDKSharing!, didCompleteWithResults results: [NSObject: AnyObject]) {
         print(results)
         self.removeAllOverlays()
-        player.player.play()
+        player.player?.play()
     }
     
     func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
         print(error)
         self.removeAllOverlays()
-        player.player.play()
+        player.player?.play()
     }
     
     func sharerDidCancel(sharer: FBSDKSharing!) {
         self.removeAllOverlays()
-        player.player.play()
+        player.player?.play()
     }
     
     func shareClip(inputURL: NSURL) {
@@ -324,7 +324,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         activityVC.completionWithItemsHandler = { (activity, completed, items, error) in
             self.removeAllOverlays()
-            self.player.player.play()
+            self.player.player?.play()
         }
         
         self.presentViewController(activityVC, animated: true, completion: nil)
@@ -340,9 +340,10 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         }
         
         player.pause()
-//        NSNotificationCenter.defaultCenter().removeObserver(self,
-//                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                            object:player.player.currentItem)
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object:player.player?.currentItem)
         
         let location = sender.locationInView(self.view)
         
@@ -397,21 +398,21 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     func swipeDownGesture(){
         close()
         
-//        NSNotificationCenter.defaultCenter().removeObserver(self,
-//                                                            name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                            object:player.player.currentItem)
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object:player.player?.currentItem)
     }
     
     func playerAtIndex(playIndex: Int) -> ClipPlayer? {
         
         if playIndex > 0 {
-            prevplayer = ClipPlayer(clip: clips[playIndex-1], frame: UIScreen.mainScreen().bounds, selector: playerDidFinishPlaying)
+            prevplayer = ClipPlayer(clip: clips[playIndex-1], frame: UIScreen.mainScreen().bounds)
         }
         if playIndex + 1 < clips.count {
-            nextplayer = ClipPlayer(clip: clips[playIndex+1], frame: UIScreen.mainScreen().bounds, selector: playerDidFinishPlaying)
+            nextplayer = ClipPlayer(clip: clips[playIndex+1], frame: UIScreen.mainScreen().bounds)
         }
         
-        return ClipPlayer(clip: clips[playIndex], frame: UIScreen.mainScreen().bounds, selector: playerDidFinishPlaying)
+        return ClipPlayer(clip: clips[playIndex], frame: UIScreen.mainScreen().bounds)
     }
     
     func locationText() -> String {
@@ -433,7 +434,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         play()
         
         if playIndex > 0 {
-            prevplayer = ClipPlayer(clip: clips[playIndex-1], frame: UIScreen.mainScreen().bounds, selector: playerDidFinishPlaying)
+            prevplayer = ClipPlayer(clip: clips[playIndex-1], frame: UIScreen.mainScreen().bounds)
         }
     }
     
@@ -451,65 +452,10 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         play()
         
         if playIndex + 1 < clips.count {
-            nextplayer = ClipPlayer(clip: clips[playIndex+1], frame: UIScreen.mainScreen().bounds, selector: playerDidFinishPlaying)
+            nextplayer = ClipPlayer(clip: clips[playIndex+1], frame: UIScreen.mainScreen().bounds)
         }
     }
-    
-//    func play() {
-//        
-//        let clip = clips[playIndex]
-//        
-//        let filePath = NSTemporaryDirectory() + clip.fname
-//        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-//            doplay()
-//        }
-//        else {
-//            let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
-//            let thumbImg = UIImageView(frame: view.frame)
-//            thumbImg.contentMode = .ScaleAspectFill
-//            thumbImg.kf_setImageWithResource(resource)
-//            thumbImg.hidden = false
-//            view.addSubview(thumbImg)
-//            
-//            let indicator = DGActivityIndicatorView(type: .BallClipRotate, tintColor: UIColor.whiteColor(), size: 30.0)
-//            indicator.size = CGSize(width: 50.0, height: 50.0)
-//            indicator.center = view.center
-//            view.addSubview(indicator)
-//            indicator.startAnimating()
-//            
-////            let ai = MRCircularProgressView()
-////            ai.size = CGSize(width: 90.0, height: 90.0)
-////            ai.tintColor = UIColor(white: 1, alpha: 0.8)
-////            ai.center = view.center
-////            ai.lineWidth = 5
-////            ai.borderWidth = 1
-////            view.addSubview(ai)
-//            
-//            let task = UploadHelper.sharedInstance.downloadClip(clip.fname, callback: true)
-//            task?.observeStatus(.Success){ (snapshot) in
-//                print("File downloaded \(clip.fname)")
-//                indicator.removeFromSuperview()
-//                //ai.removeFromSuperview()
-//                self.player.removeFromSuperview()
-//                // thumbImg.removeFromSuperview()
-//                self.player = self.playerAtIndex(self.playIndex)
-//                self.doplay()
-//            }
-//            task?.observeStatus(.Failure) { (snapshot) in
-//                guard let storageError = snapshot.error else { return }
-//                print(storageError)
-//            }
-////            task?.observeStatus(.Progress) { (snapshot) in
-////                if let completed = snapshot.progress?.completedUnitCount {
-////                    let total = snapshot.progress!.totalUnitCount
-////                    let percentComplete : Float = total == 0 ? 0 : Float(completed)/Float(total)
-////                    print(percentComplete)
-////                    ai.setProgress(percentComplete, animated: true)
-////                }
-////            }
-//        }
-//    }
-    
+        
     func play(){
         let clip = clips[playIndex]
         locationLabel.text = locationText()
@@ -530,10 +476,10 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         player.play()
         
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-//                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
-//                                                         object: player.player.currentItem)
-
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: #selector(playerDidFinishPlaying),
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object: player.player?.currentItem)
     }
 
     func playerDidFinishPlaying(notification: NSNotification) {
@@ -550,6 +496,10 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         player2?.close()
         nextplayer?.close()
         prevplayer?.close()
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object:player.player?.currentItem)
         
         self.dismissViewControllerAnimated(true, completion: nil)
 
