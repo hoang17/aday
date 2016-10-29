@@ -61,12 +61,15 @@ class MiniPlayer : PlayerView {
 
     var task: FIRStorageDownloadTask?
     var playcallback: (()->())?
+    var finishcallback: (()->())?
     
-    convenience init(clip: ClipModel, frame: CGRect) {
+    convenience init(clip: ClipModel, frame: CGRect, finishcallback: (()->())?) {
         self.init(frame: frame)
         
         self.fileName = clip.fname
+        //print("*** init  : " + fileName)
         self.filePath = NSTemporaryDirectory() + clip.fname
+        self.finishcallback = finishcallback
         self.backgroundColor = UIColor.clearColor()
 
         let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
@@ -134,34 +137,76 @@ class MiniPlayer : PlayerView {
         }
     }
     
-    func play(completion: (AVPlayerItem?)->()) {
+    override func play() {
         
         if player != nil {
             super.play()
-            completion(player?.currentItem)
+            NSNotificationCenter.defaultCenter().addObserver(self,
+                selector: #selector(self.playerDidFinishPlaying),
+                name: AVPlayerItemDidPlayToEndTimeNotification,
+                object: player?.currentItem)
+            
         } else {
             playcallback = {
                 super.play()
-                completion(self.player?.currentItem)
+                NSNotificationCenter.defaultCenter().addObserver(self,
+                    selector: #selector(self.playerDidFinishPlaying),
+                    name: AVPlayerItemDidPlayToEndTimeNotification,
+                    object: self.player?.currentItem)
             }
         }
     }
     
     override func pause() {
         //print("pause: " + fileName)
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object: player?.currentItem)
+        
         task?.removeAllObservers()
         playcallback = nil
         task = nil
         super.pause()
     }
-    
-    deinit {
-        //print("deinit: " + fileName)
+
+    func close() {
+        //print("close: " + fileName)
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object: player?.currentItem)
+        
+        super.pause()
         task?.removeAllObservers()
         player?.replaceCurrentItemWithPlayerItem(nil)
         playcallback = nil
+        finishcallback = nil
         task = nil
         player = nil
+    }
+    
+    deinit {
+        //print("~~~ deinit: " + fileName)
+        task?.removeAllObservers()
+        player?.replaceCurrentItemWithPlayerItem(nil)
+        playcallback = nil
+        finishcallback = nil
+        task = nil
+        player = nil
+    }
+    
+    func playerDidFinishPlaying(notification: NSNotification) {
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object: player?.currentItem)
+
+        finishcallback?()
+        task?.removeAllObservers()
+        playcallback = nil
+        task = nil
+   
     }
 }
 

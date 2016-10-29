@@ -349,9 +349,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         player.pause()
         
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: AVPlayerItemDidPlayToEndTimeNotification,
-            object:player.player?.currentItem)
+//        NSNotificationCenter.defaultCenter().removeObserver(self,
+//            name: AVPlayerItemDidPlayToEndTimeNotification,
+//            object:player.player?.currentItem)
         
         let location = sender.locationInView(self.view)
         
@@ -413,7 +413,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     }
     
     func initPlayer(index: Int) -> ClipPlayer {
-        return ClipPlayer(clip: clips[index], frame: UIScreen.mainScreen().bounds)
+        return ClipPlayer(clip: clips[index], frame: UIScreen.mainScreen().bounds, finishcallback: self.playerDidFinishPlaying)
     }
     
     func playPrevClip(){
@@ -423,6 +423,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         player1 = player
         if player2 != nil {
             player2.removeFromSuperview()
+            player2.close()
             player2 = nil
         }
         
@@ -442,6 +443,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         player1 = player
         if player2 != nil {
             player2.removeFromSuperview()
+            player2.close()
             player2 = nil
         }
         
@@ -472,21 +474,10 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         view.bringSubviewToFront(locationLabel)
         view.bringSubviewToFront(commentsButton)
         
-        player.play() { item in
-            NSNotificationCenter.defaultCenter().addObserver(self,
-                selector: #selector(self.playerDidFinishPlaying),
-                name: AVPlayerItemDidPlayToEndTimeNotification,
-                object: item)
-        }
+        player.play()
     }
 
-    func playerDidFinishPlaying(notification: NSNotification) {
-        
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: AVPlayerItemDidPlayToEndTimeNotification,
-            object:player.player?.currentItem)
-        
-        player.pause()
+    func playerDidFinishPlaying() {
         
         if clips.count > playIndex + 1 {
             playNextClip()
@@ -497,9 +488,11 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     
     func close(){
         
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: AVPlayerItemDidPlayToEndTimeNotification,
-            object:player.player?.currentItem)
+        player?.close()
+        player1?.close()
+        player2?.close()
+        nextplayer?.close()
+        prevplayer?.close()
         
         player = nil
         player1 = nil

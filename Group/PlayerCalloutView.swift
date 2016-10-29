@@ -71,18 +71,15 @@ class PlayerCalloutView: UIView {
         }
         
         clipCallout?.removeFromSuperview()
-        clipCallout = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192))
+        clipCallout = ClipCalloutView(clip: clips[playIndex],
+                                      frame: CGRect(x: 0,y: 0, width: 108,height: 192),
+                                      finishcallback: self.playerDidFinishPlaying)
         self.addSubview(clipCallout!)
         
-        clipCallout?.miniPlayer.play() { item in
-            NSNotificationCenter.defaultCenter().addObserver(
-                self, selector: #selector(self.playerDidFinishPlaying),
-                name: AVPlayerItemDidPlayToEndTimeNotification,
-                object:item)
-        }
+        clipCallout?.miniPlayer.play()
     }
     
-    func playerDidFinishPlaying(notification: NSNotification) {
+    func playerDidFinishPlaying() {
         if playIndex+1 < clips.count {
             playNextClip()
         } else {
