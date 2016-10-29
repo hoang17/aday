@@ -102,7 +102,6 @@ class PlayerCalloutView: UIView {
     }
     
     func close(){
-        clipCallout?.miniPlayer.stop()
         clipCallout?.miniPlayer = nil
         clipCallout = nil
     }

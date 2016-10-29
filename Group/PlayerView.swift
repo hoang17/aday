@@ -52,11 +52,6 @@ class PlayerView: UIView {
     func pause(){
         player?.pause()
     }
-    
-    func stop(){
-        player?.pause()
-        player?.seekToTime(kCMTimeZero)
-    }
 }
 
 class MiniPlayer : PlayerView {
@@ -155,27 +150,18 @@ class MiniPlayer : PlayerView {
     override func pause() {
         //print("pause: " + fileName)
         task?.removeAllObservers()
-        task = nil
         playcallback = nil
+        task = nil
         super.pause()
-    }
-    
-    override func stop() {
-        //print("stop: " + fileName)
-        task?.removeAllObservers()
-        super.stop()
-        player = nil
-        task = nil
-        playcallback = nil
     }
     
     deinit {
         //print("deinit: " + fileName)
         task?.removeAllObservers()
         player?.replaceCurrentItemWithPlayerItem(nil)
-        player = nil
-        task = nil
         playcallback = nil
+        task = nil
+        player = nil
     }
 }
 

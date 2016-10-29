@@ -14,6 +14,8 @@ import SafariServices
 
 class LoginController: UIViewController, FBSDKLoginButtonDelegate {
 
+    let loginButton = FBSDKLoginButton()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -29,7 +31,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         
         // Setup login button
-        let loginButton = FBSDKLoginButton()
         self.view.addSubview(loginButton)
         
         loginButton.snp_makeConstraints { (make) -> Void in
@@ -114,6 +115,11 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         else {
             print("User logged In")
             
+            loginButton.hidden = true
+            
+            let text = "Logging in..."
+            self.showWaitOverlayWithText(text)
+            
             // Save Facebook login user
             let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
             
@@ -123,7 +129,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                 
                 let ref = FIRDatabase.database().reference()
                 
-                print("load user")
+                print("loading user")
                 
                 ref.child("users").child(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
                     
@@ -135,8 +141,6 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         let fb = FBSDKAccessToken.currentAccessToken().userID
                         let fbtoken = FBSDKAccessToken.currentAccessToken().tokenString
                         let email = currentUser!.email ?? ""
-                        
-                        // let created = NSDate().timeIntervalSince1970
                         
                         let u = User(uid: uid, name: name, email: email, fb: fb, fbtoken: fbtoken)
                         AppDelegate.currentUser = UserModel(user: u)

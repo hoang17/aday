@@ -473,11 +473,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         view.bringSubviewToFront(commentsButton)
         
         player.play() { item in
-            
-            if (item == nil){
-                return
-            }
-            
             NSNotificationCenter.defaultCenter().addObserver(self,
                 selector: #selector(self.playerDidFinishPlaying),
                 name: AVPlayerItemDidPlayToEndTimeNotification,
@@ -514,19 +509,16 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         
         self.dismissViewControllerAnimated(true, completion: nil)
 
-        do {
-            if (playIndex >= 0) && playIndex < clips.count {
-                
-                let indexPath = NSIndexPath(forRow: playIndex, inSection: 0)
-                
-                collectionView.scrollToItemAtIndexPath(indexPath,
-                   atScrollPosition: .CenteredHorizontally,
-                   animated: false)
-                
-                clips = nil
-            }
-        } catch {
-            print(error)
+        if (playIndex >= 0) && playIndex < clips.count {
+            
+            let indexPath = NSIndexPath(forRow: playIndex, inSection: 0)
+            
+            collectionView.reloadItemsAtIndexPaths([indexPath])
+            collectionView.scrollToItemAtIndexPath(indexPath,
+               atScrollPosition: .CenteredHorizontally,
+               animated: false)
+            
+            clips = nil
         }
     }
     
