@@ -74,12 +74,12 @@ class PlayerCalloutView: UIView {
         clipCallout = ClipCalloutView(clip: clips[playIndex], frame: CGRect(x: 0,y: 0, width: 108,height: 192))
         self.addSubview(clipCallout!)
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self, selector: #selector(playerDidFinishPlaying),
-            name: AVPlayerItemDidPlayToEndTimeNotification,
-            object:clipCallout?.miniPlayer.player?.currentItem)
-        
-        clipCallout?.miniPlayer.play()
+        clipCallout?.miniPlayer.play() { item in
+            NSNotificationCenter.defaultCenter().addObserver(
+                self, selector: #selector(self.playerDidFinishPlaying),
+                name: AVPlayerItemDidPlayToEndTimeNotification,
+                object:item)
+        }
     }
     
     func playerDidFinishPlaying(notification: NSNotification) {
