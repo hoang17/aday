@@ -102,7 +102,7 @@ class PlayerCalloutView: UIView {
     }
     
     func close(){
-        clipCallout?.miniPlayer.close()
+        clipCallout?.miniPlayer.stop()
     }
     
     required init(coder aDecoder: NSCoder) {

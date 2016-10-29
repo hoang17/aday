@@ -27,7 +27,6 @@ class UploadHelper {
     var connected = false
     var uploading = [String:Bool]()
     var downloadTasks = [String: FIRStorageDownloadTask]()
-    var downloadCallbacks = [String:Bool]()
     
     let ref = FIRDatabase.database().reference()
     
@@ -292,23 +291,21 @@ class UploadHelper {
         }
     }
     
-    func downloadClip(fileName: String, callback: Bool = false) -> FIRStorageDownloadTask? {
-        
-        downloadCallbacks[fileName] = callback
-        
+    func downloadClip(fileName: String) -> FIRStorageDownloadTask? {
         // Check if file not existed then download
         let filePath = NSTemporaryDirectory() + fileName;
-        if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-            if downloadTasks[fileName] != nil {
-                return downloadTasks[fileName]
-            } else {
+        
+        //if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+            
+            if downloadTasks[fileName] == nil {
                 print("Downloading file \(fileName)...")
                 let storage = FIRStorage.storage()
                 let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
                 let localURL = NSURL(fileURLWithPath: filePath)
-                return gs.child(fileName).writeToFile(localURL)
+                downloadTasks[fileName] = gs.child(fileName).writeToFile(localURL)
             }
-        }
-        return nil
+            return downloadTasks[fileName]
+        //}
+        //return nil
     }
 }

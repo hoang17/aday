@@ -49,7 +49,15 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         self.init()
         self.clips = clips
         self.playIndex = playIndex
-        self.player = self.playerAtIndex(playIndex)
+        
+        if playIndex > 0 {
+            prevplayer = initPlayer(playIndex-1)
+        }
+        if playIndex + 1 < clips.count {
+            nextplayer = initPlayer(playIndex+1)
+        }
+        
+        self.player = initPlayer(playIndex)
     }
     
     override func viewDidLoad() {
@@ -153,7 +161,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     }
     
     func showComments() {
-        player.pause()
+        player.player?.pause()
         self.navigationController?.pushViewController(CommentsController(clip: clips[playIndex]), animated: true)
     }
     
@@ -388,7 +396,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     }
     
     func swipeUpGesture(){
-        player.pause()
+        player.player?.pause()
         commentField.hidden = false
         commentField.y = view.height - 34
         commentField.becomeFirstResponder()
@@ -397,27 +405,15 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     
     func swipeDownGesture(){
         close()
-        
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: AVPlayerItemDidPlayToEndTimeNotification,
-            object:player.player?.currentItem)
-    }
-    
-    func playerAtIndex(playIndex: Int) -> ClipPlayer? {
-        
-        if playIndex > 0 {
-            prevplayer = ClipPlayer(clip: clips[playIndex-1], frame: UIScreen.mainScreen().bounds)
-        }
-        if playIndex + 1 < clips.count {
-            nextplayer = ClipPlayer(clip: clips[playIndex+1], frame: UIScreen.mainScreen().bounds)
-        }
-        
-        return ClipPlayer(clip: clips[playIndex], frame: UIScreen.mainScreen().bounds)
     }
     
     func locationText() -> String {
         let clip = clips[playIndex]
         return clip.subarea != "" ? clip.subarea + " · " + clip.city : ""
+    }
+    
+    func initPlayer(index: Int) -> ClipPlayer {
+        return ClipPlayer(clip: clips[index], frame: UIScreen.mainScreen().bounds)
     }
     
     func playPrevClip(){
@@ -427,6 +423,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         player1 = player
         if player2 != nil {
             player2.removeFromSuperview()
+            player2 = nil
         }
         
         nextplayer = player
@@ -434,7 +431,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         play()
         
         if playIndex > 0 {
-            prevplayer = ClipPlayer(clip: clips[playIndex-1], frame: UIScreen.mainScreen().bounds)
+            prevplayer = initPlayer(playIndex-1)
         }
     }
     
@@ -445,6 +442,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         player1 = player
         if player2 != nil {
             player2.removeFromSuperview()
+            player2 = nil
         }
         
         prevplayer = player
@@ -452,7 +450,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         play()
         
         if playIndex + 1 < clips.count {
-            nextplayer = ClipPlayer(clip: clips[playIndex+1], frame: UIScreen.mainScreen().bounds)
+            nextplayer = initPlayer(playIndex+1)
         }
     }
         
@@ -474,15 +472,28 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         view.bringSubviewToFront(locationLabel)
         view.bringSubviewToFront(commentsButton)
         
-        player.play()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: #selector(playerDidFinishPlaying),
-            name: AVPlayerItemDidPlayToEndTimeNotification,
-            object: player.player?.currentItem)
+        player.play() { item in
+            
+            if (item == nil){
+                print("item nil")
+                return
+            }
+            
+            NSNotificationCenter.defaultCenter().addObserver(self,
+                selector: #selector(self.playerDidFinishPlaying),
+                name: AVPlayerItemDidPlayToEndTimeNotification,
+                object: item)
+        }
     }
 
     func playerDidFinishPlaying(notification: NSNotification) {
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self,
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object:player.player?.currentItem)
+        
+        player.pause()
+        
         if clips.count > playIndex + 1 {
             playNextClip()
         } else {
@@ -491,21 +502,33 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     }
     
     func close(){
-        player?.close()
-        player1?.close()
-        player2?.close()
-        nextplayer?.close()
-        prevplayer?.close()
+        player?.stop()
+        player1?.stop()
+        player2?.stop()
+        nextplayer?.stop()
+        prevplayer?.stop()
         
         NSNotificationCenter.defaultCenter().removeObserver(self,
             name: AVPlayerItemDidPlayToEndTimeNotification,
             object:player.player?.currentItem)
         
+        player = nil
+        player1 = nil
+        player2 = nil
+        nextplayer = nil
+        prevplayer = nil
+        
         self.dismissViewControllerAnimated(true, completion: nil)
 
         if (playIndex >= 0) && playIndex < clips.count {
+            
             let indexPath = NSIndexPath(forRow: playIndex, inSection: 0)
-            collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .CenteredHorizontally, animated: false)
+            
+            collectionView.scrollToItemAtIndexPath(indexPath,
+               atScrollPosition: .CenteredHorizontally,
+               animated: false)
+            
+            clips = nil
         }
     }
     

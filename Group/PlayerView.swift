@@ -51,6 +51,10 @@ class PlayerView: UIView {
     
     func pause(){
         player?.pause()
+    }
+    
+    func stop(){
+        player?.pause()
         player?.seekToTime(kCMTimeZero)
     }
 }
@@ -61,26 +65,29 @@ class MiniPlayer : PlayerView {
     var filePath: String!
 
     var task: FIRStorageDownloadTask?
-    var playerLoaded = false
-    var playQueue = false
+    var playcallback: (()->())?
     
     convenience init(clip: ClipModel, frame: CGRect) {
         self.init(frame: frame)
         
         self.fileName = clip.fname
         self.filePath = NSTemporaryDirectory() + clip.fname
+        self.backgroundColor = UIColor.clearColor()
 
         let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
         let thumbImg = UIImageView(frame: frame)
+        thumbImg.backgroundColor = UIColor.clearColor()
         thumbImg.contentMode = .ScaleAspectFill
         thumbImg.kf_setImageWithResource(resource)
         addSubview(thumbImg)
+
+        download()
         
-        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-            loadPlayer()
-        } else {
-            download()
-        }
+//        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+//            loadPlayer()
+//        } else {
+//            download()
+//        }
     }
     
     func download() {
@@ -99,25 +106,22 @@ class MiniPlayer : PlayerView {
         //ai.borderWidth = 1
         //view.addSubview(ai)
         
-        task = UploadHelper.sharedInstance.downloadClip(fileName, callback: true)
-        task?.observeStatus(.Success){ (snapshot) in
+        task = UploadHelper.sharedInstance.downloadClip(fileName)
+        task?.observeStatus(.Success){ snapshot in
             
-            print("File downloaded \(self.fileName)")
+            //print("File downloaded \(self.fileName)")
             
             indicator.removeFromSuperview()
             //ai.removeFromSuperview()
             
             self.loadPlayer()
-            
-            if self.playQueue {
-                super.play()
-            }
+            self.playcallback?()
         }
-        task?.observeStatus(.Failure) { (snapshot) in
+        task?.observeStatus(.Failure) { snapshot in
             guard let storageError = snapshot.error else { return }
             print(storageError)
         }
-        //task?.observeStatus(.Progress) { (snapshot) in
+        //task?.observeStatus(.Progress) { snapshot in
         //    if let completed = snapshot.progress?.completedUnitCount {
         //        let total = snapshot.progress!.totalUnitCount
         //        let percentComplete : Float = total == 0 ? 0 : Float(completed)/Float(total)
@@ -128,31 +132,46 @@ class MiniPlayer : PlayerView {
     }
 
     func loadPlayer() {
-        if !playerLoaded {
-            playerLoaded = true
+        if player == nil {
             super.loadPlayer(filePath)
         }
     }
     
-    override func play() {
-        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+    func play(completion: (AVPlayerItem?)->()) {
+        
+        if player != nil {
             super.play()
+            completion(player?.currentItem)
         } else {
-            playQueue = true
+            playcallback = {
+                super.play()
+                completion(self.player?.currentItem)
+            }
         }
     }
     
-    override func pause(){
-        playQueue = false
-        if player == nil {
-            return
-        }
+    override func pause() {
+        print("pause: " + fileName)
+        task?.removeAllObservers()
         super.pause()
     }
     
-    func close(){
+    override func stop() {
+        print("stop: " + fileName)
         task?.removeAllObservers()
-        pause()
+        super.stop()
+        player = nil
+        task = nil
+        playcallback = nil
+    }
+    
+    deinit {
+        print("deinit: " + fileName)
+        task?.removeAllObservers()
+        player?.replaceCurrentItemWithPlayerItem(nil)
+        player = nil
+        task = nil
+        playcallback = nil
     }
 }
 
