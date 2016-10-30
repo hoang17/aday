@@ -23,8 +23,6 @@ class PlayerCalloutView: UIView {
     convenience init(clips: [ClipModel], frame: CGRect) {
         self.init(frame: frame)
         
-        print("init PlayerCalloutView " + clips[playIndex].lname)
-        
         locationName.font = UIFont.systemFontOfSize(12)
         locationName.textAlignment = NSTextAlignment.Center
         locationName.y = 194
@@ -98,7 +96,6 @@ class PlayerCalloutView: UIView {
     }
     
     deinit {
-        print("deinit PlayerCalloutView " + clips[playIndex].lname)
         clipCallout?.miniPlayer.close()
         clipCallout?.miniPlayer = nil
         clipCallout = nil
