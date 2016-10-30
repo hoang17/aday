@@ -61,15 +61,14 @@ class MiniPlayer : PlayerView {
 
     var task: FIRStorageDownloadTask?
     var playcallback: (()->())?
-    var finishcallback: (()->())?
+    var playcompletion: (()->())?
     
-    convenience init(clip: ClipModel, frame: CGRect, finishcallback: (()->())?) {
+    convenience init(clip: ClipModel, frame: CGRect) {
         self.init(frame: frame)
         
         self.fileName = clip.fname
         //print("*** init  : " + fileName)
         self.filePath = NSTemporaryDirectory() + clip.fname
-        self.finishcallback = finishcallback
         self.backgroundColor = UIColor.clearColor()
 
         let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
@@ -137,24 +136,23 @@ class MiniPlayer : PlayerView {
         }
     }
     
-    override func play() {
+    func play(completion: (()->())?) {
+        
+        playcompletion = completion
         
         if player != nil {
-            super.play()
-            NSNotificationCenter.defaultCenter().addObserver(self,
-                selector: #selector(self.playerDidFinishPlaying),
-                name: AVPlayerItemDidPlayToEndTimeNotification,
-                object: player?.currentItem)
-            
+            doplay()
         } else {
-            playcallback = {
-                super.play()
-                NSNotificationCenter.defaultCenter().addObserver(self,
-                    selector: #selector(self.playerDidFinishPlaying),
-                    name: AVPlayerItemDidPlayToEndTimeNotification,
-                    object: self.player?.currentItem)
-            }
+            playcallback = doplay
         }
+    }
+    
+    func doplay(){
+        super.play()
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: #selector(playerDidFinishPlaying),
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object: player?.currentItem)
     }
     
     override func pause() {
@@ -166,6 +164,7 @@ class MiniPlayer : PlayerView {
         
         task?.removeAllObservers()
         playcallback = nil
+        playcompletion = nil
         task = nil
         super.pause()
     }
@@ -181,7 +180,7 @@ class MiniPlayer : PlayerView {
         task?.removeAllObservers()
         player?.replaceCurrentItemWithPlayerItem(nil)
         playcallback = nil
-        finishcallback = nil
+        playcompletion = nil
         task = nil
         player = nil
     }
@@ -191,7 +190,7 @@ class MiniPlayer : PlayerView {
         task?.removeAllObservers()
         player?.replaceCurrentItemWithPlayerItem(nil)
         playcallback = nil
-        finishcallback = nil
+        playcompletion = nil
         task = nil
         player = nil
     }
@@ -202,9 +201,10 @@ class MiniPlayer : PlayerView {
             name: AVPlayerItemDidPlayToEndTimeNotification,
             object: player?.currentItem)
 
-        finishcallback?()
+        playcompletion?()
         task?.removeAllObservers()
         playcallback = nil
+        playcompletion = nil
         task = nil
    
     }

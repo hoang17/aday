@@ -261,25 +261,24 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         view.addGestureRecognizer(tap)
         
 //        mapView.setCenterCoordinate((view.annotation?.coordinate)!, animated: true)
-        
-        
-//        let ca = ClipAnnotation(clip: clipAnnotations[0].clip)
-//        mapView.addAnnotation(ca)
-        
-        
     }
     
     func tapGesture(sender:UITapGestureRecognizer){
-        calloutView.pause()
-        calloutView.playNextClip()
+        if calloutView != nil {
+            calloutView.pause()
+            calloutView.playNextClip()
+        }
     }
     
     func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
+        
         if calloutView != nil {
             calloutView.close()
             calloutView.removeFromSuperview()
             calloutView = nil
         }
+        
+        view.gestureRecognizers?.removeAll()
         
         view.subviews.forEach({ $0.hidden = false })
         
