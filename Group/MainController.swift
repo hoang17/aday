@@ -69,7 +69,7 @@ class MainController: UIViewController {
                 
                 let user = User(snapshot: snapshot)
                 
-                print(user.name)
+                //print(user.name)
                 
                 var uploaded: Double = 0
                 

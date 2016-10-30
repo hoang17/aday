@@ -156,7 +156,6 @@ class MiniPlayer : PlayerView {
     }
     
     override func pause() {
-        //print("pause: " + fileName)
         
         NSNotificationCenter.defaultCenter().removeObserver(self,
             name: AVPlayerItemDidPlayToEndTimeNotification,
@@ -169,31 +168,11 @@ class MiniPlayer : PlayerView {
         super.pause()
     }
 
-    func close() {
-        //print("close: " + fileName)
-        
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: AVPlayerItemDidPlayToEndTimeNotification,
-            object: player?.currentItem)
-        
-        super.pause()
-        task?.removeAllObservers()
-        player?.replaceCurrentItemWithPlayerItem(nil)
-        playcallback = nil
-        playcompletion = nil
-        task = nil
-        player = nil
-    }
-    
     deinit {
         //print("~~~ deinit: " + fileName)
         NSNotificationCenter.defaultCenter().removeObserver(self)
         task?.removeAllObservers()
         player?.replaceCurrentItemWithPlayerItem(nil)
-        playcallback = nil
-        playcompletion = nil
-        task = nil
-        player = nil
     }
     
     func playerDidFinishPlaying(notification: NSNotification) {
@@ -207,7 +186,6 @@ class MiniPlayer : PlayerView {
         playcallback = nil
         playcompletion = nil
         task = nil
-   
     }
 }
 

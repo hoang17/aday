@@ -28,9 +28,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     var playIndex = 0
     var player: ClipPlayer!
     
-    var player1: ClipPlayer! // cache for smooth
-    var player2: ClipPlayer! // cache for smooth
-    
     var nextplayer: ClipPlayer! // cache for smooth
     var prevplayer: ClipPlayer! // cache for smooth
     
@@ -415,11 +412,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     func playPrevClip(){
         playIndex -= 1
         
-        player2 = player1
-        player1 = player
-        if player2 != nil {
-            player2.removeFromSuperview()
-        }
+        let tmp = nextplayer
         
         nextplayer = player
         player = prevplayer
@@ -428,16 +421,14 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         if playIndex > 0 {
             prevplayer = initPlayer(playIndex-1)
         }
+        
+        tmp?.removeFromSuperview()
     }
     
     func playNextClip(){
         playIndex += 1
         
-        player2 = player1
-        player1 = player
-        if player2 != nil {
-            player2.removeFromSuperview()
-        }
+        let tmp = prevplayer
         
         prevplayer = player
         player = nextplayer
@@ -446,6 +437,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         if playIndex + 1 < clips.count {
             nextplayer = initPlayer(playIndex+1)
         }
+        
+        tmp?.removeFromSuperview()
     }
         
     func play(){
@@ -476,16 +469,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     }
 
     func close(){
-        
-        player?.close()
-        player1?.close()
-        player2?.close()
-        nextplayer?.close()
-        prevplayer?.close()
+        player?.pause()
         
         player = nil
-        player1 = nil
-        player2 = nil
         nextplayer = nil
         prevplayer = nil
         
