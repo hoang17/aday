@@ -29,7 +29,6 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var cameraPreviewLayer:AVCaptureVideoPreviewLayer?
     let outputPath = NSTemporaryDirectory() + "output.mov"
     
-    var loupdated = false
     var locationInfo = LocationInfo()
     let locationManager = CLLocationManager()
     
@@ -157,17 +156,11 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        locationManager.stopUpdatingLocation()
-        
-        guard loupdated == false else {
-            return
-        }
         guard let location = manager.location else {
             return
         }
-        
-        loupdated = true
-        locationInfo.load(location, completion: nil)
+        locationManager.stopUpdatingLocation()
+        locationInfo.load(location)
     }
     
     func convertVideoWithMediumQuality(inputURL : NSURL){
@@ -226,6 +219,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         do {
             
             captureSession.beginConfiguration()
+            captureSession.sessionPreset = AVCaptureSessionPresetHigh
             
             for input in captureSession.inputs {
                 captureSession.removeInput(input as! AVCaptureInput)
@@ -270,7 +264,6 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             videoFileOutput?.startRecordingToOutputFileURL(outputFileURL, recordingDelegate: self)
             
             if CLLocationManager.locationServicesEnabled() {
-                loupdated = false
                 locationManager.startUpdatingLocation()
             }
         }
@@ -296,6 +289,11 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         }
     }
 
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        locationManager.startUpdatingLocation()
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         stop()

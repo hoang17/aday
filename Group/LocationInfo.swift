@@ -17,7 +17,7 @@ class LocationInfo {
     var sublocal = ""
     var subarea = ""
     
-    func load(location: CLLocation, completion: ((LocationInfo)->())?){
+    func load(location: CLLocation, completion: ((LocationInfo)->())? = nil){
         self.location = location
         self.loaded = false
         self.name = ""
