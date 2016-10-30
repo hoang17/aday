@@ -29,7 +29,8 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     var cameraPreviewLayer:AVCaptureVideoPreviewLayer?
     let outputPath = NSTemporaryDirectory() + "output.mov"
     
-    var lo = Location()
+    var loupdated = false
+    var locationInfo = LocationInfo()
     let locationManager = CLLocationManager()
     
     var isRecording = false
@@ -45,8 +46,6 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         }
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(didBecomeActive), name: UIApplicationDidBecomeActiveNotification, object: nil)
         
         /// End location
         
@@ -109,7 +108,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         recordButton.buttonColor = UIColor(white: 1, alpha: 0.5)
         recordButton.closeWhenFinished = false
         recordButton.addTarget(self, action: #selector(record), forControlEvents: .TouchDown)
-        recordButton.addTarget(self, action: #selector(stop), forControlEvents: UIControlEvents.TouchUpInside)
+        recordButton.addTarget(self, action: #selector(stop), forControlEvents: .TouchUpInside)
         view.addSubview(recordButton)
         self.view.addSubview(recordButton)
         recordButton.snp_makeConstraints { (make) -> Void in
@@ -139,7 +138,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         backButton.tintColor = UIColor(white: 1, alpha: 0.5)
         backButton.backgroundColor = UIColor.clearColor()
         backButton.setImage(backIcon, forState: .Normal)
-        backButton.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
+        backButton.addTarget(self, action: #selector(close), forControlEvents: .TouchUpInside)
         self.view.addSubview(backButton)
         backButton.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(self.view).offset(15)
@@ -157,57 +156,18 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.startUpdatingLocation()
-        }
-    }
-    
-    func didBecomeActive() {
-        if view.window != nil && CLLocationManager.locationServicesEnabled() {
-            locationManager.startUpdatingLocation()
-        }
-    }
-    
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
         locationManager.stopUpdatingLocation()
         
-        if let location = manager.location {
-
-            CLGeocoder().reverseGeocodeLocation(location, completionHandler: { (placemarks, error) in
-                
-                if error != nil {
-                    print(error)
-                    return
-                }
-                
-                self.lo = Location()
-                self.lo.latitude = location.coordinate.latitude
-                self.lo.longitude = location.coordinate.longitude
-                
-                // print("locations = \(lo.latitude) \(lo.longitude)")
-                
-                if let placeMark = placemarks?.first {
-                    // Address dictionary
-                    let name = placeMark.addressDictionary!["Name"] as? String ?? ""
-                    let city = placeMark.addressDictionary!["City"] as? String ?? ""
-                    let country = placeMark.addressDictionary!["CountryCode"] as? String ?? ""
-                    let sublocal = placeMark.addressDictionary!["SubLocality"] as? String ?? ""
-                    let subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as? String ?? ""
-                    
-                    // print(name)
-                    // print(placeMark.addressDictionary)
-                    
-                    self.lo.name = name
-                    self.lo.city = city
-                    self.lo.country = country
-                    self.lo.sublocal = sublocal
-                    self.lo.subarea = subarea
-                }
-            })
+        guard loupdated == false else {
+            return
         }
+        guard let location = manager.location else {
+            return
+        }
+        
+        loupdated = true
+        locationInfo.load(location, completion: nil)
     }
     
     func convertVideoWithMediumQuality(inputURL : NSURL){
@@ -241,7 +201,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                 print("export completed")
                 dispatch_async(dispatch_get_main_queue(), {
                     let preview = CameraPreviewController()
-                    preview.lo = self.lo
+                    preview.locationInfo = self.locationInfo
                     self.presentViewController(preview, animated: true, completion: nil)
                 })
             case  .Failed:
@@ -254,7 +214,8 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         }
     }
     
-    func back(){
+    func close(){
+        stop()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -293,13 +254,11 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             
             captureSession.commitConfiguration()
             
-            
         } catch {
             print(error)
         }
         
         captureSession.startRunning()
-        
     }
     
     func record() {
@@ -310,7 +269,8 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
             videoFileOutput?.startRecordingToOutputFileURL(outputFileURL, recordingDelegate: self)
             
-            if view.window != nil && CLLocationManager.locationServicesEnabled() {
+            if CLLocationManager.locationServicesEnabled() {
+                loupdated = false
                 locationManager.startUpdatingLocation()
             }
         }
@@ -330,9 +290,15 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         if (isRecording){
             isRecording = false
             videoFileOutput?.stopRecording()
-            self.progressTimer.invalidate()
+            self.progressTimer?.invalidate()
             self.progress = 0
+            recordButton.buttonState = .Idle
         }
+    }
+
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        stop()
     }
     
     override func didReceiveMemoryWarning() {
@@ -361,8 +327,4 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
-    
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }    
 }

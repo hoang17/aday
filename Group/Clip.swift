@@ -2,19 +2,7 @@
 //  Copyright © 2016 ping. All rights reserved.
 //
 
-import UIKit
-import Foundation
 import FirebaseDatabase
-
-struct Location {
-    var longitude: Double?
-    var latitude: Double?
-    var name: String?
-    var city: String?
-    var country: String?
-    var sublocal: String?
-    var subarea: String?
-}
 
 class Clip: NSObject {
     
@@ -27,6 +15,9 @@ class Clip: NSObject {
     var flag = false
     var long: Double
     var lat: Double
+    var altitude: Double
+    var course: Double
+    var speed: Double
     var lname: String // location name
     var city: String
     var country: String
@@ -47,6 +38,9 @@ class Clip: NSObject {
         flag = snapshot.value!["flag"] as? Bool ?? false
         long = snapshot.value!["long"] as? Double ?? 0
         lat = snapshot.value!["lat"] as? Double ?? 0
+        altitude = snapshot.value!["altitude"] as? Double ?? 0
+        course = snapshot.value!["course"] as? Double ?? 0
+        speed = snapshot.value!["speed"] as? Double ?? 0
         lname = snapshot.value!["lname"] as? String ?? ""
         city = snapshot.value!["city"] as? String ?? ""
         country = snapshot.value!["country"] as? String ?? ""
@@ -67,6 +61,9 @@ class Clip: NSObject {
         self.y = data.y
         self.long = data.long
         self.lat = data.lat
+        self.altitude = data.altitude
+        self.course = data.course
+        self.speed = data.speed
         self.lname = data.lname
         self.city = data.city
         self.country = data.country
@@ -91,6 +88,9 @@ class Clip: NSObject {
             "trash": trash,
             "long": long,
             "lat": lat,
+            "altitude": altitude,
+            "course": course,
+            "speed": speed,
             "lname": lname,
             "city": city,
             "country": country,

@@ -14,6 +14,7 @@ import RealmSwift
 import AVFoundation
 import Kingfisher
 import CWStatusBarNotification
+import MapKit
 
 class UploadHelper {
     
@@ -72,7 +73,7 @@ class UploadHelper {
         }
     }
     
-    func enqueueUpload(clip: ClipModel) {
+    func enqueueUpload(clip: ClipModel, liloaded: Bool = true) {
         
         do {
             // rename video file
@@ -87,7 +88,7 @@ class UploadHelper {
             
             let user = AppDelegate.currentUser
             
-            let clipUpload = ClipUpload(id: clip.id)
+            let clipUpload = ClipUpload(id: clip.id, liloaded: liloaded)
             
             let realm = AppDelegate.realm
             
@@ -184,6 +185,35 @@ class UploadHelper {
                         }
                     }
                     // leave upload thumb
+                    dispatch_group_leave(group)
+                }
+            }
+            
+            if !clipUpload.liloaded {
+
+                // enter load location info group
+                dispatch_group_enter(group)
+
+                let location = CLLocation(latitude: clip.lat, longitude: clip.long)
+                let info = LocationInfo()
+                info.load(location) { info in
+                    
+                    guard info.loaded else {
+                        dispatch_group_leave(group)
+                        return
+                    }
+                    
+                    try! AppDelegate.realm.write {
+                        clip.lname = info.name
+                        clip.city = info.city
+                        clip.country = info.country
+                        clip.sublocal = info.sublocal
+                        clip.subarea = info.subarea
+                    }
+                    
+                    print(clip.lname)
+                    
+                    // leave location thumb
                     dispatch_group_leave(group)
                 }
             }

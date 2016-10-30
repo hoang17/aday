@@ -16,7 +16,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
 
     let textField = UITextField()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
-    var lo = Location()
+    var locationInfo: LocationInfo?
     
     // let locationField = UITextField()
 
@@ -111,9 +111,9 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         let y = self.textLocation.y/self.view.frame.height
         let uploadFile = "\(id).mp4"
         
-        let clip = ClipModel(id: id, uid: uid, uname: uname, fname: uploadFile, txt: txt!, y: y, location: self.lo)
+        let clip = ClipModel(id: id, uid: uid, uname: uname, fname: uploadFile, txt: txt!, y: y, locationInfo: locationInfo!)
         
-        UploadHelper.sharedInstance.enqueueUpload(clip)
+        UploadHelper.sharedInstance.enqueueUpload(clip, liloaded: locationInfo!.loaded)
         
         self.back()
     }

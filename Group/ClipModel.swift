@@ -14,6 +14,9 @@ class ClipModel: Object {
     dynamic var flag = false
     dynamic var long: Double = 0
     dynamic var lat: Double = 0
+    dynamic var altitude: Double = 0
+    dynamic var course: Double = 0
+    dynamic var speed: Double = 0
     dynamic var lname: String = "" // location name
     dynamic var city: String = ""
     dynamic var country: String = ""
@@ -35,6 +38,9 @@ class ClipModel: Object {
         flag = clip.flag
         long = clip.long
         lat = clip.lat
+        altitude = clip.altitude
+        course = clip.course
+        speed = clip.speed
         lname = clip.lname
         city = clip.city
         country = clip.country
@@ -46,7 +52,7 @@ class ClipModel: Object {
         updated = clip.updated
     }
 
-    convenience init(id: String, uid: String, uname: String, fname: String, txt: String, y: CGFloat, location: Location) {
+    convenience init(id: String, uid: String, uname: String, fname: String, txt: String, y: CGFloat, locationInfo: LocationInfo) {
         self.init()
         self.id = id
         self.uid = uid
@@ -54,13 +60,19 @@ class ClipModel: Object {
         self.fname = fname
         self.txt = txt
         self.y = Float(y)
-        self.long = location.longitude ?? 0
-        self.lat = location.latitude ?? 0
-        self.lname = location.name ?? ""
-        self.city = location.city ?? ""
-        self.country = location.country ?? ""
-        self.sublocal = location.sublocal ?? ""
-        self.subarea = location.subarea ?? ""
+        
+        self.long = locationInfo.location?.coordinate.longitude ?? 0
+        self.lat = locationInfo.location?.coordinate.latitude ?? 0
+        self.altitude = locationInfo.location?.altitude ?? 0
+        self.course = locationInfo.location?.course ?? 0
+        self.speed = locationInfo.location?.speed ?? 0
+        
+        self.lname = locationInfo.name
+        self.city = locationInfo.city
+        self.country = locationInfo.country
+        self.sublocal = locationInfo.sublocal
+        self.subarea = locationInfo.subarea
+        
         self.date = NSDate().timeIntervalSince1970
         self.updated = self.date
     }
@@ -76,10 +88,12 @@ class ClipUpload: Object {
     dynamic var thumbUploaded: Bool = false
     dynamic var uploadRetry: Int = 0
     dynamic var thumb: String = ""
+    dynamic var liloaded = true
     
-    convenience init(id: String) {
+    convenience init(id: String, liloaded: Bool = true) {
         self.init()
         self.id = id
+        self.liloaded = liloaded
     }
     
     override static func primaryKey() -> String? {
