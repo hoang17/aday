@@ -14,6 +14,7 @@ import DigitsKit
 import FBSDKCoreKit
 import FBSDKLoginKit
 import RealmSwift
+import LNNotificationsUI
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -78,7 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //NSForegroundColorAttributeName : UIColor.darkGrayColor(),
             NSFontAttributeName : UIFont(name: "OpenSans", size: 20.0)!
         ]
-
+        
 //        try! AppDelegate.realm.write {
 //            AppDelegate.realm.deleteAll()
 //        }
@@ -92,6 +93,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
 //        application.registerUserNotificationSettings(notificationSettings)
 //        application.registerForRemoteNotifications()
+        
+        
+        /*** 🔥🔥🔥 Setup LNNotificationUI 🔥🔥🔥 ***/
+        
+        LNNotificationCenter.defaultCenter().notificationsBannerStyle = .Light
+        LNNotificationCenter.defaultCenter().registerApplicationWithIdentifier("Pinly",
+           name: "Pinly",
+           icon: UIImage(named: "pin")!,
+           defaultSettings: LNNotificationAppSettings.defaultNotificationAppSettings())
+        
+        /*** 🔥🔥🔥 End Setup LNNotificationUI 🔥🔥🔥 ***/
         
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window!.backgroundColor = UIColor.whiteColor()
@@ -137,6 +149,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         print(userInfo)
+        
+        NotificationHelper.sharedInstance.present(userInfo)
     }
     
     func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {

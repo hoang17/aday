@@ -12,6 +12,7 @@ import UIColor_HexString
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import LNNotificationsUI
 
 class MainController: UIViewController {
     
@@ -19,16 +20,21 @@ class MainController: UIViewController {
         
         super.viewDidLoad()
         
+        /*** 🍺🍺🍺 Setup status bar 🍺🍺🍺 ***/
+        
         let statusBar = UIApplication.sharedApplication().valueForKey("statusBarWindow")?.valueForKey("statusBar") as? UIView
         statusBar?.backgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)
         
-        // Register for push notificaiton
+        
+        /*** ⭐️⭐️⭐️ Register for push notificaiton ⭐️⭐️⭐️***/
+        
         let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
         let application = UIApplication.sharedApplication()
         application.registerUserNotificationSettings(notificationSettings)
         application.registerForRemoteNotifications()
         
-        // Init current user
+        
+        //📍Init current user
         
         let realm = AppDelegate.realm
         
