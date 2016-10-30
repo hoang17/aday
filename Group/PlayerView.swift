@@ -162,7 +162,7 @@ class MiniPlayer : PlayerView {
             name: AVPlayerItemDidPlayToEndTimeNotification,
             object: player?.currentItem)
         
-        task?.removeAllObservers()
+        //task?.removeAllObservers()
         playcallback = nil
         playcompletion = nil
         task = nil

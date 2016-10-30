@@ -419,8 +419,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         player1 = player
         if player2 != nil {
             player2.removeFromSuperview()
-            player2.close()
-            player2 = nil
         }
         
         nextplayer = player
@@ -439,8 +437,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         player1 = player
         if player2 != nil {
             player2.removeFromSuperview()
-            player2.close()
-            player2 = nil
         }
         
         prevplayer = player
