@@ -512,5 +512,8 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         return true
     }
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
 }
 

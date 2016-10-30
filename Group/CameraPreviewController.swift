@@ -29,10 +29,12 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         self.videoGravity = AVLayerVideoGravityResizeAspectFill
         self.player!.actionAtItemEnd = .None
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying),
-                                                         name: AVPlayerItemDidPlayToEndTimeNotification,
-                                                         object: player!.currentItem)
-        self.player!.play()
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: #selector(playerDidFinishPlaying),
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object: player?.currentItem)
+        
+        self.player?.play()
         
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         textField.textColor = UIColor.whiteColor()
@@ -198,5 +200,11 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
     
     override func prefersStatusBarHidden() -> Bool {
         return true
+    }
+    
+    deinit {
+        player?.replaceCurrentItemWithPlayerItem(nil)
+        player = nil
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 }

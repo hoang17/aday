@@ -187,6 +187,7 @@ class MiniPlayer : PlayerView {
     
     deinit {
         //print("~~~ deinit: " + fileName)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
         task?.removeAllObservers()
         player?.replaceCurrentItemWithPlayerItem(nil)
         playcallback = nil
