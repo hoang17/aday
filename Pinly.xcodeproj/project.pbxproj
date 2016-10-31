@@ -287,7 +287,6 @@
 		37FEFEB81D11D33600C078AC /* Pinly */ = {
 			isa = PBXGroup;
 			children = (
-				3777742C1DC0AA3B00ECD8DB /* Pinly.entitlements */,
 				3785F6861D85EACF00F32915 /* Fonts */,
 				372D8DC51D13A305008DBADA /* Helpers */,
 				37FEFED51D12397000C078AC /* Layouts */,
@@ -304,12 +303,13 @@
 		37FEFED31D1238DF00C078AC /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				3774B8EB1DC688F100775FAC /* Tritone.mp3 */,
 				37FEFEB91D11D33600C078AC /* AppDelegate.swift */,
 				37FEFEC01D11D33600C078AC /* Assets.xcassets */,
+				3774B8EB1DC688F100775FAC /* Tritone.mp3 */,
 				37FEFEC51D11D33600C078AC /* Info.plist */,
 				37FEFECB1D11D38E00C078AC /* GoogleService-Info.plist */,
 				3785F6831D8568B500F32915 /* Bridging-Header.h */,
+				3777742C1DC0AA3B00ECD8DB /* Pinly.entitlements */,
 			);
 			name = Application;
 			sourceTree = "<group>";

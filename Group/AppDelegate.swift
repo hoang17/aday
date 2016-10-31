@@ -15,6 +15,7 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 import RealmSwift
 import LNNotificationsUI
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -95,15 +96,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        application.registerForRemoteNotifications()
         
         
-        /*** 🔥🔥🔥 Setup LNNotificationUI 🔥🔥🔥 ***/
+        /*** 🔥🔥🔥 Setup notification 🔥🔥🔥 ***/
+
+        application.applicationIconBadgeNumber = 0
         
-        LNNotificationCenter.defaultCenter().notificationsBannerStyle = .Light
-        LNNotificationCenter.defaultCenter().registerApplicationWithIdentifier("Pinly",
-           name: "Pinly",
-           icon: UIImage(named: "pin")!,
-           defaultSettings: LNNotificationAppSettings.defaultNotificationAppSettings())
+        if #available(iOS 10.0, *) {
+            let center = UNUserNotificationCenter.currentNotificationCenter()
+            center.delegate = self
+            
+            let replyAction = UNNotificationAction(
+                identifier: "replyPin",
+                title: "Reply",
+                options: [])
+            
+            let remindAction = UNNotificationAction(
+                identifier: "remindLater",
+                title: "Remind me later",
+                options: [])
+            
+            let category = UNNotificationCategory(
+                identifier: "pinActionCategory",
+                actions: [replyAction, remindAction],
+                intentIdentifiers: [],
+                options: [])
+            
+            center.setNotificationCategories([category])
+            
+        } else {
+            LNNotificationCenter.defaultCenter().notificationsBannerStyle = .Light
+            LNNotificationCenter.defaultCenter().registerApplicationWithIdentifier(
+                "Pinly",
+                name: "Pinly",
+                icon: UIImage(named: "pin")!,
+                defaultSettings: LNNotificationAppSettings.defaultNotificationAppSettings())
+        }
         
-        /*** 🔥🔥🔥 End Setup LNNotificationUI 🔥🔥🔥 ***/
+        /*** 🔥🔥🔥 End setup notification 🔥🔥🔥 ***/
         
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window!.backgroundColor = UIColor.whiteColor()
@@ -143,20 +171,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    // depricated: iOS 10.0
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
         print("Failed to register push notification: ", error)
     }
     
+    // depricated: iOS 10.0
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        
         print(userInfo)
         
-        NotificationHelper.sharedInstance.present(userInfo)
+        if #available(iOS 10.0, *) {
+            //
+        }
+        else {
+            NotificationHelper.sharedInstance.present(userInfo)
+        }
     }
     
+    // depricated: iOS 10.0
     func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
 //        if notificationSettings.types != .None {
 //            application.registerForRemoteNotifications()
 //        }
+    }
+    
+    // depricated: iOS 10.0
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+        print("action for local notification")
+    }
+    
+    // depricated: iOS 10.0
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
+        print("action for remote notification")
     }
     
     func showLogin() {
@@ -188,6 +235,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        
+        application.applicationIconBadgeNumber = 0
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
@@ -209,3 +258,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+/*** 📢📢📢 Notification Delegate 📢📢📢***/
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+    // Called when the application is in foreground
+    @available(iOS 10.0, *)
+    func userNotificationCenter(center: UNUserNotificationCenter, willPresentNotification notification: UNNotification, withCompletionHandler completionHandler: (UNNotificationPresentationOptions) -> Void) {
+        print("center: \(center)\nnotification: \(notification)")
+        if let trigger = notification.request.trigger {
+            switch trigger {
+            case let n as UNPushNotificationTrigger:
+                print("UNPushNotificationTrigger: \(n)")
+            case let n as  UNTimeIntervalNotificationTrigger:
+                print("UNTimeIntervalNotificationTrigger: \(n)")
+            case let n as  UNCalendarNotificationTrigger:
+                print("UNCalendarNotificationTrigger: \(n)")
+            case let n as  UNLocationNotificationTrigger:
+                print("UNLocationNotificationTrigger: \(n)")
+            default:
+                print(trigger)
+                assert(false)
+                break
+            }
+        }
+        completionHandler([.Badge, .Alert, .Sound])
+    }
+    
+    // Called when the application is opened by notification
+    @available(iOS 10.0, *)
+    func userNotificationCenter(center: UNUserNotificationCenter, didReceiveNotificationResponse response: UNNotificationResponse, withCompletionHandler completionHandler: () -> Void) {
+        
+        print("center: \(center)\nresponse: \(response)")
+        let actionIdentifier = response.actionIdentifier
+        print("actionIdentifier: \(actionIdentifier)")
+        
+        // TODO: Snooze notification to remind me later
+        if response.actionIdentifier == "remindLater" {
+            let newDate = NSDate(timeIntervalSinceNow: 900) // fire after 900 seconds
+            //let pastdate = NSDate(timeIntervalSinceNow: -100) // fire immediately
+            //let newDate = NSDate(timeInterval: 900, sinceDate: somedate)
+            //scheduleNotification(at: newDate)
+        }
+        
+        completionHandler()
+    }
+}

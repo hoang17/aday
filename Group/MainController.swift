@@ -13,6 +13,7 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 import LNNotificationsUI
+import UserNotifications
 
 class MainController: UIViewController {
     
@@ -26,32 +27,48 @@ class MainController: UIViewController {
         statusBar?.backgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)
         
         
-        /*** ⭐️⭐️⭐️ Register for push notificaiton ⭐️⭐️⭐️***/
+        /*** 📢📢📢 Register for push notification 📢📢📢***/
         
-        let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
         let application = UIApplication.sharedApplication()
-        application.registerUserNotificationSettings(notificationSettings)
-        application.registerForRemoteNotifications()
         
-        
-        //📍Init current user
+        // New API (iOS 10-)
+        if #available(iOS 10.0, *) {
+            let center = UNUserNotificationCenter.currentNotificationCenter()
+            center.requestAuthorizationWithOptions([.Badge, .Alert, .Sound]) { granted, error in
+                if granted {
+                    application.registerForRemoteNotifications()
+                } else {
+                    print("notification request error: \(error)")
+                }
+            }
+            
+        } else {
+            // Old APIs (-iOS 8-9)
+            // depricated: iOS 10.0
+            let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
+            application.registerUserNotificationSettings(notificationSettings)
+            application.registerForRemoteNotifications()
+        }
+                        
+        //📍Init db ref
         
         let realm = AppDelegate.realm
-        
         let ref = FIRDatabase.database().reference()
+
+        //📍Init current user
         
         AppDelegate.uid = FIRAuth.auth()?.currentUser?.uid
         AppDelegate.name = FIRAuth.auth()?.currentUser?.displayName
         
-        // Init upload queue
+        //📍Init upload queue
         UploadHelper.sharedInstance.start()
         
-        // Load current user from disk
+        //📍Load current user from disk
         if let user = realm.objectForPrimaryKey(UserModel.self, key: AppDelegate.uid) {
             AppDelegate.currentUser = user
         }
         
-        // Update current user from cloud
+        //📍Update current user from cloud
         ref.child("users").child(AppDelegate.uid).observeEventType(.Value, withBlock: { snapshot in
             
             let user = User(snapshot: snapshot)
@@ -66,6 +83,8 @@ class MainController: UIViewController {
                 AppDelegate.realm.add(AppDelegate.currentUser, update: true)
             }
         })
+        
+        /*** ⭐️⭐️⭐️ Loading following friends ⭐️⭐️⭐️***/
         
         ref.child("friends/\(AppDelegate.uid)").queryOrderedByChild("following").queryEqualToValue(true).observeEventType(.ChildAdded, withBlock: { snapshot in
         
@@ -137,7 +156,7 @@ class MainController: UIViewController {
             })
         })
         
-        // Init tab bar
+        //📍Init tab bar
         let tabBarController = ESTabBarController(tabIconNames: ["clock", "globe", "record", "map", "archive"])
 
         self.addChildViewController(tabBarController)
@@ -149,7 +168,7 @@ class MainController: UIViewController {
         tabBarController.buttonsBackgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)//UIColor(hexString: "#F6EBE0")
         // tabBarController.buttonsBackgroundColor = UIColor(hexString: "#FFF")
         
-        // View controllers.
+        //📍Adding tab screens
         tabBarController.setViewController(UINavigationController(rootViewController: FriendsController()), atIndex: 0)
         tabBarController.setViewController(UINavigationController(rootViewController: SearchController()), atIndex: 1)
         tabBarController.setViewController(UINavigationController(rootViewController: MapController()), atIndex: 3)
