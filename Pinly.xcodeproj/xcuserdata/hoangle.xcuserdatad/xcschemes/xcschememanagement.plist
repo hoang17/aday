@@ -4,7 +4,12 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Group.xcscheme</key>
+		<key>NotificationService.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>23</integer>
+		</dict>
+		<key>Pinly.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -12,6 +17,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>37D6DCA21DC7BCA9009282BE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>37FEFEB51D11D33600C078AC</key>
 		<dict>
 			<key>primary</key>

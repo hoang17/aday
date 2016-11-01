@@ -322,7 +322,7 @@ class UploadHelper {
     }
     
     func downloadClip(fileName: String) -> FIRStorageDownloadTask? {
-        let filePath = NSTemporaryDirectory() + fileName;
+        let filePath = NSTemporaryDirectory() + fileName
         // Only download if file not existed
         if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
             if downloadTasks[fileName] == nil {

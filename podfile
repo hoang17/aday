@@ -28,3 +28,7 @@ target 'Pinly' do
     pod 'SlackTextViewController'
     pod 'LNNotificationsUI', :git => 'https://github.com/kineticac/LNNotificationsUI.git'
 end
+
+target 'NotificationService' do
+    pod 'Firebase/Storage'
+end

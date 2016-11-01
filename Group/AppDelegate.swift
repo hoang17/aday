@@ -115,7 +115,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 options: [])
             
             let category = UNNotificationCategory(
-                identifier: "pinActionCategory",
+                identifier: "pin",
                 actions: [replyAction, remindAction],
                 intentIdentifiers: [],
                 options: [])
@@ -178,9 +178,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // depricated: iOS 10.0
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        
         print(userInfo)
-        
         if #available(iOS 10.0, *) {
             //
         }
@@ -265,7 +263,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     // Called when the application is in foreground
     @available(iOS 10.0, *)
     func userNotificationCenter(center: UNUserNotificationCenter, willPresentNotification notification: UNNotification, withCompletionHandler completionHandler: (UNNotificationPresentationOptions) -> Void) {
-        print("center: \(center)\nnotification: \(notification)")
+        
+        print("notification: \(notification)")
+        
         if let trigger = notification.request.trigger {
             switch trigger {
             case let n as UNPushNotificationTrigger:
