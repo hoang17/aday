@@ -7,7 +7,6 @@
 //
 
 import UserNotifications
-import FirebaseStorage
 
 class NotificationService: UNNotificationServiceExtension {
 
@@ -24,35 +23,62 @@ class NotificationService: UNNotificationServiceExtension {
         }
         
         guard let bestAttemptContent = bestAttemptContent,
-              let fname = bestAttemptContent.userInfo["fname"] as? String else { return failEarly() }
+              let fname = bestAttemptContent.userInfo["fname"] as? String,
+              let furlstring = bestAttemptContent.userInfo["furl"] as? String,
+              let furl = NSURL(string: furlstring) else { return failEarly() }
         
         
         // Modify the notification content here...
         bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
         
-        print("downloading \(fname)")
-        
         let filePath = NSTemporaryDirectory() + fname
-        // Only download if file not existed
-        if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
-            let storage = FIRStorage.storage()
-            let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
-            let localURL = NSURL(fileURLWithPath: filePath)
-            gs.child(fname).writeToFile(localURL){ (url, error) in
-                guard error == nil else {
-                    print(error)
-                    contentHandler(bestAttemptContent)
-                    return
-                }
-                
-                print("downloaded \(fname)")
-                let localURL = NSURL(fileURLWithPath: NSTemporaryDirectory() + fname)
-                if let attachment = try? UNNotificationAttachment(identifier: "pin", URL: localURL, options:nil) {
-                    bestAttemptContent.attachments = [attachment]
-                }
-                contentHandler(bestAttemptContent)
+        let localURL = NSURL(fileURLWithPath: filePath)
+
+        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+            
+            guard let attachment = try? UNNotificationAttachment(identifier: "video", URL: localURL, options: nil) else {
+                return failEarly()
             }
+            
+            bestAttemptContent.attachments = [attachment]
+            return contentHandler(bestAttemptContent)
         }
+        
+        print("downloading \(fname)")
+        let dataTask = NSURLSession.sharedSession().dataTaskWithURL(furl) { (data, response, error) in
+
+            data?.writeToURL(localURL, atomically: true)
+            guard let attachment = try? UNNotificationAttachment(identifier: "video", URL: localURL, options: nil) else {
+                return failEarly()
+            }
+            
+            bestAttemptContent.attachments = [attachment]
+            contentHandler(bestAttemptContent)
+        }
+        dataTask.resume()
+
+        
+//        let filePath = NSTemporaryDirectory() + fname
+//        // Only download if file not existed
+//        if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+//            let storage = FIRStorage.storage()
+//            let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
+//            let localURL = NSURL(fileURLWithPath: filePath)
+//            gs.child(fname).writeToFile(localURL){ (url, error) in
+//                guard error == nil else {
+//                    print(error)
+//                    contentHandler(bestAttemptContent)
+//                    return
+//                }
+//                
+//                print("downloaded \(fname)")
+//                let localURL = NSURL(fileURLWithPath: NSTemporaryDirectory() + fname)
+//                if let attachment = try? UNNotificationAttachment(identifier: "pin", URL: localURL, options:nil) {
+//                    bestAttemptContent.attachments = [attachment]
+//                }
+//                contentHandler(bestAttemptContent)
+//            }
+//        }
         
 //        // Download the attachment
 //        URLSession.shared.downloadTask(with: fileUrl) { (location, response, error) in
