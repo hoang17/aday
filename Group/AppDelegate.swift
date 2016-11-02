@@ -115,7 +115,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 options: [])
             
             let category = UNNotificationCategory(
-                identifier: "pin",
+                identifier: "newPin",
                 actions: [replyAction, remindAction],
                 intentIdentifiers: [],
                 options: [])

@@ -9,6 +9,7 @@
 #ifndef Connect_Bridging_Header_h
 #define Connect_Bridging_Header_h
 
-//#import <ESTabBarController/ESTabBarController.h>
+//#import "SCRecordSessionManager.h"
+#import <UIKit/UIGestureRecognizerSubclass.h>
 
 #endif /* Connect_Bridging_Header_h */

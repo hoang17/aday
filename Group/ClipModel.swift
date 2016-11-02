@@ -26,6 +26,7 @@ class ClipModel: Object {
     dynamic var trash = false
     dynamic var date: Double = 0.0
     dynamic var updated: Double = 0.0
+    dynamic var furl: String = ""
     
     convenience init(clip: Clip){
         self.init()
@@ -50,6 +51,7 @@ class ClipModel: Object {
         trash = clip.trash
         date = clip.date
         updated = clip.updated
+        furl = clip.furl
     }
 
     convenience init(id: String, uid: String, uname: String, fname: String, txt: String, y: CGFloat, locationInfo: LocationInfo) {

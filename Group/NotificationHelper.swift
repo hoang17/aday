@@ -14,7 +14,7 @@ class NotificationHelper {
 
     func present(userInfo: [NSObject : AnyObject]) {
         let aps = userInfo["aps"]
-        guard let alert = aps?["alert"] else {
+        guard let alert: AnyObject? = aps?["alert"] else {
             return
         }
         

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		27CB4E111D9ED10E001F7857 /* SearchItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CB4E101D9ED10E001F7857 /* SearchItemCell.swift */; };
+		370ED8791DCA04D3003A3C99 /* NCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370ED8781DCA04D3003A3C99 /* NCameraViewController.swift */; };
+		370ED8801DCA54F8003A3C99 /* NCameraPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370ED87F1DCA54F8003A3C99 /* NCameraPreviewController.swift */; };
 		371068DA1D7DE0A000BDFC42 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068D91D7DE0A000BDFC42 /* CameraViewController.swift */; };
 		371068DE1D7FF26200BDFC42 /* CameraPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */; };
 		371068E01D80453200BDFC42 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371068DF1D80453200BDFC42 /* RecordButton.swift */; };
@@ -64,7 +66,6 @@
 		37FEFECC1D11D38E00C078AC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37FEFECB1D11D38E00C078AC /* GoogleService-Info.plist */; };
 		37FEFED71D123A3700C078AC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEFED61D123A3700C078AC /* User.swift */; };
 		6F94B92CF5620D58B22E1CC4 /* Pods_Pinly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A647296DF3F992D66408496 /* Pods_Pinly.framework */; };
-		D44593ED4583E8C4E9D2A4E4 /* Pods_NotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D85E1C1E37445867B17167EC /* Pods_NotificationService.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +105,8 @@
 /* Begin PBXFileReference section */
 		26B1EB474AFE555291DA0DD7 /* Pods-Pinly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pinly.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pinly/Pods-Pinly.debug.xcconfig"; sourceTree = "<group>"; };
 		27CB4E101D9ED10E001F7857 /* SearchItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchItemCell.swift; sourceTree = "<group>"; };
+		370ED8781DCA04D3003A3C99 /* NCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NCameraViewController.swift; sourceTree = "<group>"; };
+		370ED87F1DCA54F8003A3C99 /* NCameraPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NCameraPreviewController.swift; sourceTree = "<group>"; };
 		371068D91D7DE0A000BDFC42 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPreviewController.swift; sourceTree = "<group>"; };
 		371068DF1D80453200BDFC42 /* RecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
@@ -165,9 +168,7 @@
 		37FEFECB1D11D38E00C078AC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		37FEFED61D123A3700C078AC /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		419DFE0751051819538693FF /* Pods-Pinly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pinly.release.xcconfig"; path = "Pods/Target Support Files/Pods-Pinly/Pods-Pinly.release.xcconfig"; sourceTree = "<group>"; };
-		7BF722ECEF91DBFB6DA0382D /* Pods-NotificationService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationService.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationService/Pods-NotificationService.release.xcconfig"; sourceTree = "<group>"; };
 		9A647296DF3F992D66408496 /* Pods_Pinly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pinly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B9518B5573D2E6186D193846 /* Pods-NotificationService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationService/Pods-NotificationService.debug.xcconfig"; sourceTree = "<group>"; };
 		D85E1C1E37445867B17167EC /* Pods_NotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -176,7 +177,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D44593ED4583E8C4E9D2A4E4 /* Pods_NotificationService.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,8 +197,6 @@
 			children = (
 				26B1EB474AFE555291DA0DD7 /* Pods-Pinly.debug.xcconfig */,
 				419DFE0751051819538693FF /* Pods-Pinly.release.xcconfig */,
-				B9518B5573D2E6186D193846 /* Pods-NotificationService.debug.xcconfig */,
-				7BF722ECEF91DBFB6DA0382D /* Pods-NotificationService.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -308,6 +306,8 @@
 		37E00FDC1D16EC4A00B19492 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
+				370ED8781DCA04D3003A3C99 /* NCameraViewController.swift */,
+				370ED87F1DCA54F8003A3C99 /* NCameraPreviewController.swift */,
 				371068D91D7DE0A000BDFC42 /* CameraViewController.swift */,
 				371068DD1D7FF26200BDFC42 /* CameraPreviewController.swift */,
 				371068E11D83003100BDFC42 /* CameraPlaybackController.swift */,
@@ -402,11 +402,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 37D6DCAC1DC7BCA9009282BE /* Build configuration list for PBXNativeTarget "NotificationService" */;
 			buildPhases = (
-				B54686788BCDF34A9DA6AF81 /* [CP] Check Pods Manifest.lock */,
 				37D6DC9F1DC7BCA9009282BE /* Sources */,
 				37D6DCA01DC7BCA9009282BE /* Frameworks */,
 				37D6DCA11DC7BCA9009282BE /* Resources */,
-				F291B9FDAA287B8CEF7781E8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -582,36 +580,6 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		B54686788BCDF34A9DA6AF81 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		F291B9FDAA287B8CEF7781E8 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NotificationService/Pods-NotificationService-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -642,12 +610,14 @@
 				37DBA8EB1DBE317B0034AD07 /* CommentsController.swift in Sources */,
 				3724B07B1D9E76A200181071 /* WebViewController.swift in Sources */,
 				372ADA8B1DADF18300EA6584 /* UploadHelper.swift in Sources */,
+				370ED8791DCA04D3003A3C99 /* NCameraViewController.swift in Sources */,
 				37C1FE881D9EBD6400A58235 /* String+Extension.swift in Sources */,
 				372D8DB71D12C0F8008DBADA /* UserModel.swift in Sources */,
 				371068E21D83003100BDFC42 /* CameraPlaybackController.swift in Sources */,
 				372D8DB51D12BF2B008DBADA /* FriendsController.swift in Sources */,
 				37E00FBF1D14F33700B19492 /* UIView+Frame.swift in Sources */,
 				37FEFEBC1D11D33600C078AC /* LoginController.swift in Sources */,
+				370ED8801DCA54F8003A3C99 /* NCameraPreviewController.swift in Sources */,
 				37C1FE911DAA9B9400A58235 /* LCTextLayer.swift in Sources */,
 				37F7DF921D916EEA0057F7E1 /* SearchController.swift in Sources */,
 				37DBA8ED1DBE3FE00034AD07 /* CommentCell.swift in Sources */,
@@ -681,7 +651,6 @@
 /* Begin XCBuildConfiguration section */
 		37D6DCAD1DC7BCA9009282BE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B9518B5573D2E6186D193846 /* Pods-NotificationService.debug.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -702,7 +671,6 @@
 		};
 		37D6DCAE1DC7BCA9009282BE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7BF722ECEF91DBFB6DA0382D /* Pods-NotificationService.release.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;

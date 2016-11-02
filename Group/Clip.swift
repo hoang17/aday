@@ -27,6 +27,7 @@ class Clip: NSObject {
     var trash = false
     var date: Double = 0
     var updated: Double = 0
+    var furl: String = ""
     
     init(snapshot: FIRDataSnapshot) {
         id = snapshot.key
@@ -50,6 +51,7 @@ class Clip: NSObject {
         trash = snapshot.value!["trash"] as? Bool ?? false
         date = snapshot.value!["date"] as? Double ?? 0
         updated = snapshot.value!["updated"] as? Double ?? 0
+        furl = snapshot.value!["furl"] as? String ?? ""
     }
     
     init(data: ClipModel){
@@ -74,6 +76,7 @@ class Clip: NSObject {
         self.trash = data.trash
         self.date = data.date
         self.updated = data.updated
+        self.furl = data.furl
     }
     
     func toAnyObject() -> AnyObject {
@@ -98,7 +101,8 @@ class Clip: NSObject {
             "subarea": subarea,
             "thumb": thumb,
             "date": date,
-            "updated": updated
+            "updated": updated,
+            "furl": furl
         ]
     }
 }

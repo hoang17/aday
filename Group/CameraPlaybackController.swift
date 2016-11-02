@@ -485,8 +485,6 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
             collectionView.scrollToItemAtIndexPath(indexPath,
                atScrollPosition: .CenteredHorizontally,
                animated: false)
-            
-            clips = nil
         }
     }
     

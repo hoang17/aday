@@ -60,11 +60,11 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         do{
             captureSession.beginConfiguration()
             
-            // Preset the session for taking photo in full resolution
+            // Preset the session for full resolution
             captureSession.sessionPreset = AVCaptureSessionPresetHigh
             
             audioDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
-            let audioInput: AVCaptureDeviceInput = try AVCaptureDeviceInput(device: audioDevice)
+            let audioInput = try AVCaptureDeviceInput(device: audioDevice)
             captureSession.addInput(audioInput)
             
             let userDefaults = NSUserDefaults.standardUserDefaults()
@@ -86,6 +86,22 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             videoFileOutput = AVCaptureMovieFileOutput()
             captureSession.addOutput(videoFileOutput)
             
+            if let connection = videoFileOutput?.connectionWithMediaType(AVMediaTypeVideo) {
+                connection.enabled = true
+                if connection.supportsVideoOrientation {
+                    print(".Portrait")
+                    connection.videoOrientation = .Portrait
+                }
+                if connection.supportsVideoMirroring {
+                    print(".FrontCamera")
+                    connection.videoMirrored = frontCamera
+                }
+                if connection.supportsVideoStabilization {
+                    print(".VideoStabilization")
+                    connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.Auto
+                }
+            }
+            
             captureSession.commitConfiguration()
         }
         catch {
@@ -98,7 +114,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         view.layer.addSublayer(cameraPreviewLayer!)
         cameraPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
         cameraPreviewLayer?.frame = view.layer.frame
-        
+        cameraPreviewLayer?.connection.videoOrientation = .Portrait
         
         // set up recorder button
         recordButton = RecordButton(frame: CGRectMake(0,0,80,80))
@@ -163,16 +179,12 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         locationInfo.load(location)
     }
     
-    func convertVideoWithMediumQuality(inputURL : NSURL){
+    func convertVideoWithMediumQuality(inputURL : NSURL, outputURL: NSURL, completion: ()->()){
         
         print("Compressing...")
         
-        let fileName = UploadHelper.sharedInstance.fileName
-        
-        let savePath = NSURL(fileURLWithPath: NSTemporaryDirectory() + fileName).absoluteString
-        
         // Delete file if existed
-        let filePath = NSTemporaryDirectory() + fileName;
+        let filePath = outputURL.path!;
         let fileManager = NSFileManager.defaultManager()
         if fileManager.fileExistsAtPath(filePath) {
             do {
@@ -182,20 +194,17 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             }
         }
         
-        let savePathUrl = NSURL(string: savePath!)
         let asset = AVURLAsset(URL: inputURL, options: nil)
         
         let exportSession: AVAssetExportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetMediumQuality)!
         exportSession.outputFileType = AVFileTypeMPEG4
-        exportSession.outputURL = savePathUrl
+        exportSession.outputURL = outputURL
         exportSession.exportAsynchronouslyWithCompletionHandler {            
             switch exportSession.status {
             case .Completed:
                 print("export completed")
                 dispatch_async(dispatch_get_main_queue(), {
-                    let preview = CameraPreviewController()
-                    preview.locationInfo = self.locationInfo
-                    self.presentViewController(preview, animated: true, completion: nil)
+                    completion()
                 })
             case  .Failed:
                 print("export failed \(exportSession.error)")
@@ -219,6 +228,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         do {
             
             captureSession.beginConfiguration()
+            
             captureSession.sessionPreset = AVCaptureSessionPresetHigh
             
             for input in captureSession.inputs {
@@ -234,7 +244,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             
             let userDefaults = NSUserDefaults.standardUserDefaults()
             userDefaults.setValue(frontCamera, forKey: "frontCamera")
-            // userDefaults.synchronize()
+            //userDefaults.synchronize()
             
             for device in AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) {
                 
@@ -242,7 +252,22 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
                     
                     videoInput = try AVCaptureDeviceInput(device: device)
                     captureSession.addInput(videoInput)
-                    
+                }
+            }
+            
+            if let connection = videoFileOutput?.connectionWithMediaType(AVMediaTypeVideo) {
+                connection.enabled = true
+                if connection.supportsVideoOrientation {
+                    print(".Portrait")
+                    connection.videoOrientation = .Portrait
+                }
+                if connection.supportsVideoMirroring {
+                    print(".FrontCamera")
+                    connection.videoMirrored = frontCamera
+                }
+                if connection.supportsVideoStabilization {
+                    print(".VideoStabilization")
+                    connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.Auto
                 }
             }
             
@@ -258,9 +283,22 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     func record() {
         
         if !isRecording {
+            
             // Start recording
             isRecording = true
             let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
+            
+            if let connection = videoFileOutput?.connectionWithMediaType(AVMediaTypeVideo) {
+                if connection.supportsVideoOrientation {
+                    print(".Portrait")
+                    connection.videoOrientation = .Portrait
+                }
+                if connection.supportsVideoStabilization {
+                    print(".VideoStabilization")
+                    connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.Auto
+                }
+            }
+            
             videoFileOutput?.startRecordingToOutputFileURL(outputFileURL, recordingDelegate: self)
             
             if CLLocationManager.locationServicesEnabled() {
@@ -291,12 +329,14 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        captureSession.startRunning()
         locationManager.startUpdatingLocation()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         stop()
+        captureSession.stopRunning()
     }
     
     override func didReceiveMemoryWarning() {
@@ -315,11 +355,51 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         
         print("Video Captured")
         
-        print(captureOutput.recordedFileSize)
+        print("Byte Size Before Compression: \(captureOutput.recordedFileSize / 1024) KB")
+        
         print(outputFileURL)
 
-        let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
-        self.convertVideoWithMediumQuality(outputFileURL)
+        let inputUrl = outputFileURL
+        let outputURL = NSURL(fileURLWithPath: NSTemporaryDirectory() + UploadHelper.sharedInstance.fileName)
+        
+        convertVideoWithMediumQuality(inputUrl, outputURL: outputURL) {
+            let preview = CameraPreviewController()
+            preview.locationInfo = self.locationInfo
+            self.presentViewController(preview, animated: true, completion: nil)
+        }
+
+    }
+    
+    func export() {
+        let inputURL = NSURL(fileURLWithPath: outputPath)
+        let outputURL = NSURL(fileURLWithPath: NSTemporaryDirectory() + UploadHelper.sharedInstance.fileName)
+        
+        VideoHelper.sharedInstance.export(inputURL, outputURL: outputURL) {
+            let preview = CameraPreviewController()
+            preview.locationInfo = self.locationInfo
+            self.presentViewController(preview, animated: true, completion: nil)
+            
+            // Save pin to Photo
+            let library = ALAssetsLibrary()
+            library.writeVideoAtPathToSavedPhotosAlbum(inputURL, completionBlock: { (assetURL, error) in
+                if error != nil {
+                    print(error)
+                    return
+                }
+                print(assetURL)
+            })
+            
+            // Save pin to Photo
+            //let library = ALAssetsLibrary()
+            library.writeVideoAtPathToSavedPhotosAlbum(outputURL, completionBlock: { (assetURL, error) in
+                if error != nil {
+                    print(error)
+                    return
+                }
+                print(assetURL)
+            })
+        }
+        
     }
     
     override func prefersStatusBarHidden() -> Bool {

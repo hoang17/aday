@@ -141,6 +141,8 @@ class UploadHelper {
             
             uploading[clip.id] = true
             
+            var furl = ""
+            
             if !clipUpload.clipUploaded {
                 
                 // enter upload clip
@@ -152,7 +154,8 @@ class UploadHelper {
                         print("upload clip error")
                         print(error)
                     } else {
-                        print("Clip uploaded to " + (metadata!.downloadURL()?.absoluteString)!)
+                        furl = metadata?.downloadURL()?.absoluteString ?? ""
+                        print("Clip uploaded to " + furl)
                         
                         try! AppDelegate.realm.write {
                             clipUpload.clipUploaded = true
@@ -188,6 +191,8 @@ class UploadHelper {
                     dispatch_group_leave(group)
                 }
             }
+
+            let info = LocationInfo()
             
             if !clipUpload.liloaded {
 
@@ -195,23 +200,9 @@ class UploadHelper {
                 dispatch_group_enter(group)
 
                 let location = CLLocation(latitude: clip.lat, longitude: clip.long)
-                let info = LocationInfo()
                 info.load(location) { info in
                     
-                    guard info.loaded else {
-                        dispatch_group_leave(group)
-                        return
-                    }
-                    
-                    try! AppDelegate.realm.write {
-                        clip.lname = info.name
-                        clip.city = info.city
-                        clip.country = info.country
-                        clip.sublocal = info.sublocal
-                        clip.subarea = info.subarea
-                    }
-                    
-                    print(clip.lname)
+                    //print(clip.lname)
                     
                     // leave location thumb
                     dispatch_group_leave(group)
@@ -231,6 +222,17 @@ class UploadHelper {
                         }
                     }
                     return
+                }
+                
+                try! AppDelegate.realm.write{
+                    clip.furl = furl
+                    if info.loaded {
+                        clip.lname = info.name
+                        clip.city = info.city
+                        clip.country = info.country
+                        clip.sublocal = info.sublocal
+                        clip.subarea = info.subarea
+                    }
                 }
                 
                 let data = Clip(data: clip)

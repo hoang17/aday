@@ -27,8 +27,6 @@ target 'Pinly' do
     pod 'CWStatusBarNotification'
     pod 'SlackTextViewController'
     pod 'LNNotificationsUI', :git => 'https://github.com/kineticac/LNNotificationsUI.git'
-end
-
-target 'NotificationService' do
-    pod 'Firebase/Storage'
+    pod 'PGMCameraKit'
+    pod 'SCRecorder'    
 end

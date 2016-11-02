@@ -174,7 +174,7 @@ class MainController: UIViewController {
         tabBarController.setViewController(UINavigationController(rootViewController: MapController()), atIndex: 3)
         tabBarController.setViewController(UINavigationController(rootViewController: ProfileController()), atIndex: 4)
         
-        let cam = CameraViewController()
+        let cam = NCameraViewController()
         
         tabBarController.setAction({
             self.presentViewController(cam, animated: true, completion: nil)

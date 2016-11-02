@@ -14,6 +14,7 @@ class VideoHelper {
     
     static let sharedInstance = VideoHelper()
     
+    // export clip with caption, profile, time & location
     func export(clip: Clip, friendName: String, profileImg: UIImage, completion: (savePathUrl: NSURL) -> Void) {
         
         print("processing video...")
@@ -22,14 +23,14 @@ class VideoHelper {
         let savePath = NSURL(fileURLWithPath: NSTemporaryDirectory() + "exp_" + clip.fname).absoluteString
         let savePathUrl = NSURL(string: savePath!)
         
-        // Return if file existed
+        // Check if file existed
         let exfilePath = NSTemporaryDirectory() + "exp_" + clip.fname
         let fileManager = NSFileManager.defaultManager()
         if fileManager.fileExistsAtPath(exfilePath) {
             print("file existed")
-//            completion(savePathUrl: savePathUrl!)
-//            return
-             try! fileManager.removeItemAtPath(exfilePath)
+            completion(savePathUrl: savePathUrl!)
+            return
+            //try! fileManager.removeItemAtPath(exfilePath)
         }
         
         let filePath = NSTemporaryDirectory() + clip.fname
@@ -57,6 +58,7 @@ class VideoHelper {
         // video size
         let size = CGSizeMake(videoTrack.naturalSize.width, videoTrack.naturalSize.width)
         
+        // Pinly logo
         let imglogo = UIImage(named: "pin")
         let logolayer = CALayer()
         logolayer.contents = imglogo?.CGImage
@@ -203,7 +205,188 @@ class VideoHelper {
                 }
             }
         })
-        
     }
     
+    // export clip with caption
+    func export(clip: Clip, completion: (savePathUrl: NSURL) -> Void) {
+        print("processing video...")
+        
+        //  create new file to receive data
+        let savePath = NSURL(fileURLWithPath: NSTemporaryDirectory() + "ex" + clip.fname).absoluteString
+        let savePathUrl = NSURL(string: savePath!)
+        
+        // Check if file existed
+        let exfilePath = NSTemporaryDirectory() + "ex" + clip.fname
+        let fileManager = NSFileManager.defaultManager()
+        if fileManager.fileExistsAtPath(exfilePath) {
+            //print("file existed")
+            //completion(savePathUrl: savePathUrl!)
+            //return
+            try! fileManager.removeItemAtPath(exfilePath)
+        }
+        
+        // input file
+        let filePath = NSTemporaryDirectory() + clip.fname
+        let inputURL = NSURL(fileURLWithPath: filePath)
+        
+        let composition = AVMutableComposition()
+        let videoAsset = AVURLAsset(URL: inputURL, options: nil)
+        
+        // get video track
+        let videoTrack = videoAsset.tracksWithMediaType(AVMediaTypeVideo)[0]
+        // let vid_duration = videoTrack.timeRange.duration
+        let videoTimerange = CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+        let compositionVideoTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
+        try! compositionVideoTrack.insertTimeRange(videoTimerange, ofTrack: videoTrack, atTime: kCMTimeZero)
+        compositionVideoTrack.preferredTransform = videoTrack.preferredTransform
+        
+        // get audio track
+        let audioTrack = videoAsset.tracksWithMediaType(AVMediaTypeAudio)[0]
+        // let audio_duration = audioTrack.timeRange.duration
+        let audioTimerange = CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+        let compositionAudioTrack = composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID())
+        try! compositionAudioTrack.insertTimeRange(audioTimerange, ofTrack: audioTrack, atTime: kCMTimeZero)
+        compositionAudioTrack.preferredTransform = audioTrack.preferredTransform
+        
+        // video size
+        let size = CGSizeMake(videoTrack.naturalSize.width, videoTrack.naturalSize.width)
+        
+        let titleLayer = LCTextLayer()
+        titleLayer.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5).CGColor
+        titleLayer.string = clip.txt
+        titleLayer.alignmentMode = kCAAlignmentCenter
+        titleLayer.frame = CGRectMake(0, size.height*(1-CGFloat(clip.y)), videoTrack.naturalSize.height, size.height/16.7)
+        titleLayer.fontSize = size.height/35.5
+        
+        let videolayer = CALayer()
+        let parentlayer = CALayer()
+        
+        videolayer.frame = CGRectMake(0, 0, size.width, size.height)
+        parentlayer.frame = CGRectMake(0, 0, size.width, size.height)
+        
+        parentlayer.addSublayer(videolayer)
+        if clip.txt != "" {
+            parentlayer.addSublayer(titleLayer)
+        }
+        
+        let layerinstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: compositionVideoTrack)
+        layerinstruction.setTransform(compositionVideoTrack.preferredTransform, atTime: kCMTimeZero)
+        
+        let instruction = AVMutableVideoCompositionInstruction()
+        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, composition.duration)
+        instruction.layerInstructions = [layerinstruction]
+        
+        let layercomposition = AVMutableVideoComposition()
+        layercomposition.frameDuration = CMTimeMake(1, 30)
+        layercomposition.renderSize = size
+        layercomposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videolayer, inLayer: parentlayer)
+        layercomposition.instructions = [instruction]
+        
+        // use AVAssetExportSession to export video
+        let exportSession = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)!
+        exportSession.outputFileType = AVFileTypeMPEG4
+        exportSession.outputURL = savePathUrl
+        exportSession.shouldOptimizeForNetworkUse = true
+        exportSession.videoComposition = layercomposition
+        exportSession.exportAsynchronouslyWithCompletionHandler({
+            switch exportSession.status{
+            case  .Failed:
+                print("failed \(exportSession.error)")
+                completion(savePathUrl: savePathUrl!)
+            case .Cancelled:
+                print("cancelled \(exportSession.error)")
+                dispatch_async(dispatch_get_main_queue()) {
+                    completion(savePathUrl: savePathUrl!)
+                }
+            //case .Completed:
+            default:
+                print("export completed")
+                dispatch_async(dispatch_get_main_queue()) {
+                    completion(savePathUrl: savePathUrl!)
+                }
+            }
+        })
+    }
+    
+    // export clip
+    func export(inputURL: NSURL, outputURL: NSURL, completion: () -> Void) {
+        print("processing video...")
+        
+        // Check if file existed
+        let exfilePath = outputURL.path!
+        let fileManager = NSFileManager.defaultManager()
+        if fileManager.fileExistsAtPath(exfilePath) {
+            //print("file existed")
+            //completion(savePathUrl: savePathUrl!)
+            //return
+            try! fileManager.removeItemAtPath(exfilePath)
+        }
+        
+        //        let filePath = NSTemporaryDirectory() + fileName
+        //        let inputURL = NSURL(fileURLWithPath: filePath)
+        
+        let composition = AVMutableComposition()
+        let videoAsset = AVURLAsset(URL: inputURL, options: nil)
+        
+        // get video track
+        let videoTrack = videoAsset.tracksWithMediaType(AVMediaTypeVideo)[0]
+        // let vid_duration = videoTrack.timeRange.duration
+        let videoTimerange = CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+        let compositionVideoTrack = composition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: CMPersistentTrackID())
+        try! compositionVideoTrack.insertTimeRange(videoTimerange, ofTrack: videoTrack, atTime: kCMTimeZero)
+        //compositionVideoTrack.preferredTransform = videoTrack.preferredTransform
+        
+        // get audio track
+        let audioTrack = videoAsset.tracksWithMediaType(AVMediaTypeAudio)[0]
+        // let audio_duration = audioTrack.timeRange.duration
+        let audioTimerange = CMTimeRangeMake(kCMTimeZero, videoAsset.duration)
+        let compositionAudioTrack = composition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: CMPersistentTrackID())
+        try! compositionAudioTrack.insertTimeRange(audioTimerange, ofTrack: audioTrack, atTime: kCMTimeZero)
+        compositionAudioTrack.preferredTransform = audioTrack.preferredTransform
+        
+        // video size
+        let size = CGSizeMake(videoTrack.naturalSize.width, videoTrack.naturalSize.height)
+                
+        let videolayer = CALayer()
+        let parentlayer = CALayer()
+        
+        videolayer.frame = CGRectMake(0, 0, size.width, size.height)
+        parentlayer.frame = CGRectMake(0, 0, size.width, size.height)
+        
+        parentlayer.addSublayer(videolayer)
+        
+        let layerinstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: compositionVideoTrack)
+        //layerinstruction.setTransform(compositionVideoTrack.preferredTransform, atTime: kCMTimeZero)
+        
+        let instruction = AVMutableVideoCompositionInstruction()
+        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, composition.duration)
+        instruction.layerInstructions = [layerinstruction]
+
+        let layercomposition = AVMutableVideoComposition()
+        layercomposition.frameDuration = CMTimeMake(1, 30)
+        layercomposition.renderSize = size
+        layercomposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videolayer, inLayer: parentlayer)
+        layercomposition.instructions = [instruction]
+        
+        // use AVAssetExportSession to export video
+        let exportSession = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)!
+        exportSession.outputFileType = AVFileTypeMPEG4
+        exportSession.outputURL = outputURL
+        exportSession.shouldOptimizeForNetworkUse = true
+        exportSession.videoComposition = layercomposition
+        exportSession.exportAsynchronouslyWithCompletionHandler({
+            switch exportSession.status{
+            case  .Failed:
+                print("failed \(exportSession.error)")
+            case .Cancelled:
+                print("cancelled \(exportSession.error)")
+            //case .Completed:
+            default:
+                print("export completed")
+                dispatch_async(dispatch_get_main_queue()) {
+                    completion()
+                }
+            }
+        })
+    }
 }
