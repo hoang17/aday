@@ -33,7 +33,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     //var progressTimer : NSTimer!
     
     // Max duration of the recordButton
-    let maxDuration: Int64 = 10
+    let maxDuration: CGFloat = 10
     
     //let outputPath = NSTemporaryDirectory() + "output.mov"
     
@@ -77,7 +77,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         recorder.autoSetVideoOrientation = false
         recorder.delegate = self
         recorder.initializeSessionLazily = false
-        recorder.maxRecordDuration = CMTimeMake(maxDuration, 1)
+        recorder.maxRecordDuration = CMTimeMake(Int64(maxDuration), 1)
 
         //recorder.keepMirroringOnWrite = true
         //recorder.maxRecordDuration = CMTimeMake(10, 1);
@@ -459,7 +459,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         //self.timeRecordedLabel.text! = String(format: "%.2f sec", CMTimeGetSeconds(currentTime))
         
         let seconds = CMTimeGetSeconds(currentTime)
-        progress = CGFloat(seconds) / CGFloat(maxDuration)
+        progress = CGFloat(seconds) / maxDuration
         recordButton.setProgress(progress)
         
 //        print(seconds)
