@@ -30,12 +30,9 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     
     var recordButton:RecordButton!
     var progress : CGFloat = 0
-    //var progressTimer : NSTimer!
     
     // Max duration of the recordButton
     let maxDuration: CGFloat = 10
-    
-    //let outputPath = NSTemporaryDirectory() + "output.mov"
     
     var locationInfo = LocationInfo()
     let locationManager = CLLocationManager()
@@ -103,68 +100,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         /****📹📹📹📹📹📹📹📹📹📹📹📹📹📹📹****/
         /****📹📹📹📹📹📹📹📹📹📹📹📹📹📹📹****/
         
-        
-//        let audioSession = AVAudioSession.sharedInstance()
-//        do {
-//            try audioSession.setCategory(AVAudioSessionCategoryRecord)
-//        }
-//        catch {
-//            print(error)
-//        }
-//        
-//        do{
-//            captureSession.beginConfiguration()
-//            
-//            // Preset the session for taking photo in full resolution
-//            captureSession.sessionPreset = AVCaptureSessionPresetHigh
-//            
-//            audioDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
-//            let audioInput = try AVCaptureDeviceInput(device: audioDevice)
-//            captureSession.addInput(audioInput)
-//            
-//            let userDefaults = NSUserDefaults.standardUserDefaults()
-//            let frontCamera = (userDefaults.valueForKey("frontCamera") as? Bool) ?? false
-//            let devicePosition : AVCaptureDevicePosition = frontCamera ? .Front : .Back
-//            
-//            // Get the available devices that is capable of taking video
-//            let devices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) as! [AVCaptureDevice]
-//            for device in devices {
-//                if device.position == devicePosition {
-//                    videoDevice = device
-//                }
-//            }
-//            
-//            videoInput = try AVCaptureDeviceInput(device: videoDevice)
-//            captureSession.addInput(videoInput)
-//            
-//            // Configure the session with the output for capturing video
-//            videoFileOutput = AVCaptureMovieFileOutput()
-//            captureSession.addOutput(videoFileOutput)
-//            
-//            if let connection = videoFileOutput?.connectionWithMediaType(AVMediaTypeVideo) {
-//                connection.enabled = true
-//                if connection.supportsVideoOrientation {
-//                    print(".Portrait")
-//                    connection.videoOrientation = .Portrait
-//                }
-//                if connection.supportsVideoMirroring {
-//                    print(".FrontCamera")
-//                    connection.videoMirrored = frontCamera
-//                }
-//                if connection.supportsVideoStabilization {
-//                    print(".VideoStabilization")
-//                    connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.Auto
-//                }
-//            }
-//            
-//            captureSession.commitConfiguration()
-//        }
-//        catch {
-//            print(error)
-//        }
-        
-        
-        // set up recorder button
+        // 🔴 Set up the record button
         recordButton = RecordButton(frame: CGRectMake(0,0,80,80))
         recordButton.center = self.view.center
         recordButton.progressColor = .redColor()
@@ -274,7 +210,6 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     
     func stop() {
         isRecording = false
-        //progressTimer.invalidate()
         progress = 0
         recordButton.buttonState = .Idle
         
@@ -386,7 +321,6 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     func recorder(recorder: SCRecorder, didCompleteSession recordSession: SCRecordSession) {
         print("Record session completed")
         isRecording = false
-        //progressTimer.invalidate()
         progress = 0
         recordButton.buttonState = .Idle
         self.saveAndShowSession(recordSession)
@@ -433,23 +367,13 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
             if CLLocationManager.locationServicesEnabled() {
                 locationManager.startUpdatingLocation()
             }
-            //progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
         }
     }
     
     func pause(){
         recorder.pause()
         isRecording = false
-        //progressTimer.invalidate()
     }
-    
-//    func updateProgress() {
-//        progress = progress + (CGFloat(0.05) / maxDuration)
-//        recordButton.setProgress(progress)
-//        if progress >= 1 {
-//            stop()
-//        }
-//    }
     
     func updateTime() {
         var currentTime = kCMTimeZero
@@ -462,10 +386,10 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         progress = CGFloat(seconds) / maxDuration
         recordButton.setProgress(progress)
         
-//        print(seconds)
-//        if progress >= 1 {
-//            stop()
-//        }
+        //print(seconds)
+        //if progress >= 1 {
+        //    stop()
+        //}
     }
     
     func recorder(recorder: SCRecorder, didAppendVideoSampleBufferInSession recordSession: SCRecordSession) {
@@ -501,8 +425,6 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    // MARK: - AVCaptureFileOutputRecordingDelegate methods
     
     override func prefersStatusBarHidden() -> Bool {
         return true
