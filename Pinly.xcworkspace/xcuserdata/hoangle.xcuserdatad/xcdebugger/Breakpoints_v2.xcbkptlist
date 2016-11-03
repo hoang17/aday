@@ -344,11 +344,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Group/NCameraViewController.swift"
-            timestampString = "499878436.096984"
+            timestampString = "499879640.44359"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "286"
-            endingLineNumber = "286"
+            startingLineNumber = "284"
+            endingLineNumber = "284"
             landmarkName = "stop()"
             landmarkType = "7">
          </BreakpointContent>

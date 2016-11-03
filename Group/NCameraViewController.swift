@@ -29,20 +29,13 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
 
     
     var recordButton:RecordButton!
-    var progressTimer : NSTimer!
-    var progress : CGFloat! = 0
+    var progress : CGFloat = 0
+    //var progressTimer : NSTimer!
     
     // Max duration of the recordButton
-    let maxDuration: CGFloat! = 10
+    let maxDuration: Int64 = 10
     
-//    let captureSession = AVCaptureSession()
-//    var videoDevice:AVCaptureDevice?
-//    var audioDevice:AVCaptureDevice?
-//    var videoInput: AVCaptureDeviceInput?
-//    var videoFileOutput:AVCaptureMovieFileOutput?
-//    var cameraPreviewLayer:AVCaptureVideoPreviewLayer?
-    
-    let outputPath = NSTemporaryDirectory() + "output.mov"
+    //let outputPath = NSTemporaryDirectory() + "output.mov"
     
     var locationInfo = LocationInfo()
     let locationManager = CLLocationManager()
@@ -84,6 +77,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         recorder.autoSetVideoOrientation = false
         recorder.delegate = self
         recorder.initializeSessionLazily = false
+        recorder.maxRecordDuration = CMTimeMake(maxDuration, 1)
 
         //recorder.keepMirroringOnWrite = true
         //recorder.maxRecordDuration = CMTimeMake(10, 1);
@@ -224,11 +218,15 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     }
     
     func recorder(recorder: SCRecorder, didReconfigureAudioInput audioInputError: NSError?) {
-        print("Reconfigured audio input: \(audioInputError)")
+        if audioInputError != nil {
+            print("Reconfigured audio input: \(audioInputError)")
+        }
     }
     
     func recorder(recorder: SCRecorder, didReconfigureVideoInput videoInputError: NSError?) {
-        print("Reconfigured video input: \(videoInputError)")
+        if videoInputError != nil {
+            print("Reconfigured video input: \(videoInputError)")
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -276,7 +274,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     
     func stop() {
         isRecording = false
-        progressTimer.invalidate()
+        //progressTimer.invalidate()
         progress = 0
         recordButton.buttonState = .Idle
         
@@ -388,7 +386,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     func recorder(recorder: SCRecorder, didCompleteSession recordSession: SCRecordSession) {
         print("Record session completed")
         isRecording = false
-        progressTimer.invalidate()
+        //progressTimer.invalidate()
         progress = 0
         recordButton.buttonState = .Idle
         self.saveAndShowSession(recordSession)
@@ -419,7 +417,10 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     
     func recorder(recorder: SCRecorder, didCompleteSegment segment: SCRecordSessionSegment?, inSession recordSession: SCRecordSession, error: NSError?) {
         guard error == nil, let segment = segment else {
-            return print("Error complete record segment: \(error)")
+            if error != nil {
+                print("Error complete record segment: \(error)")
+            }
+            return
         }
         print("Record segment completed: \(segment.url), frameRate: \(segment.frameRate)")
     }
@@ -432,44 +433,44 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
             if CLLocationManager.locationServicesEnabled() {
                 locationManager.startUpdatingLocation()
             }
-            progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
+            //progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
         }
     }
     
     func pause(){
         recorder.pause()
         isRecording = false
-        progressTimer.invalidate()
+        //progressTimer.invalidate()
     }
     
-    func updateProgress() {
-        progress = progress + (CGFloat(0.05) / maxDuration)
-        recordButton.setProgress(progress)
-        if progress >= 1 {
-            stop()
-        }
-    }
+//    func updateProgress() {
+//        progress = progress + (CGFloat(0.05) / maxDuration)
+//        recordButton.setProgress(progress)
+//        if progress >= 1 {
+//            stop()
+//        }
+//    }
     
     func updateTime() {
-        //var currentTime = kCMTimeZero
-        //if recorder.session != nil {
-        //    currentTime = recorder.session!.duration
-        //}
+        var currentTime = kCMTimeZero
+        if let session = recorder.session {
+            currentTime = session.duration
+        }
         //self.timeRecordedLabel.text! = String(format: "%.2f sec", CMTimeGetSeconds(currentTime))
         
-        //let seconds = CMTimeGetSeconds(currentTime)
-        //progress = CGFloat(seconds) / maxDuration
-        //recordButton.setProgress(progress)
-        //
-        //if progress >= 1 {
-        //    stop()
-        //}
+        let seconds = CMTimeGetSeconds(currentTime)
+        progress = CGFloat(seconds) / CGFloat(maxDuration)
+        recordButton.setProgress(progress)
+        
+//        print(seconds)
+//        if progress >= 1 {
+//            stop()
+//        }
     }
     
     func recorder(recorder: SCRecorder, didAppendVideoSampleBufferInSession recordSession: SCRecordSession) {
-        //self.updateTime()
+        updateTime()
     }
-    
     
     /*** 🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺 ***/
     /*** 🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺 ***/
