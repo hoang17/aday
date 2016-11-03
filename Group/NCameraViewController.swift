@@ -64,7 +64,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
 
         previewView = UIView()
         previewView.frame = view.layer.frame
-        view.addSubview(previewView)        
+        view.addSubview(previewView)
         
         recorder = SCRecorder.sharedRecorder()
         
@@ -77,21 +77,20 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
 //        recordSession = SCRecordSession()
 //        recorder.session = recordSession
         
-        // Begin appending video/audio buffers to the session
-        //recorder.record()
-        
-        // Stop appending video/audio buffers to the session
-        //recorder.pause()
 
         recorder.captureSessionPreset = SCRecorderTools.bestCaptureSessionPresetCompatibleWithAllDevices()
+        recorder.mirrorOnFrontCamera = true
+        //recorder.keepMirroringOnWrite = true
         
-        //    _recorder.maxRecordDuration = CMTimeMake(10, 1);
-        //    _recorder.fastRecordMethodEnabled = YES;
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        let frontCamera = (userDefaults.valueForKey("frontCamera") as? Bool) ?? false
+        recorder.device = frontCamera ? .Front : .Back
+        
+        //_recorder.maxRecordDuration = CMTimeMake(10, 1);
+        //_recorder.fastRecordMethodEnabled = YES;
         
         recorder.delegate = self
         recorder.autoSetVideoOrientation = false
-        //YES causes bad orientation for video from camera roll
-        
         recorder.previewView = previewView
         
         //self.retakeButton.addTarget(self, action: #selector(self.handleRetakeButtonTapped), forControlEvents: .TouchUpInside)
@@ -252,11 +251,9 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         }
         
         // Bring the record button to front
-        view.bringSubviewToFront(recordButton)
-        view.bringSubviewToFront(flipButton)
-        view.bringSubviewToFront(backButton)
-        
-        //captureSession.startRunning()
+//        view.bringSubviewToFront(recordButton)
+//        view.bringSubviewToFront(flipButton)
+//        view.bringSubviewToFront(backButton)
     
     }
     
@@ -279,8 +276,8 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
             self.recorder.session = nil
             recordSession.cancelSession(nil)
         }
-        
         self.prepareSession()
+        recorder.startRunning()
     }
     
     override func viewDidLayoutSubviews() {
@@ -288,10 +285,10 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         recorder.previewViewFrameChanged()
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        recorder.startRunning()
-    }
+//    override func viewDidAppear(animated: Bool) {
+//        super.viewDidAppear(animated)
+//        recorder.startRunning()
+//    }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -301,11 +298,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     // #pragma mark - Handle
     
 //    override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
-//        if (segue.destinationViewController is SCVideoPlayerViewController) {
-//            var videoPlayer = segue.destinationViewController
-//            videoPlayer.recordSession = recordSession
-//        }
-//        else if (segue.destinationViewController is SCSessionListViewController) {
+//        if (segue.destinationViewController is SCSessionListViewController) {
 //            var sessionListVC = segue.destinationViewController
 //            sessionListVC.recorder = recorder
 //        }
@@ -324,6 +317,9 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     
     func handleStopButtonTapped() {
         recorder.pause {
+            self.isRecording = false
+            self.progress = 0
+            self.recordButton.buttonState = .Idle
             self.saveAndShowSession(self.recorder.session!)
         }
     }
@@ -471,7 +467,8 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
             }
         }
         else if touchDetector.state == .Ended {
-            recorder.pause()
+            handleStopButtonTapped()
+            //recorder.pause()
         }
     }
     
@@ -482,13 +479,16 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
             currentTime = recorder.session!.duration
         }
         //self.timeRecordedLabel.text! = String(format: "%.2f sec", CMTimeGetSeconds(currentTime))
+        
+        let seconds = CMTimeGetSeconds(currentTime)
+        
+        print(seconds)
 
-        progress = CGFloat(CMTimeGetSeconds(currentTime)) / maxDuration
+        progress = CGFloat(seconds) / maxDuration
         recordButton.setProgress(progress)
         
         if progress >= 1 {
             handleStopButtonTapped()
-            recordButton.buttonState = .Idle
         }
     }
     
@@ -744,7 +744,6 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
             preview.locationInfo = self.locationInfo
             self.presentViewController(preview, animated: true, completion: nil)
         }
-        
     }
     
     func export() {
@@ -776,7 +775,6 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
                 print(assetURL)
             })
         }
-        
     }
     
     func convertVideoWithMediumQuality(inputURL : NSURL, outputURL: NSURL, completion: ()->()){
