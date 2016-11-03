@@ -62,12 +62,10 @@ PODS:
   - GoogleSymbolUtilities (1.1.1)
   - GoogleUtilities (1.3.1):
     - GoogleSymbolUtilities (~> 1.0)
+  - GrowingTextView (0.1.8)
   - Just (0.4.8)
   - Kingfisher (2.5.1)
   - LNNotificationsUI (1.0.0)
-  - PGMCameraKit (0.1.8):
-    - PGMTimer
-  - PGMTimer (0.1.3)
   - Realm (1.1.0):
     - Realm/Headers (= 1.1.0)
   - Realm/Headers (1.1.0)
@@ -100,10 +98,10 @@ DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Database
   - Firebase/Storage
+  - GrowingTextView (from `https://github.com/KennethTsang/GrowingTextView.git`, branch `swift2`)
   - Just (from `https://github.com/JustHTTP/Just.git`, branch `swift-2.3`)
   - Kingfisher (= 2.5.1)
   - LNNotificationsUI (from `https://github.com/kineticac/LNNotificationsUI.git`)
-  - PGMCameraKit
   - RealmSwift (= 1.1.0)
   - SCRecorder
   - SlackTextViewController
@@ -119,6 +117,9 @@ EXTERNAL SOURCES:
   Eureka:
     :branch: swift2.3
     :git: https://github.com/xmartlabs/Eureka.git
+  GrowingTextView:
+    :branch: swift2
+    :git: https://github.com/KennethTsang/GrowingTextView.git
   Just:
     :branch: swift-2.3
     :git: https://github.com/JustHTTP/Just.git
@@ -132,6 +133,9 @@ CHECKOUT OPTIONS:
   Eureka:
     :commit: 29e73c3a2196732de0acac136e911143290390cf
     :git: https://github.com/xmartlabs/Eureka.git
+  GrowingTextView:
+    :commit: 836526357a6caf2c2cc622dfecf5283c208c707f
+    :git: https://github.com/KennethTsang/GrowingTextView.git
   Just:
     :commit: 65721a2767bcb208c7f7cc7a4c48005a41aa83dc
     :git: https://github.com/JustHTTP/Just.git
@@ -164,11 +168,10 @@ SPEC CHECKSUMS:
   GoogleNetworkingUtilities: 3e83269048cfb498dc7ec83ab36813360965c74f
   GoogleSymbolUtilities: 33117db1b5f290c6fbf259585e4885b4c84b98d7
   GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
+  GrowingTextView: c01bcd9908c32b676c037d58ac9e544a914e17ad
   Just: ed7665521c49651ccf3a09a4280f563978f4741c
   Kingfisher: 9b82e0e1f1a296f149a50bbc2214532eaa4df4f1
   LNNotificationsUI: 1b447975fbfd7f51c2b4dd3ae005b00c56bed2d3
-  PGMCameraKit: d10373b6bdc0947ed4184fc41cc8c49ef48b5e16
-  PGMTimer: 85d3784d80df0bad8ce1dd23a733c2acb8dda7f1
   Realm: ceecf1a4540c4ce9efe196fe73fa9855bce05bd8
   RealmSwift: 838058b2db95b12cb86bd0cf209df642c33fb60a
   SCRecorder: bbb521dbc222908876ec9cd9156bbc8a893bed44
@@ -179,6 +182,6 @@ SPEC CHECKSUMS:
   UIColor-HexString: fadc2e1389db19147ac99dee92222d3bd8bfec4a
   YYText: 5c461d709e24d55a182d1441c41dc639a18a4849
 
-PODFILE CHECKSUM: a556036e299baebe176235445a56509a46bc63ec
+PODFILE CHECKSUM: 5a5783aaca7108b0484d21307a8d13499ca64cb4
 
 COCOAPODS: 1.1.0.rc.2

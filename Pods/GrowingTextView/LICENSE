@@ -1,5 +1,4 @@
-/*
-Copyright (c) 2015 Pablo GM <invanzert@gmail.com>
+Copyright (c) 2016 Kenneth Tsang <kenneth.tsang@me.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -18,45 +17,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-*/
-
-import Foundation
-
-
-public enum CameraState {
-    case Ready
-    case AccessDenied
-    case NoDeviceFound
-    case NotDetermined
-}
-
-public enum CameraDevice {
-    case Front
-    case Back
-}
-
-public enum CameraFlashMode: Int {
-    case Off
-    case On
-    case Auto
-}
-
-public enum CameraOutputMode {
-    case StillImage
-    case VideoWithMic
-    case VideoOnly
-}
-
-public enum CameraOutputQuality: Int {
-    case Low
-    case Medium
-    case High
-}
-
-public enum CameraError:Int {
-    case CameraAccessDeniend
-    case CameraUnavailable
-    case CameraPresetNotSupported
-    case NoValidCaptureSession
-    case DeviceSetupError
-}

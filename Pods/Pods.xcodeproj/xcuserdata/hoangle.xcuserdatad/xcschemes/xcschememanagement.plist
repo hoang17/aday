@@ -59,6 +59,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>GrowingTextView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Just.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -70,26 +75,6 @@
 			<false/>
 		</dict>
 		<key>LNNotificationsUI.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>PGMCameraKit-CameraKit.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>PGMCameraKit.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>PGMTimer-PGMTimer.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>PGMTimer.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -147,22 +132,22 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>014FF9F53BB28B341BB64A2C50BF105E</key>
+		<key>0DA7132ABDCABDE46C79D20B62FB4D97</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>16F6A7BE549C570FF0EC357C66E72226</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>2162026D793FD280FEF279942A65B850</key>
+		<key>225A71C54B4B251BB6E8713BF6060B2C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>233B529E4F6EE6E3DF4E23BAFD26903D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>2A991EF3AAECE1550BA258CB3E98EE24</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -187,22 +172,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5483763569B009F763D6E176AB45531C</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>5D7FFFA05D565DE0A39DE926C9A46C24</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>61A5D8CA9EC9F94FB79B2E61E16B938F</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>61ADAA9C38266A8D3B4A18DF1B3D714A</key>
+		<key>537A9D1A4EA3981ECD94626E4ADE027B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -212,12 +182,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>731A2B45D16E9DCF74EB1058FCDC59D8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>8D7C79B3136721B305CA083577DBF926</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9744511C2AAF8B7207CECCCF340B8BF2</key>
+		<key>94BC7FF9AAA367FBE96AB3E0C7B280A0</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -242,7 +217,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B21506088F87929773E9A723A9266EDD</key>
+		<key>B0FD8DB2E38E904400C24FB1B12F45F9</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -252,12 +227,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C7A7DDBBADD9C79906D44F7CF5CECCB9</key>
+		<key>C985E23F7AB71D5F7A81CD6FCE03D15A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DDA6289D3B6B4960C4F36C5B27BA27F0</key>
+		<key>E6B7C46E685A8391178DB00B11B8EBD8</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -267,12 +242,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>F1DAA68697ECAA5022BAF123CDC4AB87</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>FFC01C91AA20B7489CF3AA25FDBE87AA</key>
+		<key>F51DCE8E4214149896D01F3E945CBCE7</key>
 		<dict>
 			<key>primary</key>
 			<true/>

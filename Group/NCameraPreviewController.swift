@@ -12,10 +12,11 @@ import FirebaseDatabase
 import FirebaseAuth
 import SnapKit
 import SCRecorder
+import GrowingTextView
 
-class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextFieldDelegate {
+class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextViewDelegate {
 
-    let textField = UITextField()
+    let textField = GrowingTextView()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var locationInfo: LocationInfo?
     
@@ -67,6 +68,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextFieldD
 //        
 //        self.player?.play()
         
+        textField.scrollEnabled = false
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         textField.textColor = UIColor.whiteColor()
         textField.font = UIFont.systemFontOfSize(16.0)
@@ -76,10 +78,13 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextFieldD
         textField.height = 34
         textField.width = UIScreen.mainScreen().bounds.width
         textField.delegate = self
-        textField.returnKeyType = UIReturnKeyType.Done
+        textField.returnKeyType = UIReturnKeyType.Default
         textField.userInteractionEnabled = true
         
-        view.addSubview(textField)
+        textField.maxLength = 80
+        textField.maxHeight = 100
+        
+        view.addSubview(textField)        
         
         let backIcon = UIImage(named: "ic_close") as UIImage?
         let backButton = UIButton(type: .System)
@@ -110,7 +115,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextFieldD
         }
         
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        //NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
 
         let pan = UIPanGestureRecognizer(target:self, action:#selector(panGesture))
         textField.addGestureRecognizer(pan)
@@ -188,18 +193,17 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextFieldD
         sender.setTranslation(CGPointZero, inView: self.view)
     }
     
-    // Move textfield ontop of keyboard
-    func keyboardNotification(notification: NSNotification) {
-        
-        if let userInfo = notification.userInfo {
-            let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
-            let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
-            UIView.animateWithDuration(duration, animations: {
-                self.textField.origin.y = self.view.height - keyboardSize.height - self.textField.height
-            })
-            
-        }
-    }
+//    // Move textfield ontop of keyboard
+//    func keyboardNotification(notification: NSNotification) {
+//        
+//        if let userInfo = notification.userInfo {
+//            let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
+//            let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
+//            UIView.animateWithDuration(duration, animations: {
+//                self.textField.origin.y = self.view.height - keyboardSize.height - self.textField.height
+//            })
+//        }
+//    }
 
     // Show textfield
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -225,12 +229,12 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextFieldD
         }
     }
     
-    // Auto rewind player
-    func playerDidFinishPlaying(notification: NSNotification) {
-        if let playerItem: AVPlayerItem = notification.object as? AVPlayerItem {
-            playerItem.seekToTime(kCMTimeZero)
-        }
-    }
+//    // Auto rewind player
+//    func playerDidFinishPlaying(notification: NSNotification) {
+//        if let playerItem: AVPlayerItem = notification.object as? AVPlayerItem {
+//            playerItem.seekToTime(kCMTimeZero)
+//        }
+//    }
     
     func back(){
         player?.pause()

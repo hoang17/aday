@@ -410,7 +410,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         
         if !showDoneButton && seconds >= 1 {
             showDoneButton = true
-            UIView.animateWithDuration(1.5, animations: {
+            UIView.animateWithDuration(0.5, animations: {
                 self.doneButton.alpha = 1.0
             })
         }

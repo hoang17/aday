@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B21506088F87929773E9A723A9266EDD"
+               BlueprintIdentifier = "0DA7132ABDCABDE46C79D20B62FB4D97"
                BuildableName = "Pods_Pinly.framework"
                BlueprintName = "Pods-Pinly"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B21506088F87929773E9A723A9266EDD"
+            BlueprintIdentifier = "0DA7132ABDCABDE46C79D20B62FB4D97"
             BuildableName = "Pods_Pinly.framework"
             BlueprintName = "Pods-Pinly"
             ReferencedContainer = "container:Pods.xcodeproj">

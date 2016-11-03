@@ -27,6 +27,6 @@ target 'Pinly' do
     pod 'CWStatusBarNotification'
     pod 'SlackTextViewController'
     pod 'LNNotificationsUI', :git => 'https://github.com/kineticac/LNNotificationsUI.git'
-    pod 'PGMCameraKit'
-    pod 'SCRecorder'    
+    pod 'SCRecorder'
+    pod 'GrowingTextView', :git => 'https://github.com/KennethTsang/GrowingTextView.git', :branch => 'swift2'
 end
