@@ -207,10 +207,10 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         recordButton.buttonColor = UIColor(white: 1, alpha: 0.5)
         recordButton.closeWhenFinished = false
         
-        //recordButton.addTarget(self, action: #selector(record), forControlEvents: .TouchDown)
-        //recordButton.addTarget(self, action: #selector(stop), forControlEvents: .TouchUpInside)
+        recordButton.addTarget(self, action: #selector(record), forControlEvents: .TouchDown)
+        recordButton.addTarget(self, action: #selector(stop), forControlEvents: .TouchUpInside)
 
-        recordButton.addGestureRecognizer(SCTouchDetector(target: self, action: #selector(self.handleTouchDetected)))
+        //recordButton.addGestureRecognizer(SCTouchDetector(target: self, action: #selector(self.handleTouchDetected)))
         
         view.addSubview(recordButton)
         self.view.addSubview(recordButton)
@@ -315,7 +315,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
 //        self.showVideo()
 //    }
     
-    func handleStopButtonTapped() {
+    func stop() {
         recorder.pause {
             self.isRecording = false
             self.progress = 0
@@ -455,21 +455,53 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         print("Completed record segment at \(segment?.url): \(error) (frameRate: \(segment?.frameRate))")
     }
     
-    func handleTouchDetected(touchDetector: SCTouchDetector) {
-        if touchDetector.state == .Began {
-            
+//    func handleTouchDetected(touchDetector: SCTouchDetector) {
+//        if touchDetector.state == .Began {
+//            
+//            isRecording = true
+//            
+//            recorder.record()
+//            
+//            if CLLocationManager.locationServicesEnabled() {
+//                locationManager.startUpdatingLocation()
+//            }
+//        }
+//        else if touchDetector.state == .Ended {
+//            handleStopButtonTapped()
+//            //recorder.pause()
+//        }
+//    }
+    
+    func record(){
+        if !isRecording {
+
+            // Start recording
             isRecording = true
-            
+
             recorder.record()
-            
+
+//            let outputFileURL = NSURL(fileURLWithPath: self.outputPath)
+//
+//            if let connection = videoFileOutput?.connectionWithMediaType(AVMediaTypeVideo) {
+//                if connection.supportsVideoOrientation {
+//                    print(".Portrait")
+//                    connection.videoOrientation = .Portrait
+//                }
+//                if connection.supportsVideoStabilization {
+//                    print(".VideoStabilization")
+//                    connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.Auto
+//                }
+//            }
+//
+//            videoFileOutput?.startRecordingToOutputFileURL(outputFileURL, recordingDelegate: self)
+
             if CLLocationManager.locationServicesEnabled() {
                 locationManager.startUpdatingLocation()
             }
         }
-        else if touchDetector.state == .Ended {
-            handleStopButtonTapped()
-            //recorder.pause()
-        }
+        
+//        self.progressTimer = NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
+        
     }
     
     func updateTimeRecordedLabel() {
@@ -488,7 +520,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         recordButton.setProgress(progress)
         
         if progress >= 1 {
-            handleStopButtonTapped()
+            stop()
         }
     }
     
@@ -514,7 +546,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     
     func close(){
 //        stop()
-        handleStopButtonTapped()
+        stop()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -820,25 +852,25 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     }
 }
 
-import UIKit.UIGestureRecognizerSubclass
-
-class SCTouchDetector : UIGestureRecognizer {
-    
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if self.enabled {
-            self.state = .Began
-        }
-    }
-    
-    override func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if self.enabled {
-            self.state = .Ended
-        }
-    }
-    
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if self.enabled {
-            self.state = .Ended
-        }
-    }
-}
+//import UIKit.UIGestureRecognizerSubclass
+//
+//class SCTouchDetector : UIGestureRecognizer {
+//    
+//    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+//        if self.enabled {
+//            self.state = .Began
+//        }
+//    }
+//    
+//    override func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent?) {
+//        if self.enabled {
+//            self.state = .Ended
+//        }
+//    }
+//    
+//    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+//        if self.enabled {
+//            self.state = .Ended
+//        }
+//    }
+//}
