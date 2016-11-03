@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "MiniPlayer.init(clip : ClipModel, frame : CGRect, selector : (NSNotification) -&gt; ()?) -&gt; MiniPlayer:PlayerView.swift">
+      </ContextState>
+      <ContextState
+         contextName = "PlayerView.play() -&gt; ():PlayerView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "player.status">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsController.(tapMore(UITapGestureRecognizer) -&gt; ()).(closure #2):FriendsController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "MainController.(viewDidLoad() -&gt; ()).(closure #2):MainController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "snapshots.children.allObjects">
+            </PersistentString>
+            <PersistentString
+               value = "snapshots.children">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "SearchController.(viewDidLoad() -&gt; ()).(closure #3):SearchController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "AppDelegate.currentUser">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "VideoHelper.export(Clip, friendName : String, profileImg : UIImage, completion : (savePathUrl : NSURL) -&gt; ()) -&gt; ():VideoHelper.swift">
+      </ContextState>
+      <ContextState
+         contextName = "FriendsController.(viewDidLoad() -&gt; ()).(closure #2):FriendsController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "FriendsController.viewDidLoad() -&gt; ():FriendsController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "SearchController.(viewDidLoad() -&gt; ()).(closure #3).(closure #1):SearchController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "number">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsController.(viewDidLoad() -&gt; ()).(closure #1):FriendsController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "SearchController.tableView(UITableView, cellForRowAtIndexPath : NSIndexPath) -&gt; UITableViewCell:SearchController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "AppDelegate.currentUser">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "MainController.(viewDidLoad() -&gt; ()).(closure #1):MainController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "userID">
+            </PersistentString>
+            <PersistentString
+               value = "String! = FIRAuth.auth()?.currentUser?.uid">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ClipCalloutView.init(clip : Clip, frame : CGRect) -&gt; ClipCalloutView:ClipCalloutView.swift">
+      </ContextState>
+      <ContextState
+         contextName = "CameraPlaybackController.playerAtIndex(Int) -&gt; ClipPlayer?:CameraPlaybackController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "clips">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "PlayerView.loadPlayer(String) -&gt; ():PlayerView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "player.status">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "Clip.init(snapshot : FIRDataSnapshot) -&gt; Clip:Clip.swift">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
