@@ -29,7 +29,7 @@ class NotificationService: UNNotificationServiceExtension {
         
         
         // Modify the notification content here...
-        bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
+        //bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
         
         let filePath = NSTemporaryDirectory() + fname
         let localURL = NSURL(fileURLWithPath: filePath)

@@ -80,8 +80,6 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextFieldD
         textField.userInteractionEnabled = true
         
         view.addSubview(textField)
-        view.bringSubviewToFront(textField)
-        
         
         let backIcon = UIImage(named: "ic_close") as UIImage?
         let backButton = UIButton(type: .System)
@@ -90,7 +88,6 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextFieldD
         backButton.setImage(backIcon, forState: .Normal)
         backButton.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
         self.view.addSubview(backButton)
-        self.view.bringSubviewToFront(backButton)
         backButton.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(self.view).offset(15)
             make.left.equalTo(self.view).offset(18)
@@ -105,12 +102,11 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextFieldD
         doneButton.setImage(nextIcon, forState: .Normal)
         doneButton.addTarget(self, action: #selector(submit), forControlEvents: .TouchUpInside)
         self.view.addSubview(doneButton)
-        self.view.bringSubviewToFront(doneButton)
         doneButton.snp_makeConstraints { (make) -> Void in
-            make.bottom.equalTo(self.view).offset(-20)
-            make.right.equalTo(self.view).offset(-20)
-            make.width.equalTo(36)
-            make.height.equalTo(36)
+            make.bottom.equalTo(self.view).offset(-25)
+            make.right.equalTo(self.view).offset(-25)
+            make.width.equalTo(30)
+            make.height.equalTo(30)
         }
         
         

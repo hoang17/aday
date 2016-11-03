@@ -38,6 +38,9 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     let locationManager = CLLocationManager()
     
     var isRecording = false
+    var showDoneButton = false
+    
+    var doneButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,6 +65,10 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         previewView = UIView()
         previewView.frame = view.layer.frame
         view.addSubview(previewView)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(flipCamera))
+        tap.numberOfTapsRequired = 2
+        previewView.addGestureRecognizer(tap)
 
         let userDefaults = NSUserDefaults.standardUserDefaults()
         let frontCamera = (userDefaults.valueForKey("frontCamera") as? Bool) ?? false
@@ -113,7 +120,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         view.addSubview(recordButton)
         self.view.addSubview(recordButton)
         recordButton.snp_makeConstraints { (make) -> Void in
-            make.bottom.equalTo(self.view).offset(-30)
+            make.bottom.equalTo(self.view).offset(-15)
             make.centerX.equalTo(self.view)
             make.width.equalTo(80)
             make.height.equalTo(80)
@@ -146,7 +153,20 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
             make.width.equalTo(30)
             make.height.equalTo(30)
         }
-        
+
+        let nextIcon = UIImage(named: "ic_blue_arrow") as UIImage?
+        doneButton = UIButton(type: .System)
+        doneButton.tintColor = UIColor(white: 1, alpha: 1)
+        doneButton.backgroundColor = UIColor.clearColor()
+        doneButton.setImage(nextIcon, forState: .Normal)
+        doneButton.addTarget(self, action: #selector(stop), forControlEvents: .TouchUpInside)
+        self.view.addSubview(doneButton)
+        doneButton.snp_makeConstraints { (make) -> Void in
+            make.bottom.equalTo(self.view).offset(-25)
+            make.right.equalTo(self.view).offset(-25)
+            make.width.equalTo(30)
+            make.height.equalTo(30)
+        }
     }
     
     func recorder(recorder: SCRecorder, didSkipVideoSampleBufferInSession recordSession: SCRecordSession) {
@@ -175,6 +195,9 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         self.prepareSession()
         recorder.startRunning()
         locationManager.startUpdatingLocation()
+        
+        doneButton.alpha = 0
+        showDoneButton = false
     }
     
     override func viewDidLayoutSubviews() {
@@ -212,7 +235,6 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         isRecording = false
         progress = 0
         recordButton.buttonState = .Idle
-        
         recorder.pause {
             self.saveAndShowSession(self.recorder.session!)
         }
@@ -386,6 +408,13 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         progress = CGFloat(seconds) / maxDuration
         recordButton.setProgress(progress)
         
+        if !showDoneButton && seconds >= 1 {
+            showDoneButton = true
+            UIView.animateWithDuration(1.5, animations: {
+                self.doneButton.alpha = 1.0
+            })
+        }
+        
         //print(seconds)
         //if progress >= 1 {
         //    stop()
@@ -409,7 +438,10 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     }
     
     func close() {
-        stop()
+        isRecording = false
+        progress = 0
+        recordButton.buttonState = .Idle
+        recorder.stopRunning()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
