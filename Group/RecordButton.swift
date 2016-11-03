@@ -60,8 +60,8 @@ import UIKit
         super.init(frame: frame)
         
         self.addTarget(self, action: #selector(RecordButton.didTouchDown), forControlEvents: .TouchDown)
-        self.addTarget(self, action: #selector(RecordButton.didTouchUp), forControlEvents: .TouchUpInside)
-        self.addTarget(self, action: #selector(RecordButton.didTouchUp), forControlEvents: .TouchUpOutside)
+//        self.addTarget(self, action: #selector(RecordButton.didTouchUp), forControlEvents: .TouchUpInside)
+//        self.addTarget(self, action: #selector(RecordButton.didTouchUp), forControlEvents: .TouchUpOutside)
         
         self.drawButton()
         
