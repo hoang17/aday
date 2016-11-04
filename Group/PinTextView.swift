@@ -52,16 +52,12 @@ import UIKit
     func textDidEndEditing(notification: NSNotification) {
         if notification.object === self {
             text = text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-            textDidChange(notification)
+            autoHeight()
             //setNeedsDisplay()
         }
     }
     
-    // Limit the length of text
-    func textDidChange(notification: NSNotification) {
-        
-        guard notification.object === self else { return }
-        
+    public func autoHeight(animation: Bool = true){
         if maxLength > 0 && text.characters.count > maxLength {
             let endIndex = text.startIndex.advancedBy(maxLength)
             text = text.substringToIndex(endIndex)
@@ -77,8 +73,20 @@ import UIKit
         contentSize.height = height
         frame.size.height = height
         
-        UIView.animateWithDuration(0.3, animations: {
+        if animation {
+            UIView.animateWithDuration(0.3, animations: {
+                self.frame.origin.y = self.frame.origin.y - offset
+            })
+        }
+        else{
             self.frame.origin.y = self.frame.origin.y - offset
-        })
+        }
+    }
+    
+    // Limit the length of text
+    func textDidChange(notification: NSNotification) {
+        
+        guard notification.object === self else { return }
+        autoHeight()
     }
 }

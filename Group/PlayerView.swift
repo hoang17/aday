@@ -194,7 +194,7 @@ class ClipPlayer : MiniPlayer {
 
 class ClipThumbnail: UIView {
     var img: UIImageView!
-    let textField = UITextField()
+    let textField = PinTextView()
     var dateLabel = UILabel()
     
     init(clip: ClipModel, frame: CGRect) {
@@ -212,10 +212,11 @@ class ClipThumbnail: UIView {
             textField.textColor = UIColor.whiteColor()
             textField.font = UIFont.systemFontOfSize(10)
             textField.textAlignment = NSTextAlignment.Center
-            textField.height = 20
+            //textField.height = 20
             textField.width = frame.width
             textField.userInteractionEnabled = false
             textField.text = clip.txt
+            textField.autoHeight()
             textField.center.y =  frame.height * CGFloat(clip.y)
         }
         dateLabel.origin = CGPoint(x: 8, y: 8)

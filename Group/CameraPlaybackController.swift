@@ -22,7 +22,7 @@ import SwiftOverlays
 
 class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKSharingDelegate {
 
-    let textField = UITextField()
+    let textField = PinTextView()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var clips: Results<ClipModel>!
     var playIndex = 0
@@ -445,6 +445,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         let clip = clips[playIndex]
         locationLabel.text = locationText()
         textField.text = clip.txt
+        textField.autoHeight(false)
         textField.center.y = self.view.height * CGFloat(clip.y)
         textField.hidden = textField.text == ""
         dateLabel.text = NSDate(timeIntervalSince1970: clip.date).shortTimeAgoSinceNow()
