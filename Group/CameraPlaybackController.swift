@@ -20,9 +20,9 @@ import DGActivityIndicatorView
 import SwiftOverlays
 //import MRProgress
 
-class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKSharingDelegate {
+class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
 
-    let textField = PinTextView()
+    let textField = PinTextLabel()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var clips: Results<ClipModel>!
     var playIndex = 0
@@ -32,7 +32,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     var prevplayer: ClipPlayer! // cache for smooth
     
     var commentsButton = UIButton()
-    let commentField = UITextField()
+    let commentBox = CommentTextView()
     var profileImg = UIImageView()
     var nameLabel = UILabel()
     var locationLabel = UILabel()
@@ -105,20 +105,33 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         moreLabel.font = UIFont(name: "OpenSans-Bold", size: 20.0)
         moreLabel.userInteractionEnabled = true
 
-        commentField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-        commentField.textColor = UIColor.whiteColor()
-        commentField.font = UIFont.systemFontOfSize(16.0)
-        commentField.textAlignment = NSTextAlignment.Left
-        commentField.attributedPlaceholder = NSAttributedString(string:"Write a comment...", attributes:[
-                                                                    NSForegroundColorAttributeName: UIColor(white: 1, alpha: 0.6),
-                                                                    NSFontAttributeName:UIFont.systemFontOfSize(16.0)])
-        commentField.text = ""
-        commentField.hidden = true
-        commentField.height = 34
-        commentField.width = UIScreen.mainScreen().bounds.width
-        commentField.delegate = self
-        commentField.returnKeyType = UIReturnKeyType.Send
-        commentField.userInteractionEnabled = true
+        commentBox.hidden = true
+        commentBox.height = 38
+        commentBox.width = UIScreen.mainScreen().bounds.width
+        commentBox.sendCallback = {
+            self.commentBox.commentField.resignFirstResponder()
+            self.commentBox.hidden = true
+            self.player.play()
+            if let cm = self.commentBox.commentField.text {
+                FriendsLoader.sharedInstance.comment(self.clips[self.playIndex], text: cm)
+                self.commentBox.commentField.text = ""
+            }
+        }
+        
+//        commentField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
+//        commentField.textColor = UIColor.whiteColor()
+//        commentField.font = UIFont.systemFontOfSize(16.0)
+//        commentField.textAlignment = NSTextAlignment.Left
+//        commentField.placeHolder = "Write a comment..."
+//        commentField.placeHolderColor = UIColor(white: 1, alpha: 0.5)
+//        
+//        commentField.text = ""
+//        commentField.hidden = true
+//        commentField.height = 34
+//        commentField.width = UIScreen.mainScreen().bounds.width
+//        //commentField.returnKeyType = UIReturnKeyType.Send
+//        commentField.returnKeyType = UIReturnKeyType.Default
+//        commentField.userInteractionEnabled = true
         
         let commentsIcon = UIImage(named: "ic_comment") as UIImage?
         commentsButton = UIButton(type: .System)
@@ -135,7 +148,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         view.addSubview(locationLabel)
         view.addSubview(dateLabel)
         view.addSubview(moreLabel)
-        view.addSubview(commentField)
+        view.addSubview(commentBox)
         view.addSubview(commentsButton)
         
         let tapmore = UITapGestureRecognizer(target: self, action: #selector(tapMore))
@@ -151,9 +164,7 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(swipeUpGesture))
         swipeUp.direction = UISwipeGestureRecognizerDirection.Up
         view.addGestureRecognizer(swipeUp)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
-        
+                
         play()
     }
     
@@ -337,9 +348,9 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
     
     func tapGesture(sender:UITapGestureRecognizer){
         
-        if commentField.hidden == false {
-            commentField.resignFirstResponder()
-            commentField.hidden = true
+        if commentBox.hidden == false {
+            commentBox.commentField.resignFirstResponder()
+            commentBox.hidden = true
             player.play()
             return
         }
@@ -363,37 +374,12 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
         }
     }
 
-    // Move textfield ontop of keyboard
-    func keyboardNotification(notification: NSNotification) {
-        
-        if let userInfo = notification.userInfo {
-            let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
-            let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
-            UIView.animateWithDuration(duration, animations: {
-                self.commentField.origin.y = self.view.height - keyboardSize.height - self.commentField.height
-            })
-            
-        }
-    }
-    
-    // On return done editing
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        commentField.resignFirstResponder()
-        commentField.hidden = true
-        player.play()
-        if commentField.text != "" {
-            FriendsLoader.sharedInstance.comment(clips[playIndex], text: commentField.text!)
-            commentField.text = ""
-        }
-        return true
-    }
-    
     func swipeUpGesture(){
         player.player?.pause()
-        commentField.hidden = false
-        commentField.y = view.height - 34
-        commentField.becomeFirstResponder()
-        view.bringSubviewToFront(commentField)
+        commentBox.hidden = false
+        commentBox.y = view.height - 34
+        commentBox.commentField.becomeFirstResponder()
+        view.bringSubviewToFront(commentBox)
     }
     
     func swipeDownGesture(){
@@ -487,14 +473,12 @@ class CameraPlaybackController: UIViewController, UITextFieldDelegate, FBSDKShar
                atScrollPosition: .CenteredHorizontally,
                animated: false)
         }
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self.commentBox)
     }
     
     override func prefersStatusBarHidden() -> Bool {
         return true
-    }
-    
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 }
 

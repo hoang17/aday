@@ -53,17 +53,6 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "FriendsController.(viewDidLoad() -&gt; ()).(closure #1):FriendsController.swift">
-      </ContextState>
-      <ContextState
-         contextName = "SearchController.tableView(UITableView, cellForRowAtIndexPath : NSIndexPath) -&gt; UITableViewCell:SearchController.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "AppDelegate.currentUser">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "MainController.(viewDidLoad() -&gt; ()).(closure #1):MainController.swift">
          <PersistentStrings>
             <PersistentString
@@ -71,6 +60,17 @@
             </PersistentString>
             <PersistentString
                value = "String! = FIRAuth.auth()?.currentUser?.uid">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "FriendsController.(viewDidLoad() -&gt; ()).(closure #1):FriendsController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "SearchController.tableView(UITableView, cellForRowAtIndexPath : NSIndexPath) -&gt; UITableViewCell:SearchController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "AppDelegate.currentUser">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -94,7 +94,21 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "PinTextView.textView(UITextView, shouldChangeTextInRange : _NSRange, replacementText : String) -&gt; Bool:PinTextView.swift">
+      </ContextState>
+      <ContextState
          contextName = "Clip.init(snapshot : FIRDataSnapshot) -&gt; Clip:Clip.swift">
+      </ContextState>
+      <ContextState
+         contextName = "CommentTextView.(keyboardNotification(NSNotification) -&gt; ()).(closure #1):CommentTextView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.frame">
+            </PersistentString>
+            <PersistentString
+               value = "self.superview">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
    </ContextStates>
 </VariablesViewState>

@@ -194,7 +194,7 @@ class ClipPlayer : MiniPlayer {
 
 class ClipThumbnail: UIView {
     var img: UIImageView!
-    let textField = PinTextView()
+    let textField = PinTextLabel()
     var dateLabel = UILabel()
     
     init(clip: ClipModel, frame: CGRect) {

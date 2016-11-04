@@ -1,12 +1,108 @@
+//
+//  CommentTextView.swift
+//  Pinly
+//
+//  Created by Hoang Le on 11/4/16.
+//  Copyright © 2016 ping. All rights reserved.
+//
+
 
 import Foundation
 import UIKit
 
-@objc public class PinTextView: UITextView, UITextViewDelegate {
+@objc public class CommentTextView: UIView {
+    
+    public var commentField: CommentTextField!
+    
+    public var sendButton: UIButton!
+    
+    public var sendCallback: (()->Void)?
+    
+    init(){
+        super.init(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 34))
+        commonInit()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+    
+    private func commonInit() {
+        
+        backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
+        
+        commentField = CommentTextField()
+        commentField.width = frame.width-40
+        commentField.height = frame.height
+        commentField.backgroundColor = UIColor.clearColor()
+        commentField.textColor = UIColor.whiteColor()
+        commentField.font = UIFont.systemFontOfSize(16.0)
+        commentField.textAlignment = NSTextAlignment.Left
+        commentField.placeHolder = "Write a comment..."
+        commentField.placeHolderColor = UIColor(white: 1, alpha: 0.5)
+        
+        commentField.text = ""
+        commentField.returnKeyType = UIReturnKeyType.Default
+        commentField.userInteractionEnabled = true
+        self.addSubview(commentField)
+        
+        commentField.offsetCallback = { (offset) in
+            self.frame.size.height += offset
+            UIView.animateWithDuration(0.3, animations: {
+                self.frame.origin.y -= offset
+            })
+        }
+        
+        let sendIcon = UIImage(named: "ic_send") as UIImage?
+        sendButton = UIButton(type: .System)
+        sendButton.tintColor = UIColor(white: 1, alpha: 1)
+        sendButton.backgroundColor = UIColor.clearColor()
+        sendButton.setImage(sendIcon, forState: .Normal)
+        sendButton.addTarget(self, action: #selector(sendHandle), forControlEvents: .TouchUpInside)
+        self.addSubview(sendButton)
+        sendButton.snp_makeConstraints { (make) -> Void in
+            make.bottom.equalTo(self).offset(-5)
+            make.right.equalTo(self).offset(-5)
+            make.width.equalTo(30)
+            make.height.equalTo(25)
+        }
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
+    }
+    
+    // On return done editing
+    func sendHandle(){
+        commentField.text = commentField.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        sendCallback?()
+    }
+    
+    func keyboardNotification(notification: NSNotification) {        
+        guard let superview = self.superview else {
+            return
+        }
+        
+        if let userInfo = notification.userInfo {
+            let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
+            let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
+            UIView.animateWithDuration(duration, animations: {
+                self.frame.origin.y = superview.frame.height - keyboardSize.height - self.frame.size.height
+            })
+        }
+    }
+ 
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+}
+
+@objc public class CommentTextField: UITextView, UITextViewDelegate {
     
     public var maxLength = 0
     
     public var maxHeight: CGFloat = 0
+    
+    public var offsetCallback: ((offset: CGFloat)-> Void)?
     
     // Placeholder properties
     // Need to set both placeHolder and placeHolderColor in order to show placeHolder in the textview
@@ -32,7 +128,7 @@ import UIKit
         commonInit()
     }
     
-    private func commonInit() {
+    private func commonInit(obKeyboard: Bool = true) {
         
         delegate = self
         scrollEnabled = false
@@ -40,7 +136,6 @@ import UIKit
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textDidEndEditing), name: UITextViewTextDidEndEditingNotification, object: self)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textDidChange), name: UITextViewTextDidChangeNotification, object: self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     
     deinit {
@@ -85,17 +180,6 @@ import UIKit
         return maxHeight >= boundingRect.size.height+20
     }
     
-    func keyboardNotification(notification: NSNotification) {
-        
-        if let userInfo = notification.userInfo {
-            let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
-            let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
-            UIView.animateWithDuration(duration, animations: {
-                self.frame.origin.y = self.superview!.frame.height - keyboardSize.height - self.frame.size.height
-            })
-        }
-    }
-    
     // Trim white space and new line characters when end editing.
     func textDidEndEditing(notification: NSNotification) {
         guard notification.object === self else { return }
@@ -127,16 +211,9 @@ import UIKit
         if offset == 0 {
             return
         }
-        
         contentSize.height = height
         frame.size.height = height
         
-        if animation {
-            UIView.animateWithDuration(0.3, animations: {
-                self.frame.origin.y -= offset
-            })
-        } else {
-            self.frame.origin.y -= offset
-        }
+        offsetCallback?(offset: offset)
     }
 }

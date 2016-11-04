@@ -18,6 +18,9 @@
 - (void)customizeForTabBarWithImage:(UIImage *)image
                       selectedColor:(UIColor *)selectedColor
                         highlighted:(BOOL)highlighted {
+    
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    
     if (highlighted) {
         [self customizeAsHighlightedButtonForTabBarWithImage:image
                                                selectedColor:selectedColor];

@@ -67,7 +67,6 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
 //        
 //        self.player?.play()
         
-        textField.scrollEnabled = false
         textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         textField.textColor = UIColor.whiteColor()
         textField.font = UIFont.systemFontOfSize(16.0)
@@ -85,14 +84,14 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
         
         view.addSubview(textField)
         
-        let backIcon = UIImage(named: "ic_close") as UIImage?
-        let backButton = UIButton(type: .System)
-        backButton.tintColor = UIColor(white: 1, alpha: 0.5)
-        backButton.backgroundColor = UIColor.clearColor()
-        backButton.setImage(backIcon, forState: .Normal)
-        backButton.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
-        self.view.addSubview(backButton)
-        backButton.snp_makeConstraints { (make) -> Void in
+        let closeIcon = UIImage(named: "ic_close") as UIImage?
+        let closeButton = UIButton(type: .System)
+        closeButton.tintColor = UIColor(white: 1, alpha: 0.5)
+        closeButton.backgroundColor = UIColor.clearColor()
+        closeButton.setImage(closeIcon, forState: .Normal)
+        closeButton.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
+        self.view.addSubview(closeButton)
+        closeButton.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(self.view).offset(15)
             make.left.equalTo(self.view).offset(18)
             make.width.equalTo(30)
@@ -194,6 +193,8 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
     func back(){
         player?.pause()
         self.dismissViewControllerAnimated(true, completion:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(textField)
     }
     
     override func prefersStatusBarHidden() -> Bool {

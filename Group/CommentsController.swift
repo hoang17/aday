@@ -43,6 +43,7 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         self.shouldScrollToBottomAfterKeyboardShows = false
         self.textInputbar.autoHideRightButton = false
         self.registerPrefixesForAutoCompletion(["@",  "#", ":", "+:", "/"])
+        self.textView.keyboardType = .Default
         
         // Todo: ob users typing in this thread
         //self.typingIndicatorView?.insertUsername("John")

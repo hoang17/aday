@@ -140,14 +140,14 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
             make.height.equalTo(30)
         }
         
-        let backIcon = UIImage(named: "ic_close") as UIImage?
-        let backButton = UIButton(type: .System)
-        backButton.tintColor = UIColor(white: 1, alpha: 0.5)
-        backButton.backgroundColor = UIColor.clearColor()
-        backButton.setImage(backIcon, forState: .Normal)
-        backButton.addTarget(self, action: #selector(close), forControlEvents: .TouchUpInside)
-        self.view.addSubview(backButton)
-        backButton.snp_makeConstraints { (make) -> Void in
+        let closeIcon = UIImage(named: "ic_close") as UIImage?
+        let closeButton = UIButton(type: .System)
+        closeButton.tintColor = UIColor(white: 1, alpha: 0.5)
+        closeButton.backgroundColor = UIColor.clearColor()
+        closeButton.setImage(closeIcon, forState: .Normal)
+        closeButton.addTarget(self, action: #selector(close), forControlEvents: .TouchUpInside)
+        self.view.addSubview(closeButton)
+        closeButton.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(self.view).offset(15)
             make.left.equalTo(self.view).offset(18)
             make.width.equalTo(30)
