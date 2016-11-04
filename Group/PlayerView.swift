@@ -216,7 +216,7 @@ class ClipThumbnail: UIView {
             textField.width = frame.width
             textField.userInteractionEnabled = false
             textField.text = clip.txt
-            textField.autoHeight()
+            textField.autoHeight(false)
             textField.center.y =  frame.height * CGFloat(clip.y)
         }
         dateLabel.origin = CGPoint(x: 8, y: 8)
