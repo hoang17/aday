@@ -54,7 +54,7 @@ class PlayerView: UIView {
     }
 }
 
-class MiniPlayer : PlayerView {
+class MiniPlayer: PlayerView {
     
     var fileName: String!
     var filePath: String!
@@ -171,8 +171,8 @@ class MiniPlayer : PlayerView {
     deinit {
         //print("~~~ deinit: " + fileName)
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        task?.removeAllObservers()
-        player?.replaceCurrentItemWithPlayerItem(nil)
+        //task?.removeAllObservers()
+        //player?.replaceCurrentItemWithPlayerItem(nil)
     }
     
     func playerDidFinishPlaying(notification: NSNotification) {

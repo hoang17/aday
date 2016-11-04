@@ -22,7 +22,7 @@ import SwiftOverlays
 
 class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
 
-    let textField = PinTextLabel()
+    var textField = PinTextLabel()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var clips: Results<ClipModel>!
     var playIndex = 0
@@ -32,7 +32,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
     var prevplayer: ClipPlayer! // cache for smooth
     
     var commentsButton = UIButton()
-    let commentBox = CommentTextView()
+    var commentBox = CommentTextView()
     var profileImg = UIImageView()
     var nameLabel = UILabel()
     var locationLabel = UILabel()
@@ -475,10 +475,18 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         }
         NSNotificationCenter.defaultCenter().removeObserver(self)
         NSNotificationCenter.defaultCenter().removeObserver(self.commentBox)
+        NSNotificationCenter.defaultCenter().removeObserver(self.commentBox.commentField)
+        
+        commentBox.sendCallback = nil
+        commentBox.commentField.offsetCallback = nil
     }
     
     override func prefersStatusBarHidden() -> Bool {
         return true
+    }
+    
+    deinit {
+        print("deinit")
     }
 }
 

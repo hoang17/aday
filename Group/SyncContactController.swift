@@ -73,7 +73,7 @@ class SyncContactController: UIViewController {
         let highlight = YYTextHighlight()
         highlight.setColor(UIColor.whiteColor())
         highlight.setBackgroundBorder(highlightBorder)
-        highlight.tapAction = {(containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> Void in
+        highlight.tapAction = { (containerView, text, range, rect) in
             self.syncContacts()
         }
         

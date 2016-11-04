@@ -131,8 +131,11 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         
         let cameraPlayback = CameraPlaybackController(playIndex: playIndex, clips: clips)
         cameraPlayback.nameLabel.text = nameLabel.text
-        let atxt = cameraPlayback.nameLabel.attributedText!.mutableCopy() as! NSMutableAttributedString
-        cameraPlayback.nameLabel.width = atxt.size().width
+        if let atxt = cameraPlayback.nameLabel.attributedText?.mutableCopy() as? NSMutableAttributedString {
+            cameraPlayback.nameLabel.width = atxt.size().width
+        } else {
+            cameraPlayback.nameLabel.width = 100
+        }
         cameraPlayback.dateLabel.x = 50 + cameraPlayback.nameLabel.width
         cameraPlayback.profileImg.image = profileImg.image
         cameraPlayback.collectionView = self.collectionView

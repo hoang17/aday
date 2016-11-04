@@ -92,7 +92,10 @@ import UIKit
     }
  
     deinit {
+        print("deinit comment box")
+        commentField.offsetCallback = nil
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self.commentField)
     }
 }
 
@@ -136,10 +139,6 @@ import UIKit
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textDidEndEditing), name: UITextViewTextDidEndEditingNotification, object: self)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textDidChange), name: UITextViewTextDidChangeNotification, object: self)
-    }
-    
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     // Show placeholder
@@ -216,4 +215,10 @@ import UIKit
         
         offsetCallback?(offset: offset)
     }
+    
+    deinit {
+        print("deinit comment field")
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+
 }
