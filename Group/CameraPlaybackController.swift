@@ -481,7 +481,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
     }
     
     deinit {
-        print("deinit camera playback")
+        //print("deinit camera playback")
     }
 }
 

@@ -92,10 +92,8 @@ import UIKit
     }
  
     deinit {
-        print("deinit comment box")
-        commentField.offsetCallback = nil
+        //print("deinit comment box")
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().removeObserver(self.commentField)
     }
 }
 
@@ -217,7 +215,7 @@ import UIKit
     }
     
     deinit {
-        print("deinit comment field")
+        //print("deinit comment field")
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
