@@ -1,20 +1,12 @@
-//
-//  GrowingTextView.swift
-//  Pods
-//
-//  Created by Kenneth Tsang on 17/2/2016.
-//  Copyright (c) 2016 Kenneth Tsang. All rights reserved.
-//
-// Swift2 Branch (For Swift 2.3)
 
 import Foundation
 import UIKit
 
-@objc public protocol GrowingTextViewDelegate: UITextViewDelegate {
+@objc public protocol PinTextViewDelegate: UITextViewDelegate {
     optional func textViewDidChangeHeight(height: CGFloat)
 }
 
-@objc public class GrowingTextView: UITextView {
+@objc public class PinTextView: UITextView {
     
     // Maximum length of text. 0 means no limit.
     public var maxLength = 0
@@ -22,7 +14,6 @@ import UIKit
     // Maximm height of the textview
     public var maxHeight = CGFloat(0)
     
-    // Initialize
     override public init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         commonInit()
@@ -33,7 +24,6 @@ import UIKit
         commonInit()
     }
     
-    // Listen to UITextView notification to handle trimming, placeholder and maximum length
     private func commonInit() {
         
         self.contentMode = .Redraw
@@ -43,7 +33,6 @@ import UIKit
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     
-    // Remove notification observer when deinit
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }

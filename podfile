@@ -28,5 +28,4 @@ target 'Pinly' do
     pod 'SlackTextViewController'
     pod 'LNNotificationsUI', :git => 'https://github.com/kineticac/LNNotificationsUI.git'
     pod 'SCRecorder'
-    pod 'GrowingTextView', :git => 'https://github.com/KennethTsang/GrowingTextView.git', :branch => 'swift2'
 end

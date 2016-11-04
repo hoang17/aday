@@ -14,9 +14,9 @@ import SnapKit
 import SCRecorder
 import GrowingTextView
 
-class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextViewDelegate {
+class NCameraPreviewController: UIViewController, SCPlayerDelegate {
 
-    let textField = GrowingTextView()
+    let textField = PinTextView()
     var textLocation: CGPoint = CGPoint(x: 0, y: 0)
     var locationInfo: LocationInfo?
     
@@ -77,12 +77,11 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextViewDe
         textField.hidden = true
         textField.height = 34
         textField.width = UIScreen.mainScreen().bounds.width
-        textField.delegate = self
         textField.returnKeyType = UIReturnKeyType.Default
         textField.userInteractionEnabled = true
         
         textField.maxLength = 80
-        textField.maxHeight = 100
+        textField.maxHeight = 120
         
         view.addSubview(textField)        
         
@@ -115,8 +114,6 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextViewDe
         }
         
         
-        //NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
-
         let pan = UIPanGestureRecognizer(target:self, action:#selector(panGesture))
         textField.addGestureRecognizer(pan)
     }
@@ -132,7 +129,6 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextViewDe
         super.viewWillDisappear(animated)
         player.pause()
     }
-    
     
     func submit() {
         
@@ -164,27 +160,6 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextViewDe
         self.back()
     }
     
-    // Limit text length to textfield width
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        
-        let combinedString = textField.attributedText!.mutableCopy() as! NSMutableAttributedString
-        combinedString.replaceCharactersInRange(range, withString: string)
-        return combinedString.size().width < textField.bounds.size.width-10
-        
-    }
-    
-    // On return done editing
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        
-        if (textField.text == ""){
-            textField.hidden = true
-        } else {
-            UIView.animateWithDuration(0.2, animations: { self.textField.center.y = self.textLocation.y }, completion: nil)
-        }
-        return true
-    }
-    
     // Allow dragging textfield
     func panGesture(sender:UIPanGestureRecognizer) {
         let translation  = sender.translationInView(self.view)
@@ -193,18 +168,6 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextViewDe
         sender.setTranslation(CGPointZero, inView: self.view)
     }
     
-//    // Move textfield ontop of keyboard
-//    func keyboardNotification(notification: NSNotification) {
-//        
-//        if let userInfo = notification.userInfo {
-//            let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
-//            let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
-//            UIView.animateWithDuration(duration, animations: {
-//                self.textField.origin.y = self.view.height - keyboardSize.height - self.textField.height
-//            })
-//        }
-//    }
-
     // Show textfield
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
@@ -228,13 +191,6 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate, UITextViewDe
             }
         }
     }
-    
-//    // Auto rewind player
-//    func playerDidFinishPlaying(notification: NSNotification) {
-//        if let playerItem: AVPlayerItem = notification.object as? AVPlayerItem {
-//            playerItem.seekToTime(kCMTimeZero)
-//        }
-//    }
     
     func back(){
         player?.pause()
