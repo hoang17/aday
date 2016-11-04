@@ -78,11 +78,12 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
         textField.width = UIScreen.mainScreen().bounds.width
         textField.returnKeyType = UIReturnKeyType.Default
         textField.userInteractionEnabled = true
+        textField.maxLength = 200
+        textField.maxHeight = 120
+        //textField.textContainer.maximumNumberOfLines = 5
+        //textField.textContainer.lineBreakMode = .ByTruncatingTail
         
-        textField.maxLength = 80
-        textField.maxHeight = 100
-        
-        view.addSubview(textField)        
+        view.addSubview(textField)
         
         let backIcon = UIImage(named: "ic_close") as UIImage?
         let backButton = UIButton(type: .System)

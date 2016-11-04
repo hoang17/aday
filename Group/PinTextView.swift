@@ -6,7 +6,7 @@ import UIKit
     optional func textViewDidChangeHeight(height: CGFloat)
 }
 
-@objc public class PinTextView: UITextView {
+@objc public class PinTextView: UITextView, UITextViewDelegate {
     
     // Maximum length of text. 0 means no limit.
     public var maxLength = 0
@@ -26,7 +26,8 @@ import UIKit
     
     private func commonInit() {
         
-        self.contentMode = .Redraw
+        delegate = self
+        contentMode = .Redraw
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textDidEndEditing), name: UITextViewTextDidEndEditingNotification, object: self)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textDidChange), name: UITextViewTextDidChangeNotification, object: self)
@@ -35,6 +36,17 @@ import UIKit
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    public func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        
+        guard maxHeight > 0 else { return true }
+        
+        let newText = textView.attributedText!.mutableCopy() as! NSMutableAttributedString
+        newText.replaceCharactersInRange(range, withString: text)
+        let maxSize = CGSizeMake(textView.frame.size.width - 15, CGFloat.max)
+        let boundingRect = newText.string.boundingRectWithSize(maxSize, options: .UsesLineFragmentOrigin, attributes: [NSFontAttributeName: font!], context: nil)
+        return maxHeight >= boundingRect.size.height+20
     }
     
     func keyboardNotification(notification: NSNotification) {
@@ -50,11 +62,16 @@ import UIKit
     
     // Trim white space and new line characters when end editing.
     func textDidEndEditing(notification: NSNotification) {
-        if notification.object === self {
-            text = text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-            autoHeight()
-            //setNeedsDisplay()
-        }
+        guard notification.object === self else { return }
+        text = text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        autoHeight()
+        //setNeedsDisplay()
+    }
+    
+    // Limit the length of text
+    func textDidChange(notification: NSNotification) {
+        guard notification.object === self else { return }
+        autoHeight()
     }
     
     public func autoHeight(animation: Bool = true){
@@ -81,12 +98,5 @@ import UIKit
         else{
             self.frame.origin.y = self.frame.origin.y - offset
         }
-    }
-    
-    // Limit the length of text
-    func textDidChange(notification: NSNotification) {
-        
-        guard notification.object === self else { return }
-        autoHeight()
     }
 }
