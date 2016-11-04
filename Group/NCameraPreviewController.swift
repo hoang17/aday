@@ -12,7 +12,6 @@ import FirebaseDatabase
 import FirebaseAuth
 import SnapKit
 import SCRecorder
-import GrowingTextView
 
 class NCameraPreviewController: UIViewController, SCPlayerDelegate {
 
@@ -81,7 +80,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
         textField.userInteractionEnabled = true
         
         textField.maxLength = 80
-        textField.maxHeight = 120
+        textField.maxHeight = 100
         
         view.addSubview(textField)        
         
@@ -112,7 +111,6 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
             make.width.equalTo(30)
             make.height.equalTo(30)
         }
-        
         
         let pan = UIPanGestureRecognizer(target:self, action:#selector(panGesture))
         textField.addGestureRecognizer(pan)
@@ -194,9 +192,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
     
     func back(){
         player?.pause()
-        self.dismissViewControllerAnimated(true) {
-            //
-        }
+        self.dismissViewControllerAnimated(true, completion:nil)
     }
     
     override func prefersStatusBarHidden() -> Bool {
