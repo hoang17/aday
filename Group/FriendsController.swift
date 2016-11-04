@@ -125,13 +125,13 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         // Create the action sheet
         let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         
-        let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.Destructive) { (action) in
+        let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.Destructive) { [weak self] (action) in
             
             FriendsLoader.sharedInstance.report(friend.uid)
             
             let alert = UIAlertController(title: "You have reported\n" + friend.name, message: "Thank you for your reporting. Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            self?.presentViewController(alert, animated: true, completion: nil)
         }
         
 //        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in

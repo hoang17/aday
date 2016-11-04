@@ -33,10 +33,10 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         // Setup login button
         self.view.addSubview(loginButton)
         
-        loginButton.snp_makeConstraints { (make) -> Void in
-            make.center.equalTo(self.view)
-            make.left.equalTo(self.view).offset(50)
-            make.right.equalTo(self.view).offset(-50)
+        loginButton.snp_makeConstraints { [weak self] (make) in
+            make.center.equalTo(self!.view)
+            make.left.equalTo(self!.view).offset(50)
+            make.right.equalTo(self!.view).offset(-50)
         }
         loginButton.readPermissions = ["public_profile", "email", "user_friends", "user_likes", "user_location"]
         loginButton.delegate = self
@@ -83,9 +83,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         self.view.addSubview(label)
         
-        label.snp_makeConstraints { (make) -> Void in
-            make.centerX.equalTo(self.view)
-            make.bottom.equalTo(self.view).offset(-150)
+        label.snp_makeConstraints { [weak self] (make) in
+            make.centerX.equalTo(self!.view)
+            make.bottom.equalTo(self!.view).offset(-150)
         }
     }
     
@@ -123,7 +123,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             // Save Facebook login user
             let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
             
-            FIRAuth.auth()?.signInWithCredential(credential) { (currentUser, error) in
+            FIRAuth.auth()?.signInWithCredential(credential) { [weak self] (currentUser, error) in
                 
                 let uid = currentUser!.uid
                 
@@ -148,7 +148,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                             AppDelegate.realm.add(AppDelegate.currentUser, update: true)
                         }
                         
-                        self.showDigitsLogin()
+                        self?.showDigitsLogin()
                         
                         let user = ["uid": uid,
                             "name": name,
@@ -173,7 +173,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                     }
                     
                     if (AppDelegate.currentUser.phone == "") {
-                        self.showDigitsLogin()
+                        self?.showDigitsLogin()
                     } else {
                         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                         appDelegate.showMain()

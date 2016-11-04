@@ -47,10 +47,10 @@ import UIKit
         commentField.userInteractionEnabled = true
         self.addSubview(commentField)
         
-        commentField.offsetCallback = { (offset) in
-            self.frame.size.height += offset
+        commentField.offsetCallback = { [weak self] (offset) in
+            self?.frame.size.height += offset
             UIView.animateWithDuration(0.3, animations: {
-                self.frame.origin.y -= offset
+                self?.frame.origin.y -= offset
             })
         }
         
@@ -61,9 +61,9 @@ import UIKit
         sendButton.setImage(sendIcon, forState: .Normal)
         sendButton.addTarget(self, action: #selector(sendHandle), forControlEvents: .TouchUpInside)
         self.addSubview(sendButton)
-        sendButton.snp_makeConstraints { (make) -> Void in
-            make.bottom.equalTo(self).offset(-5)
-            make.right.equalTo(self).offset(-5)
+        sendButton.snp_makeConstraints { [weak self] (make) -> Void in
+            make.bottom.equalTo(self!).offset(-5)
+            make.right.equalTo(self!).offset(-5)
             make.width.equalTo(30)
             make.height.equalTo(25)
         }

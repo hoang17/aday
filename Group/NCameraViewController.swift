@@ -119,9 +119,9 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
 
         view.addSubview(recordButton)
         self.view.addSubview(recordButton)
-        recordButton.snp_makeConstraints { (make) -> Void in
-            make.bottom.equalTo(self.view).offset(-15)
-            make.centerX.equalTo(self.view)
+        recordButton.snp_makeConstraints { [weak self] (make) in
+            make.bottom.equalTo(self!.view).offset(-15)
+            make.centerX.equalTo(self!.view)
             make.width.equalTo(80)
             make.height.equalTo(80)
         }
@@ -133,9 +133,9 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         flipButton.setImage(loopIcon, forState: .Normal)
         flipButton.addTarget(self, action: #selector(flipCamera), forControlEvents: .TouchUpInside)
         self.view.addSubview(flipButton)
-        flipButton.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(15)
-            make.right.equalTo(self.view).offset(-18)
+        flipButton.snp_makeConstraints { [weak self] (make) in
+            make.top.equalTo(self!.view).offset(15)
+            make.right.equalTo(self!.view).offset(-18)
             make.width.equalTo(30)
             make.height.equalTo(30)
         }
@@ -147,9 +147,9 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         closeButton.setImage(closeIcon, forState: .Normal)
         closeButton.addTarget(self, action: #selector(close), forControlEvents: .TouchUpInside)
         self.view.addSubview(closeButton)
-        closeButton.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(15)
-            make.left.equalTo(self.view).offset(18)
+        closeButton.snp_makeConstraints { [weak self] (make) in
+            make.top.equalTo(self!.view).offset(15)
+            make.left.equalTo(self!.view).offset(18)
             make.width.equalTo(30)
             make.height.equalTo(30)
         }
@@ -161,9 +161,9 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         doneButton.setImage(nextIcon, forState: .Normal)
         doneButton.addTarget(self, action: #selector(stop), forControlEvents: .TouchUpInside)
         self.view.addSubview(doneButton)
-        doneButton.snp_makeConstraints { (make) -> Void in
-            make.bottom.equalTo(self.view).offset(-25)
-            make.right.equalTo(self.view).offset(-25)
+        doneButton.snp_makeConstraints { [weak self] (make) in
+            make.bottom.equalTo(self!.view).offset(-25)
+            make.right.equalTo(self!.view).offset(-25)
             make.width.equalTo(30)
             make.height.equalTo(30)
         }

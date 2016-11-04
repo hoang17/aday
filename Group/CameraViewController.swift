@@ -126,9 +126,9 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         recordButton.addTarget(self, action: #selector(stop), forControlEvents: .TouchUpInside)
         view.addSubview(recordButton)
         self.view.addSubview(recordButton)
-        recordButton.snp_makeConstraints { (make) -> Void in
-            make.bottom.equalTo(self.view).offset(-30)
-            make.centerX.equalTo(self.view)
+        recordButton.snp_makeConstraints { [weak self] (make) -> Void in
+            make.bottom.equalTo(self!.view).offset(-30)
+            make.centerX.equalTo(self!.view)
             make.width.equalTo(80)
             make.height.equalTo(80)
         }
@@ -141,9 +141,9 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         flipButton.setImage(loopIcon, forState: .Normal)
         flipButton.addTarget(self, action: #selector(flipCamera), forControlEvents: .TouchUpInside)
         self.view.addSubview(flipButton)
-        flipButton.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(15)
-            make.right.equalTo(self.view).offset(-18)
+        flipButton.snp_makeConstraints { [weak self] (make) -> Void in
+            make.top.equalTo(self!.view).offset(15)
+            make.right.equalTo(self!.view).offset(-18)
             make.width.equalTo(30)
             make.height.equalTo(30)
         }
@@ -155,9 +155,9 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         backButton.setImage(backIcon, forState: .Normal)
         backButton.addTarget(self, action: #selector(close), forControlEvents: .TouchUpInside)
         self.view.addSubview(backButton)
-        backButton.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(15)
-            make.left.equalTo(self.view).offset(18)
+        backButton.snp_makeConstraints { [weak self] (make) -> Void in
+            make.top.equalTo(self!.view).offset(15)
+            make.left.equalTo(self!.view).offset(18)
             make.width.equalTo(30)
             make.height.equalTo(30)
         }

@@ -91,9 +91,9 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
         closeButton.setImage(closeIcon, forState: .Normal)
         closeButton.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
         self.view.addSubview(closeButton)
-        closeButton.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view).offset(15)
-            make.left.equalTo(self.view).offset(18)
+        closeButton.snp_makeConstraints { [weak self] (make) in
+            make.top.equalTo(self!.view).offset(15)
+            make.left.equalTo(self!.view).offset(18)
             make.width.equalTo(30)
             make.height.equalTo(30)
         }
@@ -105,9 +105,9 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
         doneButton.setImage(nextIcon, forState: .Normal)
         doneButton.addTarget(self, action: #selector(submit), forControlEvents: .TouchUpInside)
         self.view.addSubview(doneButton)
-        doneButton.snp_makeConstraints { (make) -> Void in
-            make.bottom.equalTo(self.view).offset(-25)
-            make.right.equalTo(self.view).offset(-25)
+        doneButton.snp_makeConstraints { [weak self] (make) in
+            make.bottom.equalTo(self!.view).offset(-25)
+            make.right.equalTo(self!.view).offset(-25)
             make.width.equalTo(30)
             make.height.equalTo(30)
         }
@@ -130,7 +130,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
     
     func submit() {
         
-        recordSession?.mergeSegmentsUsingPreset(AVAssetExportPresetHighestQuality) { (url, error) in
+        recordSession?.mergeSegmentsUsingPreset(AVAssetExportPresetHighestQuality) { [weak self] (url, error) in
             if error == nil {
 
                 print("Video saved to disk: \(url)")
@@ -138,13 +138,13 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
                 let id = FIRDatabase.database().reference().child("clips").childByAutoId().key
                 let uid = AppDelegate.uid
                 let uname = AppDelegate.name
-                let txt = self.textField.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-                let y = self.textLocation.y/self.view.frame.height
+                let txt = self?.textField.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                let y = self!.textLocation.y/self!.view.frame.height
                 let uploadFile = "\(id).mp4"
                 
-                let clip = ClipModel(id: id, uid: uid, uname: uname, fname: uploadFile, txt: txt!, y: y, locationInfo: self.locationInfo!)
+                let clip = ClipModel(id: id, uid: uid, uname: uname, fname: uploadFile, txt: txt!, y: y, locationInfo: self!.locationInfo!)
                 
-                UploadHelper.sharedInstance.enqueueUpload(clip, liloaded: self.locationInfo!.loaded)
+                UploadHelper.sharedInstance.enqueueUpload(clip, liloaded: self!.locationInfo!.loaded)
                 
                 url!.saveToCameraRollWithCompletion({(path, saveError) in
                     print("Video saved to camera roll: \(path)")
@@ -202,6 +202,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
     }
     
     deinit {
+        print("deinit camera preview")
         player?.replaceCurrentItemWithPlayerItem(nil)
         player = nil
         NSNotificationCenter.defaultCenter().removeObserver(self)

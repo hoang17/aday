@@ -34,24 +34,24 @@ class LocationInfo {
             return
         }
         
-        CLGeocoder().reverseGeocodeLocation(location, completionHandler: { (placemarks, error) in
+        CLGeocoder().reverseGeocodeLocation(location, completionHandler: { [weak self] (placemarks, error) in
             guard error == nil else {
                 print(error)
-                completion?(self)
+                completion?(self!)
                 return
             }
             
             if let placeMark = placemarks?.first {
                 // print(placeMark.addressDictionary)                
                 
-                self.loaded = true
-                self.name = placeMark.addressDictionary!["Name"] as? String ?? ""
-                self.city = placeMark.addressDictionary!["City"] as? String ?? ""
-                self.country = placeMark.addressDictionary!["CountryCode"] as? String ?? ""
-                self.sublocal = placeMark.addressDictionary!["SubLocality"] as? String ?? ""
-                self.subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as? String ?? ""
+                self?.loaded = true
+                self?.name = placeMark.addressDictionary!["Name"] as? String ?? ""
+                self?.city = placeMark.addressDictionary!["City"] as? String ?? ""
+                self?.country = placeMark.addressDictionary!["CountryCode"] as? String ?? ""
+                self?.sublocal = placeMark.addressDictionary!["SubLocality"] as? String ?? ""
+                self?.subarea = placeMark.addressDictionary!["SubAdministrativeArea"] as? String ?? ""
             }
-            completion?(self)
+            completion?(self!)
         })
     }
 }

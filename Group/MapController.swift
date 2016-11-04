@@ -218,7 +218,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         if let location = manager.location {
             
-            geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+            geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) in
                 
                 let placeMark: CLPlacemark! = placemarks?[0]
                 if (placeMark == nil){

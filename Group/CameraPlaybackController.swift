@@ -108,13 +108,13 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         commentBox.hidden = true
         commentBox.height = 38
         commentBox.width = UIScreen.mainScreen().bounds.width
-        commentBox.sendCallback = {
-            self.commentBox.commentField.resignFirstResponder()
-            self.commentBox.hidden = true
-            self.player.play()
-            if let cm = self.commentBox.commentField.text {
-                FriendsLoader.sharedInstance.comment(self.clips[self.playIndex], text: cm)
-                self.commentBox.commentField.text = ""
+        commentBox.sendCallback = { [weak self] in
+            self?.commentBox.commentField.resignFirstResponder()
+            self?.commentBox.hidden = true
+            self?.player.play()
+            if let cm = self?.commentBox.commentField.text {
+                FriendsLoader.sharedInstance.comment(self!.clips[self!.playIndex], text: cm)
+                self?.commentBox.commentField.text = ""
             }
         }
         
@@ -185,47 +185,47 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         
         let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         
-        let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.Destructive) { (action) in
+        let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.Destructive) { [weak self] (action) in
             
             let confirmAlert = UIAlertController(title: "Report", message: "Do you want to report this pin?", preferredStyle: UIAlertControllerStyle.Alert)
             
-            confirmAlert.addAction(UIAlertAction(title: "Report", style: .Destructive, handler: { (action) in
+            confirmAlert.addAction(UIAlertAction(title: "Report", style: .Destructive, handler: { [weak self] (action) in
                 
                 let alert = UIAlertController(title: "This content has been reported\n", message: "Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { (action) in
-                    self.close()
-                    FriendsLoader.sharedInstance.reportClip(self.clips[self.playIndex])
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { [weak self] (action) in
+                    self?.close()
+                    FriendsLoader.sharedInstance.reportClip(self!.clips[self!.playIndex])
                 }))
-                self.presentViewController(alert, animated: true, completion: nil)
+                self?.presentViewController(alert, animated: true, completion: nil)
             }))
             
-            confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) in
-                self.player.player?.play()
+            confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { [weak self] (action) in
+                self?.player.player?.play()
             }))
             
-            self.presentViewController(confirmAlert, animated: true, completion: nil)
+            self?.presentViewController(confirmAlert, animated: true, completion: nil)
         }
         
-        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
+        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { [weak self] (action) in
             
             let text = "Exporting pin..."
-            self.showWaitOverlayWithText(text)
+            self?.showWaitOverlayWithText(text)
             
-            VideoHelper.sharedInstance.export(clip, friendName: self.friendName, profileImg: self.profileImg.image!) { (savePathUrl) in
-                self.removeAllOverlays()
-                self.shareClip(savePathUrl)
+            VideoHelper.sharedInstance.export(clip, friendName: self!.friendName!, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
+                self?.removeAllOverlays()
+                self?.shareClip(savePathUrl)
             }
         }
 
-        let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) in
+        let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { [weak self] (action) in
             
             let text = "Exporting pin..."
-            self.showWaitOverlayWithText(text)
+            self?.showWaitOverlayWithText(text)
             
-            VideoHelper.sharedInstance.export(clip, friendName: self.friendName, profileImg: self.profileImg.image!) { (savePathUrl) in
+            VideoHelper.sharedInstance.export(clip, friendName: self!.friendName, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
                 
-                self.removeAllOverlays()
-                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
+                self?.removeAllOverlays()
+                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { [weak self] (assetURL, error) in
                     if error != nil {
                         print(error)
                         return
@@ -243,15 +243,15 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             }
         }
         
-        let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { (action) in
+        let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { [weak self] (action) in
             
             let text = "Exporting pin..."
-            self.showWaitOverlayWithText(text)
+            self?.showWaitOverlayWithText(text)
             
-            VideoHelper.sharedInstance.export(clip, friendName: self.friendName, profileImg: self.profileImg.image!) { (savePathUrl) in
+            VideoHelper.sharedInstance.export(clip, friendName: self!.friendName, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
                 
-                self.removeAllOverlays()
-                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
+                self?.removeAllOverlays()
+                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { [weak self] (assetURL, error) in
                     if error != nil {
                         print(error)
                         return
@@ -268,24 +268,24 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         }
         
         
-        let deleteAction = UIAlertAction(title: "Delete", style: .Destructive) { (action) in
+        let deleteAction = UIAlertAction(title: "Delete", style: .Destructive) { [weak self] (action) in
             
             let confirmAlert = UIAlertController(title: "Delete", message: "Do you want to delete this pin?", preferredStyle: UIAlertControllerStyle.Alert)
             
-            confirmAlert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { (action) in
-                self.close()
-                FriendsLoader.sharedInstance.deleteClip(self.clips[self.playIndex])
+            confirmAlert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { [weak self] (action) in
+                self?.close()
+                FriendsLoader.sharedInstance.deleteClip(self!.clips[self!.playIndex])
             }))
             
-            confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) in
-                self.player.player?.play()
+            confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { [weak self] (action) in
+                self?.player.player?.play()
             }))
             
-            self.presentViewController(confirmAlert, animated: true, completion: nil)
+            self?.presentViewController(confirmAlert, animated: true, completion: nil)
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { (action) in
-            self.player.player?.play()
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { [weak self] (action) in
+            self?.player.player?.play()
         }
         
         myActionSheet.addAction(shareAction)
@@ -338,9 +338,9 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         
         activityVC.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
         
-        activityVC.completionWithItemsHandler = { (activity, completed, items, error) in
-            self.removeAllOverlays()
-            self.player.player?.play()
+        activityVC.completionWithItemsHandler = { [weak self] (activity, completed, items, error) in
+            self?.removeAllOverlays()
+            self?.player.player?.play()
         }
         
         self.presentViewController(activityVC, animated: true, completion: nil)
@@ -474,11 +474,6 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
                animated: false)
         }
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().removeObserver(self.commentBox)
-        NSNotificationCenter.defaultCenter().removeObserver(self.commentBox.commentField)
-        
-        commentBox.sendCallback = nil
-        commentBox.commentField.offsetCallback = nil
     }
     
     override func prefersStatusBarHidden() -> Bool {
@@ -486,7 +481,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
     }
     
     deinit {
-        print("deinit")
+        print("deinit camera playback")
     }
 }
 

@@ -44,9 +44,9 @@ class SearchItemCell: UITableViewCell{
         followButton.size = CGSize(width: 80, height: 35)
         followButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
         self.addSubview(followButton)
-        followButton.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(self.top).offset(4)
-            make.right.equalTo(self.right).offset(-10)
+        followButton.snp_makeConstraints { [weak self] (make) in
+            make.top.equalTo(self!.top).offset(4)
+            make.right.equalTo(self!.right).offset(-10)
             
         }
     }
