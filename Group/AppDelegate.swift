@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 import Fabric
-import Crashlytics
+//import Crashlytics
 import DigitsKit
 import FBSDKCoreKit
 import FBSDKLoginKit
@@ -37,7 +37,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // FIRDatabase.database().persistenceEnabled = true
 
         // Setup Fabric
-        Fabric.with([Crashlytics.self, Digits.self])
+        Fabric.with([Digits.self])
+        //Fabric.with([Crashlytics.self, Digits.self])
         
         // Facebook setup
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -138,7 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if FIRAuth.auth()?.currentUser != nil && FBSDKAccessToken.currentAccessToken() != nil {
             self.window!.rootViewController = MainController()
-            self.logUser()
+            //self.logUser()
         } else {
             do {
                 try FIRAuth.auth()?.signOut()
@@ -249,10 +250,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func logUser() {
-        let u = FIRAuth.auth()!.currentUser!
-        Crashlytics.sharedInstance().setUserEmail(u.email)
-        Crashlytics.sharedInstance().setUserIdentifier(u.uid)
-        Crashlytics.sharedInstance().setUserName(u.displayName)
+//        let u = FIRAuth.auth()!.currentUser!
+//        Crashlytics.sharedInstance().setUserEmail(u.email)
+//        Crashlytics.sharedInstance().setUserIdentifier(u.uid)
+//        Crashlytics.sharedInstance().setUserName(u.displayName)
     }
 }
 
@@ -295,7 +296,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         // TODO: Snooze notification to remind me later
         if response.actionIdentifier == "remindLater" {
-            let newDate = NSDate(timeIntervalSinceNow: 900) // fire after 900 seconds
+            //let newDate = NSDate(timeIntervalSinceNow: 900) // fire after 900 seconds
             //let pastdate = NSDate(timeIntervalSinceNow: -100) // fire immediately
             //let newDate = NSDate(timeInterval: 900, sinceDate: somedate)
             //scheduleNotification(at: newDate)

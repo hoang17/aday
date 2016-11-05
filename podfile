@@ -7,7 +7,6 @@ target 'Pinly' do
     pod 'Firebase/Storage'
     pod 'Fabric'
     pod 'Digits'
-    pod 'Crashlytics'
     pod 'FBSDKCoreKit'
     pod 'FBSDKLoginKit'
     pod 'FBSDKShareKit'

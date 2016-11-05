@@ -9,8 +9,6 @@ PODS:
   - Bolts/AppLinks (1.8.4):
     - Bolts/Tasks
   - Bolts/Tasks (1.8.4)
-  - Crashlytics (3.8.3):
-    - Fabric (~> 1.6.3)
   - CWStatusBarNotification (2.3.5)
   - DateTools (1.7.0)
   - DGActivityIndicatorView (2.1)
@@ -82,7 +80,6 @@ PODS:
 DEPENDENCIES:
   - ActiveLabel (from `https://github.com/optonaut/ActiveLabel.swift.git`, branch `swift-2.3`)
   - APAddressBook
-  - Crashlytics
   - CWStatusBarNotification
   - DateTools
   - DGActivityIndicatorView
@@ -139,7 +136,6 @@ SPEC CHECKSUMS:
   ActiveLabel: ec8c7a0995ab2d789ab74b72b105397dc079ff97
   APAddressBook: 2a91bf05999548bea210ec9d1a68073f4dc8bfce
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
-  Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
   CWStatusBarNotification: 3d2738b25c3207f60cc50201388d3c96182545ff
   DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
   DGActivityIndicatorView: 1942ae657a8d247c035f229422b2d15a8adbe5b6
@@ -173,6 +169,6 @@ SPEC CHECKSUMS:
   UIColor-HexString: fadc2e1389db19147ac99dee92222d3bd8bfec4a
   YYText: 5c461d709e24d55a182d1441c41dc639a18a4849
 
-PODFILE CHECKSUM: 59302adcb96ca6a6ca7777e3aed115362df9847f
+PODFILE CHECKSUM: db48b0fecbb9ce737b404fd2a4fdf6910c1a2916
 
 COCOAPODS: 1.1.0.rc.2

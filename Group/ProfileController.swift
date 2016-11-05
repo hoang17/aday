@@ -5,7 +5,6 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
-import Crashlytics
 import DigitsKit
 import FBSDKLoginKit
 import AVFoundation

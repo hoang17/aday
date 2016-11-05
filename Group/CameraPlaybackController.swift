@@ -251,7 +251,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             VideoHelper.sharedInstance.export(clip, friendName: self!.friendName, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
                 
                 self?.removeAllOverlays()
-                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { [weak self] (assetURL, error) in
+                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
                     if error != nil {
                         print(error)
                         return
