@@ -9,8 +9,8 @@
 import UIKit
 import Firebase
 import Fabric
-import Crashlytics
 import DigitsKit
+//import Crashlytics
 import FBSDKCoreKit
 import FBSDKLoginKit
 import RealmSwift
@@ -37,7 +37,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // FIRDatabase.database().persistenceEnabled = true
 
         // Setup Fabric
-        Fabric.with([Crashlytics.self, Digits.self])
+        Fabric.with([Digits.self])
+        //Fabric.with([Crashlytics.self, Digits.self])
         
         // Facebook setup
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -250,9 +251,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func logUser() {
         let u = FIRAuth.auth()!.currentUser!
-        Crashlytics.sharedInstance().setUserEmail(u.email)
-        Crashlytics.sharedInstance().setUserIdentifier(u.uid)
-        Crashlytics.sharedInstance().setUserName(u.displayName)
+//        Crashlytics.sharedInstance().setUserEmail(u.email)
+//        Crashlytics.sharedInstance().setUserIdentifier(u.uid)
+//        Crashlytics.sharedInstance().setUserName(u.displayName)
     }
 }
 

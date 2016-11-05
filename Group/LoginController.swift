@@ -5,7 +5,6 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
-import Crashlytics
 import DigitsKit
 import FBSDKCoreKit
 import FBSDKLoginKit
@@ -18,7 +17,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         let background = UIImage(named: "Image")
         var imageView : UIImageView!
         imageView = UIImageView(frame: view.bounds)

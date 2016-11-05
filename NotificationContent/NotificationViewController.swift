@@ -19,7 +19,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         // Do any required interface initialization here.
     }
     
-    public func didReceiveNotification(notification: UNNotification) {
+    func didReceiveNotification(notification: UNNotification) {
         self.label?.text = notification.request.content.body
     }
 
