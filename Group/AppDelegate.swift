@@ -58,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let manager = FileManager.default
             for URL in realmURLs {
                 do {
-                    try manager.removeItemAtURL(URL!)
+                    try manager.removeItem(at: URL)
                 } catch {
                     print(error)
                 }

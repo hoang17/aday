@@ -29,13 +29,14 @@ class Friend: NSObject {
     }
     
     init(snapshot: FIRDataSnapshot) {
-        self.uid = snapshot.value!["uid"] as? String ?? ""
-        self.fuid = snapshot.value!["fuid"] as? String ?? ""
-        self.following = snapshot.value!["following"] as? Bool ?? false
-        self.follower = snapshot.value!["follower"] as? Bool ?? false
-        self.flag = snapshot.value!["flag"] as? Bool ?? false
-        self.created = snapshot.value!["created"] as? Double ?? 0
-        self.updated = snapshot.value!["updated"] as? Double ?? 0
+        let value = snapshot.value as? NSDictionary
+        self.uid = value?["uid"] as? String ?? ""
+        self.fuid = value?["fuid"] as? String ?? ""
+        self.following = value?["following"] as? Bool ?? false
+        self.follower = value?["follower"] as? Bool ?? false
+        self.flag = value?["flag"] as? Bool ?? false
+        self.created = value?["created"] as? Double ?? 0
+        self.updated = value?["updated"] as? Double ?? 0
     }
     
     func toAnyObject() -> [String:AnyObject] {

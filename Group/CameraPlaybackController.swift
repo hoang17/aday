@@ -251,7 +251,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             VideoHelper.sharedInstance.export(clip, friendName: self!.friendName, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
                 
                 self?.removeAllOverlays()
-                ALAssetsLibrary().writeVideoAtPath(toSavedPhotosAlbum: savePathUrl, completionBlock: { [weak self] (assetURL, error) in
+                ALAssetsLibrary().writeVideoAtPath(toSavedPhotosAlbum: savePathUrl, completionBlock: { (assetURL, error) in
                     if error != nil {
                         print(error)
                         return
@@ -261,7 +261,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
                         let escapedString = assetURL?.absoluteString.urlencodedString()
                         let escapedCaption = "Pinly".urlencodedString()
                         let instagramURL = URL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
-                        UIApplication.sharedApplication().openURL(instagramURL)
+                        UIApplication.shared.openURL(instagramURL)
                     }
                 })
             }

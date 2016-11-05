@@ -35,13 +35,14 @@ class Comment: NSObject {
     
     init(snapshot: FIRDataSnapshot) {
         id = snapshot.key
-        uid = snapshot.value!["uid"] as? String ?? ""
-        pid = snapshot.value!["pid"] as? String ?? ""
-        name = snapshot.value!["name"] as? String ?? ""
-        txt = snapshot.value!["txt"] as? String ?? ""
-        trash = snapshot.value!["trash"] as? Bool ?? false
-        created = snapshot.value!["created"] as? Double ?? 0
-        updated = snapshot.value!["updated"] as? Double ?? 0
+        let value = snapshot.value as? NSDictionary
+        uid = value?["uid"] as? String ?? ""
+        pid = value?["pid"] as? String ?? ""
+        name = value?["name"] as? String ?? ""
+        txt = value?["txt"] as? String ?? ""
+        trash = value?["trash"] as? Bool ?? false
+        created = value?["created"] as? Double ?? 0
+        updated = value?["updated"] as? Double ?? 0
     }
     
 //    init(data: CommentModel){
@@ -55,7 +56,7 @@ class Comment: NSObject {
 //        self.updated = data.updated
 //    }
     
-    func toAnyObject() -> AnyObject {
+    func toAnyObject() -> NSDictionary {
         return [
             "id": id,
             "uid": uid,

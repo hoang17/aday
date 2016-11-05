@@ -161,10 +161,10 @@ class FriendsLoader: NSObject {
     func unfollow(_ friendId: String) {
         let userID : String! = AppDelegate.uid
         let realm = AppDelegate.realm
-        let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
+        let user = realm?.object(ofType: UserModel.self, forPrimaryKey: friendId)!
         
-        try! realm.write {
-            user.following = false
+        try! realm?.write {
+            user?.following = false
         }
         
         let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": false as AnyObject]
@@ -180,7 +180,7 @@ class FriendsLoader: NSObject {
         ref.updateChildValues(update)
         
         let realm = AppDelegate.realm
-        try! realm.write {
+        try! realm?.write {
             clip.flag = true
             clip.trash = true
         }
@@ -194,7 +194,7 @@ class FriendsLoader: NSObject {
         ref.updateChildValues(update)
         
         let realm = AppDelegate.realm
-        try! realm.write {
+        try! realm?.write {
             clip.trash = true
             clip.updated = updated
         }

@@ -314,7 +314,7 @@ class UploadHelper {
             let uiimg = UIImage(cgImage: cgimg)
             let data = UIImageJPEGRepresentation(uiimg, 0.5)
             
-            KingfisherManager.shared.cache.removeImage(uiimg, originalData: data, forKey: clip.id)
+            KingfisherManager.shared.cache.removeImage(forKey: clip.id, processorIdentifier: uiimg, fromDisk: data)
             
             try? data!.write(to: URL(fileURLWithPath: thumbFilePath), options: [.atomic])
         } catch {

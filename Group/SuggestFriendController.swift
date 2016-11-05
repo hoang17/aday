@@ -16,7 +16,7 @@ class SuggestFriendController: SearchController {
         
         self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismiss))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismiss as ()->()))
         self.navigationItem.hidesBackButton = true
         //self.navigationItem.backBarButtonItem?.title = ""
     }

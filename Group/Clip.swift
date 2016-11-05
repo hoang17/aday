@@ -31,27 +31,28 @@ class Clip: NSObject {
     
     init(snapshot: FIRDataSnapshot) {
         id = snapshot.key
-        uid = snapshot.value!["uid"] as? String ?? ""
-        uname = snapshot.value!["uname"] as? String ?? ""
-        fname = snapshot.value!["fname"] as? String ?? ""
-        txt = snapshot.value!["txt"] as? String ?? ""
-        y = snapshot.value!["y"] as? Float ?? 0
-        flag = snapshot.value!["flag"] as? Bool ?? false
-        long = snapshot.value!["long"] as? Double ?? 0
-        lat = snapshot.value!["lat"] as? Double ?? 0
-        altitude = snapshot.value!["altitude"] as? Double ?? 0
-        course = snapshot.value!["course"] as? Double ?? 0
-        speed = snapshot.value!["speed"] as? Double ?? 0
-        lname = snapshot.value!["lname"] as? String ?? ""
-        city = snapshot.value!["city"] as? String ?? ""
-        country = snapshot.value!["country"] as? String ?? ""
-        sublocal = snapshot.value!["sublocal"] as? String ?? ""
-        subarea = snapshot.value!["subarea"] as? String ?? ""
-        thumb = snapshot.value!["thumb"] as? String ?? ""
-        trash = snapshot.value!["trash"] as? Bool ?? false
-        date = snapshot.value!["date"] as? Double ?? 0
-        updated = snapshot.value!["updated"] as? Double ?? 0
-        furl = snapshot.value!["furl"] as? String ?? ""
+        let value = snapshot.value as? NSDictionary
+        uid = value?["uid"] as? String ?? ""
+        uname = value?["uname"] as? String ?? ""
+        fname = value?["fname"] as? String ?? ""
+        txt = value?["txt"] as? String ?? ""
+        y = value?["y"] as? Float ?? 0
+        flag = value?["flag"] as? Bool ?? false
+        long = value?["long"] as? Double ?? 0
+        lat = value?["lat"] as? Double ?? 0
+        altitude = value?["altitude"] as? Double ?? 0
+        course = value?["course"] as? Double ?? 0
+        speed = value?["speed"] as? Double ?? 0
+        lname = value?["lname"] as? String ?? ""
+        city = value?["city"] as? String ?? ""
+        country = value?["country"] as? String ?? ""
+        sublocal = value?["sublocal"] as? String ?? ""
+        subarea = value?["subarea"] as? String ?? ""
+        thumb = value?["thumb"] as? String ?? ""
+        trash = value?["trash"] as? Bool ?? false
+        date = value?["date"] as? Double ?? 0
+        updated = value?["updated"] as? Double ?? 0
+        furl = value?["furl"] as? String ?? ""
     }
     
     init(data: ClipModel){
@@ -79,7 +80,7 @@ class Clip: NSObject {
         self.furl = data.furl
     }
     
-    func toAnyObject() -> AnyObject {
+    func toAnyObject() -> NSDictionary {
         return [
             "id": id,
             "uid": uid,

@@ -179,7 +179,7 @@ import UIKit
     
     // Trim white space and new line characters when end editing.
     func textDidEndEditing(_ notification: Notification) {
-        guard notification.object === self else { return }
+        //guard notification.object === self else { return }
         text = text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         autoHeight()
         setNeedsDisplay()
@@ -187,7 +187,7 @@ import UIKit
     
     // Limit the length of text
     func textDidChange(_ notification: Notification) {
-        guard notification.object === self else { return }
+        //guard notification.object === self else { return }
         autoHeight()
         setNeedsDisplay()
     }

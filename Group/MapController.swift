@@ -104,17 +104,17 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         }
         self.mapView.addAnnotations(self.clipAnnotations)
         
-        notificationToken = clips.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
+        notificationToken = clips?.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             switch changes {
             case .update(_, let deletions, let insertions, let modifications):
                 
                 if insertions.count > 0 {
                     
-                    let inserts = insertions.map { clips[$0] }
+                    let inserts = insertions.map { clips?[$0] }
                     
                     for clip in inserts {
                         
-                        let point = CLLocationCoordinate2D(latitude: clip.lat, longitude: clip.long)
+                        let point = CLLocationCoordinate2D(latitude: (clip?.lat)!, longitude: (clip?.long)!)
                         
                         // check if clip location is new
                         var isnew = true
@@ -122,14 +122,14 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                             if self!.isPointInsideCircle(point, circleCentre: ca.coordinate, radius: 50){
                                 self?.mapView.removeAnnotation(ca)
                                 isnew = false
-                                ca.addClip(clip)
+                                ca.addClip(clip!)
                                 self?.mapView.addAnnotation(ca)
                                 break
                             }
                         }
                         
                         if isnew {
-                            let ca = ClipAnnotation(clip: clip)
+                            let ca = ClipAnnotation(clip: clip!)
                             self!.clipAnnotations.append(ca)
                             self?.mapView.addAnnotation(ca)
                             // self.addCircle(ca.coordinate, radius: 50)
@@ -140,7 +140,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                     
                     self?.mapView.removeAnnotations((self?.clipAnnotations)!)
                     self?.clipAnnotations = [ClipAnnotation]()
-                    for clip in clips {
+                    for clip in clips! {
                         
                         let point = CLLocationCoordinate2D(latitude: clip.lat, longitude: clip.long)
                         
@@ -373,7 +373,7 @@ class ClipAnnotation: NSObject, MKAnnotation {
     
     func addClip(_ clip: ClipModel) {
         if self.users[clip.uid] == nil {
-            let user = AppDelegate.realm.object(ofType, UserModel.self, forPrimaryKey: clip.uid)
+            let user = AppDelegate.realm.object(ofType: UserModel.self, forPrimaryKey: clip.uid)
             self.users[clip.uid] = user
         }
         self.clips.append(clip)
