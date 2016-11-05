@@ -296,7 +296,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         // TODO: Snooze notification to remind me later
         if response.actionIdentifier == "remindLater" {
-            let newDate = Date(timeIntervalSinceNow: 900) // fire after 900 seconds
+            //let newDate = Date(timeIntervalSinceNow: 900) // fire after 900 seconds
             //let pastdate = NSDate(timeIntervalSinceNow: -100) // fire immediately
             //let newDate = NSDate(timeInterval: 900, sinceDate: somedate)
             //scheduleNotification(at: newDate)
