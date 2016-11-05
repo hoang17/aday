@@ -16,10 +16,10 @@ import Social
 import AssetsLibrary
 
 class FriendsController: UITableViewController, FBSDKSharingDelegate {
-    
+
     var friends: Results<UserModel>!
     
-    var myGroup = dispatch_group_create()
+    var myGroup = DispatchGroup()
     
     var notificationToken: NotificationToken? = nil
     
@@ -32,56 +32,56 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
         navigationController?.hidesBarsOnSwipe = true
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(findFriends))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(findFriends))
         
         let realm = AppDelegate.realm
 
-        friends = realm.objects(UserModel.self).filter("following = true AND uploaded > \(AppDelegate.startdate)").sorted("uploaded", ascending: false)
+        friends = realm?.objects(UserModel.self).filter("following = true AND uploaded > \(AppDelegate.startdate)").sorted(byProperty: "uploaded", ascending: false)
         
         notificationToken = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             guard (self?.tableView) != nil else { return }
             switch changes {
-            case .Initial:
+            case .initial:
                 // tableView.reloadData()
                 break
-            case .Update(_, let deletions, let insertions, let modifications):
+            case .update(_, let deletions, let insertions, let modifications):
                 print("update friends tableview")
                 self!.tableView.beginUpdates()
-                self!.tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) },
-                    withRowAnimation: .Automatic)
-                self!.tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) },
-                    withRowAnimation: .Automatic)
-                self!.tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) },
-                    withRowAnimation: .Automatic)
+                self!.tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) },
+                    with: .automatic)
+                self!.tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) },
+                    with: .automatic)
+                self!.tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) },
+                    with: .automatic)
                 self!.tableView.endUpdates()
                 break
-            case .Error(let error):
+            case .error(let error):
                 print(error)
                 break
             }
         }
     
-        view.backgroundColor = .whiteColor()
+        view.backgroundColor = .white
         
         // Setup friends table
         
         tableView.rowHeight = 345
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.layoutMargins = UIEdgeInsetsZero
-        tableView.separatorInset = UIEdgeInsetsZero
+        tableView.layoutMargins = UIEdgeInsets.zero
+        tableView.separatorInset = UIEdgeInsets.zero
         //tableView.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
-        tableView.separatorStyle = .None        
+        tableView.separatorStyle = .none        
     }
     
     func findFriends() {
         let navigationController = UINavigationController(rootViewController: SyncContactController(count: friends.count))
-        navigationController.view.backgroundColor = UIColor.clearColor()
-        navigationController.modalPresentationStyle = .OverFullScreen
-        presentViewController(navigationController, animated: true, completion: nil)
+        navigationController.view.backgroundColor = UIColor.clear
+        navigationController.modalPresentationStyle = .overFullScreen
+        present(navigationController, animated: true, completion: nil)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if !alerted {
             if friends.count == 0 || (friends.count == 1 && friends[0].uid == AppDelegate.uid) {
@@ -91,14 +91,14 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         }
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let friend = friends[indexPath.row]
         let cell = TableViewCell(friendUid: friend.uid)
         cell.controller = self
         cell.nameLabel.text = friend.name
         cell.locationLabel.text = friend.city + " · " + friend.country
-        cell.profileImg.contentMode = .ScaleAspectFit
-        cell.profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
+        cell.profileImg.contentMode = .scaleAspectFit
+        cell.profileImg.kf.setImage(with: URL(string: "https://graph.facebook.com/\(friends[indexPath.row].fb)/picture?type=large&return_ssl_resources=1"))
         cell.friendName = friend.name
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapMore))
@@ -106,14 +106,14 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         return cell
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friends.count
     }
     
-    func tapMore(sender: UITapGestureRecognizer) {
+    func tapMore(_ sender: UITapGestureRecognizer) {
         
-        let tapLocation = sender.locationInView(self.tableView)
-        let indexPath : NSIndexPath = self.tableView.indexPathForRowAtPoint(tapLocation)!
+        let tapLocation = sender.location(in: self.tableView)
+        let indexPath : IndexPath = self.tableView.indexPathForRow(at: tapLocation)!
         let friend = self.friends[indexPath.row]
         let userID : String! = AppDelegate.uid
         
@@ -123,15 +123,15 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
 //        let clip = Clip(data: c)
 
         // Create the action sheet
-        let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
-        let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.Destructive) { [weak self] (action) in
+        let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.destructive) { [weak self] (action) in
             
             FriendsLoader.sharedInstance.report(friend.uid)
             
-            let alert = UIAlertController(title: "You have reported\n" + friend.name, message: "Thank you for your reporting. Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-            self?.presentViewController(alert, animated: true, completion: nil)
+            let alert = UIAlertController(title: "You have reported\n" + friend.name, message: "Thank you for your reporting. Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self?.present(alert, animated: true, completion: nil)
         }
         
 //        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { (action) in
@@ -194,11 +194,11 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
 //            }
 //        }
         
-        let unfollowAction = UIAlertAction(title: "Unfollow", style: UIAlertActionStyle.Default) { (action) in
+        let unfollowAction = UIAlertAction(title: "Unfollow", style: UIAlertActionStyle.default) { (action) in
             FriendsLoader.sharedInstance.unfollow(friend.uid)
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { (action) in
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (action) in
             // print("Cancel action button tapped")
         }
         
@@ -217,24 +217,24 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
 //        myActionSheet.popoverPresentationController?.sourceView = self.showActionSheetButton
 //        myActionSheet.popoverPresentationController?.sourceRect = self.showActionSheetButton.bounds
         
-        self.presentViewController(myActionSheet, animated: true, completion: nil)
+        self.present(myActionSheet, animated: true, completion: nil)
     }
     
-    func sharer(sharer: FBSDKSharing!, didCompleteWithResults results: [NSObject: AnyObject]) {
+    func sharer(_ sharer: FBSDKSharing!, didCompleteWithResults results: [AnyHashable: Any]) {
         print("sharer didCompleteWithResults")
         print(results)
     }
     
-    func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
+    func sharer(_ sharer: FBSDKSharing!, didFailWithError error: Error!) {
         print("sharer didFailWithError")
         print(error)
     }
     
-    func sharerDidCancel(sharer: FBSDKSharing!) {
+    func sharerDidCancel(_ sharer: FBSDKSharing!) {
         print("sharerDidCancel")
     }
     
-    func shareButton(inputURl: NSURL) {
+    func shareButton(_ inputURl: URL) {
         
         let objectsToShare = [inputURl]
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
@@ -243,15 +243,15 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
         //New Excluded Activities Code
         if #available(iOS 9.0, *) {
-            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList, UIActivityTypeCopyToPasteboard, UIActivityTypeOpenInIBooks,  UIActivityTypePrint]
+            activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList, UIActivityType.copyToPasteboard, UIActivityType.openInIBooks,  UIActivityType.print]
         } else {
             // Fallback on earlier versions
-            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList, UIActivityTypeCopyToPasteboard, UIActivityTypePrint ]
+            activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList, UIActivityType.copyToPasteboard, UIActivityType.print ]
         }
 
         activityVC.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
         
-        self.presentViewController(activityVC, animated: true, completion: nil)
+        self.present(activityVC, animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {

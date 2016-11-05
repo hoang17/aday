@@ -34,33 +34,33 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         
         self.friendUid = friendUid
         
-        clips = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friendUid)' AND trash = false AND date > \(AppDelegate.startdate)").sorted("date", ascending: false)
+        clips = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friendUid)' AND trash = false AND date > \(AppDelegate.startdate)").sorted(byProperty: "date", ascending: false)
         
         self.notificationToken = clips.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             guard (self?.collectionView) != nil else { return }
             switch changes {
-            case .Initial:
+            case .initial:
                 // self?.collectionView.reloadData()
                 break
-            case .Update(_, let deletions, let insertions, let modifications):
+            case .update(_, let deletions, let insertions, let modifications):
                 self?.collectionView.performBatchUpdates({
-                    self?.collectionView.insertItemsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) })
-                    self?.collectionView.deleteItemsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) })
-                    self?.collectionView.reloadItemsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) })
+                    self?.collectionView.insertItems(at: insertions.map { IndexPath(row: $0, section: 0) })
+                    self?.collectionView.deleteItems(at: deletions.map { IndexPath(row: $0, section: 0) })
+                    self?.collectionView.reloadItems(at: modifications.map { IndexPath(row: $0, section: 0) })
                 }, completion: nil)
-            case .Error(let error):
+            case .error(let error):
                 print(error)
             }
         }
         
-        self.selectionStyle = .None
+        self.selectionStyle = .none
         
         moreButton.text = "..."
-        moreButton.origin = CGPoint(x: UIScreen.mainScreen().bounds.width-40, y: 10)
+        moreButton.origin = CGPoint(x: UIScreen.main.bounds.width-40, y: 10)
         moreButton.size = CGSize(width: 40, height: 35)
-        moreButton.textColor = UIColor.blackColor()
+        moreButton.textColor = UIColor.black
         moreButton.font = UIFont(name: "OpenSans-Bold", size: 20.0)
-        moreButton.userInteractionEnabled = true
+        moreButton.isUserInteractionEnabled = true
         
         profileImg.origin = CGPoint(x: 10, y: 13)
         profileImg.size = CGSize(width: 40, height: 40)
@@ -70,26 +70,26 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     
         nameLabel.origin = CGPoint(x: 60, y: 10)
         nameLabel.size = CGSize(width: self.width, height: 35)
-        nameLabel.textColor = UIColor.blackColor()
+        nameLabel.textColor = UIColor.black
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 13.0)
         
         locationLabel.origin = CGPoint(x: 60, y: 36)
         locationLabel.size = CGSize(width: self.width, height: 14)
-        locationLabel.textColor = UIColor.grayColor()
+        locationLabel.textColor = UIColor.gray
         locationLabel.font = UIFont(name: "OpenSans", size: 10.0)
         
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
+        layout.scrollDirection = UICollectionViewScrollDirection.horizontal
         layout.minimumLineSpacing = 3
         
         collectionView = UICollectionView(frame: self.bounds, collectionViewLayout: layout)
         collectionView.origin.y = 55
         collectionView.height = 290
-        collectionView.width = UIScreen.mainScreen().bounds.width
+        collectionView.width = UIScreen.main.bounds.width
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.registerClass(MiniViewCell.self, forCellWithReuseIdentifier: "MiniViewCell")
-        collectionView.backgroundColor = UIColor.clearColor()
+        collectionView.register(MiniViewCell.self, forCellWithReuseIdentifier: "MiniViewCell")
+        collectionView.backgroundColor = UIColor.clear
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
         
         self.addSubview(profileImg)
@@ -100,21 +100,21 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
     }
     
     // MARK: UICollectionViewDataSource
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return clips!.count
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
         return CGSize(width: cellWidth, height: cellHeight)
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MiniViewCell", forIndexPath: indexPath) as! MiniViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MiniViewCell", for: indexPath) as! MiniViewCell
         cell.subviews.forEach({ $0.removeFromSuperview() })
         
         let clip = clips![indexPath.row]
@@ -123,11 +123,11 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         play(indexPath.row)
     }
     
-    func play(playIndex: Int) {
+    func play(_ playIndex: Int) {
         
         let cameraPlayback = CameraPlaybackController(playIndex: playIndex, clips: clips)
         cameraPlayback.nameLabel.text = nameLabel.text
@@ -144,7 +144,7 @@ class TableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionVi
 
         let navigationController = UINavigationController(rootViewController: cameraPlayback)
         
-        self.controller!.presentViewController(navigationController, animated: true, completion: nil)
+        self.controller!.present(navigationController, animated: true, completion: nil)
     }
     
 }

@@ -10,16 +10,16 @@
 import Foundation
 import UIKit
 
-@objc public class CommentTextView: UIView {
+@objc open class CommentTextView: UIView {
     
-    public var commentField: CommentTextField!
+    open var commentField: CommentTextField!
     
-    public var sendButton: UIButton!
+    open var sendButton: UIButton!
     
-    public var sendCallback: (()->Void)?
+    open var sendCallback: (()->Void)?
     
     init(){
-        super.init(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 34))
+        super.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 34))
         commonInit()
     }
     
@@ -28,38 +28,38 @@ import UIKit
         commonInit()
     }
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         
-        backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
+        backgroundColor = UIColor.black.withAlphaComponent(0.7)
         
         commentField = CommentTextField()
         commentField.width = frame.width-40
         commentField.height = frame.height
-        commentField.backgroundColor = UIColor.clearColor()
-        commentField.textColor = UIColor.whiteColor()
-        commentField.font = UIFont.systemFontOfSize(16.0)
-        commentField.textAlignment = NSTextAlignment.Left
+        commentField.backgroundColor = UIColor.clear
+        commentField.textColor = UIColor.white
+        commentField.font = UIFont.systemFont(ofSize: 16.0)
+        commentField.textAlignment = NSTextAlignment.left
         commentField.placeHolder = "Write a comment..."
         commentField.placeHolderColor = UIColor(white: 1, alpha: 0.5)
         
         commentField.text = ""
-        commentField.returnKeyType = UIReturnKeyType.Default
-        commentField.userInteractionEnabled = true
+        commentField.returnKeyType = UIReturnKeyType.default
+        commentField.isUserInteractionEnabled = true
         self.addSubview(commentField)
         
         commentField.offsetCallback = { [weak self] (offset) in
             self?.frame.size.height += offset
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animate(withDuration: 0.3, animations: {
                 self?.frame.origin.y -= offset
             })
         }
         
         let sendIcon = UIImage(named: "ic_send") as UIImage?
-        sendButton = UIButton(type: .System)
+        sendButton = UIButton(type: .system)
         sendButton.tintColor = UIColor(white: 1, alpha: 1)
-        sendButton.backgroundColor = UIColor.clearColor()
-        sendButton.setImage(sendIcon, forState: .Normal)
-        sendButton.addTarget(self, action: #selector(sendHandle), forControlEvents: .TouchUpInside)
+        sendButton.backgroundColor = UIColor.clear
+        sendButton.setImage(sendIcon, for: UIControlState())
+        sendButton.addTarget(self, action: #selector(sendHandle), for: .touchUpInside)
         self.addSubview(sendButton)
         sendButton.snp_makeConstraints { [weak self] (make) -> Void in
             make.bottom.equalTo(self!).offset(-5)
@@ -68,24 +68,24 @@ import UIKit
             make.height.equalTo(25)
         }
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
     // On return done editing
     func sendHandle(){
-        commentField.text = commentField.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        commentField.text = commentField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         sendCallback?()
     }
     
-    func keyboardNotification(notification: NSNotification) {        
+    func keyboardNotification(_ notification: Notification) {        
         guard let superview = self.superview else {
             return
         }
         
         if let userInfo = notification.userInfo {
-            let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
+            let keyboardSize = (userInfo[UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue.size
             let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
-            UIView.animateWithDuration(duration, animations: {
+            UIView.animate(withDuration: duration, animations: {
                 self.frame.origin.y = superview.frame.height - keyboardSize.height - self.frame.size.height
             })
         }
@@ -93,29 +93,29 @@ import UIKit
  
     deinit {
         //print("deinit comment box")
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
-@objc public class CommentTextField: UITextView, UITextViewDelegate {
+@objc open class CommentTextField: UITextView, UITextViewDelegate {
     
-    public var maxLength = 0
+    open var maxLength = 0
     
-    public var maxHeight: CGFloat = 0
+    open var maxHeight: CGFloat = 0
     
-    public var offsetCallback: ((offset: CGFloat)-> Void)?
+    open var offsetCallback: ((_ offset: CGFloat)-> Void)?
     
     // Placeholder properties
     // Need to set both placeHolder and placeHolderColor in order to show placeHolder in the textview
-    public var placeHolder: NSString? {
+    open var placeHolder: NSString? {
         didSet { setNeedsDisplay() }
     }
     
-    public var placeHolderColor: UIColor? {
+    open var placeHolderColor: UIColor? {
         didSet { setNeedsDisplay() }
     }
     
-    public var placeHolderLeftMargin: CGFloat = 5 {
+    open var placeHolderLeftMargin: CGFloat = 5 {
         didSet { setNeedsDisplay() }
     }
     
@@ -129,29 +129,29 @@ import UIKit
         commonInit()
     }
     
-    private func commonInit(obKeyboard: Bool = true) {
+    fileprivate func commonInit(_ obKeyboard: Bool = true) {
         
         delegate = self
-        scrollEnabled = false
-        contentMode = .Redraw
+        isScrollEnabled = false
+        contentMode = .redraw
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textDidEndEditing), name: UITextViewTextDidEndEditingNotification, object: self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textDidChange), name: UITextViewTextDidChangeNotification, object: self)
+        NotificationCenter.default.addObserver(self, selector: #selector(textDidEndEditing), name: NSNotification.Name.UITextViewTextDidEndEditing, object: self)
+        NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: NSNotification.Name.UITextViewTextDidChange, object: self)
     }
     
     // Show placeholder
-    override public func drawRect(rect: CGRect) {
-        super.drawRect(rect)
+    override open func draw(_ rect: CGRect) {
+        super.draw(rect)
         if text.isEmpty {
             guard let placeHolder = placeHolder else { return }
             guard let placeHolderColor = placeHolderColor else { return }
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = textAlignment
             
-            let rect = CGRectMake(textContainerInset.left + placeHolderLeftMargin,
-                                  textContainerInset.top,
-                                  frame.size.width - textContainerInset.left - textContainerInset.right,
-                                  frame.size.height)
+            let rect = CGRect(x: textContainerInset.left + placeHolderLeftMargin,
+                                  y: textContainerInset.top,
+                                  width: frame.size.width - textContainerInset.left - textContainerInset.right,
+                                  height: frame.size.height)
             
             var attributes = [
                 NSForegroundColorAttributeName: placeHolderColor,
@@ -161,45 +161,45 @@ import UIKit
                 attributes[NSFontAttributeName] = font
             }
             
-            placeHolder.drawInRect(rect, withAttributes: attributes)
+            placeHolder.draw(in: rect, withAttributes: attributes)
         }
     }
     
     
-    public func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+    open func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         
         guard maxHeight > 0 else { return true }
         
         let newText = textView.attributedText!.mutableCopy() as! NSMutableAttributedString
-        newText.replaceCharactersInRange(range, withString: text)
-        let maxSize = CGSizeMake(textView.frame.size.width - 15, CGFloat.max)
-        let boundingRect = newText.string.boundingRectWithSize(maxSize, options: .UsesLineFragmentOrigin, attributes: [NSFontAttributeName: font!], context: nil)
+        newText.replaceCharacters(in: range, with: text)
+        let maxSize = CGSize(width: textView.frame.size.width - 15, height: CGFloat.greatestFiniteMagnitude)
+        let boundingRect = newText.string.boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font!], context: nil)
         return maxHeight >= boundingRect.size.height+20
     }
     
     // Trim white space and new line characters when end editing.
-    func textDidEndEditing(notification: NSNotification) {
+    func textDidEndEditing(_ notification: Notification) {
         guard notification.object === self else { return }
-        text = text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        text = text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         autoHeight()
         setNeedsDisplay()
     }
     
     // Limit the length of text
-    func textDidChange(notification: NSNotification) {
+    func textDidChange(_ notification: Notification) {
         guard notification.object === self else { return }
         autoHeight()
         setNeedsDisplay()
     }
     
-    public func autoHeight(animation: Bool = true){
+    open func autoHeight(_ animation: Bool = true){
         if maxLength > 0 && text.characters.count > maxLength {
-            let endIndex = text.startIndex.advancedBy(maxLength)
-            text = text.substringToIndex(endIndex)
+            let endIndex = text.index(text.startIndex, offsetBy: maxLength)
+            text = text.substring(to: endIndex)
             undoManager?.removeAllActions()
         }
         
-        let size = sizeThatFits(CGSizeMake(bounds.size.width, CGFloat.max))
+        let size = sizeThatFits(CGSize(width: bounds.size.width, height: CGFloat.greatestFiniteMagnitude))
         var height = size.height
         if maxHeight > 0 {
             height = min(size.height, maxHeight)
@@ -211,12 +211,12 @@ import UIKit
         contentSize.height = height
         frame.size.height = height
         
-        offsetCallback?(offset: offset)
+        offsetCallback?(offset)
     }
     
     deinit {
         //print("deinit comment field")
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 
 }

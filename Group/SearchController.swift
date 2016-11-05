@@ -29,30 +29,30 @@ class SearchController: UITableViewController {
 
         //navigationController?.hidesBarsOnSwipe = true
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(findFriends))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(findFriends))
         
         let realm = AppDelegate.realm
         
-        friends = realm.objects(UserModel.self)
+        friends = realm?.objects(UserModel.self)
         
         notificationToken = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             guard (self?.tableView) != nil else { return }
             switch changes {
-            case .Initial:
+            case .initial:
                 // tableView.reloadData()
                 break
-            case .Update(_, let deletions, let insertions, let modifications):
+            case .update(_, let deletions, let insertions, let modifications):
                 print("update friends tableview")
                 self!.tableView.beginUpdates()
-                self!.tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) },
-                    withRowAnimation: .Automatic)
-                self!.tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) },
-                    withRowAnimation: .Automatic)
-                self!.tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) },
-                    withRowAnimation: .Automatic)
+                self!.tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) },
+                    with: .automatic)
+                self!.tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) },
+                    with: .automatic)
+                self!.tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) },
+                    with: .automatic)
                 self!.tableView.endUpdates()
                 break
-            case .Error(let error):
+            case .error(let error):
                 print(error)
                 break
             }
@@ -60,35 +60,35 @@ class SearchController: UITableViewController {
         
         let ref = FIRDatabase.database().reference()
         
-        ref.child("friends/\(AppDelegate.uid)").observeEventType(.ChildAdded, withBlock: { snapshot in
+        ref.child("friends/\(AppDelegate.uid)").observe(.childAdded, with: { snapshot in
             
             let friend = Friend(snapshot: snapshot)
             
-            ref.child("users").child(friend.fuid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            ref.child("users").child(friend.fuid).observeSingleEvent(of: .value, with: { (snapshot) in
                 let data = User(snapshot: snapshot)
                 
                 let user = UserModel(user: data)
                 user.following = friend.following
                 
-                try! realm.write {
-                    realm.add(user, update: true)
+                try! realm?.write {
+                    realm?.add(user, update: true)
                 }
                 print("friend added \(user.name)")
             })
         })
 
-        ref.child("friends/\(AppDelegate.uid)").observeEventType(.ChildChanged, withBlock: { snapshot in
+        ref.child("friends/\(AppDelegate.uid)").observe(.childChanged, with: { snapshot in
             
             let friend = Friend(snapshot: snapshot)
             
-            ref.child("users").child(friend.fuid).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            ref.child("users").child(friend.fuid).observeSingleEvent(of: .value, with: { (snapshot) in
                 let data = User(snapshot: snapshot)
                 
                 let user = UserModel(user: data)
                 user.following = friend.following
                 
-                try! realm.write {
-                    realm.add(user, update: true)
+                try! realm?.write {
+                    realm?.add(user, update: true)
                 }
                 print("friend updated \(user.name)")
             })            
@@ -104,30 +104,30 @@ class SearchController: UITableViewController {
         searchController.searchBar.sizeToFit()
         searchController.searchBar.placeholder = "Search for friends"
         self.tableView.tableHeaderView = searchController.searchBar
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
     
     func findFriends() {
         let navigationController = UINavigationController(rootViewController: SyncContactController(count: friends.count))
-        navigationController.view.backgroundColor = UIColor.clearColor()
-        navigationController.modalPresentationStyle = .OverFullScreen
-        presentViewController(navigationController, animated: true, completion: nil)
+        navigationController.view.backgroundColor = UIColor.clear
+        navigationController.modalPresentationStyle = .overFullScreen
+        present(navigationController, animated: true, completion: nil)
     }
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if searchController.active && searchController.searchBar.text != "" {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if searchController.isActive && searchController.searchBar.text != "" {
             return filteredFriends.count
         }
         return friends.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var friend: UserModel
-        if searchController.active && searchController.searchBar.text != "" {
+        if searchController.isActive && searchController.searchBar.text != "" {
             friend = filteredFriends[indexPath.row]
         } else {
             friend = friends[indexPath.row]
@@ -136,19 +136,19 @@ class SearchController: UITableViewController {
         // Set cell data
         let cell = SearchItemCell(user: friend)
         if friend.following {
-            cell.followButton.setTitle("unfollow", forState: .Normal)
-            cell.followButton.setTitleColor(UIColor.redColor(), forState: .Normal)
+            cell.followButton.setTitle("unfollow", for: UIControlState())
+            cell.followButton.setTitleColor(UIColor.red, for: UIControlState())
         } else {
-            cell.followButton.setTitle("follow", forState: .Normal)
-            cell.followButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
+            cell.followButton.setTitle("follow", for: UIControlState())
+            cell.followButton.setTitleColor(UIColor.blue, for: UIControlState())
         }
         cell.followButton.tag = indexPath.row
         cell.followButton.addTarget(self, action: #selector(SearchController.followButtonHandler),
-                                    forControlEvents: UIControlEvents.TouchUpInside)
+                                    for: UIControlEvents.touchUpInside)
         return cell
     }
     
-    func followButtonHandler(sender:UIButton!) {
+    func followButtonHandler(_ sender:UIButton!) {
     
         let friend = self.friends[sender.tag]
         let friendId = friend.uid
@@ -156,12 +156,12 @@ class SearchController: UITableViewController {
         
         let realm = AppDelegate.realm
         
-        try! realm.write {
+        try! realm?.write {
             friend.following = sender.titleLabel?.text == "follow"
         }
         
         let ref = FIRDatabase.database().reference()
-        let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": friend.following]
+        let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": friend.following as AnyObject]
         ref.updateChildValues(update)
         
         if friend.following {
@@ -171,10 +171,10 @@ class SearchController: UITableViewController {
         }
     }
     
-    func filterContentForSearchText(searchText: String, scope: String = "All") {
+    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
         filteredFriends = friends.filter({( friend : UserModel) -> Bool in
             let categoryMatch = scope == "All"
-            return categoryMatch && friend.name.lowercaseString.containsString(searchText.lowercaseString)
+            return categoryMatch && friend.name.lowercased().contains(searchText.lowercased())
         })
         tableView.reloadData()
     }
@@ -186,14 +186,14 @@ class SearchController: UITableViewController {
 
 extension SearchController: UISearchBarDelegate {
 
-    func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
     }
 }
 
 extension SearchController: UISearchResultsUpdating {
 
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
+    func updateSearchResults(for searchController: UISearchController) {
         filterContentForSearchText(searchController.searchBar.text!)
     }
 }

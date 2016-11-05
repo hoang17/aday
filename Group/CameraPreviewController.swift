@@ -23,43 +23,43 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let asset = AVAsset(URL: UploadHelper.sharedInstance.fileUrl)
+        let asset = AVAsset(url: UploadHelper.sharedInstance.fileUrl as URL)
         self.showsPlaybackControls = false
         self.player = AVPlayer(playerItem: AVPlayerItem(asset:asset))
         self.videoGravity = AVLayerVideoGravityResizeAspectFill
-        self.player!.actionAtItemEnd = .None
+        self.player!.actionAtItemEnd = .none
         
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
             selector: #selector(playerDidFinishPlaying),
-            name: AVPlayerItemDidPlayToEndTimeNotification,
+            name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
             object: player?.currentItem)
         
         self.player?.play()
         
-        textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-        textField.textColor = UIColor.whiteColor()
-        textField.font = UIFont.systemFontOfSize(16.0)
-        textField.textAlignment = NSTextAlignment.Center
+        textField.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        textField.textColor = UIColor.white
+        textField.font = UIFont.systemFont(ofSize: 16.0)
+        textField.textAlignment = NSTextAlignment.center
         textField.text = ""
-        textField.hidden = true
+        textField.isHidden = true
         textField.height = 34
-        textField.width = UIScreen.mainScreen().bounds.width
+        textField.width = UIScreen.main.bounds.width
         textField.delegate = self
-        textField.returnKeyType = UIReturnKeyType.Done
-        textField.userInteractionEnabled = true
+        textField.returnKeyType = UIReturnKeyType.done
+        textField.isUserInteractionEnabled = true
         
         view.addSubview(textField)
-        view.bringSubviewToFront(textField)
+        view.bringSubview(toFront: textField)
         
         
         let backIcon = UIImage(named: "ic_close") as UIImage?
-        let backButton = UIButton(type: .System)
+        let backButton = UIButton(type: .system)
         backButton.tintColor = UIColor(white: 1, alpha: 0.5)
-        backButton.backgroundColor = UIColor.clearColor()
-        backButton.setImage(backIcon, forState: .Normal)
-        backButton.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
+        backButton.backgroundColor = UIColor.clear
+        backButton.setImage(backIcon, for: UIControlState())
+        backButton.addTarget(self, action: #selector(back), for: .touchUpInside)
         self.view.addSubview(backButton)
-        self.view.bringSubviewToFront(backButton)
+        self.view.bringSubview(toFront: backButton)
         backButton.snp_makeConstraints { [weak self] (make) in
             make.top.equalTo(self!.view).offset(15)
             make.left.equalTo(self!.view).offset(18)
@@ -68,13 +68,13 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         }
         
         let nextIcon = UIImage(named: "ic_blue_arrow") as UIImage?
-        let doneButton = UIButton(type: .System)
+        let doneButton = UIButton(type: .system)
         doneButton.tintColor = UIColor(white: 1, alpha: 1)
-        doneButton.backgroundColor = UIColor.clearColor()
-        doneButton.setImage(nextIcon, forState: .Normal)
-        doneButton.addTarget(self, action: #selector(submit), forControlEvents: .TouchUpInside)
+        doneButton.backgroundColor = UIColor.clear
+        doneButton.setImage(nextIcon, for: UIControlState())
+        doneButton.addTarget(self, action: #selector(submit), for: .touchUpInside)
         self.view.addSubview(doneButton)
-        self.view.bringSubviewToFront(doneButton)
+        self.view.bringSubview(toFront: doneButton)
         doneButton.snp_makeConstraints { [weak self] (make) in
             make.bottom.equalTo(self!.view).offset(-20)
             make.right.equalTo(self!.view).offset(-20)
@@ -96,7 +96,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
 //        view.addSubview(locationField)
 //        view.bringSubviewToFront(locationField)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
 
         let pan = UIPanGestureRecognizer(target:self, action:#selector(panGesture))
         textField.addGestureRecognizer(pan)
@@ -107,11 +107,11 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         let id = FIRDatabase.database().reference().child("clips").childByAutoId().key
         let uid = AppDelegate.uid
         let uname = AppDelegate.name
-        let txt = self.textField.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        let txt = self.textField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let y = self.textLocation.y/self.view.frame.height
         let uploadFile = "\(id).mp4"
         
-        let clip = ClipModel(id: id, uid: uid, uname: uname, fname: uploadFile, txt: txt!, y: y, locationInfo: locationInfo!)
+        let clip = ClipModel(id: id, uid: uid!, uname: uname!, fname: uploadFile, txt: txt!, y: y, locationInfo: locationInfo!)
         
         UploadHelper.sharedInstance.enqueueUpload(clip, liloaded: locationInfo!.loaded)
         
@@ -119,41 +119,41 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
     }
     
     // Limit text length to textfield width
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         let combinedString = textField.attributedText!.mutableCopy() as! NSMutableAttributedString
-        combinedString.replaceCharactersInRange(range, withString: string)
+        combinedString.replaceCharacters(in: range, with: string)
         return combinedString.size().width < textField.bounds.size.width-10
         
     }
     
     // On return done editing
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         
         if (textField.text == ""){
-            textField.hidden = true
+            textField.isHidden = true
         } else {
-            UIView.animateWithDuration(0.2, animations: { self.textField.center.y = self.textLocation.y }, completion: nil)
+            UIView.animate(withDuration: 0.2, animations: { self.textField.center.y = self.textLocation.y }, completion: nil)
         }
         return true
     }
     
     // Allow dragging textfield
-    func panGesture(sender:UIPanGestureRecognizer) {
-        let translation  = sender.translationInView(self.view)
-        textLocation = CGPointMake(sender.view!.center.x, sender.view!.center.y + translation.y)
+    func panGesture(_ sender:UIPanGestureRecognizer) {
+        let translation  = sender.translation(in: self.view)
+        textLocation = CGPoint(x: sender.view!.center.x, y: sender.view!.center.y + translation.y)
         sender.view!.center = textLocation
-        sender.setTranslation(CGPointZero, inView: self.view)
+        sender.setTranslation(CGPoint.zero, in: self.view)
     }
     
     // Move textfield ontop of keyboard
-    func keyboardNotification(notification: NSNotification) {
+    func keyboardNotification(_ notification: Notification) {
         
         if let userInfo = notification.userInfo {
-            let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
+            let keyboardSize = (userInfo[UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue.size
             let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
-            UIView.animateWithDuration(duration, animations: {
+            UIView.animate(withDuration: duration, animations: {
                 self.textField.origin.y = self.view.height - keyboardSize.height - self.textField.height
             })
             
@@ -161,15 +161,15 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
     }
 
     // Show textfield
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         // locationField.resignFirstResponder()
         
-        if textField.hidden {
+        if textField.isHidden {
             if let touch = touches.first {
-                textLocation = touch.locationInView(self.view)
+                textLocation = touch.location(in: self.view)
                 textField.center.y = textLocation.y
-                textField.hidden = false
+                textField.isHidden = false
                 textField.becomeFirstResponder()
             }
             
@@ -177,34 +177,34 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
             textField.resignFirstResponder()
             
             if (textField.text == ""){
-                textField.hidden = true
+                textField.isHidden = true
             } else {
-                UIView.animateWithDuration(0.2, animations: { self.textField.center.y = self.textLocation.y }, completion: nil)
+                UIView.animate(withDuration: 0.2, animations: { self.textField.center.y = self.textLocation.y }, completion: nil)
             }
         }
     }
     
     // Auto rewind player
-    func playerDidFinishPlaying(notification: NSNotification) {
+    func playerDidFinishPlaying(_ notification: Notification) {
         if let playerItem: AVPlayerItem = notification.object as? AVPlayerItem {
-            playerItem.seekToTime(kCMTimeZero)
+            playerItem.seek(to: kCMTimeZero)
         }
     }
     
     func back(){
         player?.pause()
-        self.dismissViewControllerAnimated(true) {
+        self.dismiss(animated: true) {
             //
         }
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
     deinit {
-        player?.replaceCurrentItemWithPlayerItem(nil)
+        player?.replaceCurrentItem(with: nil)
         player = nil
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 }

@@ -67,16 +67,16 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
 //        
 //        self.player?.play()
         
-        textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-        textField.textColor = UIColor.whiteColor()
-        textField.font = UIFont.systemFontOfSize(16.0)
-        textField.textAlignment = NSTextAlignment.Center
+        textField.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        textField.textColor = UIColor.white
+        textField.font = UIFont.systemFont(ofSize: 16.0)
+        textField.textAlignment = NSTextAlignment.center
         textField.text = ""
-        textField.hidden = true
+        textField.isHidden = true
         textField.height = 34
-        textField.width = UIScreen.mainScreen().bounds.width
-        textField.returnKeyType = UIReturnKeyType.Default
-        textField.userInteractionEnabled = true
+        textField.width = UIScreen.main.bounds.width
+        textField.returnKeyType = UIReturnKeyType.default
+        textField.isUserInteractionEnabled = true
         textField.maxLength = 200
         textField.maxHeight = 120
         //textField.textContainer.maximumNumberOfLines = 5
@@ -85,11 +85,11 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
         view.addSubview(textField)
         
         let closeIcon = UIImage(named: "ic_close") as UIImage?
-        let closeButton = UIButton(type: .System)
+        let closeButton = UIButton(type: .system)
         closeButton.tintColor = UIColor(white: 1, alpha: 0.5)
-        closeButton.backgroundColor = UIColor.clearColor()
-        closeButton.setImage(closeIcon, forState: .Normal)
-        closeButton.addTarget(self, action: #selector(back), forControlEvents: .TouchUpInside)
+        closeButton.backgroundColor = UIColor.clear
+        closeButton.setImage(closeIcon, for: UIControlState())
+        closeButton.addTarget(self, action: #selector(back), for: .touchUpInside)
         self.view.addSubview(closeButton)
         closeButton.snp_makeConstraints { [weak self] (make) in
             make.top.equalTo(self!.view).offset(15)
@@ -99,11 +99,11 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
         }
         
         let nextIcon = UIImage(named: "ic_blue_arrow") as UIImage?
-        let doneButton = UIButton(type: .System)
+        let doneButton = UIButton(type: .system)
         doneButton.tintColor = UIColor(white: 1, alpha: 1)
-        doneButton.backgroundColor = UIColor.clearColor()
-        doneButton.setImage(nextIcon, forState: .Normal)
-        doneButton.addTarget(self, action: #selector(submit), forControlEvents: .TouchUpInside)
+        doneButton.backgroundColor = UIColor.clear
+        doneButton.setImage(nextIcon, for: UIControlState())
+        doneButton.addTarget(self, action: #selector(submit), for: .touchUpInside)
         self.view.addSubview(doneButton)
         doneButton.snp_makeConstraints { [weak self] (make) in
             make.bottom.equalTo(self!.view).offset(-25)
@@ -117,20 +117,20 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
     }
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        player.setItemByAsset(recordSession!.assetRepresentingSegments())
+        player.setItemBy(recordSession!.assetRepresentingSegments())
         player.play()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         player.pause()
     }
     
     func submit() {
         
-        recordSession?.mergeSegmentsUsingPreset(AVAssetExportPresetHighestQuality) { [weak self] (url, error) in
+        recordSession?.mergeSegments(usingPreset: AVAssetExportPresetHighestQuality) { [weak self] (url, error) in
             if error == nil {
 
                 print("Video saved to disk: \(url)")
@@ -138,15 +138,15 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
                 let id = FIRDatabase.database().reference().child("clips").childByAutoId().key
                 let uid = AppDelegate.uid
                 let uname = AppDelegate.name
-                let txt = self?.textField.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                let txt = self?.textField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
                 let y = self!.textLocation.y/self!.view.frame.height
                 let uploadFile = "\(id).mp4"
                 
-                let clip = ClipModel(id: id, uid: uid, uname: uname, fname: uploadFile, txt: txt!, y: y, locationInfo: self!.locationInfo!)
+                let clip = ClipModel(id: id, uid: uid!, uname: uname!, fname: uploadFile, txt: txt!, y: y, locationInfo: self!.locationInfo!)
                 
                 UploadHelper.sharedInstance.enqueueUpload(clip, liloaded: self!.locationInfo!.loaded)
                 
-                url!.saveToCameraRollWithCompletion({(path, saveError) in
+                (url! as NSURL).saveToCameraRoll(completion: {(path, saveError) in
                     print("Video saved to camera roll: \(path)")
                 })
             }
@@ -159,23 +159,23 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
     }
     
     // Allow dragging textfield
-    func panGesture(sender:UIPanGestureRecognizer) {
-        let translation  = sender.translationInView(self.view)
-        textLocation = CGPointMake(sender.view!.center.x, sender.view!.center.y + translation.y)
+    func panGesture(_ sender:UIPanGestureRecognizer) {
+        let translation  = sender.translation(in: self.view)
+        textLocation = CGPoint(x: sender.view!.center.x, y: sender.view!.center.y + translation.y)
         sender.view!.center = textLocation
-        sender.setTranslation(CGPointZero, inView: self.view)
+        sender.setTranslation(CGPoint.zero, in: self.view)
     }
     
     // Show textfield
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         // locationField.resignFirstResponder()
         
-        if textField.hidden {
+        if textField.isHidden {
             if let touch = touches.first {
-                textLocation = touch.locationInView(self.view)
+                textLocation = touch.location(in: self.view)
                 textField.center.y = textLocation.y
-                textField.hidden = false
+                textField.isHidden = false
                 textField.becomeFirstResponder()
             }
             
@@ -183,28 +183,28 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
             textField.resignFirstResponder()
             
             if (textField.text == ""){
-                textField.hidden = true
+                textField.isHidden = true
             } else {
-                UIView.animateWithDuration(0.2, animations: { self.textField.center.y = self.textLocation.y }, completion: nil)
+                UIView.animate(withDuration: 0.2, animations: { self.textField.center.y = self.textLocation.y }, completion: nil)
             }
         }
     }
     
     func back(){
         player?.pause()
-        self.dismissViewControllerAnimated(true, completion:nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().removeObserver(textField)
+        self.dismiss(animated: true, completion:nil)
+        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(textField)
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
     deinit {
         print("deinit camera preview")
-        player?.replaceCurrentItemWithPlayerItem(nil)
+        player?.replaceCurrentItem(with: nil)
         player = nil
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 }

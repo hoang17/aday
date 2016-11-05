@@ -2,23 +2,23 @@
 import Foundation
 import UIKit
 
-@objc public class PinTextView: UITextView, UITextViewDelegate {
+@objc open class PinTextView: UITextView, UITextViewDelegate {
     
-    public var maxLength = 0
+    open var maxLength = 0
     
-    public var maxHeight: CGFloat = 0
+    open var maxHeight: CGFloat = 0
     
     // Placeholder properties
     // Need to set both placeHolder and placeHolderColor in order to show placeHolder in the textview
-    public var placeHolder: NSString? {
+    open var placeHolder: NSString? {
         didSet { setNeedsDisplay() }
     }
     
-    public var placeHolderColor: UIColor? {
+    open var placeHolderColor: UIColor? {
         didSet { setNeedsDisplay() }
     }
     
-    public var placeHolderLeftMargin: CGFloat = 5 {
+    open var placeHolderLeftMargin: CGFloat = 5 {
         didSet { setNeedsDisplay() }
     }
     
@@ -32,34 +32,34 @@ import UIKit
         commonInit()
     }
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         
         delegate = self
-        scrollEnabled = false
-        contentMode = .Redraw
+        isScrollEnabled = false
+        contentMode = .redraw
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textDidEndEditing), name: UITextViewTextDidEndEditingNotification, object: self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textDidChange), name: UITextViewTextDidChangeNotification, object: self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardNotification), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(textDidEndEditing), name: NSNotification.Name.UITextViewTextDidEndEditing, object: self)
+        NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: NSNotification.Name.UITextViewTextDidChange, object: self)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     // Show placeholder
-    override public func drawRect(rect: CGRect) {
-        super.drawRect(rect)
+    override open func draw(_ rect: CGRect) {
+        super.draw(rect)
         if text.isEmpty {
             guard let placeHolder = placeHolder else { return }
             guard let placeHolderColor = placeHolderColor else { return }
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = textAlignment
             
-            let rect = CGRectMake(textContainerInset.left + placeHolderLeftMargin,
-                                  textContainerInset.top,
-                                  frame.size.width - textContainerInset.left - textContainerInset.right,
-                                  frame.size.height)
+            let rect = CGRect(x: textContainerInset.left + placeHolderLeftMargin,
+                                  y: textContainerInset.top,
+                                  width: frame.size.width - textContainerInset.left - textContainerInset.right,
+                                  height: frame.size.height)
             
             var attributes = [
                 NSForegroundColorAttributeName: placeHolderColor,
@@ -69,56 +69,56 @@ import UIKit
                 attributes[NSFontAttributeName] = font
             }
             
-            placeHolder.drawInRect(rect, withAttributes: attributes)
+            placeHolder.draw(in: rect, withAttributes: attributes)
         }
     }
     
     
-    public func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+    open func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         
         guard maxHeight > 0 else { return true }
         
         let newText = textView.attributedText!.mutableCopy() as! NSMutableAttributedString
-        newText.replaceCharactersInRange(range, withString: text)
-        let maxSize = CGSizeMake(textView.frame.size.width - 15, CGFloat.max)
-        let boundingRect = newText.string.boundingRectWithSize(maxSize, options: .UsesLineFragmentOrigin, attributes: [NSFontAttributeName: font!], context: nil)
+        newText.replaceCharacters(in: range, with: text)
+        let maxSize = CGSize(width: textView.frame.size.width - 15, height: CGFloat.greatestFiniteMagnitude)
+        let boundingRect = newText.string.boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font!], context: nil)
         return maxHeight >= boundingRect.size.height+20
     }
     
-    func keyboardNotification(notification: NSNotification) {
+    func keyboardNotification(_ notification: Notification) {
         
         if let userInfo = notification.userInfo {
-            let keyboardSize = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue.size
+            let keyboardSize = (userInfo[UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue.size
             let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! Double
-            UIView.animateWithDuration(duration, animations: {
+            UIView.animate(withDuration: duration, animations: {
                 self.frame.origin.y = self.superview!.frame.height - keyboardSize.height - self.frame.size.height
             })
         }
     }
     
     // Trim white space and new line characters when end editing.
-    func textDidEndEditing(notification: NSNotification) {
-        guard notification.object === self else { return }
-        text = text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+    func textDidEndEditing(_ notification: Notification) {
+        //guard notification.object === self else { return }
+        text = text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         autoHeight()
         setNeedsDisplay()
     }
     
     // Limit the length of text
-    func textDidChange(notification: NSNotification) {
-        guard notification.object === self else { return }
+    func textDidChange(_ notification: Notification) {
+        //guard notification.object === self else { return }
         autoHeight()
         setNeedsDisplay()
     }
     
-    public func autoHeight(animation: Bool = true){
+    open func autoHeight(_ animation: Bool = true){
         if maxLength > 0 && text.characters.count > maxLength {
-            let endIndex = text.startIndex.advancedBy(maxLength)
-            text = text.substringToIndex(endIndex)
+            let endIndex = text.index(text.startIndex, offsetBy: maxLength)
+            text = text.substring(to: endIndex)
             undoManager?.removeAllActions()
         }
         
-        let size = sizeThatFits(CGSizeMake(bounds.size.width, CGFloat.max))
+        let size = sizeThatFits(CGSize(width: bounds.size.width, height: CGFloat.greatestFiniteMagnitude))
         var height = size.height
         if maxHeight > 0 {
             height = min(size.height, maxHeight)
@@ -132,7 +132,7 @@ import UIKit
         frame.size.height = height
         
         if animation {
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animate(withDuration: 0.3, animations: {
                 self.frame.origin.y -= offset
             })
         } else {

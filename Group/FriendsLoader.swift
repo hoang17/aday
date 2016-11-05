@@ -29,22 +29,22 @@ class FriendsLoader: NSObject {
     
     let ref = FIRDatabase.database().reference()
     
-    func loadFacebookFriends(completion: ((count: Int)->Void)?) {
+    func loadFacebookFriends(_ completion: ((_ count: Int)->Void)?) {
         
         var friends = [FacebookFriend]()
         
         let request = FBSDKGraphRequest(graphPath:"me/friends", parameters: ["fields": "name", "limit":"200"] )
-        request.startWithCompletionHandler { (connection, result, error) -> Void in
+        request?.start { (connection, result, error) -> Void in
             
             if error == nil {
                 
                 let resultdict = result as! NSDictionary
-                let data : NSArray = resultdict.objectForKey("data") as! NSArray
+                let data : NSArray = resultdict.object(forKey: "data") as! NSArray
                 for i in 0 ..< data.count
                 {
                     let valueDict : NSDictionary = data[i] as! NSDictionary
-                    let fb = valueDict.valueForKey("id") as! String
-                    let name = valueDict.valueForKey("name") as! String
+                    let fb = valueDict.value(forKey: "id") as! String
+                    let name = valueDict.value(forKey: "name") as! String
         
                     
                     let friend = FacebookFriend(fb: fb, name: name)
@@ -52,16 +52,16 @@ class FriendsLoader: NSObject {
                     self.updateFriends(fb, name: name)
                 }
                 print("Found \(friends.count) friends")
-                completion?(count: friends.count)
+                completion?(friends.count)
             } else {
                 print("Error Getting Friends \(error)")
             }
         }
     }
     
-    func updateFriends(fb: String, name: String) {
+    func updateFriends(_ fb: String, name: String) {
         
-        ref.child("users").queryOrderedByChild("fb").queryEqualToValue(fb).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+        ref.child("users").queryOrdered(byChild: "fb").queryEqual(toValue: fb).observeSingleEvent(of: .value, with: { (snapshot) in
             
             let friendId : String = (snapshot.value as! NSDictionary).allKeys.first as! String
             
@@ -97,7 +97,7 @@ class FriendsLoader: NSObject {
 //        
 //    }
     
-    func loadAddressBook(completion: (()->Void)?){
+    func loadAddressBook(_ completion: (()->Void)?){
         
         // Load contacts friends
         let addressBook = APAddressBook()
@@ -120,7 +120,7 @@ class FriendsLoader: NSObject {
                                     continue
                                 }
                                 
-                                self.ref.child("users").queryOrderedByChild("phone").queryEqualToValue(number).observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                                self.ref.child("users").queryOrdered(byChild: "phone").queryEqual(toValue: number).observeSingleEvent(of: .value, with: { (snapshot) in
                                     
                                     if let snap = snapshot.children.allObjects.first as? FIRDataSnapshot {
                                         let user = User(snapshot: snap)
@@ -138,7 +138,7 @@ class FriendsLoader: NSObject {
         
     }
    
-    func addFriend(friendId: String) {
+    func addFriend(_ friendId: String) {
 
         let userID : String! = AppDelegate.uid
         let friend = Friend(uid: userID, fuid: friendId)
@@ -146,7 +146,7 @@ class FriendsLoader: NSObject {
         let key = ref.child("followers").childByAutoId().key
         
         var follow = friend.toAnyObject()
-        follow["name"] = AppDelegate.name
+        follow["name"] = AppDelegate.name as AnyObject?
         
         let update = ["/friends/\(userID)/\(friendId)": friend.toAnyObject(),
                       "/friends/\(friendId)/\(userID)": refriend.toAnyObject(),
@@ -154,11 +154,11 @@ class FriendsLoader: NSObject {
         ref.updateChildValues(update)
     }
         
-    func report(uid: String) {
+    func report(_ uid: String) {
         self.unfollow(uid)
     }
     
-    func unfollow(friendId: String) {
+    func unfollow(_ friendId: String) {
         let userID : String! = AppDelegate.uid
         let realm = AppDelegate.realm
         let user = realm.objectForPrimaryKey(UserModel.self, key: friendId)!
@@ -167,13 +167,13 @@ class FriendsLoader: NSObject {
             user.following = false
         }
         
-        let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": false]
+        let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": false as AnyObject]
         ref.updateChildValues(update)
 
         print("unfollowed " + friendId)
     }
     
-    func reportClip(clip: ClipModel) {
+    func reportClip(_ clip: ClipModel) {
         let userID : String! = AppDelegate.uid
         let update = ["/pins/\(clip.uid)/\(clip.id)/flag": true,
                       "/users/\(userID)/flags/\(clip.id)": true]
@@ -186,11 +186,11 @@ class FriendsLoader: NSObject {
         }
     }
     
-    func deleteClip(clip: ClipModel) {
-        let updated = NSDate().timeIntervalSince1970
-        let update : [String: AnyObject] = ["/pins/\(clip.uid)/\(clip.id)/trash": true,
-                                            "/pins/\(clip.uid)/\(clip.id)/updated": updated,
-                                            "/clips/\(clip.id)/trash": true]
+    func deleteClip(_ clip: ClipModel) {
+        let updated = Date().timeIntervalSince1970
+        let update : [String: AnyObject] = ["/pins/\(clip.uid)/\(clip.id)/trash": true as AnyObject,
+                                            "/pins/\(clip.uid)/\(clip.id)/updated": updated as AnyObject,
+                                            "/clips/\(clip.id)/trash": true as AnyObject]
         ref.updateChildValues(update)
         
         let realm = AppDelegate.realm
@@ -200,20 +200,20 @@ class FriendsLoader: NSObject {
         }
     }
     
-    func comment(clip: ClipModel, text: String) {
+    func comment(_ clip: ClipModel, text: String) {
         let id = ref.child("comments").childByAutoId().key
         let uid : String! = AppDelegate.uid
         let name = AppDelegate.name
-        let cm = Comment(id: id, uid: uid, pid: clip.id, name: name, text: text)
+        let cm = Comment(id: id, uid: uid, pid: clip.id, name: name!, text: text)
         
         var update = [String:AnyObject]()
         
-        update = ["/threads/\(clip.id)/follows/\(cm.uid)": true,
+        update = ["/threads/\(clip.id)/follows/\(cm.uid)": true as AnyObject,
                   "/threads/\(clip.id)/comments/\(cm.id)": cm.toAnyObject(),
                   "/comments/\(cm.id)": cm.toAnyObject()]
         
         if clip.uid != cm.uid {
-            update["/threads/\(clip.id)/follows/\(clip.uid)"] = true
+            update["/threads/\(clip.id)/follows/\(clip.uid)"] = true as AnyObject?
         }
         
         ref.updateChildValues(update)
@@ -233,9 +233,9 @@ class FriendsLoader: NSObject {
 //        }
     }
     
-    func saveDevice(id: String) {
+    func saveDevice(_ id: String) {
         let uid : String! = AppDelegate.uid
-        let device = Device(id: id, uid: uid, device: UIDevice.currentDevice())
+        let device = Device(id: id, uid: uid, device: UIDevice.current)
         let update = ["/devices/\(id)": device.toAnyObject()]
         ref.updateChildValues(update)
     }

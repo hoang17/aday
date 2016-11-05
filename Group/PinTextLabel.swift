@@ -2,20 +2,20 @@
 import Foundation
 import UIKit
 
-@objc public class PinTextLabel: UITextView {
+@objc open class PinTextLabel: UITextView {
     
-    public var maxLength = 0
+    open var maxLength = 0
     
-    public var maxHeight: CGFloat = 0
+    open var maxHeight: CGFloat = 0
     
-    public func autoHeight(animation: Bool = true){
+    open func autoHeight(_ animation: Bool = true){
         if maxLength > 0 && text.characters.count > maxLength {
-            let endIndex = text.startIndex.advancedBy(maxLength)
-            text = text.substringToIndex(endIndex)
+            let endIndex = text.index(text.startIndex, offsetBy: maxLength)
+            text = text.substring(to: endIndex)
             undoManager?.removeAllActions()
         }
         
-        let size = sizeThatFits(CGSizeMake(bounds.size.width, CGFloat.max))
+        let size = sizeThatFits(CGSize(width: bounds.size.width, height: CGFloat.greatestFiniteMagnitude))
         var height = size.height
         if maxHeight > 0 {
             height = min(size.height, maxHeight)
@@ -29,7 +29,7 @@ import UIKit
         frame.size.height = height
         
         if animation {
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animate(withDuration: 0.3, animations: {
                 self.frame.origin.y = self.frame.origin.y - offset
             })
         }

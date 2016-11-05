@@ -70,13 +70,13 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         tap.numberOfTapsRequired = 2
         previewView.addGestureRecognizer(tap)
 
-        let userDefaults = NSUserDefaults.standardUserDefaults()
-        let frontCamera = (userDefaults.valueForKey("frontCamera") as? Bool) ?? false
+        let userDefaults = UserDefaults.standard
+        let frontCamera = (userDefaults.value(forKey: "frontCamera") as? Bool) ?? false
         
-        recorder = SCRecorder.sharedRecorder()
+        recorder = SCRecorder.shared()
         recorder.captureSessionPreset = SCRecorderTools.bestCaptureSessionPresetCompatibleWithAllDevices()
         recorder.previewView = previewView
-        recorder.device = frontCamera ? .Front : .Back
+        recorder.device = frontCamera ? .front : .back
         recorder.mirrorOnFrontCamera = true
         recorder.autoSetVideoOrientation = false
         recorder.delegate = self
@@ -108,14 +108,14 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         /****📹📹📹📹📹📹📹📹📹📹📹📹📹📹📹****/
         
         // 🔴 Set up the record button
-        recordButton = RecordButton(frame: CGRectMake(0,0,80,80))
+        recordButton = RecordButton(frame: CGRect(x: 0,y: 0,width: 80,height: 80))
         recordButton.center = self.view.center
-        recordButton.progressColor = .redColor()
+        recordButton.progressColor = .red
         recordButton.buttonColor = UIColor(white: 1, alpha: 0.5)
         recordButton.closeWhenFinished = false
         
-        recordButton.addTarget(self, action: #selector(record), forControlEvents: .TouchDown)
-        recordButton.addTarget(self, action: #selector(pause), forControlEvents: .TouchUpInside)
+        recordButton.addTarget(self, action: #selector(record), for: .touchDown)
+        recordButton.addTarget(self, action: #selector(pause), for: .touchUpInside)
 
         view.addSubview(recordButton)
         self.view.addSubview(recordButton)
@@ -127,11 +127,11 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         }
         
         let loopIcon = UIImage(named: "ic_loop") as UIImage?
-        let flipButton = UIButton(type: .System)
+        let flipButton = UIButton(type: .system)
         flipButton.tintColor = UIColor(white: 1, alpha: 0.5)
-        flipButton.backgroundColor = UIColor.clearColor()
-        flipButton.setImage(loopIcon, forState: .Normal)
-        flipButton.addTarget(self, action: #selector(flipCamera), forControlEvents: .TouchUpInside)
+        flipButton.backgroundColor = UIColor.clear
+        flipButton.setImage(loopIcon, for: UIControlState())
+        flipButton.addTarget(self, action: #selector(flipCamera), for: .touchUpInside)
         self.view.addSubview(flipButton)
         flipButton.snp_makeConstraints { [weak self] (make) in
             make.top.equalTo(self!.view).offset(15)
@@ -141,11 +141,11 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         }
         
         let closeIcon = UIImage(named: "ic_close") as UIImage?
-        let closeButton = UIButton(type: .System)
+        let closeButton = UIButton(type: .system)
         closeButton.tintColor = UIColor(white: 1, alpha: 0.5)
-        closeButton.backgroundColor = UIColor.clearColor()
-        closeButton.setImage(closeIcon, forState: .Normal)
-        closeButton.addTarget(self, action: #selector(close), forControlEvents: .TouchUpInside)
+        closeButton.backgroundColor = UIColor.clear
+        closeButton.setImage(closeIcon, for: UIControlState())
+        closeButton.addTarget(self, action: #selector(close), for: .touchUpInside)
         self.view.addSubview(closeButton)
         closeButton.snp_makeConstraints { [weak self] (make) in
             make.top.equalTo(self!.view).offset(15)
@@ -155,11 +155,11 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         }
 
         let nextIcon = UIImage(named: "ic_blue_arrow") as UIImage?
-        doneButton = UIButton(type: .System)
+        doneButton = UIButton(type: .system)
         doneButton.tintColor = UIColor(white: 1, alpha: 1)
-        doneButton.backgroundColor = UIColor.clearColor()
-        doneButton.setImage(nextIcon, forState: .Normal)
-        doneButton.addTarget(self, action: #selector(stop), forControlEvents: .TouchUpInside)
+        doneButton.backgroundColor = UIColor.clear
+        doneButton.setImage(nextIcon, for: UIControlState())
+        doneButton.addTarget(self, action: #selector(stop), for: .touchUpInside)
         self.view.addSubview(doneButton)
         doneButton.snp_makeConstraints { [weak self] (make) in
             make.bottom.equalTo(self!.view).offset(-25)
@@ -169,28 +169,28 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         }
     }
     
-    func recorder(recorder: SCRecorder, didSkipVideoSampleBufferInSession recordSession: SCRecordSession) {
+    func recorder(_ recorder: SCRecorder, didSkipVideoSampleBufferIn recordSession: SCRecordSession) {
         print("Skipped video buffer")
     }
     
-    func recorder(recorder: SCRecorder, didReconfigureAudioInput audioInputError: NSError?) {
+    func recorder(_ recorder: SCRecorder, didReconfigureAudioInput audioInputError: NSError?) {
         if audioInputError != nil {
             print("Reconfigured audio input: \(audioInputError)")
         }
     }
     
-    func recorder(recorder: SCRecorder, didReconfigureVideoInput videoInputError: NSError?) {
+    func recorder(_ recorder: SCRecorder, didReconfigureVideoInput videoInputError: NSError?) {
         if videoInputError != nil {
             print("Reconfigured video input: \(videoInputError)")
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         if let recordSession = recorder.session {
             self.recorder.session = nil
-            recordSession.cancelSession(nil)
+            recordSession.cancel(nil)
         }
         self.prepareSession()
         recorder.startRunning()
@@ -205,11 +205,11 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         recorder.previewViewFrameChanged()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         isRecording = false
         progress = 0
-        recordButton.buttonState = .Idle
+        recordButton.buttonState = .idle
         recorder.stopRunning()
     }
     
@@ -234,13 +234,13 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     func stop() {
         isRecording = false
         progress = 0
-        recordButton.buttonState = .Idle
+        recordButton.buttonState = .idle
         recorder.pause {
             self.saveAndShowSession(self.recorder.session!)
         }
     }
     
-    func saveAndShowSession(recordSession: SCRecordSession) {        
+    func saveAndShowSession(_ recordSession: SCRecordSession) {        
 //        SCRecordSessionManager.sharedInstance().saveRecordSession(recordSession)
         self.recordSession = recordSession
         self.showVideo()
@@ -250,10 +250,10 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         let videoPlayer = NCameraPreviewController()
         videoPlayer.recordSession = recordSession
         videoPlayer.locationInfo = self.locationInfo
-        self.presentViewController(videoPlayer, animated: true, completion: nil)        
+        self.present(videoPlayer, animated: true, completion: nil)        
     }
     
-    func handleRetakeButtonTapped(sender: AnyObject) {
+    func handleRetakeButtonTapped(_ sender: AnyObject) {
 //        if let recordSession = recorder.session {
 //            self.recorder.session = nil
 //            // If the recordSession was saved, we don't want to completely destroy it
@@ -267,7 +267,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
 //        self.prepareSession()
     }
     
-    func switchCameraMode(sender: AnyObject) {
+    func switchCameraMode(_ sender: AnyObject) {
 //        if (recorder.captureSessionPreset == AVCaptureSessionPresetPhoto) {
 //            UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: {() -> Void in
 //                self.capturePhotoButton.alpha() = 0.0
@@ -296,7 +296,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
 //        }
     }
     
-    func switchFlash(sender: AnyObject) {
+    func switchFlash(_ sender: AnyObject) {
 //        var flashModeString: String? = nil
 //        if (recorder.captureSessionPreset == AVCaptureSessionPresetPhoto) {
 //            switch recorder.flashMode {
@@ -340,15 +340,15 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         self.updateTime()
     }
     
-    func recorder(recorder: SCRecorder, didCompleteSession recordSession: SCRecordSession) {
+    func recorder(_ recorder: SCRecorder, didComplete recordSession: SCRecordSession) {
         print("Record session completed")
         isRecording = false
         progress = 0
-        recordButton.buttonState = .Idle
+        recordButton.buttonState = .idle
         self.saveAndShowSession(recordSession)
     }
     
-    func recorder(recorder: SCRecorder, didInitializeAudioInSession recordSession: SCRecordSession, error: NSError?) {
+    func recorder(_ recorder: SCRecorder, didInitializeAudioIn recordSession: SCRecordSession, error: NSError?) {
         if error == nil {
             print("Initialized audio in record session")
         }
@@ -357,7 +357,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         }
     }
     
-    func recorder(recorder: SCRecorder, didInitializeVideoInSession recordSession: SCRecordSession, error: NSError?) {
+    func recorder(_ recorder: SCRecorder, didInitializeVideoIn recordSession: SCRecordSession, error: NSError?) {
         if error != nil {
             print("Failed to initialize video in record session: \(error!.localizedDescription)")
         }
@@ -365,13 +365,13 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         }
     }
     
-    func recorder(recorder: SCRecorder, didBeginSegmentInSession recordSession: SCRecordSession, error: NSError?) {
+    func recorder(_ recorder: SCRecorder, didBeginSegmentIn recordSession: SCRecordSession, error: NSError?) {
         if error != nil {
             print("Error begin record segment: \(error)")
         }
     }
     
-    func recorder(recorder: SCRecorder, didCompleteSegment segment: SCRecordSessionSegment?, inSession recordSession: SCRecordSession, error: NSError?) {
+    func recorder(_ recorder: SCRecorder, didComplete segment: SCRecordSessionSegment?, in recordSession: SCRecordSession, error: NSError?) {
         guard error == nil, let segment = segment else {
             if error != nil {
                 print("Error complete record segment: \(error)")
@@ -410,7 +410,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         
         if !showDoneButton && seconds >= 1 {
             showDoneButton = true
-            UIView.animateWithDuration(0.5, animations: {
+            UIView.animate(withDuration: 0.5, animations: {
                 self.doneButton.alpha = 1.0
             })
         }
@@ -421,7 +421,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         //}
     }
     
-    func recorder(recorder: SCRecorder, didAppendVideoSampleBufferInSession recordSession: SCRecordSession) {
+    func recorder(_ recorder: SCRecorder, didAppendVideoSampleBufferIn recordSession: SCRecordSession) {
         updateTime()
     }
     
@@ -429,7 +429,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     /*** 🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺 ***/
 
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = manager.location else {
             return
         }
@@ -440,15 +440,15 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
     func close() {
         isRecording = false
         progress = 0
-        recordButton.buttonState = .Idle
+        recordButton.buttonState = .idle
         recorder.stopRunning()
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func flipCamera() {
         recorder.switchCaptureDevices()
-        let frontCamera = recorder.device == .Front
-        let userDefaults = NSUserDefaults.standardUserDefaults()
+        let frontCamera = recorder.device == .front
+        let userDefaults = UserDefaults.standard
         userDefaults.setValue(frontCamera, forKey: "frontCamera")
         //userDefaults.synchronize()
     }
@@ -458,7 +458,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         // Dispose of any resources that can be recreated.
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
 }

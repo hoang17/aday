@@ -23,16 +23,16 @@ class PlayerCalloutView: UIView {
     convenience init(clips: [ClipModel], frame: CGRect) {
         self.init(frame: frame)
         
-        locationName.font = UIFont.systemFontOfSize(12)
-        locationName.textAlignment = NSTextAlignment.Center
+        locationName.font = UIFont.systemFont(ofSize: 12)
+        locationName.textAlignment = NSTextAlignment.center
         locationName.y = 194
         locationName.height = 28
-        locationName.userInteractionEnabled = true
-        locationName.backgroundColor = UIColor.whiteColor()
+        locationName.isUserInteractionEnabled = true
+        locationName.backgroundColor = UIColor.white
         locationName.layer.cornerRadius = 5
         locationName.layer.masksToBounds = true
         locationName.clipsToBounds = true
-        locationName.layer.borderColor = UIColor.lightGrayColor().CGColor
+        locationName.layer.borderColor = UIColor.lightGray.cgColor
         locationName.layer.borderWidth = 0.5
         locationName.text = clips[playIndex].lname
         
@@ -43,7 +43,7 @@ class PlayerCalloutView: UIView {
         self.addSubview(locationName)
         
         self.clips = clips
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
         play()        
     }
     

@@ -30,22 +30,23 @@ class Device: NSObject {
         self.model = device.model
         self.system = device.systemName
         self.systemVer = device.systemVersion
-        updated = NSDate().timeIntervalSince1970
+        updated = Date().timeIntervalSince1970
     }
     
     init(snapshot: FIRDataSnapshot) {
         id = snapshot.key
-        uid = snapshot.value!["uid"] as? String ?? ""
-        type = snapshot.value!["type"] as? String ?? ""
-        name = snapshot.value!["name"] as? String ?? ""
-        model = snapshot.value!["model"] as? String ?? ""
-        system = snapshot.value!["system"] as? String ?? ""
-        systemVer = snapshot.value!["systemVer"] as? String ?? ""
-        trash = snapshot.value!["trash"] as? Bool ?? false
-        updated = snapshot.value!["updated"] as? Double ?? 0
+        let value = snapshot.value as? NSDictionary
+        uid = value?["uid"] as? String ?? ""
+        type = value?["type"] as? String ?? ""
+        name = value?["name"] as? String ?? ""
+        model = value?["model"] as? String ?? ""
+        system = value?["system"] as? String ?? ""
+        systemVer = value?["systemVer"] as? String ?? ""
+        trash = value?["trash"] as? Bool ?? false
+        updated = value?["updated"] as? Double ?? 0
     }
     
-    func toAnyObject() -> AnyObject {
+    func toAnyObject() -> NSDictionary {
         return [
             "id": id,
             "uid": uid,

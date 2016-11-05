@@ -60,19 +60,19 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBarHidden = true
+        navigationController?.isNavigationBarHidden = true
         
-        textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-        textField.textColor = UIColor.whiteColor()
-        textField.font = UIFont.systemFontOfSize(16.0)
-        textField.textAlignment = NSTextAlignment.Center
+        textField.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        textField.textColor = UIColor.white
+        textField.font = UIFont.systemFont(ofSize: 16.0)
+        textField.textAlignment = NSTextAlignment.center
         textField.height = 34
-        textField.width = UIScreen.mainScreen().bounds.width
-        textField.userInteractionEnabled = false
+        textField.width = UIScreen.main.bounds.width
+        textField.isUserInteractionEnabled = false
         textField.center.y = self.view.height * CGFloat(clips[playIndex].y)
         
         if textField.text == "" {
-            textField.hidden = true
+            textField.isHidden = true
         }
         
         profileImg.origin = CGPoint(x: 15, y: 15)
@@ -80,12 +80,12 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         profileImg.layer.cornerRadius = profileImg.height/2
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
-        profileImg.contentMode = .ScaleAspectFit
-        profileImg.backgroundColor = UIColor.whiteColor()
+        profileImg.contentMode = .scaleAspectFit
+        profileImg.backgroundColor = UIColor.white
         
         nameLabel.origin = CGPoint(x: 55, y: 9)
         nameLabel.height = 28
-        nameLabel.textColor = UIColor.whiteColor()
+        nameLabel.textColor = UIColor.white
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
         
         locationLabel.origin = CGPoint(x: 55, y: 31)
@@ -101,16 +101,16 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         moreLabel.text = "..."
         moreLabel.origin = CGPoint(x: view.width-35, y: view.height-50)
         moreLabel.size = CGSize(width: 50, height: 50)
-        moreLabel.textColor = UIColor.whiteColor()
+        moreLabel.textColor = UIColor.white
         moreLabel.font = UIFont(name: "OpenSans-Bold", size: 20.0)
-        moreLabel.userInteractionEnabled = true
+        moreLabel.isUserInteractionEnabled = true
 
-        commentBox.hidden = true
+        commentBox.isHidden = true
         commentBox.height = 38
-        commentBox.width = UIScreen.mainScreen().bounds.width
+        commentBox.width = UIScreen.main.bounds.width
         commentBox.sendCallback = { [weak self] in
             self?.commentBox.commentField.resignFirstResponder()
-            self?.commentBox.hidden = true
+            self?.commentBox.isHidden = true
             self?.player.play()
             if let cm = self?.commentBox.commentField.text {
                 FriendsLoader.sharedInstance.comment(self!.clips[self!.playIndex], text: cm)
@@ -134,11 +134,11 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
 //        commentField.userInteractionEnabled = true
         
         let commentsIcon = UIImage(named: "ic_comment") as UIImage?
-        commentsButton = UIButton(type: .System)
+        commentsButton = UIButton(type: .system)
         commentsButton.tintColor = UIColor(white: 1, alpha: 0.5)
-        commentsButton.backgroundColor = UIColor.clearColor()
-        commentsButton.setImage(commentsIcon, forState: .Normal)
-        commentsButton.addTarget(self, action: #selector(showComments), forControlEvents: .TouchUpInside)
+        commentsButton.backgroundColor = UIColor.clear
+        commentsButton.setImage(commentsIcon, for: UIControlState())
+        commentsButton.addTarget(self, action: #selector(showComments), for: .touchUpInside)
         commentsButton.origin = CGPoint(x: 15, y: view.height-35)
         commentsButton.size = CGSize(width: 30, height: 23)
         
@@ -158,11 +158,11 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         view.addGestureRecognizer(tap)
         
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(swipeDownGesture))
-        swipeDown.direction = UISwipeGestureRecognizerDirection.Down
+        swipeDown.direction = UISwipeGestureRecognizerDirection.down
         view.addGestureRecognizer(swipeDown)
         
         let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(swipeUpGesture))
-        swipeUp.direction = UISwipeGestureRecognizerDirection.Up
+        swipeUp.direction = UISwipeGestureRecognizerDirection.up
         view.addGestureRecognizer(swipeUp)
                 
         play()
@@ -173,7 +173,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         self.navigationController?.pushViewController(CommentsController(clip: clips[playIndex]), animated: true)
     }
     
-    func tapMore(sender: UITapGestureRecognizer) {
+    func tapMore(_ sender: UITapGestureRecognizer) {
         
         player.player?.pause()
         
@@ -183,30 +183,30 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         
         let userID : String! = AppDelegate.uid
         
-        let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        let myActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
-        let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.Destructive) { [weak self] (action) in
+        let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.destructive) { [weak self] (action) in
             
-            let confirmAlert = UIAlertController(title: "Report", message: "Do you want to report this pin?", preferredStyle: UIAlertControllerStyle.Alert)
+            let confirmAlert = UIAlertController(title: "Report", message: "Do you want to report this pin?", preferredStyle: UIAlertControllerStyle.alert)
             
-            confirmAlert.addAction(UIAlertAction(title: "Report", style: .Destructive, handler: { [weak self] (action) in
+            confirmAlert.addAction(UIAlertAction(title: "Report", style: .destructive, handler: { [weak self] (action) in
                 
-                let alert = UIAlertController(title: "This content has been reported\n", message: "Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { [weak self] (action) in
+                let alert = UIAlertController(title: "This content has been reported\n", message: "Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { [weak self] (action) in
                     self?.close()
                     FriendsLoader.sharedInstance.reportClip(self!.clips[self!.playIndex])
                 }))
-                self?.presentViewController(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
             }))
             
-            confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { [weak self] (action) in
+            confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { [weak self] (action) in
                 self?.player.player?.play()
             }))
             
-            self?.presentViewController(confirmAlert, animated: true, completion: nil)
+            self?.present(confirmAlert, animated: true, completion: nil)
         }
         
-        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.Default) { [weak self] (action) in
+        let shareAction = UIAlertAction(title: "Share", style: UIAlertActionStyle.default) { [weak self] (action) in
             
             let text = "Exporting pin..."
             self?.showWaitOverlayWithText(text)
@@ -217,7 +217,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             }
         }
 
-        let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { [weak self] (action) in
+        let shareFBAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.default) { [weak self] (action) in
             
             let text = "Exporting pin..."
             self?.showWaitOverlayWithText(text)
@@ -225,25 +225,25 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             VideoHelper.sharedInstance.export(clip, friendName: self!.friendName, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
                 
                 self?.removeAllOverlays()
-                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { [weak self] (assetURL, error) in
+                ALAssetsLibrary().writeVideoAtPath(toSavedPhotosAlbum: savePathUrl, completionBlock: { [weak self] (assetURL, error) in
                     if error != nil {
                         print(error)
                         return
                     }
                     if assetURL != nil {
                         print(assetURL)
-                        dispatch_async(dispatch_get_main_queue(), {
+                        DispatchQueue.main.async(execute: {
                             let video = FBSDKShareVideo(videoURL: assetURL)
                             let content = FBSDKShareVideoContent()
                             content.video = video
-                            FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+                            FBSDKShareDialog.show(from: self, with: content, delegate: self)
                         })
                     }
                 })
             }
         }
         
-        let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.Default) { [weak self] (action) in
+        let shareIGAction = UIAlertAction(title: "Share on Instagram", style: UIAlertActionStyle.default) { [weak self] (action) in
             
             let text = "Exporting pin..."
             self?.showWaitOverlayWithText(text)
@@ -251,16 +251,16 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             VideoHelper.sharedInstance.export(clip, friendName: self!.friendName, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
                 
                 self?.removeAllOverlays()
-                ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { [weak self] (assetURL, error) in
+                ALAssetsLibrary().writeVideoAtPath(toSavedPhotosAlbum: savePathUrl, completionBlock: { [weak self] (assetURL, error) in
                     if error != nil {
                         print(error)
                         return
                     }
                     if assetURL != nil {
                         print(assetURL)
-                        let escapedString = assetURL.absoluteString!.urlencodedString()
+                        let escapedString = assetURL?.absoluteString.urlencodedString()
                         let escapedCaption = "Pinly".urlencodedString()
-                        let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
+                        let instagramURL = URL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
                         UIApplication.sharedApplication().openURL(instagramURL)
                     }
                 })
@@ -268,23 +268,23 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         }
         
         
-        let deleteAction = UIAlertAction(title: "Delete", style: .Destructive) { [weak self] (action) in
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] (action) in
             
-            let confirmAlert = UIAlertController(title: "Delete", message: "Do you want to delete this pin?", preferredStyle: UIAlertControllerStyle.Alert)
+            let confirmAlert = UIAlertController(title: "Delete", message: "Do you want to delete this pin?", preferredStyle: UIAlertControllerStyle.alert)
             
-            confirmAlert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { [weak self] (action) in
+            confirmAlert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] (action) in
                 self?.close()
                 FriendsLoader.sharedInstance.deleteClip(self!.clips[self!.playIndex])
             }))
             
-            confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { [weak self] (action) in
+            confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { [weak self] (action) in
                 self?.player.player?.play()
             }))
             
-            self?.presentViewController(confirmAlert, animated: true, completion: nil)
+            self?.present(confirmAlert, animated: true, completion: nil)
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { [weak self] (action) in
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { [weak self] (action) in
             self?.player.player?.play()
         }
         
@@ -301,27 +301,27 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         }
         
         myActionSheet.addAction(cancelAction)
-        self.presentViewController(myActionSheet, animated: true, completion: nil)
+        self.present(myActionSheet, animated: true, completion: nil)
     }
     
-    func sharer(sharer: FBSDKSharing!, didCompleteWithResults results: [NSObject: AnyObject]) {
+    func sharer(_ sharer: FBSDKSharing!, didCompleteWithResults results: [AnyHashable: Any]) {
         print(results)
         self.removeAllOverlays()
         player.player?.play()
     }
     
-    func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
+    func sharer(_ sharer: FBSDKSharing!, didFailWithError error: Error!) {
         print(error)
         self.removeAllOverlays()
         player.player?.play()
     }
     
-    func sharerDidCancel(sharer: FBSDKSharing!) {
+    func sharerDidCancel(_ sharer: FBSDKSharing!) {
         self.removeAllOverlays()
         player.player?.play()
     }
     
-    func shareClip(inputURL: NSURL) {
+    func shareClip(_ inputURL: URL) {
         
         let objectsToShare = [inputURL]
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
@@ -330,10 +330,10 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         
         // Excluded Activities Code
         if #available(iOS 9.0, *) {
-            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList, UIActivityTypeCopyToPasteboard, UIActivityTypeOpenInIBooks,  UIActivityTypePrint]
+            activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList, UIActivityType.copyToPasteboard, UIActivityType.openInIBooks,  UIActivityType.print]
         } else {
             // Fallback on earlier versions
-            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList, UIActivityTypeCopyToPasteboard, UIActivityTypePrint ]
+            activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList, UIActivityType.copyToPasteboard, UIActivityType.print ]
         }
         
         activityVC.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
@@ -343,23 +343,23 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             self?.player.player?.play()
         }
         
-        self.presentViewController(activityVC, animated: true, completion: nil)
+        self.present(activityVC, animated: true, completion: nil)
     }
     
-    func tapGesture(sender:UITapGestureRecognizer){
+    func tapGesture(_ sender:UITapGestureRecognizer){
         
-        if commentBox.hidden == false {
+        if commentBox.isHidden == false {
             commentBox.commentField.resignFirstResponder()
-            commentBox.hidden = true
+            commentBox.isHidden = true
             player.play()
             return
         }
         
         player.pause()
         
-        let location = sender.locationInView(self.view)
+        let location = sender.location(in: self.view)
         
-        if location.x > 0.25*UIScreen.mainScreen().bounds.width {
+        if location.x > 0.25*UIScreen.main.bounds.width {
             if clips.count > playIndex + 1 {
                 playNextClip()
             } else {
@@ -376,10 +376,10 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
 
     func swipeUpGesture(){
         player.player?.pause()
-        commentBox.hidden = false
+        commentBox.isHidden = false
         commentBox.y = view.height - 34
         commentBox.commentField.becomeFirstResponder()
-        view.bringSubviewToFront(commentBox)
+        view.bringSubview(toFront: commentBox)
     }
     
     func swipeDownGesture(){
@@ -391,8 +391,8 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         return clip.subarea != "" ? clip.subarea + " · " + clip.city : ""
     }
     
-    func initPlayer(index: Int) -> ClipPlayer {
-        return ClipPlayer(clip: clips[index], frame: UIScreen.mainScreen().bounds)
+    func initPlayer(_ index: Int) -> ClipPlayer {
+        return ClipPlayer(clip: clips[index], frame: UIScreen.main.bounds)
     }
     
     func playPrevClip(){
@@ -433,18 +433,18 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         textField.text = clip.txt
         textField.autoHeight(false)
         textField.center.y = self.view.height * CGFloat(clip.y)
-        textField.hidden = textField.text == ""
-        dateLabel.text = NSDate(timeIntervalSince1970: clip.date).shortTimeAgoSinceNow()
+        textField.isHidden = textField.text == ""
+        dateLabel.text = (Date(timeIntervalSince1970: clip.date) as NSDate).shortTimeAgoSinceNow()
         
         view.addSubview(player)
         
-        view.bringSubviewToFront(textField)
-        view.bringSubviewToFront(profileImg)
-        view.bringSubviewToFront(nameLabel)
-        view.bringSubviewToFront(dateLabel)
-        view.bringSubviewToFront(moreLabel)
-        view.bringSubviewToFront(locationLabel)
-        view.bringSubviewToFront(commentsButton)
+        view.bringSubview(toFront: textField)
+        view.bringSubview(toFront: profileImg)
+        view.bringSubview(toFront: nameLabel)
+        view.bringSubview(toFront: dateLabel)
+        view.bringSubview(toFront: moreLabel)
+        view.bringSubview(toFront: locationLabel)
+        view.bringSubview(toFront: commentsButton)
         
         player.play() {
             if self.clips.count > self.playIndex + 1 {
@@ -462,21 +462,21 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
         nextplayer = nil
         prevplayer = nil
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
 
         if (playIndex >= 0) && playIndex < clips.count {
             
-            let indexPath = NSIndexPath(forRow: playIndex, inSection: 0)
+            let indexPath = IndexPath(row: playIndex, section: 0)
             
-            collectionView.reloadItemsAtIndexPaths([indexPath])
-            collectionView.scrollToItemAtIndexPath(indexPath,
-               atScrollPosition: .CenteredHorizontally,
+            collectionView.reloadItems(at: [indexPath])
+            collectionView.scrollToItem(at: indexPath,
+               at: .centeredHorizontally,
                animated: false)
         }
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     

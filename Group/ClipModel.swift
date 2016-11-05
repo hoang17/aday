@@ -75,7 +75,7 @@ class ClipModel: Object {
         self.sublocal = locationInfo.sublocal
         self.subarea = locationInfo.subarea
         
-        self.date = NSDate().timeIntervalSince1970
+        self.date = Date().timeIntervalSince1970
         self.updated = self.date
     }
 

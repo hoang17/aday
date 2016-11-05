@@ -31,9 +31,9 @@ class PlayerView: UIView {
         loadPlayer(filePath)
     }
     
-    func loadPlayer(filePath: String) {
-        let fileUrl = NSURL(fileURLWithPath: filePath)
-        player = AVPlayer(URL: fileUrl)
+    func loadPlayer(_ filePath: String) {
+        let fileUrl = URL(fileURLWithPath: filePath)
+        player = AVPlayer(url: fileUrl)
         let playerLayer = AVPlayerLayer(player: player)
         playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
         playerLayer.frame = frame
@@ -45,7 +45,7 @@ class PlayerView: UIView {
     }
     
     func play(){
-        player?.seekToTime(kCMTimeZero)
+        player?.seek(to: kCMTimeZero)
         player?.play()
     }
     
@@ -69,16 +69,16 @@ class MiniPlayer: PlayerView {
         self.fileName = clip.fname
         //print("*** init  : " + fileName)
         self.filePath = NSTemporaryDirectory() + clip.fname
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
 
-        let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
+        let resource = Resource(downloadURL: URL(string: clip.thumb)!, cacheKey: clip.id)
         let thumbImg = UIImageView(frame: frame)
-        thumbImg.backgroundColor = UIColor.clearColor()
-        thumbImg.contentMode = .ScaleAspectFill
+        thumbImg.backgroundColor = UIColor.clear
+        thumbImg.contentMode = .scaleAspectFill
         thumbImg.kf_setImageWithResource(resource)
         addSubview(thumbImg)
 
-        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+        if FileManager.default.fileExists(atPath: filePath) {
             loadPlayer()
         } else {
             download()
@@ -87,11 +87,11 @@ class MiniPlayer: PlayerView {
     
     func download() {
         
-        let indicator = DGActivityIndicatorView(type: .BallClipRotate, tintColor: UIColor.whiteColor(), size: 30.0)
-        indicator.size = CGSize(width: 50.0, height: 50.0)
-        indicator.center = center
-        addSubview(indicator)
-        indicator.startAnimating()
+        let indicator = DGActivityIndicatorView(type: .ballClipRotate, tintColor: UIColor.white, size: 30.0)
+        indicator?.size = CGSize(width: 50.0, height: 50.0)
+        indicator?.center = center
+        addSubview(indicator!)
+        indicator?.startAnimating()
         
         //let ai = MRCircularProgressView()
         //ai.size = CGSize(width: 90.0, height: 90.0)
@@ -102,15 +102,15 @@ class MiniPlayer: PlayerView {
         //view.addSubview(ai)
         
         if let task = UploadHelper.sharedInstance.downloadClip(fileName) {
-            task.observeStatus(.Success){ snapshot in
+            task.observe(.success){ snapshot in
                 
                 //print("File downloaded \(self.fileName)")
-                indicator.removeFromSuperview()
+                indicator?.removeFromSuperview()
                 //ai.removeFromSuperview()
                 self.loadPlayer()
                 self.playcallback?()
             }
-            task.observeStatus(.Failure) { snapshot in
+            task.observe(.failure) { snapshot in
                 guard let storageError = snapshot.error else { return }
                 print(storageError)
             }
@@ -123,7 +123,7 @@ class MiniPlayer: PlayerView {
             //    }
             //}
         } else {
-            indicator.removeFromSuperview()
+            indicator?.removeFromSuperview()
             //ai.removeFromSuperview()
             self.loadPlayer()
             self.playcallback?()
@@ -136,7 +136,7 @@ class MiniPlayer: PlayerView {
         }
     }
     
-    func play(completion: (()->())?) {
+    func play(_ completion: (()->())?) {
         
         playcompletion = completion
         
@@ -149,16 +149,16 @@ class MiniPlayer: PlayerView {
     
     func doplay(){
         super.play()
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
             selector: #selector(playerDidFinishPlaying),
-            name: AVPlayerItemDidPlayToEndTimeNotification,
+            name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
             object: player?.currentItem)
     }
     
     override func pause() {
         
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: AVPlayerItemDidPlayToEndTimeNotification,
+        NotificationCenter.default.removeObserver(self,
+            name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
             object: player?.currentItem)
         
         //task?.removeAllObservers()
@@ -170,15 +170,15 @@ class MiniPlayer: PlayerView {
 
     deinit {
         //print("~~~ deinit: " + fileName)
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
         //task?.removeAllObservers()
         //player?.replaceCurrentItemWithPlayerItem(nil)
     }
     
-    func playerDidFinishPlaying(notification: NSNotification) {
+    func playerDidFinishPlaying(_ notification: Notification) {
         
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: AVPlayerItemDidPlayToEndTimeNotification,
+        NotificationCenter.default.removeObserver(self,
+            name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
             object: player?.currentItem)
 
         playcompletion?()
@@ -200,27 +200,27 @@ class ClipThumbnail: UIView {
     init(clip: ClipModel, frame: CGRect) {
         super.init(frame: frame)
         img = UIImageView(frame:frame)
-        img.contentMode = .ScaleAspectFill
-        let resource = Resource(downloadURL: NSURL(string: clip.thumb)!, cacheKey: clip.id)
+        img.contentMode = .scaleAspectFill
+        let resource = Resource(downloadURL: URL(string: clip.thumb)!, cacheKey: clip.id)
         img.kf_setImageWithResource(resource)
         
         if clip.txt == "" {
-            textField.hidden = true
+            textField.isHidden = true
         }
         else {
-            textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-            textField.textColor = UIColor.whiteColor()
-            textField.font = UIFont.systemFontOfSize(10)
-            textField.textAlignment = NSTextAlignment.Center
+            textField.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+            textField.textColor = UIColor.white
+            textField.font = UIFont.systemFont(ofSize: 10)
+            textField.textAlignment = NSTextAlignment.center
             //textField.height = 20
             textField.width = frame.width
-            textField.userInteractionEnabled = false
+            textField.isUserInteractionEnabled = false
             textField.text = clip.txt
             textField.autoHeight(false)
             textField.center.y =  frame.height * CGFloat(clip.y)
         }
         dateLabel.origin = CGPoint(x: 8, y: 8)
-        dateLabel.text = NSDate(timeIntervalSince1970: clip.date).shortTimeAgoSinceNow()
+        dateLabel.text = (Date(timeIntervalSince1970: clip.date) as NSDate).shortTimeAgoSinceNow()
         dateLabel.size = CGSize(width: 50, height: 14)
         dateLabel.textColor = UIColor(white: 1, alpha: 0.8)
         dateLabel.font = UIFont(name: "OpenSans", size: 11.0)

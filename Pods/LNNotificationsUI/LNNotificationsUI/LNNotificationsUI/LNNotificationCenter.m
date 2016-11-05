@@ -307,10 +307,10 @@ static NSString *const _LNSettingsKey = @"LNNotificationSettingsKey";
 //	_currentAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundFileURL error:nil];
 //	_currentAudioPlayer.delegate = self;
 //	[_currentAudioPlayer play];
-    
-    SystemSoundID sound = 0;
-    AudioServicesCreateSystemSoundID((__bridge CFURLRef)soundFileURL, &sound);
-    AudioServicesPlaySystemSound(sound);
+	
+        SystemSoundID sound = 0;
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)soundFileURL, &sound);
+        AudioServicesPlaySystemSound(sound);
 }
 
 - (NSDictionary*)_applicationsMapping

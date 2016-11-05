@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static var dayago = -14
     static var startdate: Double = 0
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         // Setup Firebase
@@ -50,12 +50,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let realmURL = Realm.Configuration.defaultConfiguration.fileURL!
             let realmURLs = [
                 realmURL,
-                realmURL.URLByAppendingPathExtension("lock"),
-                realmURL.URLByAppendingPathExtension("log_a"),
-                realmURL.URLByAppendingPathExtension("log_b"),
-                realmURL.URLByAppendingPathExtension("note")
+                realmURL.appendingPathExtension("lock"),
+                realmURL.appendingPathExtension("log_a"),
+                realmURL.appendingPathExtension("log_b"),
+                realmURL.appendingPathExtension("note")
             ]
-            let manager = NSFileManager.defaultManager()
+            let manager = FileManager.default
             for URL in realmURLs {
                 do {
                     try manager.removeItemAtURL(URL!)
@@ -66,17 +66,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             AppDelegate.realm = try! Realm()
         }
         
-        let today = NSDate()
-        let dayago = NSCalendar.currentCalendar()
-            .dateByAddingUnit(
-                .Day,
+        let today = Date()
+        let dayago = (Calendar.current as NSCalendar)
+            .date(
+                byAdding: .day,
                 value: AppDelegate.dayago,
-                toDate: today,
+                to: today,
                 options: []
         )
         AppDelegate.startdate = dayago?.timeIntervalSince1970 ?? 0
         
-        UINavigationBar.appearance().tintColor = UIColor.blackColor()
+        UINavigationBar.appearance().tintColor = UIColor.black
         UINavigationBar.appearance().titleTextAttributes = [
             //NSForegroundColorAttributeName : UIColor.darkGrayColor(),
             NSFontAttributeName : UIFont(name: "OpenSans", size: 20.0)!
@@ -102,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.applicationIconBadgeNumber = 0
         
         if #available(iOS 10.0, *) {
-            let center = UNUserNotificationCenter.currentNotificationCenter()
+            let center = UNUserNotificationCenter.current()
             center.delegate = self
             
             let replyAction = UNNotificationAction(
@@ -124,20 +124,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             center.setNotificationCategories([category])
             
         } else {
-            LNNotificationCenter.defaultCenter().notificationsBannerStyle = .Light
-            LNNotificationCenter.defaultCenter().registerApplicationWithIdentifier(
-                "Pinly",
+            LNNotificationCenter.default().notificationsBannerStyle = .light
+            LNNotificationCenter.default().registerApplication(
+                withIdentifier: "Pinly",
                 name: "Pinly",
                 icon: UIImage(named: "pin")!,
-                defaultSettings: LNNotificationAppSettings.defaultNotificationAppSettings())
+                defaultSettings: LNNotificationAppSettings.default())
         }
         
         /*** 🔥🔥🔥 End setup notification 🔥🔥🔥 ***/
         
-        window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        window!.backgroundColor = UIColor.whiteColor()
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window!.backgroundColor = UIColor.white
         
-        if FIRAuth.auth()?.currentUser != nil && FBSDKAccessToken.currentAccessToken() != nil {
+        if FIRAuth.auth()?.currentUser != nil && FBSDKAccessToken.current() != nil {
             self.window!.rootViewController = MainController()
             self.logUser()
         } else {
@@ -155,15 +155,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         
         if AppDelegate.uid != nil {
             
             //let tokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
             
-            let tokenChars = UnsafePointer<CChar>(deviceToken.bytes)
+            let tokenChars = (deviceToken as NSData).bytes.bindMemory(to: CChar.self, capacity: deviceToken.count)
             var tokenString = ""
-            for i in 0..<deviceToken.length {
+            for i in 0..<deviceToken.count {
                 tokenString += String(format: "%02.2hhx", arguments: [tokenChars[i]])
             }
             print("Device Token:", tokenString)
@@ -173,12 +173,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // depricated: iOS 10.0
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("Failed to register push notification: ", error)
     }
     
     // depricated: iOS 10.0
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         print(userInfo)
         if #available(iOS 10.0, *) {
             //
@@ -189,63 +189,63 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // depricated: iOS 10.0
-    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+    func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
 //        if notificationSettings.types != .None {
 //            application.registerForRemoteNotifications()
 //        }
     }
     
     // depricated: iOS 10.0
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: @escaping () -> Void) {
         print("action for local notification")
     }
     
     // depricated: iOS 10.0
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
+    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable: Any], completionHandler: @escaping () -> Void) {
         print("action for remote notification")
     }
     
     func showLogin() {
-        UIView.transitionWithView(self.window!, duration: 0.5, options: .TransitionFlipFromLeft, animations: {
+        UIView.transition(with: self.window!, duration: 0.5, options: .transitionFlipFromLeft, animations: {
             self.window!.rootViewController = LoginController()
             }, completion: nil)
     }
     
     func showMain() {
-        UIView.transitionWithView(self.window!, duration: 0.5, options: .TransitionFlipFromRight, animations: {
+        UIView.transition(with: self.window!, duration: 0.5, options: .transitionFlipFromRight, animations: {
             self.window!.rootViewController = MainController()
             }, completion: nil)
     }
 
     // Handling open fb login url
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
+    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+        return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
     }
     
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     }
 
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
 
-    func applicationWillEnterForeground(application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         
         application.applicationIconBadgeNumber = 0
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         
         // Facebook setup
         FBSDKAppEvents.activateApp()
     }
 
-    func applicationWillTerminate(application: UIApplication) {
+    func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
@@ -263,7 +263,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     // Called when the application is in foreground
     @available(iOS 10.0, *)
-    func userNotificationCenter(center: UNUserNotificationCenter, willPresentNotification notification: UNNotification, withCompletionHandler completionHandler: (UNNotificationPresentationOptions) -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresentNotification notification: UNNotification, withCompletionHandler completionHandler: (UNNotificationPresentationOptions) -> Void) {
         
         print("notification: \(notification)")
         
@@ -283,12 +283,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 break
             }
         }
-        completionHandler([.Badge, .Alert, .Sound])
+        completionHandler([.badge, .alert, .sound])
     }
     
     // Called when the application is opened by notification
     @available(iOS 10.0, *)
-    func userNotificationCenter(center: UNUserNotificationCenter, didReceiveNotificationResponse response: UNNotificationResponse, withCompletionHandler completionHandler: () -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceiveNotificationResponse response: UNNotificationResponse, withCompletionHandler completionHandler: () -> Void) {
         
         print("center: \(center)\nresponse: \(response)")
         let actionIdentifier = response.actionIdentifier
@@ -296,7 +296,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         // TODO: Snooze notification to remind me later
         if response.actionIdentifier == "remindLater" {
-            let newDate = NSDate(timeIntervalSinceNow: 900) // fire after 900 seconds
+            let newDate = Date(timeIntervalSinceNow: 900) // fire after 900 seconds
             //let pastdate = NSDate(timeIntervalSinceNow: -100) // fire immediately
             //let newDate = NSDate(timeInterval: 900, sinceDate: somedate)
             //scheduleNotification(at: newDate)

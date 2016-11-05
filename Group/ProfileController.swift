@@ -5,7 +5,6 @@
 import UIKit
 import FirebaseAuth
 import FirebaseDatabase
-import Crashlytics
 import DigitsKit
 import FBSDKLoginKit
 import AVFoundation
@@ -23,17 +22,17 @@ class ProfileController: FormViewController {
         
         form +++ Section() { section in
             section.header = {
-                let header = HeaderFooterView<UIView>(.Callback({
+                let header = HeaderFooterView<UIView>(.callback({
                 
                     let img = UIImageView(frame: CGRect(x: 0, y: 0, width: 90, height: 90))
-                    img.backgroundColor = UIColor.whiteColor()
+                    img.backgroundColor = UIColor.white
                     img.layer.cornerRadius = img.frame.height/2
                     img.layer.masksToBounds = false
                     img.clipsToBounds = true
-                    img.contentMode = UIViewContentMode.ScaleAspectFit
-                    if FBSDKAccessToken.currentAccessToken() != nil {
+                    img.contentMode = UIViewContentMode.scaleAspectFit
+                    if FBSDKAccessToken.current() != nil {
                         //img.kf_setImageWithURL(FIRAuth.auth()?.currentUser?.photoURL)
-                        img.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(FBSDKAccessToken.currentAccessToken().userID)/picture?type=large&return_ssl_resources=1"))
+                        img.kf.setImage(with: URL(string: "https://graph.facebook.com/\(FBSDKAccessToken.current().userID)/picture?type=large&return_ssl_resources=1"))
                     }
                     let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.width, height: 100))
                     img.center = view.center
@@ -118,10 +117,10 @@ class ProfileController: FormViewController {
                 .onCellSelection({ (cell, row) in
                     let url = "https://mobile.twitter.com/pinly_app"
                     if #available(iOS 9.0, *) {
-                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
-                        self.presentViewController(vc, animated: true, completion: nil)
+                        let vc = SFSafariViewController(url: URL(string: url)!)
+                        self.present(vc, animated: true, completion: nil)
                     } else {
-                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                        UIApplication.shared.openURL(URL(string: url)!)
                     }
                 })
 //            <<< ButtonRow("Report Issues"){
@@ -143,10 +142,10 @@ class ProfileController: FormViewController {
                 .onCellSelection({ (cell, row) in
                     let url = "https://m.facebook.com/pinlyapp/"
                     if #available(iOS 9.0, *) {
-                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
-                        self.presentViewController(vc, animated: true, completion: nil)
+                        let vc = SFSafariViewController(url: URL(string: url)!)
+                        self.present(vc, animated: true, completion: nil)
                     } else {
-                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                        UIApplication.shared.openURL(URL(string: url)!)
                     }
                 })
             <<< ButtonRow("Business Contact"){
@@ -155,10 +154,10 @@ class ProfileController: FormViewController {
                 .onCellSelection({ (cell, row) in
                     let url = "https://m.facebook.com/pinlyapp/"
                     if #available(iOS 9.0, *) {
-                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
-                        self.presentViewController(vc, animated: true, completion: nil)
+                        let vc = SFSafariViewController(url: URL(string: url)!)
+                        self.present(vc, animated: true, completion: nil)
                     } else {
-                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                        UIApplication.shared.openURL(URL(string: url)!)
                     }
                 })
         
@@ -169,10 +168,10 @@ class ProfileController: FormViewController {
                 .onCellSelection({ (cell, row) in
                     let url = "https://hoang17.github.io/html/privacy"
                     if #available(iOS 9.0, *) {
-                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
-                        self.presentViewController(vc, animated: true, completion: nil)
+                        let vc = SFSafariViewController(url: URL(string: url)!)
+                        self.present(vc, animated: true, completion: nil)
                     } else {
-                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                        UIApplication.shared.openURL(URL(string: url)!)
                     }
                 })
             
@@ -182,10 +181,10 @@ class ProfileController: FormViewController {
                 .onCellSelection({ (cell, row) in
                     let url = "https://hoang17.github.io/html/terms"
                     if #available(iOS 9.0, *) {
-                        let vc = SFSafariViewController(URL: NSURL(string: url)!)
-                        self.presentViewController(vc, animated: true, completion: nil)
+                        let vc = SFSafariViewController(url: URL(string: url)!)
+                        self.present(vc, animated: true, completion: nil)
                     } else {
-                        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                        UIApplication.shared.openURL(URL(string: url)!)
                     }
                 })
             
@@ -194,7 +193,7 @@ class ProfileController: FormViewController {
                 $0.title = $0.tag
                 }
                 .cellUpdate({ (cell, row) in
-                    cell.accessoryType = .None
+                    cell.accessoryType = .none
                 })
                 .onCellSelection({ (cell, row) in
                     self.syncContacts()
@@ -212,7 +211,7 @@ class ProfileController: FormViewController {
                 $0.title = $0.tag
                 }
                 .cellUpdate({ (cell, row) in
-                    cell.accessoryType = .None
+                    cell.accessoryType = .none
                 })
                 .onCellSelection({ (cell, row) in
                     self.logOut()
@@ -257,9 +256,9 @@ class ProfileController: FormViewController {
 
         var i = 0
 
-        ref.child("users/wm0dlW1fwtULkzpYAkvsBFpLk1w2").observeSingleEventOfType(.Value, withBlock: { snapshot in
+        ref.child("users/wm0dlW1fwtULkzpYAkvsBFpLk1w2").observeSingleEvent(of: .value, with: { snapshot in
             let user = User(snapshot: snapshot)
-            for clipSnapshot in snapshot.childSnapshotForPath("clips").children {
+            for clipSnapshot in snapshot.childSnapshot(forPath: "clips").children {
                 let clip = Clip(snapshot: clipSnapshot as! FIRDataSnapshot)
                 ref.child("pins/\(user.uid)/\(clip.id)").setValue(clip.toAnyObject())
                 i+=1
@@ -270,16 +269,16 @@ class ProfileController: FormViewController {
     
     func logOut() {
         
-        let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: UIAlertControllerStyle.Alert)
+        let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: UIAlertControllerStyle.alert)
         
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (action: UIAlertAction!) in
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action: UIAlertAction!) in
             do{
                 try FIRAuth.auth()?.signOut()
                 Digits.sharedInstance().logOut()
                 FBSDKLoginManager().logOut()
                 print("user logged out")
                 
-                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.showLogin()
                 
                 try AppDelegate.realm.write {
@@ -291,11 +290,11 @@ class ProfileController: FormViewController {
             }
         }))
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
             print("logout cancelled")
         }))
         
-        presentViewController(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
         
     }
     

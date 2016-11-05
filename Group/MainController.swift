@@ -23,18 +23,18 @@ class MainController: UIViewController {
         
         /*** 🍺🍺🍺 Setup status bar 🍺🍺🍺 ***/
         
-        let statusBar = UIApplication.sharedApplication().valueForKey("statusBarWindow")?.valueForKey("statusBar") as? UIView
+        let statusBar = (UIApplication.shared.value(forKey: "statusBarWindow") as AnyObject).value(forKey: "statusBar") as? UIView
         statusBar?.backgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)
         
         
         /*** 📢📢📢 Register for push notification 📢📢📢***/
         
-        let application = UIApplication.sharedApplication()
+        let application = UIApplication.shared
         
         // New API (iOS 10-)
         if #available(iOS 10.0, *) {
-            let center = UNUserNotificationCenter.currentNotificationCenter()
-            center.requestAuthorizationWithOptions([.Badge, .Alert, .Sound]) { granted, error in
+            let center = UNUserNotificationCenter.current()
+            center.requestAuthorization(options: [.badge, .alert, .sound]) { granted, error in
                 if granted {
                     application.registerForRemoteNotifications()
                 } else {
@@ -45,7 +45,7 @@ class MainController: UIViewController {
         } else {
             // Old APIs (-iOS 8-9)
             // depricated: iOS 10.0
-            let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
+            let notificationSettings = UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil)
             application.registerUserNotificationSettings(notificationSettings)
             application.registerForRemoteNotifications()
         }
@@ -64,12 +64,12 @@ class MainController: UIViewController {
         UploadHelper.sharedInstance.start()
         
         //📍Load current user from disk
-        if let user = realm.objectForPrimaryKey(UserModel.self, key: AppDelegate.uid) {
+        if let user = realm?.object(ofType: UserModel.self, forPrimaryKey: AppDelegate.uid) {
             AppDelegate.currentUser = user
         }
         
         //📍Update current user from cloud
-        ref.child("users").child(AppDelegate.uid).observeEventType(.Value, withBlock: { snapshot in
+        ref.child("users").child(AppDelegate.uid).observe(.value, with: { snapshot in
             
             let user = User(snapshot: snapshot)
             
@@ -86,11 +86,11 @@ class MainController: UIViewController {
         
         /*** ⭐️⭐️⭐️ Loading following friends ⭐️⭐️⭐️***/
         
-        ref.child("friends/\(AppDelegate.uid)").queryOrderedByChild("following").queryEqualToValue(true).observeEventType(.ChildAdded, withBlock: { snapshot in
+        ref.child("friends/\(AppDelegate.uid)").queryOrdered(byChild: "following").queryEqual(toValue: true).observe(.childAdded, with: { snapshot in
         
             let friend = Friend(snapshot: snapshot)
             
-            ref.child("users").child(friend.fuid).observeSingleEventOfType(.Value, withBlock: { snapshot in
+            ref.child("users").child(friend.fuid).observeSingleEvent(of: .value, with: { snapshot in
                 
                 let user = User(snapshot: snapshot)
                 
@@ -98,7 +98,7 @@ class MainController: UIViewController {
                 
                 var uploaded: Double = 0
                 
-                var friend = realm.objectForPrimaryKey(UserModel.self, key: user.uid)
+                var friend = realm?.object(ofType: UserModel.self, forPrimaryKey: user.uid)
                 
                 if friend != nil {
                     uploaded = friend!.uploaded
@@ -110,18 +110,18 @@ class MainController: UIViewController {
                     
                     friend = UserModel(user: user)
                     
-                    try! realm.write {
-                        realm.add(friend!, update: true)
+                    try! realm?.write {
+                        realm?.add(friend!, update: true)
                     }
                     print("updated \(friend!.name)")
                 }
                 
-                ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(AppDelegate.startdate).observeEventType(.ChildAdded, withBlock: { snapshot in
+                ref.child("pins/\(user.uid)").queryOrdered(byChild: "date").queryStarting(atValue: AppDelegate.startdate).observe(.childAdded, with: { snapshot in
                     
                     let data = Clip(snapshot: snapshot)
                     
                     // Initial load - Check if pin has been modified
-                    if let clip = realm.objectForPrimaryKey(ClipModel.self, key: data.id) {
+                    if let clip = realm?.object(ofType: ClipModel.self, forPrimaryKey: data.id) {
                         if clip.updated == data.updated {
                             return
                         }
@@ -130,26 +130,26 @@ class MainController: UIViewController {
                     UploadHelper.sharedInstance.downloadClip(data.fname)
                     
                     let clip = ClipModel(clip: data)
-                    try! realm.write {
-                        realm.add(clip, update: true)
+                    try! realm?.write {
+                        realm?.add(clip, update: true)
                         friend!.uploaded = clip.date
                     }
                 })
                 
-                ref.child("pins/\(user.uid)").queryOrderedByChild("date").queryStartingAtValue(AppDelegate.startdate).observeEventType(.ChildChanged, withBlock: { snapshot in
+                ref.child("pins/\(user.uid)").queryOrdered(byChild: "date").queryStarting(atValue: AppDelegate.startdate).observe(.childChanged, with: { snapshot in
                     
                     let data = Clip(snapshot: snapshot)
                     
                     // Initial load - Check if pin has been modified
-                    if let clip = realm.objectForPrimaryKey(ClipModel.self, key: data.id) {
+                    if let clip = realm?.object(ofType: ClipModel.self, forPrimaryKey: data.id) {
                         if clip.updated == data.updated {
                             return
                         }
                     }
                     
                     let clip = ClipModel(clip: data)
-                    try! realm.write {
-                        realm.add(clip, update: true)
+                    try! realm?.write {
+                        realm?.add(clip, update: true)
                     }
                 })
                 
@@ -159,26 +159,26 @@ class MainController: UIViewController {
         //📍Init tab bar
         let tabBarController = ESTabBarController(tabIconNames: ["clock", "globe", "record", "map", "archive"])
 
-        self.addChildViewController(tabBarController)
-        self.view.addSubview(tabBarController.view)
-        tabBarController.view.frame = self.view.bounds
-        tabBarController.didMoveToParentViewController(self)
-        tabBarController.selectionIndicatorHeight = 3
-        tabBarController.selectedColor = UIColor(hexString: "#CD5B45")
-        tabBarController.buttonsBackgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)//UIColor(hexString: "#F6EBE0")
+        self.addChildViewController(tabBarController!)
+        self.view.addSubview((tabBarController?.view)!)
+        tabBarController?.view.frame = self.view.bounds
+        tabBarController?.didMove(toParentViewController: self)
+        tabBarController?.selectionIndicatorHeight = 3
+        tabBarController?.selectedColor = UIColor(hexString: "#CD5B45")
+        tabBarController?.buttonsBackgroundColor = UIColor(red: (247.0 / 255.0), green: (247.0 / 255.0), blue: (247.0 / 255.0), alpha: 1)//UIColor(hexString: "#F6EBE0")
         // tabBarController.buttonsBackgroundColor = UIColor(hexString: "#FFF")
         
         //📍Adding tab screens
-        tabBarController.setViewController(UINavigationController(rootViewController: FriendsController()), atIndex: 0)
-        tabBarController.setViewController(UINavigationController(rootViewController: SearchController()), atIndex: 1)
-        tabBarController.setViewController(UINavigationController(rootViewController: MapController()), atIndex: 3)
-        tabBarController.setViewController(UINavigationController(rootViewController: ProfileController()), atIndex: 4)
+        tabBarController?.setView(UINavigationController(rootViewController: FriendsController()), at: 0)
+        tabBarController?.setView(UINavigationController(rootViewController: SearchController()), at: 1)
+        tabBarController?.setView(UINavigationController(rootViewController: MapController()), at: 3)
+        tabBarController?.setView(UINavigationController(rootViewController: ProfileController()), at: 4)
         
         let cam = NCameraViewController()
         
-        tabBarController.setAction({
-            self.presentViewController(cam, animated: true, completion: nil)
-        }, atIndex: 2)
+        tabBarController?.setAction({
+            self.present(cam, animated: true, completion: nil)
+        }, at: 2)
 
         // tabBarController.highlightButtonAtIndex(1)
     }

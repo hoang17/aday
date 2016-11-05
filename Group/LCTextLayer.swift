@@ -11,13 +11,13 @@ import UIKit
 class LCTextLayer : CATextLayer {
     
     // Vertical center align text
-    override func drawInContext(ctx: CGContext) {
+    override func draw(in ctx: CGContext) {
         let height = self.frame.size.height
         let fontSize = self.fontSize
         let yDiff = (height-fontSize)/2 - fontSize/5
-        CGContextSaveGState(ctx)
-        CGContextTranslateCTM(ctx, 0.0, yDiff)
-        super.drawInContext(ctx)
-        CGContextRestoreGState(ctx)
+        ctx.saveGState()
+        ctx.translateBy(x: 0.0, y: yDiff)
+        super.draw(in: ctx)
+        ctx.restoreGState()
     }
 }

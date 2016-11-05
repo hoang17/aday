@@ -21,12 +21,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         let background = UIImage(named: "Image")
         var imageView : UIImageView!
         imageView = UIImageView(frame: view.bounds)
-        imageView.contentMode =  UIViewContentMode.ScaleAspectFill
+        imageView.contentMode =  UIViewContentMode.scaleAspectFill
         imageView.clipsToBounds = true
         imageView.image = background
         imageView.center = view.center
         view.addSubview(imageView)
-        self.view.sendSubviewToBack(imageView)
+        self.view.sendSubview(toBack: imageView)
         
         
         // Setup login button
@@ -45,38 +45,38 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         let label = ActiveLabel()
         
-        let term = ActiveType.Custom(pattern: "\\sTerms of Service\\b")
-        let privacy = ActiveType.Custom(pattern: "\\sPrivacy Policy\\b")
+        let term = ActiveType.custom(pattern: "\\sTerms of Service\\b")
+        let privacy = ActiveType.custom(pattern: "\\sPrivacy Policy\\b")
         
         label.enabledTypes = [term, privacy]
-        label.customColor[term] = UIColor.purpleColor()
-        label.customSelectedColor[term] = UIColor.blueColor()
-        label.customColor[privacy] = UIColor.purpleColor()
-        label.customSelectedColor[privacy] = UIColor.blueColor()
+        label.customColor[term] = UIColor.purple
+        label.customSelectedColor[term] = UIColor.blue
+        label.customColor[privacy] = UIColor.purple
+        label.customSelectedColor[privacy] = UIColor.blue
         
         label.text = "By tapping Login with Facebook, you agree\n to the Terms of Service and Privacy Policy"
         label.numberOfLines = 0
         label.lineSpacing = 4
-        label.textColor = .blackColor()
+        label.textColor = .black
         label.font = UIFont(name: "OpenSans", size: 13.0)
         
         label.handleCustomTap(for: term) { element in
             let url = "https://hoang17.github.io/html/terms"
             if #available(iOS 9.0, *) {
-                let vc = SFSafariViewController(URL: NSURL(string: url)!)
-                self.presentViewController(vc, animated: true, completion: nil)
+                let vc = SFSafariViewController(url: URL(string: url)!)
+                self.present(vc, animated: true, completion: nil)
             } else {
-                UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                UIApplication.shared.openURL(URL(string: url)!)
             }
         }
         
         label.handleCustomTap(for: privacy) { element in
             let url = "https://hoang17.github.io/html/privacy"
             if #available(iOS 9.0, *) {
-                let vc = SFSafariViewController(URL: NSURL(string: url)!)
-                self.presentViewController(vc, animated: true, completion: nil)
+                let vc = SFSafariViewController(url: URL(string: url)!)
+                self.present(vc, animated: true, completion: nil)
             } else {
-                UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+                UIApplication.shared.openURL(URL(string: url)!)
             }
         }
         
@@ -88,19 +88,19 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if FIRAuth.auth()?.currentUser != nil {
             // navigate to home
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.showMain()
         }
     }
     
     // Facebook Delegate Methods
     
-    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+    func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
         
         if error != nil {
             // Process error
@@ -114,15 +114,15 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         else {
             print("User logged In")
             
-            loginButton.hidden = true
+            loginButton.isHidden = true
             
             let text = "Logging in..."
             self.showWaitOverlayWithText(text)
             
             // Save Facebook login user
-            let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
+            let credential = FIRFacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
             
-            FIRAuth.auth()?.signInWithCredential(credential) { [weak self] (currentUser, error) in
+            FIRAuth.auth()?.signIn(with: credential) { [weak self] (currentUser, error) in
                 
                 let uid = currentUser!.uid
                 
@@ -130,18 +130,18 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                 
                 print("loading user")
                 
-                ref.child("users").child(uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                ref.child("users").child(uid).observeSingleEvent(of: .value, with: { snapshot in
                     
                     print("loaded snapshot")
                     
                     if snapshot.value is NSNull {
                         
                         let name = currentUser!.displayName!
-                        let fb = FBSDKAccessToken.currentAccessToken().userID
-                        let fbtoken = FBSDKAccessToken.currentAccessToken().tokenString
+                        let fb = FBSDKAccessToken.current().userID
+                        let fbtoken = FBSDKAccessToken.current().tokenString
                         let email = currentUser!.email ?? ""
                         
-                        let u = User(uid: uid, name: name, email: email, fb: fb, fbtoken: fbtoken)
+                        let u = User(uid: uid, name: name, email: email, fb: fb!, fbtoken: fbtoken!)
                         AppDelegate.currentUser = UserModel(user: u)
                         try! AppDelegate.realm.write {
                             AppDelegate.realm.add(AppDelegate.currentUser, update: true)
@@ -154,7 +154,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                             "email": email,
                             "fb": fb,
                             "fbtoken": fbtoken,
-                            "created": NSDate().timeIntervalSince1970]
+                            "created": Date().timeIntervalSince1970] as [String : Any]
                         
                         let friend = Friend(uid: uid, fuid: uid)
                         
@@ -174,7 +174,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                     if (AppDelegate.currentUser.phone == "") {
                         self?.showDigitsLogin()
                     } else {
-                        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                        let appDelegate = UIApplication.shared.delegate as! AppDelegate
                         appDelegate.showMain()
                     }
                 })
@@ -185,9 +185,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     func showDigitsLogin() {
-        let configuration = DGTAuthenticationConfiguration(accountFields: .DefaultOptionMask)
-        configuration.phoneNumber = "+84"
-        Digits.sharedInstance().authenticateWithViewController(self, configuration: configuration) { (session, error) in
+        let configuration = DGTAuthenticationConfiguration(accountFields: .defaultOptionMask)
+        configuration?.phoneNumber = "+84"
+        Digits.sharedInstance().authenticate(with: self, configuration: configuration!) { (session, error) in
             
             if error != nil {
                 print(error)
@@ -201,14 +201,14 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
             FIRDatabase.database().reference().child("users").child(currentUser.uid).updateChildValues(user)
             
             // navigate to home
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.showMain()
             
 //            self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
     
-    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
+    func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
         
         do {
             Digits.sharedInstance().logOut()

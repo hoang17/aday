@@ -1,5 +1,5 @@
 PODS:
-  - ActiveLabel (0.6.0)
+  - ActiveLabel (0.7.0)
   - APAddressBook (0.2.3):
     - APAddressBook/Core (= 0.2.3)
   - APAddressBook/Core (0.2.3)
@@ -9,45 +9,45 @@ PODS:
   - Bolts/AppLinks (1.8.4):
     - Bolts/Tasks
   - Bolts/Tasks (1.8.4)
-  - Crashlytics (3.8.3):
-    - Fabric (~> 1.6.3)
   - CWStatusBarNotification (2.3.5)
   - DateTools (1.7.0)
   - DGActivityIndicatorView (2.1)
   - Digits (2.5.0):
     - TwitterCore (= 2.5.0)
   - ESTabBarController (0.1.3)
-  - Eureka (1.7.0)
-  - Fabric (1.6.8)
-  - FBSDKCoreKit (4.15.1):
+  - Eureka (2.0.0-beta.1)
+  - Fabric (1.6.10)
+  - FBSDKCoreKit (4.16.0):
     - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.15.1):
+  - FBSDKLoginKit (4.16.1):
     - FBSDKCoreKit
-  - FBSDKShareKit (4.15.1):
+  - FBSDKShareKit (4.16.1):
     - FBSDKCoreKit
-  - Firebase (3.6.0):
-    - Firebase/Core (= 3.6.0)
-  - Firebase/Analytics (3.6.0):
-    - FirebaseAnalytics (= 3.4.2)
-  - Firebase/Auth (3.6.0):
-    - Firebase/Analytics
+  - Firebase (3.7.1):
+    - Firebase/Core (= 3.7.1)
+  - Firebase/Auth (3.7.1):
+    - Firebase/Core
     - FirebaseAuth (= 3.0.5)
-  - Firebase/Core (3.6.0):
-    - Firebase/Analytics
-  - Firebase/Database (3.6.0):
-    - Firebase/Analytics
+  - Firebase/Core (3.7.1):
+    - FirebaseAnalytics (= 3.4.4)
+    - FirebaseCore (= 3.4.3)
+  - Firebase/Database (3.7.1):
+    - Firebase/Core
     - FirebaseDatabase (= 3.0.3)
-  - Firebase/Storage (3.6.0):
-    - Firebase/Analytics
+  - Firebase/Storage (3.7.1):
+    - Firebase/Core
     - FirebaseStorage (= 1.0.3)
-  - FirebaseAnalytics (3.4.2):
+  - FirebaseAnalytics (3.4.4):
+    - FirebaseCore (~> 3.4)
     - FirebaseInstanceID (~> 1.0)
     - GoogleInterchangeUtilities (~> 1.2)
     - GoogleSymbolUtilities (~> 1.1)
-    - GoogleUtilities (~> 1.2)
   - FirebaseAuth (3.0.5):
     - FirebaseAnalytics (~> 3.3)
     - GoogleNetworkingUtilities (~> 1.2)
+    - GoogleUtilities (~> 1.2)
+  - FirebaseCore (3.4.3):
+    - GoogleInterchangeUtilities (~> 1.2)
     - GoogleUtilities (~> 1.2)
   - FirebaseDatabase (3.0.3):
     - FirebaseAnalytics (~> 3.3)
@@ -55,40 +55,39 @@ PODS:
   - FirebaseStorage (1.0.3):
     - FirebaseAnalytics (~> 3.3)
     - GoogleNetworkingUtilities (~> 1.2)
-  - GoogleInterchangeUtilities (1.2.1):
-    - GoogleSymbolUtilities (~> 1.0)
-  - GoogleNetworkingUtilities (1.2.1):
-    - GoogleSymbolUtilities (~> 1.0)
-  - GoogleSymbolUtilities (1.1.1)
-  - GoogleUtilities (1.3.1):
-    - GoogleSymbolUtilities (~> 1.0)
-  - Just (0.4.8)
-  - Kingfisher (2.5.1)
+  - GoogleInterchangeUtilities (1.2.2):
+    - GoogleSymbolUtilities (~> 1.1)
+  - GoogleNetworkingUtilities (1.2.2):
+    - GoogleSymbolUtilities (~> 1.1)
+  - GoogleSymbolUtilities (1.1.2)
+  - GoogleUtilities (1.3.2):
+    - GoogleSymbolUtilities (~> 1.1)
+  - Just (0.5.4)
+  - Kingfisher (3.1.3)
   - LNNotificationsUI (1.0.0)
-  - Realm (1.1.0):
-    - Realm/Headers (= 1.1.0)
-  - Realm/Headers (1.1.0)
-  - RealmSwift (1.1.0):
-    - Realm (= 1.1.0)
+  - Realm (2.0.2):
+    - Realm/Headers (= 2.0.2)
+  - Realm/Headers (2.0.2)
+  - RealmSwift (2.0.2):
+    - Realm (= 2.0.2)
   - SCRecorder (2.7.0)
   - SlackTextViewController (1.9.5)
-  - SnapKit (0.22.0)
-  - SwiftOverlays (2.0.1)
+  - SnapKit (3.0.2)
+  - SwiftOverlays (2.0.2)
   - TwitterCore (2.5.0):
     - Fabric
   - UIColor-HexString (1.3.0)
   - YYText (1.0.7)
 
 DEPENDENCIES:
-  - ActiveLabel (from `https://github.com/optonaut/ActiveLabel.swift.git`, branch `swift-2.3`)
+  - ActiveLabel
   - APAddressBook
-  - Crashlytics
   - CWStatusBarNotification
   - DateTools
   - DGActivityIndicatorView
   - Digits
   - ESTabBarController
-  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `swift2.3`)
+  - Eureka (= 2.0.0-beta.1)
   - Fabric
   - FBSDKCoreKit
   - FBSDKLoginKit
@@ -97,82 +96,70 @@ DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Database
   - Firebase/Storage
-  - Just (from `https://github.com/JustHTTP/Just.git`, branch `swift-2.3`)
-  - Kingfisher (= 2.5.1)
+  - Just
+  - Kingfisher
   - LNNotificationsUI (from `https://github.com/kineticac/LNNotificationsUI.git`)
-  - RealmSwift (= 1.1.0)
+  - RealmSwift
   - SCRecorder
   - SlackTextViewController
-  - SnapKit (= 0.22.0)
-  - SwiftOverlays
+  - SnapKit
+  - SwiftOverlays (from `https://github.com/hoang17/SwiftOverlays`, branch `swift-3.0`)
   - UIColor-HexString
   - YYText
 
 EXTERNAL SOURCES:
-  ActiveLabel:
-    :branch: swift-2.3
-    :git: https://github.com/optonaut/ActiveLabel.swift.git
-  Eureka:
-    :branch: swift2.3
-    :git: https://github.com/xmartlabs/Eureka.git
-  Just:
-    :branch: swift-2.3
-    :git: https://github.com/JustHTTP/Just.git
   LNNotificationsUI:
     :git: https://github.com/kineticac/LNNotificationsUI.git
+  SwiftOverlays:
+    :branch: swift-3.0
+    :git: https://github.com/hoang17/SwiftOverlays
 
 CHECKOUT OPTIONS:
-  ActiveLabel:
-    :commit: e02d5565ff995043f11d89d93240fd6c9cbb34f3
-    :git: https://github.com/optonaut/ActiveLabel.swift.git
-  Eureka:
-    :commit: 29e73c3a2196732de0acac136e911143290390cf
-    :git: https://github.com/xmartlabs/Eureka.git
-  Just:
-    :commit: 65721a2767bcb208c7f7cc7a4c48005a41aa83dc
-    :git: https://github.com/JustHTTP/Just.git
   LNNotificationsUI:
     :commit: 1c9be48b84d80ce3dd2ae8719657ad3c9a9f60ea
     :git: https://github.com/kineticac/LNNotificationsUI.git
+  SwiftOverlays:
+    :commit: d548398ab40ec8d3c11ea400ba0be93edb80dfda
+    :git: https://github.com/hoang17/SwiftOverlays
 
 SPEC CHECKSUMS:
-  ActiveLabel: ec8c7a0995ab2d789ab74b72b105397dc079ff97
+  ActiveLabel: eb405c5b99275be52fac161f7a55cab1dd672c54
   APAddressBook: 2a91bf05999548bea210ec9d1a68073f4dc8bfce
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
-  Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
   CWStatusBarNotification: 3d2738b25c3207f60cc50201388d3c96182545ff
   DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
   DGActivityIndicatorView: 1942ae657a8d247c035f229422b2d15a8adbe5b6
   Digits: c69ee2d1a6acf728c5d159f1bd335e4882bd3225
   ESTabBarController: f08fa16b154cfb9d8d42096f7d6d10b58775dbf5
-  Eureka: 2020d9faeef7b7e9adeb9e3d8af779e5931c1897
-  Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
-  FBSDKCoreKit: fc7fa53d16b095ee3fd53f0cd59f1df8bcbb634d
-  FBSDKLoginKit: 073f79b3b2e762fc6f54a283fe15f45372d59f5f
-  FBSDKShareKit: 11cbb5a4d7b5fda8143cc95b76188147e6725736
-  Firebase: 34187200ef4979dbd485c7aa685ef078bf587c86
-  FirebaseAnalytics: 3f5358d9104adf159cc8d99b7b501e50099a39ad
+  Eureka: d014adf16406745e1a78d5790ea37ed130a0a8e5
+  Fabric: c73f371ee543e3f0b80608f2674750e4910d1669
+  FBSDKCoreKit: 7a6baaed4a2b2a244ba253346713bdbc74df135b
+  FBSDKLoginKit: 469a56cebe2e1ed62b1621d0b155970fd6aac2d8
+  FBSDKShareKit: 53af0239b5bd2ebf191f32f75991245a208cc982
+  Firebase: be473484f0d515e72ffd04acf22f981773c23e58
+  FirebaseAnalytics: 0533a00b681e08fd0b2cd0444b7ddf0ef9fd7a1a
   FirebaseAuth: 75a062bbf2d3c97d1e6e55bbc110e13a6853e25d
+  FirebaseCore: 5a885548bbc5f0c410b04f8e9ac9d73ff1221907
   FirebaseDatabase: 750a4a0fe18ef114318876fd654b2d9c671e0992
   FirebaseInstanceID: ba1e640935235e5fac39dfa816fe7660e72e1a8a
   FirebaseStorage: 3992817bf405f5c1a4f8349678d22724cd0ef509
-  GoogleInterchangeUtilities: def8415a862effc67d549d5b5b0b9c7a2f97d4de
-  GoogleNetworkingUtilities: 3e83269048cfb498dc7ec83ab36813360965c74f
-  GoogleSymbolUtilities: 33117db1b5f290c6fbf259585e4885b4c84b98d7
-  GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
-  Just: ed7665521c49651ccf3a09a4280f563978f4741c
-  Kingfisher: 9b82e0e1f1a296f149a50bbc2214532eaa4df4f1
+  GoogleInterchangeUtilities: d5bc4d88d5b661ab72f9d70c58d02ca8c27ad1f7
+  GoogleNetworkingUtilities: 3edd3a8161347494f2da60ea0deddc8a472d94cb
+  GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
+  GoogleUtilities: 8bbc733218aad26306f9d4a253823986110e3358
+  Just: 82af0c5107d787b1d7fdc519d18b2472e070851a
+  Kingfisher: 007f5851c18c81e7cc106c9cbac1bafea1cce5dc
   LNNotificationsUI: 1b447975fbfd7f51c2b4dd3ae005b00c56bed2d3
-  Realm: ceecf1a4540c4ce9efe196fe73fa9855bce05bd8
-  RealmSwift: 838058b2db95b12cb86bd0cf209df642c33fb60a
+  Realm: 0f5a194af0b7e6158b83db41b4ee1a00be7ddf1a
+  RealmSwift: 0eb5070d851cba7c66e841ca756d83609dc78bc8
   SCRecorder: bbb521dbc222908876ec9cd9156bbc8a893bed44
   SlackTextViewController: fbcdadbb8090673f604484ff5b6eb8d77baed42a
-  SnapKit: 0dd2fd157330f1ea11fd84da13e6be8a7a22bae0
-  SwiftOverlays: 317afbb3eeb7f9d8545b1e6592500c89aadb6d8f
+  SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
+  SwiftOverlays: a4d6edf75aef9499c2cd915c0f36eb5cf3b3d7d2
   TwitterCore: 95c46af93112768a7983bd370d66023553601d01
   UIColor-HexString: fadc2e1389db19147ac99dee92222d3bd8bfec4a
   YYText: 5c461d709e24d55a182d1441c41dc639a18a4849
 
-PODFILE CHECKSUM: 59302adcb96ca6a6ca7777e3aed115362df9847f
+PODFILE CHECKSUM: fd86848b9d5a19cf028b99261804504b27c4c97a
 
 COCOAPODS: 1.1.0.rc.2

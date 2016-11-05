@@ -35,26 +35,26 @@ class ClipCalloutView: UIView {
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
         profileImg.layer.borderWidth = 0.5
-        profileImg.layer.borderColor = UIColor.lightGrayColor().CGColor
-        profileImg.contentMode = .ScaleAspectFit        
-        profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(user!.fb)/picture?type=large&return_ssl_resources=1"))
+        profileImg.layer.borderColor = UIColor.lightGray.cgColor
+        profileImg.contentMode = .scaleAspectFit        
+        profileImg.kf_setImageWithURL(URL(string: "https://graph.facebook.com/\(user!.fb)/picture?type=large&return_ssl_resources=1"))
         
         if clip.txt == "" {
-            textField.hidden = true
+            textField.isHidden = true
         }
         else {
-            textField.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
-            textField.textColor = UIColor.whiteColor()
-            textField.font = UIFont.systemFontOfSize(10)
-            textField.textAlignment = NSTextAlignment.Center
+            textField.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+            textField.textColor = UIColor.white
+            textField.font = UIFont.systemFont(ofSize: 10)
+            textField.textAlignment = NSTextAlignment.center
             textField.height = 20
             textField.width = frame.width
-            textField.userInteractionEnabled = false
+            textField.isUserInteractionEnabled = false
             textField.text = clip.txt
             textField.center.y =  frame.height * CGFloat(clip.y)
         }
         dateLabel.origin = CGPoint(x: 5, y: 3)
-        dateLabel.text = NSDate(timeIntervalSince1970: clip.date).shortTimeAgoSinceNow()
+        dateLabel.text = (Date(timeIntervalSince1970: clip.date) as NSDate).shortTimeAgoSinceNow()
         dateLabel.size = CGSize(width: 50, height: 10)
         dateLabel.textColor = UIColor(white: 1, alpha: 0.8)
         dateLabel.font = UIFont(name: "OpenSans", size: 9.0)

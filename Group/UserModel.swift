@@ -47,7 +47,7 @@ class UserModel: Object {
         flags = user.flags
     }
     
-    private dynamic var flagsData: NSData?
+    fileprivate dynamic var flagsData: Data?
     
     var flags: [String: Bool] {
         get {
@@ -55,7 +55,7 @@ class UserModel: Object {
                 return [String: Bool]()
             }
             do {
-                let dict = try NSJSONSerialization.JSONObjectWithData(flagsData, options: []) as? [String: Bool]
+                let dict = try JSONSerialization.jsonObject(with: flagsData, options: []) as? [String: Bool]
                 return dict!
             } catch {
                 return [String: Bool]()
@@ -64,7 +64,7 @@ class UserModel: Object {
         
         set {
             do {
-                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
+                let data = try JSONSerialization.data(withJSONObject: newValue, options: [])
                 flagsData = data
             } catch {
                 flagsData = nil

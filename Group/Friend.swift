@@ -24,7 +24,7 @@ class Friend: NSObject {
         self.following = following
         self.follower = follower
         self.flag = false
-        self.created = NSDate().timeIntervalSince1970
+        self.created = Date().timeIntervalSince1970
         self.updated = self.created
     }
     
@@ -40,13 +40,13 @@ class Friend: NSObject {
     
     func toAnyObject() -> [String:AnyObject] {
         return [
-            "uid": uid,
-            "fuid": fuid,
-            "following": following,
-            "follower": follower,
-            "flag": flag,
-            "created": created,
-            "updated": updated
+            "uid": uid as AnyObject,
+            "fuid": fuid as AnyObject,
+            "following": following as AnyObject,
+            "follower": follower as AnyObject,
+            "flag": flag as AnyObject,
+            "created": created as AnyObject,
+            "updated": updated as AnyObject
         ]
     }
 }

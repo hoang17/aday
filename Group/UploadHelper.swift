@@ -24,7 +24,7 @@ class UploadHelper {
     var clipUploads: Results<ClipUpload>!
     let fileName = "output.mp4"
     let filePath: String!
-    let fileUrl: NSURL!
+    let fileUrl: URL!
     var connected = false
     var uploading = [String:Bool]()
     var downloadTasks = [String: FIRStorageDownloadTask]()
@@ -33,7 +33,7 @@ class UploadHelper {
     
     init() {
         filePath = NSTemporaryDirectory() + fileName
-        fileUrl = NSURL(fileURLWithPath: filePath)
+        fileUrl = URL(fileURLWithPath: filePath)
     }
     
     func start() {
@@ -42,7 +42,7 @@ class UploadHelper {
         let online = ref.child("online/\(AppDelegate.uid)")
         let lastseen = ref.child("lastseen/\(AppDelegate.uid)")
         
-        ref.child(".info/connected").observeEventType(.Value, withBlock: { snapshot in
+        ref.child(".info/connected").observe(.value, with: { snapshot in
             self.connected = snapshot.value as? Bool ?? false
             if self.connected {
                 print("Connected")
@@ -73,18 +73,18 @@ class UploadHelper {
         }
     }
     
-    func enqueueUpload(clip: ClipModel, liloaded: Bool = true) {
+    func enqueueUpload(_ clip: ClipModel, liloaded: Bool = true) {
         
         do {
             // rename video file
             let uploadFilePath = NSTemporaryDirectory() + clip.fname
-            let uploadFileUrl = NSURL(fileURLWithPath: uploadFilePath)
-            try NSFileManager.defaultManager().moveItemAtURL(UploadHelper.sharedInstance.fileUrl, toURL: uploadFileUrl)
+            let uploadFileUrl = URL(fileURLWithPath: uploadFilePath)
+            try FileManager.default.moveItem(at: UploadHelper.sharedInstance.fileUrl, to: uploadFileUrl)
             
             // extract thumb image
             self.extractThumbImage(clip)
             
-            clip.thumb = NSURL(fileURLWithPath: uploadFilePath + ".jpg").absoluteString!
+            clip.thumb = URL(fileURLWithPath: uploadFilePath + ".jpg").absoluteString
             
             let user = AppDelegate.currentUser
             
@@ -92,17 +92,17 @@ class UploadHelper {
             
             let realm = AppDelegate.realm
             
-            try realm.write {
-                realm.add(clip, update: true)
-                realm.add(clipUpload, update: true)
-                user.uploaded = clip.date
+            try realm?.write {
+                realm?.add(clip, update: true)
+                realm?.add(clipUpload, update: true)
+                user?.uploaded = clip.date
             }
             if connected {
                 beginUpload(clipUpload)
             } else {
                 let notification = CWStatusBarNotification()
-                notification.notificationLabelBackgroundColor = UIColor.redColor()
-                notification.displayNotificationWithMessage("No network connection", forDuration: 2.0)
+                notification.notificationLabelBackgroundColor = UIColor.red
+                notification.display(withMessage: "No network connection", forDuration: 2.0)
             }
             
         } catch {
@@ -111,14 +111,14 @@ class UploadHelper {
 
     }
     
-    func beginUpload(clipUpload: ClipUpload) {
+    func beginUpload(_ clipUpload: ClipUpload) {
         
-        if let clip = AppDelegate.realm.objectForPrimaryKey(ClipModel.self, key: clipUpload.id) {
+        if let clip = AppDelegate.realm.object(ofType: ClipModel.self, forPrimaryKey: clipUpload.id) {
          
             let uploadFilePath = NSTemporaryDirectory() + clip.fname
             
             // delete realm object if file not found
-            if (!NSFileManager.defaultManager().fileExistsAtPath(uploadFilePath)) {
+            if (!FileManager.default.fileExists(atPath: uploadFilePath)) {
                 print("Pin not uploaded, file not found \(uploadFilePath)")
                 try! AppDelegate.realm.write {
                     AppDelegate.realm.delete(clip)
@@ -137,7 +137,7 @@ class UploadHelper {
             
             print("Begin uploading pin \(clip.id)...")
             
-            let group = dispatch_group_create()
+            let group = DispatchGroup()
             
             uploading[clip.id] = true
             
@@ -146,7 +146,7 @@ class UploadHelper {
             if !clipUpload.clipUploaded {
                 
                 // enter upload clip
-                dispatch_group_enter(group)
+                group.enter()
                 
                 upload(clip) { metadata, error in
                     // upload done
@@ -162,14 +162,14 @@ class UploadHelper {
                         }
                     }
                     // leave upload clip
-                    dispatch_group_leave(group)
+                    group.leave()
                 }
             }
             
             if !clipUpload.thumbUploaded {
                 
                 // enter upload thumb
-                dispatch_group_enter(group)
+                group.enter()
                 
                 uploadThumb(clip) { metadata, error in
                     // upload done
@@ -188,7 +188,7 @@ class UploadHelper {
                         }
                     }
                     // leave upload thumb
-                    dispatch_group_leave(group)
+                    group.leave()
                 }
             }
 
@@ -197,7 +197,7 @@ class UploadHelper {
             if !clipUpload.liloaded {
 
                 // enter load location info group
-                dispatch_group_enter(group)
+                group.enter()
 
                 let location = CLLocation(latitude: clip.lat, longitude: clip.long)
                 info.load(location) { info in
@@ -205,11 +205,11 @@ class UploadHelper {
                     //print(clip.lname)
                     
                     // leave location thumb
-                    dispatch_group_leave(group)
+                    group.leave()
                 }
             }
             
-            dispatch_group_notify(group, dispatch_get_main_queue()) {
+            group.notify(queue: DispatchQueue.main) {
                 
                 if !clipUpload.clipUploaded || !clipUpload.thumbUploaded {
                     
@@ -243,7 +243,7 @@ class UploadHelper {
                 let update = [
                     "/pins/\(uid)/\(clip.id)": data.toAnyObject(),
                     "/users/\(uid)/uploaded": clip.date,
-                    "/clips/\(clip.id)": data.toAnyObject()]
+                    "/clips/\(clip.id)": data.toAnyObject()] as [String : Any]
                 
                 self.ref.updateChildValues(update)
                 
@@ -253,7 +253,7 @@ class UploadHelper {
                 
                 let notification = CWStatusBarNotification()
                 notification.notificationLabelBackgroundColor = UIColor(red: 0.0, green: 122.0 / 255.0, blue: 1.0, alpha: 1.0)
-                notification.displayNotificationWithMessage("Pin uploaded", forDuration: 1.0)
+                notification.display(withMessage: "Pin uploaded", forDuration: 1.0)
             }
         } else {
             try! AppDelegate.realm.write {
@@ -263,24 +263,24 @@ class UploadHelper {
     }
     
     // Upload clip & thumb then save clip to db
-    func upload(clip: ClipModel, completion: ((FIRStorageMetadata?, NSError?) -> Void)?){
+    func upload(_ clip: ClipModel, completion: ((FIRStorageMetadata?, NSError?) -> Void)?){
         
         let uploadFile = clip.fname
-        let uploadFilePath = NSTemporaryDirectory() + uploadFile
-        let uploadFileUrl = NSURL(fileURLWithPath: uploadFilePath)
+        let uploadFilePath = NSTemporaryDirectory() + uploadFile!
+        let uploadFileUrl = URL(fileURLWithPath: uploadFilePath)
         
         print("Uploading \(uploadFile)...")
         
         let storage = FIRStorage.storage()
-        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com")
+        let gs = storage.reference(forURL: "gs://aday-b6ecc.appspot.com")
         
         let metadata = FIRStorageMetadata()
         metadata.contentType = "video/mp4"
         
-        gs.child("clips/" + uploadFile).putFile(uploadFileUrl, metadata: metadata, completion: completion)
+        gs.child("clips/" + uploadFile!).putFile(uploadFileUrl, metadata: metadata, completion: completion as! ((FIRStorageMetadata?, Error?) -> Void)?)
     }
     
-    func uploadThumb(clip: ClipModel, completion: ((FIRStorageMetadata?, NSError?) -> Void)?){
+    func uploadThumb(_ clip: ClipModel, completion: ((FIRStorageMetadata?, NSError?) -> Void)?){
         
         self.extractThumbImage(clip)
         
@@ -288,51 +288,51 @@ class UploadHelper {
         metadata.contentType = "image/jpg"
         
         let storage = FIRStorage.storage()
-        let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com")
+        let gs = storage.reference(forURL: "gs://aday-b6ecc.appspot.com")
         
         let thumb = clip.fname + ".jpg"
-        let thumbFileUrl = NSURL(fileURLWithPath: NSTemporaryDirectory() + thumb)
+        let thumbFileUrl = URL(fileURLWithPath: NSTemporaryDirectory() + thumb)
         
-        gs.child("thumbs/" + thumb).putFile(thumbFileUrl, metadata: metadata, completion: completion)
+        gs.child("thumbs/" + thumb).putFile(thumbFileUrl, metadata: metadata, completion: completion as! ((FIRStorageMetadata?, Error?) -> Void)?)
     }
     
     // Extract thumb image from video
-    func extractThumbImage(clip: ClipModel) {
+    func extractThumbImage(_ clip: ClipModel) {
         
         let clipFilePath = NSTemporaryDirectory() + clip.fname
         let thumbFilePath = clipFilePath + ".jpg"
         
-        if NSFileManager.defaultManager().fileExistsAtPath(thumbFilePath) {
+        if FileManager.default.fileExists(atPath: thumbFilePath) {
             return
         }
         
         do{
-            let asset = AVURLAsset(URL: NSURL(fileURLWithPath: clipFilePath), options: nil)
+            let asset = AVURLAsset(url: URL(fileURLWithPath: clipFilePath), options: nil)
             let imgGenerator = AVAssetImageGenerator(asset: asset)
             imgGenerator.appliesPreferredTrackTransform = true
-            let cgimg = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
-            let uiimg = UIImage(CGImage: cgimg)
+            let cgimg = try imgGenerator.copyCGImage(at: CMTimeMake(0, 1), actualTime: nil)
+            let uiimg = UIImage(cgImage: cgimg)
             let data = UIImageJPEGRepresentation(uiimg, 0.5)
             
-            KingfisherManager.sharedManager.cache.storeImage(uiimg, originalData: data, forKey: clip.id)
+            KingfisherManager.shared.cache.removeImage(uiimg, originalData: data, forKey: clip.id)
             
-            data!.writeToFile(thumbFilePath, atomically: true)
+            try? data!.write(to: URL(fileURLWithPath: thumbFilePath), options: [.atomic])
         } catch {
             print("extract thumb error")
             print(error)
         }
     }
     
-    func downloadClip(fileName: String) -> FIRStorageDownloadTask? {
+    func downloadClip(_ fileName: String) -> FIRStorageDownloadTask? {
         let filePath = NSTemporaryDirectory() + fileName
         // Only download if file not existed
-        if !NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+        if !FileManager.default.fileExists(atPath: filePath) {
             if downloadTasks[fileName] == nil {
                 //print("Downloading file \(fileName)...")
                 let storage = FIRStorage.storage()
-                let gs = storage.referenceForURL("gs://aday-b6ecc.appspot.com/clips")
-                let localURL = NSURL(fileURLWithPath: filePath)
-                downloadTasks[fileName] = gs.child(fileName).writeToFile(localURL)
+                let gs = storage.reference(forURL: "gs://aday-b6ecc.appspot.com/clips")
+                let localURL = URL(fileURLWithPath: filePath)
+                downloadTasks[fileName] = gs.child(fileName).write(toFile: localURL)
             }
             return downloadTasks[fileName]
         }

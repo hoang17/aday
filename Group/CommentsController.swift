@@ -32,35 +32,35 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBarHidden = false
+        navigationController?.isNavigationBarHidden = false
         navigationController?.hidesBarsOnSwipe = true
         
         title = "Comments"
         
         textView.placeholder = "Write a comment..."
 
-        self.inverted = false
+        self.isInverted = false
         self.shouldScrollToBottomAfterKeyboardShows = false
         self.textInputbar.autoHideRightButton = false
-        self.registerPrefixesForAutoCompletion(["@",  "#", ":", "+:", "/"])
-        self.textView.keyboardType = .Default
+        self.registerPrefixes(forAutoCompletion: ["@",  "#", ":", "+:", "/"])
+        self.textView.keyboardType = .default
         
         // Todo: ob users typing in this thread
         //self.typingIndicatorView?.insertUsername("John")
         
         let ref = FIRDatabase.database().reference()
         
-        ref.child("threads/\(pid)/comments").observeEventType(.ChildAdded, withBlock: { snapshot in
+        ref.child("threads/\(pid)/comments").observe(.childAdded, with: { snapshot in
             
             let comment = Comment(snapshot: snapshot)
             self.comments.append(comment)
             let realm = AppDelegate.realm
-            comment.user = realm.objectForPrimaryKey(UserModel.self, key: comment.uid)
+            comment.user = realm?.object(ofType: UserModel.self, forPrimaryKey: comment.uid)
            
-            let indexPath = NSIndexPath(forRow: self.comments.count-1, inSection: 0)
+            let indexPath = IndexPath(row: self.comments.count-1, section: 0)
             
-            self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-            self.tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+            self.tableView.insertRows(at: [indexPath], with: .automatic)
+            self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         })
         
         tableView.delegate = self
@@ -96,7 +96,7 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
 //    }
     
     // Notifies the view controller when the right button's action has been triggered, manually or by using the keyboard return key.
-    override func didPressRightButton(sender: AnyObject?) {
+    override func didPressRightButton(_ sender: Any?) {
         
         // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
         self.textView.refreshFirstResponder()
@@ -108,30 +108,30 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         super.didPressRightButton(sender)
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         let comment = comments[indexPath.row]
-        let height = self.heightForView(comment.txt, font: UIFont.systemFontOfSize(12.0))
+        let height = self.heightForView(comment.txt, font: UIFont.systemFont(ofSize: 12.0))
         return height + 40
     }
     
-    func heightForView(text:String, font: UIFont?) -> CGFloat{
-        let label:UILabel = UILabel(frame: CGRectMake(0, 0, self.tableView.width-60, 24))
+    func heightForView(_ text:String, font: UIFont?) -> CGFloat{
+        let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.tableView.width-60, height: 24))
         label.numberOfLines = 0
-        label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        label.lineBreakMode = NSLineBreakMode.byWordWrapping
         label.font = font
         label.text = text
         label.sizeToFit()
         return label.height
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.navigationBarHidden = true
+        navigationController?.isNavigationBarHidden = true
         navigationController?.hidesBarsOnSwipe = false
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let comment = comments[indexPath.row]
         let cell = CommentCell(comment: comment)
         //cell.transform = tableView.transform
@@ -141,7 +141,7 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         return cell
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return comments.count
     }
     

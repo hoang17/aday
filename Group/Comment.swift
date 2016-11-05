@@ -29,7 +29,7 @@ class Comment: NSObject {
         self.pid = pid      // pin id
         self.name = name    // user name
         self.txt = text
-        created = NSDate().timeIntervalSince1970
+        created = Date().timeIntervalSince1970
         updated = created
     }
     

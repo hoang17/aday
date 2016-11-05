@@ -38,7 +38,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         self.title = "Map"
         
-        navigationController?.navigationBarHidden = true
+        navigationController?.isNavigationBarHidden = true
         
         self.locationManager.requestWhenInUseAuthorization()
         
@@ -49,41 +49,41 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         }
         
         mapView.frame = view.bounds
-        mapView.mapType = .Standard
+        mapView.mapType = .standard
         mapView.height -= 50
-        mapView.zoomEnabled = true
-        mapView.scrollEnabled = true
+        mapView.isZoomEnabled = true
+        mapView.isScrollEnabled = true
         mapView.delegate = self
         mapView.showsUserLocation = true
         view.addSubview(mapView)
         
         if let coor = mapView.userLocation.location?.coordinate{
-            mapView.setCenterCoordinate(coor, animated: false)
+            mapView.setCenter(coor, animated: false)
         }
         
         let realm = AppDelegate.realm
         
-        let friends = realm.objects(UserModel.self).filter("following = true AND uploaded > \(AppDelegate.startdate)").sorted("uploaded", ascending: false)
+        let friends = realm?.objects(UserModel.self).filter("following = true AND uploaded > \(AppDelegate.startdate)").sorted(byProperty: "uploaded", ascending: false)
         
-        token = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
-            self!.addPins(friends)
+        token = friends?.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
+            self!.addPins(friends!)
         }
     }
     
-    func addPins(friends: Results<UserModel>){
+    func addPins(_ friends: Results<UserModel>){
         
         self.mapView.removeAnnotations(self.clipAnnotations)
         self.clipAnnotations = [ClipAnnotation]()
         
         let realm = AppDelegate.realm
         
-        let uids = friends.map{ "'\($0.uid)'" }.joinWithSeparator(",")
+        let uids = friends.map{ "'\($0.uid)'" }.joined(separator: ",")
 
         // print(uids)
 
-        let clips = realm.objects(ClipModel.self).filter("uid IN {\(uids)} AND trash = false AND date > \(AppDelegate.startdate)").sorted("date", ascending: false)
+        let clips = realm?.objects(ClipModel.self).filter("uid IN {\(uids)} AND trash = false AND date > \(AppDelegate.startdate)").sorted(byProperty: "date", ascending: false)
         
-        for clip in clips {
+        for clip in clips! {
             
             let point = CLLocationCoordinate2D(latitude: clip.lat, longitude: clip.long)
             
@@ -106,7 +106,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         notificationToken = clips.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
             switch changes {
-            case .Update(_, let deletions, let insertions, let modifications):
+            case .update(_, let deletions, let insertions, let modifications):
                 
                 if insertions.count > 0 {
                     
@@ -165,39 +165,39 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                 }
                 
                 break
-            case .Initial:
+            case .initial:
                 // Results are now populated and can be 
                 // accessed without blocking the UI
                 break
-            case .Error(let error):
+            case .error(let error):
                 print(error)
                 break
             }
         }
     }
     
-    func addCircle(coordinate: CLLocationCoordinate2D, radius: CLLocationDistance) {
-        let circle = MKCircle(centerCoordinate: coordinate, radius: radius)
-        mapView.addOverlay(circle)
+    func addCircle(_ coordinate: CLLocationCoordinate2D, radius: CLLocationDistance) {
+        let circle = MKCircle(center: coordinate, radius: radius)
+        mapView.add(circle)
     }
     
-    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         // If you want to include other shapes, then this check is needed. If you only want circles, then remove it.
         // if overlay is MKCircle { }
         
         let circle = MKCircleRenderer(overlay: overlay)
         circle.alpha = 0.1
         circle.lineWidth = 1
-        circle.strokeColor = UIColor.redColor()
-        circle.fillColor = UIColor.blackColor()
+        circle.strokeColor = UIColor.red
+        circle.fillColor = UIColor.black
         // circle.fillColor = UIColor(red: 255, green: 0, blue: 0, alpha: 0.1)
         return circle
     }
     
-    func isPointInsideCircle(point: CLLocationCoordinate2D, circleCentre centre: CLLocationCoordinate2D, radius: Double) -> Bool {
+    func isPointInsideCircle(_ point: CLLocationCoordinate2D, circleCentre centre: CLLocationCoordinate2D, radius: Double) -> Bool {
         let pointALocation = CLLocation(latitude: point.latitude, longitude: point.longitude)
         let pointBLocation = CLLocation(latitude: centre.latitude, longitude: centre.longitude)
-        let distanceMeters: Double = pointALocation.distanceFromLocation(pointBLocation)
+        let distanceMeters: Double = pointALocation.distance(from: pointBLocation)
         if distanceMeters > radius {
             return false
         }
@@ -206,7 +206,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         }
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 
         locationManager.stopUpdatingLocation()
 
@@ -237,7 +237,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
     }
     
-    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
         if view.annotation is MKUserLocation {
             // Don't proceed with custom callout
@@ -254,7 +254,7 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         calloutView.center = CGPoint(x: view.bounds.size.width/3, y: -calloutView.bounds.size.height*0.52-2)
         
-        view.subviews.forEach({ $0.hidden = true })
+        view.subviews.forEach({ $0.isHidden = true })
         view.addSubview(calloutView)
       
         let tap = UITapGestureRecognizer(target:self, action:#selector(tapGesture))
@@ -263,14 +263,14 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
 //        mapView.setCenterCoordinate((view.annotation?.coordinate)!, animated: true)
     }
     
-    func tapGesture(sender:UITapGestureRecognizer){
+    func tapGesture(_ sender:UITapGestureRecognizer){
         if calloutView != nil {
             calloutView.pause()
             calloutView.playNextClip()
         }
     }
     
-    func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
+    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
         
         if calloutView != nil {
             calloutView.close()
@@ -280,16 +280,16 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         
         view.gestureRecognizers?.removeAll()
         
-        view.subviews.forEach({ $0.hidden = false })
+        view.subviews.forEach({ $0.isHidden = false })
         
         mapView.showsUserLocation = true
     }
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         if let annotation = annotation as? ClipAnnotation {
             
-            var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("pin") as? MKPinAnnotationView
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "pin") as? MKPinAnnotationView
             
             if annotationView == nil {
                 
@@ -309,11 +309,11 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
             let width : CGFloat = (CGFloat(annotation.users.count) * cellwidth) + 4
             
             let container = UIView(frame: CGRect(x: -(width/2)+7.5, y: -4, width: width, height: 22))
-            container.backgroundColor = UIColor.whiteColor()
+            container.backgroundColor = UIColor.white
             container.layer.cornerRadius = container.height/2
             container.layer.masksToBounds = true
             container.clipsToBounds = true
-            container.layer.borderColor = UIColor.lightGrayColor().CGColor
+            container.layer.borderColor = UIColor.lightGray.cgColor
             container.layer.borderWidth = 0.5
             annotationView?.addSubview(container)
             
@@ -326,9 +326,9 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
                 profileImg.layer.masksToBounds = false
                 profileImg.clipsToBounds = true
                 profileImg.layer.borderWidth = 0.5
-                profileImg.layer.borderColor = UIColor.lightGrayColor().CGColor
-                profileImg.contentMode = .ScaleAspectFit                
-                profileImg.kf_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1"))
+                profileImg.layer.borderColor = UIColor.lightGray.cgColor
+                profileImg.contentMode = .scaleAspectFit                
+                profileImg.kf_setImageWithURL(URL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1"))
                 container.addSubview(profileImg)
                 i += cellwidth
             }
@@ -338,17 +338,17 @@ class MapController: UIViewController, MKMapViewDelegate, CLLocationManagerDeleg
         return nil
     }
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         let location = view.annotation as! ClipAnnotation
         let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-        location.mapItem().openInMapsWithLaunchOptions(launchOptions)
+        location.mapItem().openInMaps(launchOptions: launchOptions)
     }
     
     deinit {
         notificationToken?.stop()
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
 }
@@ -362,7 +362,7 @@ class ClipAnnotation: NSObject, MKAnnotation {
     var users = [String:UserModel]()
     
     init(clip: ClipModel) {
-        let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
+        let user = AppDelegate.realm.object(ofType: UserModel.self, forPrimaryKey: clip.uid)
         self.users[clip.uid] = user
         self.clip = clip
         self.clips.append(clip)
@@ -371,13 +371,13 @@ class ClipAnnotation: NSObject, MKAnnotation {
         super.init()
     }
     
-    func addClip(clip: ClipModel) {
+    func addClip(_ clip: ClipModel) {
         if self.users[clip.uid] == nil {
-            let user = AppDelegate.realm.objectForPrimaryKey(UserModel.self, key: clip.uid)
+            let user = AppDelegate.realm.object(ofType, UserModel.self, forPrimaryKey: clip.uid)
             self.users[clip.uid] = user
         }
         self.clips.append(clip)
-        self.clips.sortInPlace({ $0.date > $1.date })
+        self.clips.sort(by: { $0.date > $1.date })
     }
     
     var subtitle: String? {
@@ -385,12 +385,12 @@ class ClipAnnotation: NSObject, MKAnnotation {
     }
     
     func pinColor() -> MKPinAnnotationColor {
-        return .Red
+        return .red
     }
     
     // annotation callout opens this mapItem in Maps app
     func mapItem() -> MKMapItem {
-        let addressDict = [String(kABPersonAddressStreetKey): self.subtitle as! AnyObject]
+        let addressDict = [String(kABPersonAddressStreetKey): self.subtitle as AnyObject]
         let placemark = MKPlacemark(coordinate: self.coordinate, addressDictionary: addressDict)
         
         let mapItem = MKMapItem(placemark: placemark)

@@ -37,24 +37,25 @@ class User: NSObject {
     
     init(snapshot: FIRDataSnapshot) {
         self.uid = snapshot.key
-        self.name = snapshot.value!["name"] as? String ?? ""
-        self.email = snapshot.value!["email"] as? String ?? ""
-        self.phone = snapshot.value!["phone"] as? String ?? ""
-        self.fabric = snapshot.value!["fabric"] as? String ?? ""
-        self.fb = snapshot.value!["fb"] as? String ?? ""
-        self.fbtoken = snapshot.value!["fbtoken"] as? String ?? ""
-        self.city = snapshot.value!["city"] as? String ?? ""
-        self.country = snapshot.value!["country"] as? String ?? ""
-        self.username = snapshot.value!["username"] as? String ?? ""
-        self.password = snapshot.value!["password"] as? String ?? ""
-        self.flag = snapshot.value!["flag"] as? Bool ?? false
-        self.trash = snapshot.value!["trash"] as? Bool ?? false
+        let value = snapshot.value as? NSDictionary
+        self.name = value?["name"] as? String ?? ""
+        self.email = value?["email"] as? String ?? ""
+        self.phone = value?["phone"] as? String ?? ""
+        self.fabric = value?["fabric"] as? String ?? ""
+        self.fb = value?["fb"] as? String ?? ""
+        self.fbtoken = value?["fbtoken"] as? String ?? ""
+        self.city = value?["city"] as? String ?? ""
+        self.country = value?["country"] as? String ?? ""
+        self.username = value?["username"] as? String ?? ""
+        self.password = value?["password"] as? String ?? ""
+        self.flag = value?["flag"] as? Bool ?? false
+        self.trash = value?["trash"] as? Bool ?? false
         
-        self.uploaded = snapshot.value!["uploaded"] as? Double ?? 0
-        self.created = snapshot.value!["created"] as? Double ?? 0
-        self.updated = snapshot.value!["updated"] as? Double ?? 0
+        self.uploaded = value?["uploaded"] as? Double ?? 0
+        self.created = value?["created"] as? Double ?? 0
+        self.updated = value?["updated"] as? Double ?? 0
         
-        self.flags = snapshot.value!["flags"] as? [String : Bool] ?? [String:Bool]()
+        self.flags = value?["flags"] as? [String : Bool] ?? [String:Bool]()
     }
     
     init(data: UserModel) {

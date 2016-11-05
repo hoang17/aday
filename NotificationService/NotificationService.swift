@@ -13,7 +13,7 @@ class NotificationService: UNNotificationServiceExtension {
     var contentHandler: ((UNNotificationContent) -> Void)?
     var bestAttemptContent: UNMutableNotificationContent?
 
-    override func didReceiveNotificationRequest(request: UNNotificationRequest, withContentHandler contentHandler: (UNNotificationContent) -> Void) {
+    override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         
@@ -32,11 +32,11 @@ class NotificationService: UNNotificationServiceExtension {
         //bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
         
         let filePath = NSTemporaryDirectory() + fname
-        let localURL = NSURL(fileURLWithPath: filePath)
+        let localURL = URL(fileURLWithPath: filePath)
 
-        if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
+        if FileManager.default.fileExists(atPath: filePath) {
             
-            guard let attachment = try? UNNotificationAttachment(identifier: "video", URL: localURL, options: nil) else {
+            guard let attachment = try? UNNotificationAttachment(identifier: "video", url: localURL as URL, options: nil) else {
                 return failEarly()
             }
             
@@ -45,10 +45,13 @@ class NotificationService: UNNotificationServiceExtension {
         }
         
         print("downloading \(fname)")
-        let dataTask = NSURLSession.sharedSession().dataTaskWithURL(furl) { (data, response, error) in
-
-            data?.writeToURL(localURL, atomically: true)
-            guard let attachment = try? UNNotificationAttachment(identifier: "video", URL: localURL, options: nil) else {
+        let dataTask = URLSession.shared.dataTask(with: furl as URL) { (data, response, error) in
+            do {
+                try data?.write(to: localURL, options: .atomic)
+            } catch {
+                print(error)
+            }
+            guard let attachment = try? UNNotificationAttachment(identifier: "video", url: localURL as URL, options: nil) else {
                 return failEarly()
             }
             

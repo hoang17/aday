@@ -22,21 +22,21 @@ class CommentCell: UITableViewCell{
     convenience init(comment: Comment) {
         self.init()
         
-        self.selectionStyle = .None
+        self.selectionStyle = .none
         
         profileImg.origin = CGPoint(x: 8, y: 10)
         profileImg.size = CGSize(width: 35, height: 35)
         profileImg.layer.cornerRadius = profileImg.frame.height/2
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
-        profileImg.contentMode = .ScaleAspectFit
+        profileImg.contentMode = .scaleAspectFit
         let fb: String = comment.user?.fb ?? ""
-        let imgUrl = NSURL(string: "https://graph.facebook.com/\(fb)/picture?type=large&return_ssl_resources=1")
+        let imgUrl = URL(string: "https://graph.facebook.com/\(fb)/picture?type=large&return_ssl_resources=1")
         profileImg.kf_setImageWithURL(imgUrl)
         
         nameLabel.origin = CGPoint(x: 55, y: 2)
         nameLabel.size = CGSize(width: width, height: 24)
-        nameLabel.textColor = UIColor.blackColor()
+        nameLabel.textColor = UIColor.black
         nameLabel.text = comment.user?.name
         nameLabel.font = UIFont(name: "OpenSans-Bold", size: 12.0)
         
@@ -44,16 +44,16 @@ class CommentCell: UITableViewCell{
         dateLabel.size = CGSize(width: 32, height: 24)
         dateLabel.textColor = UIColor(white: 0.3, alpha: 0.5)
         dateLabel.font = UIFont(name: "OpenSans-Bold", size: 10.0)
-        dateLabel.text = NSDate(timeIntervalSince1970: comment.created).shortTimeAgoSinceNow()
-        dateLabel.textAlignment = .Right
+        dateLabel.text = (Date(timeIntervalSince1970: comment.created) as NSDate).shortTimeAgoSinceNow()
+        dateLabel.textAlignment = .right
         
         txtLabel.origin = CGPoint(x: 55, y: 26)
         txtLabel.size = CGSize(width: self.width-60, height: 24)
-        txtLabel.textColor = UIColor.blackColor()
+        txtLabel.textColor = UIColor.black
         txtLabel.text = comment.txt
-        txtLabel.font = UIFont.systemFontOfSize(12.0)
+        txtLabel.font = UIFont.systemFont(ofSize: 12.0)
         txtLabel.numberOfLines = 0
-        txtLabel.lineBreakMode = .ByWordWrapping
+        txtLabel.lineBreakMode = .byWordWrapping
         txtLabel.sizeToFit()
         
         self.addSubview(nameLabel)

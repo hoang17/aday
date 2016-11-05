@@ -20,7 +20,7 @@ class SearchItemCell: UITableViewCell{
     convenience init(user: UserModel) {
         self.init()
         
-        self.selectionStyle = .None
+        self.selectionStyle = .none
         
         // Set cell profile img
         profileImg.origin = CGPoint(x: 10, y: 4)
@@ -28,21 +28,21 @@ class SearchItemCell: UITableViewCell{
         profileImg.layer.cornerRadius = profileImg.frame.height/2
         profileImg.layer.masksToBounds = false
         profileImg.clipsToBounds = true
-        profileImg.contentMode = .ScaleAspectFit
-        let imgUrl = NSURL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1")
-        profileImg.kf_setImageWithURL(imgUrl)
+        profileImg.contentMode = .scaleAspectFit
+        let imgUrl = URL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1")
+        profileImg.kf.setImage(with: imgUrl)
         self.addSubview(profileImg)
         
         // Set cell name label
         nameLabel.origin = CGPoint(x: 60, y: 4)
         nameLabel.size = CGSize(width: self.width, height: 35)
-        nameLabel.textColor = UIColor.blackColor()
+        nameLabel.textColor = UIColor.black
         nameLabel.text = user.name
         self.addSubview(nameLabel)
         
         // Set cell follow button
         followButton.size = CGSize(width: 80, height: 35)
-        followButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
+        followButton.setTitleColor(UIColor.blue, for: UIControlState())
         self.addSubview(followButton)
         followButton.snp_makeConstraints { [weak self] (make) in
             make.top.equalTo(self!.top).offset(4)
