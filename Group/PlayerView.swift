@@ -71,11 +71,11 @@ class MiniPlayer: PlayerView {
         self.filePath = NSTemporaryDirectory() + clip.fname
         self.backgroundColor = UIColor.clear
 
-        let resource = Resource(downloadURL: URL(string: clip.thumb)!, cacheKey: clip.id)
+        let resource = ImageResource(downloadURL: URL(string: clip.thumb)!, cacheKey: clip.id)
         let thumbImg = UIImageView(frame: frame)
         thumbImg.backgroundColor = UIColor.clear
         thumbImg.contentMode = .scaleAspectFill
-        thumbImg.kf_setImageWithResource(resource)
+        thumbImg.kf.setImage(with: resource)
         addSubview(thumbImg)
 
         if FileManager.default.fileExists(atPath: filePath) {
@@ -201,8 +201,8 @@ class ClipThumbnail: UIView {
         super.init(frame: frame)
         img = UIImageView(frame:frame)
         img.contentMode = .scaleAspectFill
-        let resource = Resource(downloadURL: URL(string: clip.thumb)!, cacheKey: clip.id)
-        img.kf_setImageWithResource(resource)
+        let resource = ImageResource(downloadURL: URL(string: clip.thumb)!, cacheKey: clip.id)
+        img.kf.setImage(with: resource)
         
         if clip.txt == "" {
             textField.isHidden = true

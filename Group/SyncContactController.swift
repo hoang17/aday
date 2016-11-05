@@ -170,7 +170,7 @@ class SyncContactController: UIViewController {
 
 extension SyncContactController: FBSDKAppInviteDialogDelegate{
     func appInviteDialog(_ appInviteDialog: FBSDKAppInviteDialog!, didCompleteWithResults results: [AnyHashable: Any]?) {
-        print(results)
+        print(results!)
     }
     func appInviteDialog(_ appInviteDialog: FBSDKAppInviteDialog!, didFailWithError error: Error!) {
         print(error)

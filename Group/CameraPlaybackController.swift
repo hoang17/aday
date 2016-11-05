@@ -227,11 +227,11 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
                 self?.removeAllOverlays()
                 ALAssetsLibrary().writeVideoAtPath(toSavedPhotosAlbum: savePathUrl, completionBlock: { [weak self] (assetURL, error) in
                     if error != nil {
-                        print(error)
+                        print(error!)
                         return
                     }
                     if assetURL != nil {
-                        print(assetURL)
+                        print(assetURL!)
                         DispatchQueue.main.async(execute: {
                             let video = FBSDKShareVideo(videoURL: assetURL)
                             let content = FBSDKShareVideoContent()
@@ -253,11 +253,11 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
                 self?.removeAllOverlays()
                 ALAssetsLibrary().writeVideoAtPath(toSavedPhotosAlbum: savePathUrl, completionBlock: { (assetURL, error) in
                     if error != nil {
-                        print(error)
+                        print(error!)
                         return
                     }
                     if assetURL != nil {
-                        print(assetURL)
+                        print(assetURL!)
                         let escapedString = assetURL?.absoluteString.urlencodedString()
                         let escapedCaption = "Pinly".urlencodedString()
                         let instagramURL = URL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!

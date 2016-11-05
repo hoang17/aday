@@ -32,7 +32,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         // Setup login button
         self.view.addSubview(loginButton)
         
-        loginButton.snp_makeConstraints { [weak self] (make) in
+        loginButton.snp.makeConstraints { [weak self] (make) in
             make.center.equalTo(self!.view)
             make.left.equalTo(self!.view).offset(50)
             make.right.equalTo(self!.view).offset(-50)
@@ -82,7 +82,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         self.view.addSubview(label)
         
-        label.snp_makeConstraints { [weak self] (make) in
+        label.snp.makeConstraints { [weak self] (make) in
             make.centerX.equalTo(self!.view)
             make.bottom.equalTo(self!.view).offset(-150)
         }
@@ -152,14 +152,13 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         let user = ["uid": uid,
                             "name": name,
                             "email": email,
-                            "fb": fb,
-                            "fbtoken": fbtoken,
-                            "created": Date().timeIntervalSince1970] as [String : Any]
+                            "fb": fb!,
+                            "fbtoken": fbtoken!,
+                            "created": Date().timeIntervalSince1970] as AnyObject
                         
                         let friend = Friend(uid: uid, fuid: uid)
                         
-                        let update = ["/users/\(uid)": user,
-                                      "/friends/\(uid)/\(uid)": friend.toAnyObject()]
+                        let update = ["/users/\(uid)": user, "/friends/\(uid)/\(uid)": friend.toAnyObject()]
                         
                         ref.updateChildValues(update)
                         return
@@ -190,7 +189,7 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         Digits.sharedInstance().authenticate(with: self, configuration: configuration!) { (session, error) in
             
             if error != nil {
-                print(error)
+                print(error!)
                 return
             }
             

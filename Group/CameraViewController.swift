@@ -150,7 +150,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         recordButton.addTarget(self, action: #selector(stop), for: .touchUpInside)
         view.addSubview(recordButton)
         self.view.addSubview(recordButton)
-        recordButton.snp_makeConstraints { [weak self] (make) -> Void in
+        recordButton.snp.makeConstraints { [weak self] (make) -> Void in
             make.bottom.equalTo(self!.view).offset(-30)
             make.centerX.equalTo(self!.view)
             make.width.equalTo(80)
@@ -165,7 +165,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         flipButton.setImage(loopIcon, for: UIControlState())
         flipButton.addTarget(self, action: #selector(flipCamera), for: .touchUpInside)
         self.view.addSubview(flipButton)
-        flipButton.snp_makeConstraints { [weak self] (make) -> Void in
+        flipButton.snp.makeConstraints { [weak self] (make) -> Void in
             make.top.equalTo(self!.view).offset(15)
             make.right.equalTo(self!.view).offset(-18)
             make.width.equalTo(30)
@@ -179,7 +179,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         backButton.setImage(backIcon, for: UIControlState())
         backButton.addTarget(self, action: #selector(close), for: .touchUpInside)
         self.view.addSubview(backButton)
-        backButton.snp_makeConstraints { [weak self] (make) -> Void in
+        backButton.snp.makeConstraints { [weak self] (make) -> Void in
             make.top.equalTo(self!.view).offset(15)
             make.left.equalTo(self!.view).offset(18)
             make.width.equalTo(30)
@@ -407,20 +407,20 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
             let library = ALAssetsLibrary()
             library.writeVideoAtPath(toSavedPhotosAlbum: inputURL, completionBlock: { (assetURL, error) in
                 if error != nil {
-                    print(error)
+                    print(error!)
                     return
                 }
-                print(assetURL)
+                print(assetURL!)
             })
             
             // Save pin to Photo
             //let library = ALAssetsLibrary()
             library.writeVideoAtPath(toSavedPhotosAlbum: outputURL, completionBlock: { (assetURL, error) in
                 if error != nil {
-                    print(error)
+                    print(error!)
                     return
                 }
-                print(assetURL)
+                print(assetURL!)
             })
         }
         

@@ -139,7 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if FIRAuth.auth()?.currentUser != nil && FBSDKAccessToken.current() != nil {
             self.window!.rootViewController = MainController()
-            self.logUser()
+            //self.logUser()
         } else {
             do {
                 try FIRAuth.auth()?.signOut()
@@ -250,7 +250,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func logUser() {
-        let u = FIRAuth.auth()!.currentUser!
+//        let u = FIRAuth.auth()!.currentUser!
 //        Crashlytics.sharedInstance().setUserEmail(u.email)
 //        Crashlytics.sharedInstance().setUserIdentifier(u.uid)
 //        Crashlytics.sharedInstance().setUserName(u.displayName)
@@ -263,7 +263,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     // Called when the application is in foreground
     @available(iOS 10.0, *)
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresentNotification notification: UNNotification, withCompletionHandler completionHandler: (UNNotificationPresentationOptions) -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
         print("notification: \(notification)")
         
@@ -288,7 +288,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     // Called when the application is opened by notification
     @available(iOS 10.0, *)
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceiveNotificationResponse response: UNNotificationResponse, withCompletionHandler completionHandler: () -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
         print("center: \(center)\nresponse: \(response)")
         let actionIdentifier = response.actionIdentifier

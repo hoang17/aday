@@ -36,7 +36,7 @@ class LocationInfo {
         
         CLGeocoder().reverseGeocodeLocation(location, completionHandler: { [weak self] (placemarks, error) in
             guard error == nil else {
-                print(error)
+                print(error!)
                 completion?(self!)
                 return
             }

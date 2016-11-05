@@ -61,7 +61,7 @@ import UIKit
         sendButton.setImage(sendIcon, for: UIControlState())
         sendButton.addTarget(self, action: #selector(sendHandle), for: .touchUpInside)
         self.addSubview(sendButton)
-        sendButton.snp_makeConstraints { [weak self] (make) -> Void in
+        sendButton.snp.makeConstraints { [weak self] (make) -> Void in
             make.bottom.equalTo(self!).offset(-5)
             make.right.equalTo(self!).offset(-5)
             make.width.equalTo(30)
@@ -135,8 +135,8 @@ import UIKit
         isScrollEnabled = false
         contentMode = .redraw
         
-        NotificationCenter.default.addObserver(self, selector: #selector(textDidEndEditing), name: NSNotification.Name.UITextViewTextDidEndEditing, object: self)
-        NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: NSNotification.Name.UITextViewTextDidChange, object: self)
+        NotificationCenter.default.addObserver(self, selector: #selector(textEndEditing), name: NSNotification.Name.UITextViewTextDidEndEditing, object: self)
+        NotificationCenter.default.addObserver(self, selector: #selector(textChange), name: NSNotification.Name.UITextViewTextDidChange, object: self)
     }
     
     // Show placeholder
@@ -178,7 +178,7 @@ import UIKit
     }
     
     // Trim white space and new line characters when end editing.
-    func textDidEndEditing(_ notification: Notification) {
+    func textEndEditing(_ notification: Notification) {
         //guard notification.object === self else { return }
         text = text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         autoHeight()
@@ -186,7 +186,7 @@ import UIKit
     }
     
     // Limit the length of text
-    func textDidChange(_ notification: Notification) {
+    func textChange(_ notification: Notification) {
         //guard notification.object === self else { return }
         autoHeight()
         setNeedsDisplay()

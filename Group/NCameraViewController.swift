@@ -119,7 +119,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
 
         view.addSubview(recordButton)
         self.view.addSubview(recordButton)
-        recordButton.snp_makeConstraints { [weak self] (make) in
+        recordButton.snp.makeConstraints { [weak self] (make) in
             make.bottom.equalTo(self!.view).offset(-15)
             make.centerX.equalTo(self!.view)
             make.width.equalTo(80)
@@ -133,7 +133,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         flipButton.setImage(loopIcon, for: UIControlState())
         flipButton.addTarget(self, action: #selector(flipCamera), for: .touchUpInside)
         self.view.addSubview(flipButton)
-        flipButton.snp_makeConstraints { [weak self] (make) in
+        flipButton.snp.makeConstraints { [weak self] (make) in
             make.top.equalTo(self!.view).offset(15)
             make.right.equalTo(self!.view).offset(-18)
             make.width.equalTo(30)
@@ -147,7 +147,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         closeButton.setImage(closeIcon, for: UIControlState())
         closeButton.addTarget(self, action: #selector(close), for: .touchUpInside)
         self.view.addSubview(closeButton)
-        closeButton.snp_makeConstraints { [weak self] (make) in
+        closeButton.snp.makeConstraints { [weak self] (make) in
             make.top.equalTo(self!.view).offset(15)
             make.left.equalTo(self!.view).offset(18)
             make.width.equalTo(30)
@@ -161,7 +161,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         doneButton.setImage(nextIcon, for: UIControlState())
         doneButton.addTarget(self, action: #selector(stop), for: .touchUpInside)
         self.view.addSubview(doneButton)
-        doneButton.snp_makeConstraints { [weak self] (make) in
+        doneButton.snp.makeConstraints { [weak self] (make) in
             make.bottom.equalTo(self!.view).offset(-25)
             make.right.equalTo(self!.view).offset(-25)
             make.width.equalTo(30)
@@ -173,13 +173,13 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         print("Skipped video buffer")
     }
     
-    func recorder(_ recorder: SCRecorder, didReconfigureAudioInput audioInputError: NSError?) {
+    func recorder(_ recorder: SCRecorder, didReconfigureAudioInput audioInputError: Error?) {
         if audioInputError != nil {
             print("Reconfigured audio input: \(audioInputError)")
         }
     }
     
-    func recorder(_ recorder: SCRecorder, didReconfigureVideoInput videoInputError: NSError?) {
+    func recorder(_ recorder: SCRecorder, didReconfigureVideoInput videoInputError: Error?) {
         if videoInputError != nil {
             print("Reconfigured video input: \(videoInputError)")
         }
@@ -348,7 +348,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         self.saveAndShowSession(recordSession)
     }
     
-    func recorder(_ recorder: SCRecorder, didInitializeAudioIn recordSession: SCRecordSession, error: NSError?) {
+    func recorder(_ recorder: SCRecorder, didInitializeAudioIn recordSession: SCRecordSession, error: Error?) {
         if error == nil {
             print("Initialized audio in record session")
         }
@@ -357,7 +357,7 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         }
     }
     
-    func recorder(_ recorder: SCRecorder, didInitializeVideoIn recordSession: SCRecordSession, error: NSError?) {
+    func recorder(_ recorder: SCRecorder, didInitializeVideoIn recordSession: SCRecordSession, error: Error?) {
         if error != nil {
             print("Failed to initialize video in record session: \(error!.localizedDescription)")
         }
@@ -365,13 +365,13 @@ class NCameraViewController: UIViewController, SCRecorderDelegate, CLLocationMan
         }
     }
     
-    func recorder(_ recorder: SCRecorder, didBeginSegmentIn recordSession: SCRecordSession, error: NSError?) {
+    func recorder(_ recorder: SCRecorder, didBeginSegmentIn recordSession: SCRecordSession, error: Error?) {
         if error != nil {
             print("Error begin record segment: \(error)")
         }
     }
     
-    func recorder(_ recorder: SCRecorder, didComplete segment: SCRecordSessionSegment?, in recordSession: SCRecordSession, error: NSError?) {
+    func recorder(_ recorder: SCRecorder, didComplete segment: SCRecordSessionSegment?, in recordSession: SCRecordSession, error: Error?) {
         guard error == nil, let segment = segment else {
             if error != nil {
                 print("Error complete record segment: \(error)")

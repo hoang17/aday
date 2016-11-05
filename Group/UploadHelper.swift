@@ -152,7 +152,7 @@ class UploadHelper {
                     // upload done
                     if (error != nil) {
                         print("upload clip error")
-                        print(error)
+                        print(error!)
                     } else {
                         furl = metadata?.downloadURL()?.absoluteString ?? ""
                         print("Clip uploaded to " + furl)
@@ -175,7 +175,7 @@ class UploadHelper {
                     // upload done
                     if (error != nil) {
                         print("upload thumb error")
-                        print(error)
+                        print(error!)
                     } else {
                         
                         let thumb = (metadata!.downloadURL()?.absoluteString)!
@@ -314,7 +314,7 @@ class UploadHelper {
             let uiimg = UIImage(cgImage: cgimg)
             let data = UIImageJPEGRepresentation(uiimg, 0.5)
             
-            KingfisherManager.shared.cache.removeImage(forKey: clip.id, processorIdentifier: uiimg, fromDisk: data)
+            KingfisherManager.shared.cache.store(uiimg, original: data, forKey: clip.id)
             
             try? data!.write(to: URL(fileURLWithPath: thumbFilePath), options: [.atomic])
         } catch {

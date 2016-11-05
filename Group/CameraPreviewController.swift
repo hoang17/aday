@@ -60,7 +60,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         backButton.addTarget(self, action: #selector(back), for: .touchUpInside)
         self.view.addSubview(backButton)
         self.view.bringSubview(toFront: backButton)
-        backButton.snp_makeConstraints { [weak self] (make) in
+        backButton.snp.makeConstraints { [weak self] (make) in
             make.top.equalTo(self!.view).offset(15)
             make.left.equalTo(self!.view).offset(18)
             make.width.equalTo(30)
@@ -75,7 +75,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         doneButton.addTarget(self, action: #selector(submit), for: .touchUpInside)
         self.view.addSubview(doneButton)
         self.view.bringSubview(toFront: doneButton)
-        doneButton.snp_makeConstraints { [weak self] (make) in
+        doneButton.snp.makeConstraints { [weak self] (make) in
             make.bottom.equalTo(self!.view).offset(-20)
             make.right.equalTo(self!.view).offset(-20)
             make.width.equalTo(36)

@@ -105,7 +105,7 @@ class FriendsLoader: NSObject {
         addressBook.requestAccess { granted, error in
             addressBook.loadContacts({(contacts, error) in
                 if error != nil {
-                    print(error)
+                    print(error!)
                 } else if contacts != nil {
                     for contact in contacts! {
                         
@@ -145,12 +145,12 @@ class FriendsLoader: NSObject {
         let refriend = Friend(uid: friendId, fuid: userID, following: false, follower: true)
         let key = ref.child("followers").childByAutoId().key
         
-        var follow = friend.toAnyObject()
-        follow["name"] = AppDelegate.name as AnyObject?
+        var follow = friend.toAnyObject() as? [String: AnyObject]
+        follow?["name"] = AppDelegate.name as AnyObject?
         
         let update = ["/friends/\(userID)/\(friendId)": friend.toAnyObject(),
                       "/friends/\(friendId)/\(userID)": refriend.toAnyObject(),
-                      "/follows/\(key)": follow]
+                      "/follows/\(key)": follow as AnyObject] as [String : AnyObject]
         ref.updateChildValues(update)
     }
         

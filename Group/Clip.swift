@@ -80,7 +80,7 @@ class Clip: NSObject {
         self.furl = data.furl
     }
     
-    func toAnyObject() -> NSDictionary {
+    func toAnyObject() -> AnyObject {
         return [
             "id": id,
             "uid": uid,
@@ -104,6 +104,6 @@ class Clip: NSObject {
             "date": date,
             "updated": updated,
             "furl": furl
-        ]
+        ] as AnyObject
     }
 }

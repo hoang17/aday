@@ -72,8 +72,7 @@ class User: NSObject {
         self.password = data.password
         self.flag = data.flag
         self.trash = data.trash
-        self.uploaded = data.uploaded
-        
+        self.uploaded = data.uploaded        
         self.flags = data.flags
     }
 }

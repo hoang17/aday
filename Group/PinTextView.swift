@@ -38,8 +38,8 @@ import UIKit
         isScrollEnabled = false
         contentMode = .redraw
         
-        NotificationCenter.default.addObserver(self, selector: #selector(textDidEndEditing), name: NSNotification.Name.UITextViewTextDidEndEditing, object: self)
-        NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: NSNotification.Name.UITextViewTextDidChange, object: self)
+        NotificationCenter.default.addObserver(self, selector: #selector(textEndEditing), name: NSNotification.Name.UITextViewTextDidEndEditing, object: self)
+        NotificationCenter.default.addObserver(self, selector: #selector(textChange), name: NSNotification.Name.UITextViewTextDidChange, object: self)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardNotification), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
@@ -97,7 +97,7 @@ import UIKit
     }
     
     // Trim white space and new line characters when end editing.
-    func textDidEndEditing(_ notification: Notification) {
+    func textEndEditing(_ notification: Notification) {
         //guard notification.object === self else { return }
         text = text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         autoHeight()
@@ -105,7 +105,7 @@ import UIKit
     }
     
     // Limit the length of text
-    func textDidChange(_ notification: Notification) {
+    func textChange(_ notification: Notification) {
         //guard notification.object === self else { return }
         autoHeight()
         setNeedsDisplay()

@@ -46,7 +46,7 @@ class Device: NSObject {
         updated = value?["updated"] as? Double ?? 0
     }
     
-    func toAnyObject() -> NSDictionary {
+    func toAnyObject() -> AnyObject {
         return [
             "id": id,
             "uid": uid,
@@ -57,6 +57,6 @@ class Device: NSObject {
             "systemVer": systemVer,
             "trash": trash,
             "updated": updated
-        ]
+        ] as AnyObject
     }
 }

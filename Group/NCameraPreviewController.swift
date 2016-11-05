@@ -91,7 +91,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
         closeButton.setImage(closeIcon, for: UIControlState())
         closeButton.addTarget(self, action: #selector(back), for: .touchUpInside)
         self.view.addSubview(closeButton)
-        closeButton.snp_makeConstraints { [weak self] (make) in
+        closeButton.snp.makeConstraints { [weak self] (make) in
             make.top.equalTo(self!.view).offset(15)
             make.left.equalTo(self!.view).offset(18)
             make.width.equalTo(30)
@@ -105,7 +105,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
         doneButton.setImage(nextIcon, for: UIControlState())
         doneButton.addTarget(self, action: #selector(submit), for: .touchUpInside)
         self.view.addSubview(doneButton)
-        doneButton.snp_makeConstraints { [weak self] (make) in
+        doneButton.snp.makeConstraints { [weak self] (make) in
             make.bottom.equalTo(self!.view).offset(-25)
             make.right.equalTo(self!.view).offset(-25)
             make.width.equalTo(30)
