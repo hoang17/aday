@@ -84,7 +84,8 @@ open class _ButtonRowOf<T: Equatable> : Row<ButtonCellOf<T>> {
     
     open override func customUpdateCell() {
         super.customUpdateCell()
-        let leftAligmnment = presentationMode != nil
+        //let leftAligmnment = presentationMode != nil
+        let leftAligmnment = true
         cell.textLabel?.textAlignment = leftAligmnment ? .left : .center
         cell.accessoryType = !leftAligmnment || isDisabled ? .none : .disclosureIndicator
         cell.editingAccessoryType = cell.accessoryType
