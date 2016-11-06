@@ -142,7 +142,6 @@
 		3785F6701D85636B00F32915 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		3785F6831D8568B500F32915 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		3785F6841D857A0700F32915 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
-		3785F6F01D85EB5C00F32915 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		3785F6F11D85EB5C00F32915 /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		3785F6F21D85EB5C00F32915 /* OpenSans-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-BoldItalic.ttf"; sourceTree = "<group>"; };
 		3785F6F31D85EB5C00F32915 /* OpenSans-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-ExtraBold.ttf"; sourceTree = "<group>"; };
@@ -283,7 +282,6 @@
 		3785F6EF1D85EB5C00F32915 /* Open_Sans */ = {
 			isa = PBXGroup;
 			children = (
-				3785F6F01D85EB5C00F32915 /* LICENSE.txt */,
 				3785F6F11D85EB5C00F32915 /* OpenSans-Bold.ttf */,
 				3785F6F21D85EB5C00F32915 /* OpenSans-BoldItalic.ttf */,
 				3785F6F31D85EB5C00F32915 /* OpenSans-ExtraBold.ttf */,
