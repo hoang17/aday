@@ -27,7 +27,9 @@
 			<key>UNNotificationExtensionCategory</key>
 			<string>newPin</string>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
-			<real>1</real>
+			<real>1.4</real>
+			<key>UNNotificationExtensionDefaultContentHidden</key>
+			<string>false</string>
 		</dict>
 		<key>NSExtensionMainStoryboard</key>
 		<string>MainInterface</string>

@@ -36,7 +36,7 @@ class NotificationService: UNNotificationServiceExtension {
 
         if NSFileManager.defaultManager().fileExistsAtPath(filePath) {
             
-            guard let attachment = try? UNNotificationAttachment(identifier: "video", URL: localURL, options: nil) else {
+            guard let attachment = try? UNNotificationAttachment(identifier: "video", URL: localURL, options: [UNNotificationAttachmentOptionsThumbnailTimeKey: 0.1]) else {
                 return failEarly()
             }
             
@@ -48,7 +48,7 @@ class NotificationService: UNNotificationServiceExtension {
         let dataTask = NSURLSession.sharedSession().dataTaskWithURL(furl) { (data, response, error) in
 
             data?.writeToURL(localURL, atomically: true)
-            guard let attachment = try? UNNotificationAttachment(identifier: "video", URL: localURL, options: nil) else {
+            guard let attachment = try? UNNotificationAttachment(identifier: "video", URL: localURL, options: [UNNotificationAttachmentOptionsThumbnailTimeKey: 0.1]) else {
                 return failEarly()
             }
             

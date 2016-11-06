@@ -14,6 +14,8 @@ import AVFoundation
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
+    var player: AVPlayer!
+    
     @IBOutlet var label: UILabel?
     
     override func viewDidLoad() {
@@ -28,12 +30,29 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         print("content notification:", self.label?.text)
         
         let attachment = notification.request.content.attachments[0]
-        let player = AVPlayer(URL: attachment.URL)
+        player = AVPlayer(URL: attachment.URL)
         let playerLayer = AVPlayerLayer(player: player)
         playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
         playerLayer.frame = view.frame
         view.layer.addSublayer(playerLayer)
+        player.actionAtItemEnd = .None
         player.play()
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(playerDidFinishPlaying),
+            name: AVPlayerItemDidPlayToEndTimeNotification,
+            object: player.currentItem)
     }
 
+    // Auto rewind player
+    func playerDidFinishPlaying(notification: NSNotification) {
+        if let playerItem: AVPlayerItem = notification.object as? AVPlayerItem {
+            playerItem.seekToTime(kCMTimeZero)
+        }
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
 }
