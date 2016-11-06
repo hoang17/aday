@@ -13,7 +13,7 @@ import SlackTextViewController
 class CommentsController: SLKTextViewController, UITextFieldDelegate {
     
     var clip: ClipModel!
-    var pid: String!
+    var pid: String = ""
     
     var comments = [Comment]()
     
@@ -49,7 +49,6 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         //self.typingIndicatorView?.insertUsername("John")
         
         let ref = FIRDatabase.database().reference()
-        
         ref.child("threads/\(pid)/comments").observe(.childAdded, with: { snapshot in
             
             let comment = Comment(snapshot: snapshot)

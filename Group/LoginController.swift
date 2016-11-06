@@ -158,7 +158,9 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
                         
                         let friend = Friend(uid: uid, fuid: uid)
                         
-                        let update = ["/users/\(uid)": user, "/friends/\(uid)/\(uid)": friend.toAnyObject()]
+                        var update = [String: Any]()
+                        update["/users/\(uid)"] = user
+                        update["/friends/\(uid)/\(uid)"] = friend.toAnyObject()
                         
                         ref.updateChildValues(update)
                         return

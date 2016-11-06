@@ -34,7 +34,7 @@ class FriendsLoader: NSObject {
         var friends = [FacebookFriend]()
         
         let request = FBSDKGraphRequest(graphPath:"me/friends", parameters: ["fields": "name", "limit":"200"] )
-        request?.start { (connection, result, error) -> Void in
+        request?.start { (connection, result, error) in
             
             if error == nil {
                 
@@ -145,12 +145,13 @@ class FriendsLoader: NSObject {
         let refriend = Friend(uid: friendId, fuid: userID, following: false, follower: true)
         let key = ref.child("followers").childByAutoId().key
         
-        var follow = friend.toAnyObject() as? [String: AnyObject]
-        follow?["name"] = AppDelegate.name as AnyObject?
+        var follow = friend.toAnyObject()
+        follow["name"] = AppDelegate.name
         
-        let update = ["/friends/\(userID)/\(friendId)": friend.toAnyObject(),
-                      "/friends/\(friendId)/\(userID)": refriend.toAnyObject(),
-                      "/follows/\(key)": follow as AnyObject] as [String : AnyObject]
+        var update = [String: Any]()
+        update["/friends/\(userID!)/\(friendId)"] = friend.toAnyObject()
+        update["/friends/\(friendId)/\(userID!)"] = refriend.toAnyObject()
+        update["/follows/\(key)"] = follow
         ref.updateChildValues(update)
     }
         
@@ -159,7 +160,7 @@ class FriendsLoader: NSObject {
     }
     
     func unfollow(_ friendId: String) {
-        let userID : String! = AppDelegate.uid
+        let userID: String = AppDelegate.uid
         let realm = AppDelegate.realm
         let user = realm?.object(ofType: UserModel.self, forPrimaryKey: friendId)!
         
@@ -167,14 +168,15 @@ class FriendsLoader: NSObject {
             user?.following = false
         }
         
-        let update:[String:AnyObject] = ["/friends/\(userID)/\(friendId)/following": false as AnyObject]
+        var update = [String:Any]()
+        update["/friends/\(userID)/\(friendId)/following"] = false
         ref.updateChildValues(update)
 
         print("unfollowed " + friendId)
     }
     
     func reportClip(_ clip: ClipModel) {
-        let userID : String! = AppDelegate.uid
+        let userID: String = AppDelegate.uid
         let update = ["/pins/\(clip.uid)/\(clip.id)/flag": true,
                       "/users/\(userID)/flags/\(clip.id)": true]
         ref.updateChildValues(update)
@@ -204,13 +206,13 @@ class FriendsLoader: NSObject {
         let id = ref.child("comments").childByAutoId().key
         let uid : String! = AppDelegate.uid
         let name = AppDelegate.name
-        let cm = Comment(id: id, uid: uid, pid: clip.id, name: name!, text: text)
+        let cm = Comment(id: id, uid: uid, pid: clip.id, name: name, text: text)
         
-        var update = [String:AnyObject]()
-        
-        update = ["/threads/\(clip.id)/follows/\(cm.uid)": true as AnyObject,
-                  "/threads/\(clip.id)/comments/\(cm.id)": cm.toAnyObject(),
-                  "/comments/\(cm.id)": cm.toAnyObject()]
+        var update = [String:Any]()
+        let cmo = cm.toAnyObject()
+        update["/threads/\(clip.id)/follows/\(cm.uid)"] = true
+        update["/threads/\(clip.id)/comments/\(cm.id)"] = cmo
+        update["/comments/\(cm.id)"] = cmo
         
         if clip.uid != cm.uid {
             update["/threads/\(clip.id)/follows/\(clip.uid)"] = true as AnyObject?

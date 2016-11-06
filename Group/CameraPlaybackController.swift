@@ -260,7 +260,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
                         print(assetURL!)
                         let escapedString = assetURL?.absoluteString.urlencodedString()
                         let escapedCaption = "Pinly".urlencodedString()
-                        let instagramURL = URL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
+                        let instagramURL = URL(string: "instagram://library?AssetPath=\(escapedString!)&InstagramCaption=\(escapedCaption)")!
                         UIApplication.shared.openURL(instagramURL)
                     }
                 })

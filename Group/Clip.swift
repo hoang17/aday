@@ -80,30 +80,30 @@ class Clip: NSObject {
         self.furl = data.furl
     }
     
-    func toAnyObject() -> AnyObject {
-        return [
-            "id": id,
-            "uid": uid,
-            "uname": uname,
-            "fname": fname,
-            "txt": txt,
-            "y": y,
-            "flag": flag,
-            "trash": trash,
-            "long": long,
-            "lat": lat,
-            "altitude": altitude,
-            "course": course,
-            "speed": speed,
-            "lname": lname,
-            "city": city,
-            "country": country,
-            "sublocal": sublocal,
-            "subarea": subarea,
-            "thumb": thumb,
-            "date": date,
-            "updated": updated,
-            "furl": furl
-        ] as AnyObject
+    func toAnyObject() -> [String: Any] {
+        var r = [String: Any]()
+        r["id"] = id
+        r["uid"] = uid
+        r["uname"] = uname
+        r["fname"] = fname
+        r["txt"] = txt
+        r["y"] = y
+        r["flag"] = flag
+        r["long"] = long
+        r["lat"] = lat
+        r["altitude"] = altitude
+        r["course"] = course
+        r["speed"] = speed
+        r["lname"] = lname
+        r["city"] = city
+        r["country"] = country
+        r["sublocal"] = sublocal
+        r["subarea"] = subarea
+        r["thumb"] = thumb
+        r["trash"] = trash
+        r["date"] = date
+        r["updated"] = updated
+        r["furl"] = furl
+        return r
     }
 }

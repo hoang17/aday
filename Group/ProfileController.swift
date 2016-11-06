@@ -30,9 +30,8 @@ class ProfileController: FormViewController {
                     img.layer.masksToBounds = false
                     img.clipsToBounds = true
                     img.contentMode = UIViewContentMode.scaleAspectFit
-                    if FBSDKAccessToken.current() != nil {
-                        //img.kf_setImageWithURL(FIRAuth.auth()?.currentUser?.photoURL)
-                        img.kf.setImage(with: URL(string: "https://graph.facebook.com/\(FBSDKAccessToken.current().userID)/picture?type=large&return_ssl_resources=1"))
+                    if let tk = FBSDKAccessToken.current(), let fb = tk.userID {
+                        img.kf.setImage(with: URL(string: "https://graph.facebook.com/\(fb)/picture?type=large&return_ssl_resources=1"))
                     }
                     let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.width, height: 100))
                     img.center = view.center

@@ -266,7 +266,7 @@ class UploadHelper {
     func upload(_ clip: ClipModel, completion: ((FIRStorageMetadata?, NSError?) -> Void)?){
         
         let uploadFile = clip.fname
-        let uploadFilePath = NSTemporaryDirectory() + uploadFile!
+        let uploadFilePath = NSTemporaryDirectory() + uploadFile
         let uploadFileUrl = URL(fileURLWithPath: uploadFilePath)
         
         print("Uploading \(uploadFile)...")
@@ -277,7 +277,7 @@ class UploadHelper {
         let metadata = FIRStorageMetadata()
         metadata.contentType = "video/mp4"
         
-        gs.child("clips/" + uploadFile!).putFile(uploadFileUrl, metadata: metadata, completion: completion as! ((FIRStorageMetadata?, Error?) -> Void)?)
+        gs.child("clips/" + uploadFile).putFile(uploadFileUrl, metadata: metadata, completion: completion as! ((FIRStorageMetadata?, Error?) -> Void)?)
     }
     
     func uploadThumb(_ clip: ClipModel, completion: ((FIRStorageMetadata?, NSError?) -> Void)?){

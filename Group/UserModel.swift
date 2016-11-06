@@ -5,15 +5,15 @@
 import RealmSwift
 
 class UserModel: Object {
-    dynamic var uid: String!
-    dynamic var name: String!
-    dynamic var email: String!
-    dynamic var fb: String!
+    dynamic var uid: String = ""
+    dynamic var name: String = ""
+    dynamic var email: String = ""
+    dynamic var fb: String = ""
     dynamic var fbtoken: String = ""
-    dynamic var phone: String!
-    dynamic var fabric: String!
-    dynamic var city: String!
-    dynamic var country: String!
+    dynamic var phone: String = ""
+    dynamic var fabric: String = ""
+    dynamic var city: String = ""
+    dynamic var country: String = ""
     dynamic var username: String = ""
     dynamic var password: String = ""
     dynamic var following: Bool = true

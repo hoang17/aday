@@ -39,7 +39,7 @@ class Friend: NSObject {
         self.updated = value?["updated"] as? Double ?? 0
     }
     
-    func toAnyObject() -> AnyObject {
+    func toAnyObject() -> [String: Any] {
         return [
             "uid": uid,
             "fuid": fuid,
@@ -48,6 +48,6 @@ class Friend: NSObject {
             "flag": flag,
             "created": created,
             "updated": updated
-        ] as AnyObject
+        ]
     }
 }

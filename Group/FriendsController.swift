@@ -39,21 +39,21 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         friends = realm?.objects(UserModel.self).filter("following = true AND uploaded > \(AppDelegate.startdate)").sorted(byProperty: "uploaded", ascending: false)
         
         notificationToken = friends.addNotificationBlock { [weak self] (changes: RealmCollectionChange) in
-            guard (self?.tableView) != nil else { return }
+            guard let tableView = self?.tableView else { return }
             switch changes {
             case .initial:
-                // tableView.reloadData()
+                tableView.reloadData()
                 break
             case .update(_, let deletions, let insertions, let modifications):
                 print("update friends tableview")
-                self!.tableView.beginUpdates()
-                self!.tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) },
+                tableView.beginUpdates()
+                tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) },
                     with: .automatic)
-                self!.tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) },
+                tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) },
                     with: .automatic)
-                self!.tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) },
+                tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) },
                     with: .automatic)
-                self!.tableView.endUpdates()
+                tableView.endUpdates()
                 break
             case .error(let error):
                 print(error)
@@ -119,7 +119,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
 //        let cell = tableView.cellForRowAtIndexPath(indexPath) as! TableViewCell
 //        let friendName = friend.name
-//        let c = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friend.uid)' AND trash = false").sorted("date", ascending: false).first!
+//        let c = AppDelegate.realm.objects(ClipModel.self).filter("uid = '\(friend.uid!)' AND trash = false").sorted("date", ascending: false).first!
 //        let clip = Clip(data: c)
 
         // Create the action sheet
@@ -187,7 +187,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
 //                        print(assetURL)
 //                        let escapedString = assetURL.absoluteString!.urlencodedString()
 //                        let escapedCaption = "Pinly".urlencodedString()
-//                        let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString)&InstagramCaption=\(escapedCaption)")!
+//                        let instagramURL = NSURL(string: "instagram://library?AssetPath=\(escapedString!)&InstagramCaption=\(escapedCaption)")!
 //                        UIApplication.sharedApplication().openURL(instagramURL)
 //                    }
 //                })

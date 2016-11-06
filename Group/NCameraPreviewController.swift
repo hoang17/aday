@@ -142,7 +142,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
                 let y = self!.textLocation.y/self!.view.frame.height
                 let uploadFile = "\(id).mp4"
                 
-                let clip = ClipModel(id: id, uid: uid!, uname: uname!, fname: uploadFile, txt: txt!, y: y, locationInfo: self!.locationInfo!)
+                let clip = ClipModel(id: id, uid: uid, uname: uname, fname: uploadFile, txt: txt!, y: y, locationInfo: self!.locationInfo!)
                 
                 UploadHelper.sharedInstance.enqueueUpload(clip, liloaded: self!.locationInfo!.loaded)
                 

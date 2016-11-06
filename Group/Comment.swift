@@ -56,7 +56,7 @@ class Comment: NSObject {
 //        self.updated = data.updated
 //    }
     
-    func toAnyObject() -> AnyObject {
+    func toAnyObject() -> [String: Any] {
         return [
             "id": id,
             "uid": uid,
@@ -66,6 +66,6 @@ class Comment: NSObject {
             "trash": trash,
             "created": created,
             "updated": updated
-        ] as AnyObject
+        ]
     }
 }

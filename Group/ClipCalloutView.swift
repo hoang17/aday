@@ -22,8 +22,6 @@ class ClipCalloutView: UIView {
     convenience init(clip: ClipModel, frame: CGRect) {
         self.init(frame: frame)
         
-        let user = AppDelegate.realm.object(ofType: UserModel.self, forPrimaryKey: clip.uid)
-        
         miniPlayer = MiniPlayer(clip: clip, frame: frame)
         miniPlayer.layer.cornerRadius = 5
         miniPlayer.layer.masksToBounds = false
@@ -36,9 +34,10 @@ class ClipCalloutView: UIView {
         profileImg.clipsToBounds = true
         profileImg.layer.borderWidth = 0.5
         profileImg.layer.borderColor = UIColor.lightGray.cgColor
-        profileImg.contentMode = .scaleAspectFit        
-        profileImg.kf.setImage(with: URL(string: "https://graph.facebook.com/\(user!.fb)/picture?type=large&return_ssl_resources=1"))
-        
+        profileImg.contentMode = .scaleAspectFit
+        if let user = AppDelegate.realm.object(ofType: UserModel.self, forPrimaryKey: clip.uid) {
+            profileImg.kf.setImage(with: URL(string: "https://graph.facebook.com/\(user.fb)/picture?type=large&return_ssl_resources=1"))
+        }
         if clip.txt == "" {
             textField.isHidden = true
         }

@@ -22,8 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    static var uid: String!
-    static var name: String!
+    static var uid: String = ""
+    static var name: String = ""
     static var currentUser: UserModel!
     static var realm: Realm!
     static var dayago = -14
@@ -157,19 +157,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         
-        if AppDelegate.uid != nil {
-            
-            //let tokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
-            
-            let tokenChars = (deviceToken as NSData).bytes.bindMemory(to: CChar.self, capacity: deviceToken.count)
-            var tokenString = ""
-            for i in 0..<deviceToken.count {
-                tokenString += String(format: "%02.2hhx", arguments: [tokenChars[i]])
-            }
-            print("Device Token:", tokenString)
-
-            FriendsLoader.sharedInstance.saveDevice(tokenString)
+        guard AppDelegate.uid != "" else { return }
+        
+        //let tokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+        
+        let tokenChars = (deviceToken as NSData).bytes.bindMemory(to: CChar.self, capacity: deviceToken.count)
+        var tokenString = ""
+        for i in 0..<deviceToken.count {
+            tokenString += String(format: "%02.2hhx", arguments: [tokenChars[i]])
         }
+        print("Device Token:", tokenString)
+        
+        FriendsLoader.sharedInstance.saveDevice(tokenString)
     }
 
     // depricated: iOS 10.0

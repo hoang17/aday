@@ -5,11 +5,11 @@
 import RealmSwift
 
 class ClipModel: Object {
-    dynamic var id: String!
-    dynamic var uid: String!
-    dynamic var uname: String!
-    dynamic var fname: String!
-    dynamic var txt: String!
+    dynamic var id: String = ""
+    dynamic var uid: String = ""
+    dynamic var uname: String = ""
+    dynamic var fname: String = ""
+    dynamic var txt: String = ""
     dynamic var y: Float = 0.0
     dynamic var flag = false
     dynamic var long: Double = 0
