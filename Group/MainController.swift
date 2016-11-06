@@ -127,7 +127,7 @@ class MainController: UIViewController {
                         }
                     }
                     
-                    UploadHelper.sharedInstance.downloadClip(data.fname)
+                    _ = UploadHelper.sharedInstance.downloadClip(data.fname)
                     
                     let clip = ClipModel(clip: data)
                     try! realm?.write {

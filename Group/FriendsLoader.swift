@@ -34,7 +34,7 @@ class FriendsLoader: NSObject {
         var friends = [FacebookFriend]()
         
         let request = FBSDKGraphRequest(graphPath:"me/friends", parameters: ["fields": "name", "limit":"200"] )
-        request?.start { (connection, result, error) in
+        _ = request?.start { (connection, result, error) in
             
             if error == nil {
                 

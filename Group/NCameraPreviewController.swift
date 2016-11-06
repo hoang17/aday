@@ -130,7 +130,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
     
     func submit() {
         
-        recordSession?.mergeSegments(usingPreset: AVAssetExportPresetHighestQuality) { [weak self] (url, error) in
+        _ = recordSession?.mergeSegments(usingPreset: AVAssetExportPresetHighestQuality) { [weak self] (url, error) in
             if error == nil {
 
                 print("Video saved to disk: \(url)")
