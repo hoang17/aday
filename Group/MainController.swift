@@ -57,8 +57,8 @@ class MainController: UIViewController {
 
         //📍Init current user
         
-        AppDelegate.uid = FIRAuth.auth()?.currentUser?.uid
-        AppDelegate.name = FIRAuth.auth()?.currentUser?.displayName
+        AppDelegate.uid = (FIRAuth.auth()?.currentUser?.uid)!
+        AppDelegate.name = (FIRAuth.auth()?.currentUser?.displayName)!
         
         //📍Init upload queue
         UploadHelper.sharedInstance.start()

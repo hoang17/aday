@@ -243,7 +243,8 @@ class UploadHelper {
                 let update = [
                     "/pins/\(uid)/\(clip.id)": data.toAnyObject(),
                     "/users/\(uid)/uploaded": clip.date,
-                    "/clips/\(clip.id)": data.toAnyObject()]
+                    "/clips/\(clip.id)": data.toAnyObject(),
+                    "/threads/\(clip.id)/follows/\(uid)": true]
                 
                 self.ref.updateChildValues(update)
                 

@@ -202,8 +202,8 @@ class FriendsLoader: NSObject {
     
     func comment(clip: ClipModel, text: String) {
         let id = ref.child("comments").childByAutoId().key
-        let uid : String! = AppDelegate.uid
-        let name = AppDelegate.name
+        let uid: String = AppDelegate.uid
+        let name: String = AppDelegate.name
         let cm = Comment(id: id, uid: uid, pid: clip.id, name: name, text: text)
         
         var update = [String:AnyObject]()
@@ -212,6 +212,7 @@ class FriendsLoader: NSObject {
                   "/threads/\(clip.id)/comments/\(cm.id)": cm.toAnyObject(),
                   "/comments/\(cm.id)": cm.toAnyObject()]
         
+        // TODO: for old comments, will be removed
         if clip.uid != cm.uid {
             update["/threads/\(clip.id)/follows/\(clip.uid)"] = true
         }
@@ -231,6 +232,21 @@ class FriendsLoader: NSObject {
 //        try! realm.write {
 //            // add comment
 //        }
+    }
+    
+    func comment(pin pid: String, text: String) {
+        let id = ref.child("comments").childByAutoId().key
+        let uid: String = AppDelegate.uid
+        let name: String = AppDelegate.name
+        let cm = Comment(id: id, uid: uid, pid: pid, name: name, text: text)
+        
+        var update = [String:AnyObject]()
+        
+        update = ["/threads/\(pid)/follows/\(cm.uid)": true,
+                  "/threads/\(pid)/comments/\(cm.id)": cm.toAnyObject(),
+                  "/comments/\(cm.id)": cm.toAnyObject()]
+        
+        ref.updateChildValues(update)
     }
     
     func saveDevice(id: String) {

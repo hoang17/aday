@@ -22,8 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    static var uid: String!
-    static var name: String!
+    static var uid: String = ""
+    static var name: String = ""
     static var currentUser: UserModel!
     static var realm: Realm!
     static var dayago = -14
@@ -105,19 +105,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let center = UNUserNotificationCenter.currentNotificationCenter()
             center.delegate = self
             
-            let replyAction = UNNotificationAction(
+            let replyAction = UNTextInputNotificationAction(
                 identifier: "replyPin",
                 title: "Reply",
-                options: [])
+                options: [],
+                textInputButtonTitle: "Reply",
+                textInputPlaceholder: "Write a message...")
             
-            let remindAction = UNNotificationAction(
-                identifier: "remindLater",
-                title: "Remind me later",
-                options: [])
+            //let remindAction = UNNotificationAction(
+            //    identifier: "remindLater",
+            //    title: "Remind me later",
+            //    options: [])
             
             let category = UNNotificationCategory(
                 identifier: "newPin",
-                actions: [replyAction, remindAction],
+                actions: [replyAction],
                 intentIdentifiers: [],
                 options: [])
             
@@ -157,7 +159,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         
-        if AppDelegate.uid != nil {
+        if AppDelegate.uid != "" {
             
             //let tokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
             
@@ -204,6 +206,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
         print("action for remote notification")
     }
+    
+    // depricated: iOS 10.0
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, withResponseInfo responseInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
+        var userInfo = [NSObject: AnyObject]()
+        if #available(iOS 9.0, *) {
+            userInfo["text"] = responseInfo[UIUserNotificationActionResponseTypedTextKey]
+        } else {
+            // Fallback on earlier versions
+        }
+        NSNotificationCenter.defaultCenter().postNotificationName("text", object: nil, userInfo: userInfo)
+        
+        completionHandler()
+    }
+    
+    // depricated: iOS 10.0
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], withResponseInfo responseInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
+        var mutableUserInfo = userInfo
+        if #available(iOS 9.0, *) {
+            mutableUserInfo["text"] = responseInfo[UIUserNotificationActionResponseTypedTextKey]
+        } else {
+            // Fallback on earlier versions
+        }
+        NSNotificationCenter.defaultCenter().postNotificationName("text", object: nil, userInfo: mutableUserInfo)
+        
+        completionHandler()
+    }
+    
     
     func showLogin() {
         UIView.transitionWithView(self.window!, duration: 0.5, options: .TransitionFlipFromLeft, animations: {
@@ -290,16 +319,26 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     @available(iOS 10.0, *)
     func userNotificationCenter(center: UNUserNotificationCenter, didReceiveNotificationResponse response: UNNotificationResponse, withCompletionHandler completionHandler: () -> Void) {
         
-        print("center: \(center)\nresponse: \(response)")
         let actionIdentifier = response.actionIdentifier
-        print("actionIdentifier: \(actionIdentifier)")
+        
+        print("action identifier: \(actionIdentifier)")
+        //print("notification response: \(response)")
         
         // TODO: Snooze notification to remind me later
-        if response.actionIdentifier == "remindLater" {
+        //if response.actionIdentifier == "remindLater" {
             //let newDate = NSDate(timeIntervalSinceNow: 900) // fire after 900 seconds
             //let pastdate = NSDate(timeIntervalSinceNow: -100) // fire immediately
             //let newDate = NSDate(timeInterval: 900, sinceDate: somedate)
             //scheduleNotification(at: newDate)
+        //}
+        
+        if response.actionIdentifier == "replyPin" && AppDelegate.uid != "" {
+            guard let response = response as? UNTextInputNotificationResponse,
+                  let pid = response.notification.request.content.userInfo["pid"] as? String else { return }
+            
+            print(pid)
+            print(response.userText)
+            FriendsLoader.sharedInstance.comment(pin: pid, text: response.userText)
         }
         
         completionHandler()
