@@ -108,7 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let replyAction = UNTextInputNotificationAction(
                 identifier: "replyPin",
                 title: "Reply",
-                options: [],
+                options: [.Foreground],
                 textInputButtonTitle: "Reply",
                 textInputPlaceholder: "Write a message...")
             
@@ -119,7 +119,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let category = UNNotificationCategory(
                 identifier: "newPin",
-                actions: [replyAction],
+                actions: [replyAction], //actions: [replyAction, remindAction],
                 intentIdentifiers: [],
                 options: [])
             
