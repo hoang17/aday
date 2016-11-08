@@ -25,7 +25,7 @@ class FacebookFriend: NSObject {
 
 class FriendsLoader: NSObject {
     
-    static let sharedInstance = FriendsLoader()
+    static let shared = FriendsLoader()
     
     let ref = FIRDatabase.database().reference()
     

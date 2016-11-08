@@ -102,7 +102,7 @@ class CommentsController: SLKTextViewController, UITextFieldDelegate {
         self.textView.refreshFirstResponder()
         
         if textView.text != "" {
-            FriendsLoader.sharedInstance.comment(clip, text: textView.text!)
+            FriendsLoader.shared.comment(clip, text: textView.text!)
         }
         
         super.didPressRightButton(sender)

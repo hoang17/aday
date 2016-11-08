@@ -10,7 +10,7 @@ import LNNotificationsUI
 
 class NotificationHelper {
 
-    static let sharedInstance = NotificationHelper()
+    static let shared = NotificationHelper()
 
     func present(userInfo: [NSObject : AnyObject]) {
         let aps = userInfo["aps"]

@@ -18,7 +18,7 @@ import MapKit
 
 class UploadHelper {
     
-    static let sharedInstance = UploadHelper()
+    static let shared = UploadHelper()
     
     var notificationToken: NotificationToken?
     var clipUploads: Results<ClipUpload>!
@@ -79,7 +79,7 @@ class UploadHelper {
             // rename video file
             let uploadFilePath = NSTemporaryDirectory() + clip.fname
             let uploadFileUrl = NSURL(fileURLWithPath: uploadFilePath)
-            try NSFileManager.defaultManager().moveItemAtURL(UploadHelper.sharedInstance.fileUrl, toURL: uploadFileUrl)
+            try NSFileManager.defaultManager().moveItemAtURL(UploadHelper.shared.fileUrl, toURL: uploadFileUrl)
             
             // extract thumb image
             self.extractThumbImage(clip)

@@ -61,7 +61,7 @@ class MainController: UIViewController {
         AppDelegate.name = (FIRAuth.auth()?.currentUser?.displayName)!
         
         //📍Init upload queue
-        UploadHelper.sharedInstance.start()
+        UploadHelper.shared.start()
         
         //📍Load current user from disk
         if let user = realm.objectForPrimaryKey(UserModel.self, key: AppDelegate.uid) {
@@ -127,7 +127,7 @@ class MainController: UIViewController {
                         }
                     }
                     
-                    UploadHelper.sharedInstance.downloadClip(data.fname)
+                    UploadHelper.shared.downloadClip(data.fname)
                     
                     let clip = ClipModel(clip: data)
                     try! realm.write {

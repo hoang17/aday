@@ -101,7 +101,7 @@ class MiniPlayer: PlayerView {
         //ai.borderWidth = 1
         //view.addSubview(ai)
         
-        if let task = UploadHelper.sharedInstance.downloadClip(fileName) {
+        if let task = UploadHelper.shared.downloadClip(fileName) {
             task.observeStatus(.Success){ snapshot in
                 
                 //print("File downloaded \(self.fileName)")

@@ -144,7 +144,7 @@ class NCameraPreviewController: UIViewController, SCPlayerDelegate {
                 
                 let clip = ClipModel(id: id, uid: uid, uname: uname, fname: uploadFile, txt: txt!, y: y, locationInfo: self!.locationInfo!)
                 
-                UploadHelper.sharedInstance.enqueueUpload(clip, liloaded: self!.locationInfo!.loaded)
+                UploadHelper.shared.enqueueUpload(clip, liloaded: self!.locationInfo!.loaded)
                 
                 url!.saveToCameraRollWithCompletion({(path, saveError) in
                     print("Video saved to camera roll: \(path)")

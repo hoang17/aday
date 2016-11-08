@@ -127,7 +127,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
         
         let reportAction = UIAlertAction(title: "Report", style: UIAlertActionStyle.Destructive) { [weak self] (action) in
             
-            FriendsLoader.sharedInstance.report(friend.uid)
+            FriendsLoader.shared.report(friend.uid)
             
             let alert = UIAlertController(title: "You have reported\n" + friend.name, message: "Thank you for your reporting. Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
@@ -195,7 +195,7 @@ class FriendsController: UITableViewController, FBSDKSharingDelegate {
 //        }
         
         let unfollowAction = UIAlertAction(title: "Unfollow", style: UIAlertActionStyle.Default) { (action) in
-            FriendsLoader.sharedInstance.unfollow(friend.uid)
+            FriendsLoader.shared.unfollow(friend.uid)
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { (action) in

@@ -23,7 +23,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let asset = AVAsset(URL: UploadHelper.sharedInstance.fileUrl)
+        let asset = AVAsset(URL: UploadHelper.shared.fileUrl)
         self.showsPlaybackControls = false
         self.player = AVPlayer(playerItem: AVPlayerItem(asset:asset))
         self.videoGravity = AVLayerVideoGravityResizeAspectFill
@@ -113,7 +113,7 @@ class CameraPreviewController: AVPlayerViewController, UITextFieldDelegate {
         
         let clip = ClipModel(id: id, uid: uid, uname: uname, fname: uploadFile, txt: txt!, y: y, locationInfo: locationInfo!)
         
-        UploadHelper.sharedInstance.enqueueUpload(clip, liloaded: locationInfo!.loaded)
+        UploadHelper.shared.enqueueUpload(clip, liloaded: locationInfo!.loaded)
         
         self.back()
     }

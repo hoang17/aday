@@ -12,7 +12,7 @@ import AssetsLibrary
 
 class VideoHelper {
     
-    static let sharedInstance = VideoHelper()
+    static let shared = VideoHelper()
     
     // export clip with caption, profile, time & location
     func export(clip: Clip, friendName: String, profileImg: UIImage, completion: (savePathUrl: NSURL) -> Void) {

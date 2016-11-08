@@ -113,7 +113,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             self?.commentBox.hidden = true
             self?.player.play()
             if let cm = self?.commentBox.commentField.text {
-                FriendsLoader.sharedInstance.comment(self!.clips[self!.playIndex], text: cm)
+                FriendsLoader.shared.comment(self!.clips[self!.playIndex], text: cm)
                 self?.commentBox.commentField.text = ""
             }
         }
@@ -194,7 +194,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
                 let alert = UIAlertController(title: "This content has been reported\n", message: "Our moderators have been notified and we will take action imediately!", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { [weak self] (action) in
                     self?.close()
-                    FriendsLoader.sharedInstance.reportClip(self!.clips[self!.playIndex])
+                    FriendsLoader.shared.reportClip(self!.clips[self!.playIndex])
                 }))
                 self?.presentViewController(alert, animated: true, completion: nil)
             }))
@@ -211,7 +211,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             let text = "Exporting pin..."
             self?.showWaitOverlayWithText(text)
             
-            VideoHelper.sharedInstance.export(clip, friendName: self!.friendName!, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
+            VideoHelper.shared.export(clip, friendName: self!.friendName!, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
                 self?.removeAllOverlays()
                 self?.shareClip(savePathUrl)
             }
@@ -222,7 +222,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             let text = "Exporting pin..."
             self?.showWaitOverlayWithText(text)
             
-            VideoHelper.sharedInstance.export(clip, friendName: self!.friendName, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
+            VideoHelper.shared.export(clip, friendName: self!.friendName, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
                 
                 self?.removeAllOverlays()
                 ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { [weak self] (assetURL, error) in
@@ -248,7 +248,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             let text = "Exporting pin..."
             self?.showWaitOverlayWithText(text)
             
-            VideoHelper.sharedInstance.export(clip, friendName: self!.friendName, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
+            VideoHelper.shared.export(clip, friendName: self!.friendName, profileImg: self!.profileImg.image!) { [weak self] (savePathUrl) in
                 
                 self?.removeAllOverlays()
                 ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(savePathUrl, completionBlock: { (assetURL, error) in
@@ -274,7 +274,7 @@ class CameraPlaybackController: UIViewController, FBSDKSharingDelegate {
             
             confirmAlert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { [weak self] (action) in
                 self?.close()
-                FriendsLoader.sharedInstance.deleteClip(self!.clips[self!.playIndex])
+                FriendsLoader.shared.deleteClip(self!.clips[self!.playIndex])
             }))
             
             confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { [weak self] (action) in

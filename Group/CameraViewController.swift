@@ -360,7 +360,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         print(outputFileURL)
 
         let inputUrl = outputFileURL
-        let outputURL = NSURL(fileURLWithPath: NSTemporaryDirectory() + UploadHelper.sharedInstance.fileName)
+        let outputURL = NSURL(fileURLWithPath: NSTemporaryDirectory() + UploadHelper.shared.fileName)
         
         convertVideoWithMediumQuality(inputUrl, outputURL: outputURL) {
             let preview = CameraPreviewController()
@@ -372,9 +372,9 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     
     func export() {
         let inputURL = NSURL(fileURLWithPath: outputPath)
-        let outputURL = NSURL(fileURLWithPath: NSTemporaryDirectory() + UploadHelper.sharedInstance.fileName)
+        let outputURL = NSURL(fileURLWithPath: NSTemporaryDirectory() + UploadHelper.shared.fileName)
         
-        VideoHelper.sharedInstance.export(inputURL, outputURL: outputURL) {
+        VideoHelper.shared.export(inputURL, outputURL: outputURL) {
             let preview = CameraPreviewController()
             preview.locationInfo = self.locationInfo
             self.presentViewController(preview, animated: true, completion: nil)

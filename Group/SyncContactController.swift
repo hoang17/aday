@@ -145,13 +145,13 @@ class SyncContactController: UIViewController {
         notification.notificationLabelBackgroundColor = UIColor(red: 0.0, green: 122.0 / 255.0, blue: 1.0, alpha: 1.0)
         notification.displayNotificationWithMessage("Finding friends...", forDuration: 3.0)
         
-        FriendsLoader.sharedInstance.loadFacebookFriends { count in
+        FriendsLoader.shared.loadFacebookFriends { count in
             let notification = CWStatusBarNotification()
             notification.notificationLabelBackgroundColor = UIColor(red: 0.0, green: 122.0 / 255.0, blue: 1.0, alpha: 1.0)
             notification.displayNotificationWithMessage("Syncing friends...", forDuration: 3.0)
         }
         
-        FriendsLoader.sharedInstance.loadAddressBook {
+        FriendsLoader.shared.loadAddressBook {
             let notification = CWStatusBarNotification()
             notification.notificationLabelBackgroundColor = UIColor(red: 0.0, green: 122.0 / 255.0, blue: 1.0, alpha: 1.0)
             notification.displayNotificationWithMessage("Syncing contacts...", forDuration: 10.0)

@@ -170,7 +170,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             print("Device Token:", tokenString)
 
-            FriendsLoader.sharedInstance.saveDevice(tokenString)
+            FriendsLoader.shared.saveDevice(tokenString)
         }
     }
 
@@ -186,7 +186,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //
         }
         else {
-            NotificationHelper.sharedInstance.present(userInfo)
+            NotificationHelper.shared.present(userInfo)
         }
     }
     
@@ -338,7 +338,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             
             print(pid)
             print(response.userText)
-            FriendsLoader.sharedInstance.comment(pin: pid, text: response.userText)
+            FriendsLoader.shared.comment(pin: pid, text: response.userText)
         }
         
         completionHandler()
