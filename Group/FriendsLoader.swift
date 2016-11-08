@@ -142,7 +142,8 @@ class FriendsLoader: NSObject {
 
         let userID : String! = AppDelegate.uid
         let friend = Friend(uid: userID, fuid: friendId)
-        let refriend = Friend(uid: friendId, fuid: userID, following: false, follower: true)
+        //let refriend = Friend(uid: friendId, fuid: userID, following: false, follower: true)
+        let refriend = Friend(uid: friendId, fuid: userID)
         let key = ref.child("followers").childByAutoId().key
         
         var follow = friend.toAnyObject()
