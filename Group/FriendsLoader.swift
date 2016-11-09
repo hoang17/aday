@@ -137,6 +137,60 @@ class FriendsLoader: NSObject {
         }
         
     }
+    
+    func syncContacts(completion: (()->Void)? = nil){
+        
+        // Load contacts friends
+        let addressBook = APAddressBook()
+        
+        addressBook.requestAccess { granted, error in
+            addressBook.loadContacts { contacts, error in
+                if error != nil {
+                    print(error)
+                } else if contacts != nil {
+                    
+                    var contactsJson = [AnyObject]()
+                    
+                    for contact in contacts! {
+                        var contactJson = [String: AnyObject]()
+                        contactJson["name"] = contact.name?.compositeName
+                        //contactJson["firstName"] = contact.name?.firstName
+                        //contactJson["lastName"] = contact.name?.lastName
+                        //contactJson["middleName"] = contact.name?.middleName
+                        //contactJson["emails"] = contact.emails
+                        //contactJson["phones"] = contact.phones
+                        //contactJson["addresses"] = contact.addresses
+                        //contactJson["socialProfiles"] = contact.socialProfiles
+                        //contactJson["birthday"] = contact.birthday
+                        
+                        var phonesJson = [String]()
+                        if let phones = contact.phones {
+                            for phone in phones {
+                                if let number = phone.number {
+                                    phonesJson.append(number)
+                                }
+                            }
+                        }
+                        
+                        contactJson["phones"] = phonesJson
+                        contactsJson.append(contactJson)
+                    }
+                    
+                    let data = [
+                        "uid": AppDelegate.uid,
+                        "name": AppDelegate.name,
+                        "contacts": contactsJson
+                    ]
+                    
+                    Just.post("http://192.168.100.8:5005/contacts/sync", json: data) { r in
+                        print(r)
+                    }
+                }
+            }
+            completion?()
+        }
+    }
+    
    
     func addFriend(friendId: String) {
 
@@ -219,20 +273,6 @@ class FriendsLoader: NSObject {
         }
         
         ref.updateChildValues(update)
-        
-//        let data = ["pid": clip.id,
-//                    "uid": userID,
-//                    "name": AppDelegate.currentUser.name,
-//                    "txt": cmt.txt]
-        
-//        Just.post("http://192.168.100.8:5005/pins/comment", json: data) { r in
-//            print(r)
-//        }
-        
-//        let realm = AppDelegate.realm
-//        try! realm.write {
-//            // add comment
-//        }
     }
     
     func comment(pin pid: String, text: String) {
